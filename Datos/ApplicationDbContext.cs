@@ -38,8 +38,6 @@ namespace ExpoMR.Datos
 
         public DbSet<mTipoUsuario> TipoUsuarios { get; set; }
 
-        public DbSet<UsuariosNotificacion> usuariosNotificacion { get; set; }
-
         public DbSet<Empleados> Empleados { get; set; }
 
         public DbSet<Roles> Roles { get; set; }
