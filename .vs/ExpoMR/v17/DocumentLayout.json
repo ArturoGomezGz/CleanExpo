@@ -1,0 +1,83 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Documents\\Projects MR\\ExpoMR MVC\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{73340F2B-8F2C-41AC-900F-C66054242AA6}|ExpoMR.csproj|e:\\documents\\projects mr\\expomr mvc\\controllers\\ayudacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{73340F2B-8F2C-41AC-900F-C66054242AA6}|ExpoMR.csproj|solutionrelative:controllers\\ayudacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\crivera\\AppData\\Local\\Temp\\.vsdbgsrc\\8ba61342af57a991b8db7b5695254d67250fb0759b27725bbec39c76870caa14\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73340F2B-8F2C-41AC-900F-C66054242AA6}|ExpoMR.csproj|e:\\documents\\projects mr\\expomr mvc\\properties\\publishprofiles\\folderprofile.pubxml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{73340F2B-8F2C-41AC-900F-C66054242AA6}|ExpoMR.csproj|solutionrelative:properties\\publishprofiles\\folderprofile.pubxml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73340F2B-8F2C-41AC-900F-C66054242AA6}|ExpoMR.csproj|e:\\documents\\projects mr\\expomr mvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{73340F2B-8F2C-41AC-900F-C66054242AA6}|ExpoMR.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AyudaController.cs",
+              "DocumentMoniker": "E:\\Documents\\Projects MR\\ExpoMR MVC\\Controllers\\AyudaController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AyudaController.cs",
+              "ToolTip": "E:\\Documents\\Projects MR\\ExpoMR MVC\\Controllers\\AyudaController.cs",
+              "RelativeToolTip": "Controllers\\AyudaController.cs",
+              "ViewState": "AQIAABIAAAAAAAAAAAAowEAAAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-22T16:09:22.921Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FolderProfile.pubxml",
+              "DocumentMoniker": "E:\\Documents\\Projects MR\\ExpoMR MVC\\Properties\\PublishProfiles\\FolderProfile.pubxml",
+              "RelativeDocumentMoniker": "Properties\\PublishProfiles\\FolderProfile.pubxml",
+              "ToolTip": "E:\\Documents\\Projects MR\\ExpoMR MVC\\Properties\\PublishProfiles\\FolderProfile.pubxml",
+              "RelativeToolTip": "Properties\\PublishProfiles\\FolderProfile.pubxml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003576|",
+              "WhenOpened": "2024-04-22T16:08:40.532Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\crivera\\AppData\\Local\\Temp\\.vsdbgsrc\\8ba61342af57a991b8db7b5695254d67250fb0759b27725bbec39c76870caa14\\Program.cs",
+              "ToolTip": "C:\\Users\\crivera\\AppData\\Local\\Temp\\.vsdbgsrc\\8ba61342af57a991b8db7b5695254d67250fb0759b27725bbec39c76870caa14\\Program.cs [Solo lectura]",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-22T16:06:37.813Z",
+              "EditorCaption": " [Solo lectura]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\Documents\\Projects MR\\ExpoMR MVC\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "E:\\Documents\\Projects MR\\ExpoMR MVC\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-04-22T16:04:28.477Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
