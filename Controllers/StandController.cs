@@ -193,13 +193,22 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetFotos(int idProducto)
         {
-            using (var dbFotos = new ApplicationDbContextFotos())
+            FotosViewModel FotoProducto = new FotosViewModel();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@idproducto", idProducto);
+
+            SqlDataReader dr = dB.ExecuteReader("GetFotoProd", ref parameters);
+
+            while (dr.Read())
             {
-                FotosViewModel foto = dbFotos.Fotos
-                            .Where(foto => foto.IdProducto == idProducto)
-                            .FirstOrDefault();
-                return Json(foto.Foto);
+                FotoProducto.IdFoto = (int)dr["IdFoto"];
+                FotoProducto.IdProducto = (int)dr["IdProducto"];
+                FotoProducto.Foto = (byte[])dr["Foto"];
             }
+            
+            return Json(FotoProducto.Foto);
         }
 
         public JsonResult GetImageProductByLab(int idProveedor, int IdUsuario)
@@ -591,6 +600,7 @@ namespace ExpoMR.Controllers
         public JsonResult GetFotoProducto(int IdProducto)
         {
             byte[] foto = GeneralesController.GetFoto(IdProducto);
+
             return Json(foto);
         }
     }

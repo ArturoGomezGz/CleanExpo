@@ -36,15 +36,7 @@ namespace ExpoMR.Datos
 
         public DbSet<mAnuncios> mAnuncios { get; set; }
 
-        //public DbSet<UsuarioExpo> UsuariosExpo { get; set; }
-
         public DbSet<mTipoUsuario> TipoUsuarios { get; set; }
-
-        public DbSet<mLaboratorio> Laboratorios { get; set; }
-
-        public DbSet<mLaboratorioI> LaboratoriosI { get; set; }
-
-        public DbSet<Saldos> Monedas { get; set; }
 
         public DbSet<UsuariosNotificacion> usuariosNotificacion { get; set; }
 
@@ -120,8 +112,6 @@ namespace ExpoMR.Datos
 
         public DbSet<TiposDeVenta> TiposDeVenta { get; set; }
 
-        //public DbSet<RutasList> RutasLists { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
 #if (TESTMODE)
@@ -135,21 +125,6 @@ namespace ExpoMR.Datos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Producto>().HasNoKey();
-        }
-    }
-
-    public class ApplicationDbContextFotos : DbContext
-    {
-        public DbSet<FotosViewModel> Fotos { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-#if (TESTMODE)
-            options.UseSqlServer("Server=localhost; Database=Fotos; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true");
-#else
-
-            options.UseSqlServer("Server=192.168.100.10; Database=Fotos; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true");
-#endif
         }
     }
 }

@@ -8,11 +8,4 @@ namespace ExpoMR.Models
         public int IdLaboratorio { get; set; }
         public string Laboratorio { get; set; }
     }
-
-    public class mLaboratorioI
-    {
-        [Key]
-        public Int16 IdLaboratorio { get; set; }
-        public string Laboratorio { get; set; }
-    }
 }

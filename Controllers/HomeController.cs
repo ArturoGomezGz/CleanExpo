@@ -137,10 +137,22 @@ namespace ExpoMR.Controllers
 
         public static byte[] GetFotos(int idProducto)
         {
-            using (var dbContext = new ApplicationDbContextFotos())
+            FotosViewModel FotoProducto = new FotosViewModel();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@idproducto", idProducto);
+
+            SqlDataReader dr = dB.ExecuteReader("GetFotoProd", ref parameters);
+
+            while (dr.Read())
             {
-                return dbContext.Fotos.Where(fotos => fotos.IdProducto == idProducto).FirstOrDefault().Foto;
+                FotoProducto.IdFoto = (int)dr["IdFoto"];
+                FotoProducto.IdProducto = (int)dr["IdProducto"];
+                FotoProducto.Foto = (byte[])dr["Foto"];
             }
+
+            return (FotoProducto.Foto);
         }
     }
 }
