@@ -1,0 +1,120 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+    ViewData["Title"] = "Pedidos";
+}
+
+<div id="divClientes">
+    <h1>Clientes</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table id="Clientes" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Acceder</th>
+                        <th>Cliente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Acceder</th>
+                        <th>Cliente</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <br />
+
+    <div id="divPedidosCliente" class="row">
+        <h1>Pedidos</h1>
+        <br />
+        <div class="col-md-12">
+            <table id="PedidosCliente" class="display responsive nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Cliente</th>
+                        <th>No. Pedido</th>
+                        <th>Documento</th>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Capturo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Cliente</th>
+                        <th>No. Pedido</th>
+                        <th>Documento</th>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Capturo</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#divPedidosCliente').hide();
+        $('#divPedido').hide();
+        $('#Clientes').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Empleados/GetPedidos",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    render: function (data, type, row) {
+                        return '<button class="fa fa-chevron-right" onclick="seleccionarCliente(' + row.acceder + ')"></button>';
+                    }
+                },
+                { "data": "cliente" }
+            ]
+        });
+    });
+
+    function seleccionarCliente(idCliente) {
+        var tblPedidosCliente = $('#PedidosCliente').DataTable();
+        tblPedidosCliente.destroy();
+        $('#divPedidosCliente').show();
+        $('#PedidosCliente').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Empleados/GetPedidosCliente?idCliente=" + idCliente,
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    "data": "cliente",
+                    render: function (data, type, row) {                      
+                        return '<a href="'+ path +'Empleados/DetallePedido?idPedido=' + row.idPedido + '" class="fa fa-chevron-right"></a>';
+                    }
+                },
+                { "data": "cliente" },
+                { "data": "idPedido" },
+                { "data": "documento" },
+                { "data": "fecha" },
+                { "data": "numProds" },
+                { "data": "capturo" }
+            ]
+        });
+    }    
+</script>

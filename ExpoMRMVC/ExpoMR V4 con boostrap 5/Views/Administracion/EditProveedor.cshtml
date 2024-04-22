@@ -1,0 +1,402 @@
+﻿@model EditarProveedorViewModel;
+@{
+    ViewData["Title"] = "EditProveedor";
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+<div id="liveAlertPlaceholder"></div>
+<div class="row mb-2">
+    <div id="liveAlertPlaceholder"></div>
+    <div class="col-md-6 label__bold">
+        <h3>Proveedor</h3>
+        @Html.HiddenFor(m=>m.IdPersona)
+        <div class="row">
+            <div class="col-sm-12 col-md-6">                
+                @Html.LabelFor(m => m.Nombre)
+                @Html.TextBoxFor(m => m.Nombre, new {id="txt_box_Proveedor", @class = "form-control", name = "provedor",  title="Proveedor", disabled = "disabled"})
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                @Html.LabelFor(m => m.Descripcion)
+                @Html.TextAreaFor(m => m.Descripcion, new { @class = "form-control ", disabled="disabled" })
+            </div>
+            <div class="col-sm-12 col-md-6 p-4">
+                <div id="hiddenBTN" class="d-none col-md-55 text-center">
+                    <button type="button" class="btn btn-outline-success" onclick="save()" title="btn-save">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn  btn-outline-danger" onclick="cancel()" title="btn-cancel">
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>            
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                @Html.LabelFor(m => m.Saldo)
+                @Html.TextBoxFor(m => m.Saldo, new{ @type = "number", @min = "1", @class = "form-control ", disabled="disabled"})
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">                
+                @Html.LabelFor(m => m.AsignarMonedas, new{id="label_asignar", @class="d-none"})
+                @Html.TextBoxFor(m => m.AsignarMonedas, new{ @type = "number", @min = "1", @class = "form-control d-none"})
+            </div>
+            <div class="col-sm-12 col-md-6 p-4">
+                <div id="hiddenBTNMonedas" class="d-none col-md-55 text-center">
+                    <button type="button" class="btn btn-outline-success" onclick="saveMonedas()" title="btn-save">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn  btn-outline-danger" onclick="cancelMonedas()" title="btn-cancel">
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h3>Laboratorios</h3>
+        <table id="Laboratorios" class="display " style="width:100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Laboratorio</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div class="d-grid gap-2 d-md-block">
+    <button id="btn-modificar" type="button" class="btn btn-naranja w-20" style="display: inline-table; padding: 10px 45px;"> Editar </button>
+    <button id="btn-eliminar" type="button" class="btn btn-rojo" data-bs-toggle="modal" data-bs-target="#eliminarModal" style="display: inline-table; padding: 10px 45px;"> Eliminar </button>
+    <button id="btn-AddMonedas" type="button" class="btn btn-azul" style="display: inline-table;"> Asignar Monedas </button>
+    <button id="btn-Agregar" type="button" class="btn btn-azul" data-bs-toggle="modal" data-bs-target="#ListaLaboratoriosModal" style="display: inline-table;"> Agregar </button>
+    <a asp-controller="Administracion" asp-action="Proveedor" class="btn btn-azul" style="display: inline-table;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Ir a Proveedores </a>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#btn-modificar").click(function () {
+            removeclass() //se muestran y ocultan botones
+
+            var element = document.getElementById("txt_box_Proveedor")
+            element.removeAttribute("disabled");  //se habilita el textbox para editar
+
+            var element1 = document.getElementById("Descripcion")
+            element1.removeAttribute("disabled"); //se habilita el textbox para editar
+        })
+        
+        $("#btn-AddMonedas").click(function () {
+            removeclassMonedas()
+        })
+        
+        $('#Laboratorios').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Administracion/GetLaboratorios?IdPersona=" + $("#IdPersona").val(),
+                type: 'POST',
+                dataSrc: ""
+            },
+            responsive: true,
+            "columns": [
+                {
+                    "data": "idLaboratorio",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<button type="button" class="btn  btn-outline-danger" onclick="deleteLab(' + data + ')" title="btn-cancel">'
+                                + ' <i class="fa fa-ban" aria-hidden="true"></i>'
+                                + ' </button>';
+                        }
+                        return data;
+                    },
+                },
+                { "data": "laboratorio" }
+            ]
+        });
+        
+        $('#AddLaboratorios').DataTable({
+            pageLength: 5,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Administracion/GetAddLabs",
+                type: 'POST',
+                dataSrc: ""
+            },
+            responsive: true,
+            "columns": [
+                {
+                    "data": "idLaboratorio",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<button type="button" class="btn  btn-outline-success" onclick="addLab(' + data + ')" title="btn-cancel">'
+                                + ' <i class="fa fa-plus" aria-hidden="true"></i>'
+                                + ' </button>';
+                        }
+                        return data;
+                    },
+                },
+                { "data": "laboratorio" }
+            ]
+        });
+
+    });
+
+    function save() {
+        const nombre = $("#txt_box_Proveedor").val();
+        const descripcion = $("#Descripcion").val()
+        const IdPersona = $("#IdPersona").val()
+
+        $.post(path + "Administracion/SaveProvedor",
+            {
+                nombre: nombre,
+                descripcion: descripcion,
+                IdPersona: IdPersona
+            },
+            function (data) {
+                ShowAlert(data.message, data.response);
+                cancel()
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    }
+
+    function cancel() {
+        //se ocultan los botones
+        $("#hiddenBTN").addClass('d-none');
+
+        //Se muestran los botones
+        $("#btn-modificar").removeClass("d-none")
+        $("#btn-eliminar").removeClass('d-none');
+        $("#btn-AddMonedas").removeClass('d-none');
+        $("#btn-Agregar").removeClass('d-none');
+
+        //se inhabilitan los textboxes para editar
+        var element = document.getElementById("txt_box_Proveedor")
+        element.setAttribute("disabled", "");
+
+        var element1 = document.getElementById("Descripcion")
+        element1.setAttribute("disabled", "");
+
+        //Hace la recarga de la pagina
+        window.location.reload();
+    }
+
+    function deleteProveedor() {
+        const IdPersona = $("#IdPersona").val()
+        
+        $.post(path + "Administracion/DeleteProveedor",
+            {
+                IdPersona: IdPersona
+            },
+            function (data) {
+                var myModalEl = document.getElementById('eliminarModal');
+                var modal = bootstrap.Modal.getInstance(myModalEl)
+
+                modal.hide()
+                ShowAlert(data.message, data.response);
+
+                if (data.response) {
+                    window.location.href = '/Administracion/Proveedor';
+                }
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    } 
+
+    function saveMonedas() {
+        let IdPersona = $("#IdPersona").val()
+        let monedas = $("#AsignarMonedas").val()
+
+        if (monedas > 0) {
+            $.post(path + "Administracion/SaveMonedas",
+                {
+                    IdPersona: IdPersona,
+                    monedas: monedas
+                },
+                function (data) {
+
+                    ShowAlert(data.message, data.response);
+                    cancelMonedas()
+
+                    if (data.response) {
+                        //Hace la recarga de la pagina
+                        window.location.reload();
+                    }
+                }).error(function () {
+                    ShowAlert("No fue posible cargar sus datos", false);
+                });
+        } else {
+            if (monedas === "") {
+                ShowAlert("Dato Inválido", false)
+            } else {
+                ShowAlert("Ingresa una cantidad de monedas mayor a cero", false)
+            }
+        }
+    }
+
+    function cancelMonedas(){
+        //se ocultan los botones
+        $("#hiddenBTNMonedas").addClass('d-none');
+        $("#label_asignar").addClass('d-none');
+        $("#AsignarMonedas").addClass('d-none');
+
+        //Inicializa el textbox en 0
+        $("#AsignarMonedas").val(0);
+
+        //Se muestran los botones
+        $("#btn-AddMonedas").removeClass("d-none");
+        $("#btn-modificar").removeClass('d-none');
+        $("#btn-eliminar").removeClass('d-none');
+        $("#btn-Agregar").removeClass('d-none');
+    }
+
+    function addLab(idLaboratorio){
+        const IdPersona = $("#IdPersona").val()
+
+        $.post(path + "Administracion/AddLab",
+            {
+                IdPersona: IdPersona,
+                IdLaboratorio: idLaboratorio
+            },
+            function (data) {
+                if(data.response){
+                    var tabla = $('#AddLaboratorios').DataTable();
+                    tabla.ajax.reload(); 
+                    var tablalab = $('#Laboratorios').DataTable();
+                    tablalab.ajax.reload();
+
+                    //Se actualiza el numero de laboratorios asignados al proveedor
+                    var element = document.getElementById("LaboratoriosAsignados");
+                    element.setAttribute("placeholder", tablalab.rows().count() + 1);
+                }                
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    }
+
+    function deleteLab(IdLaboratorio){
+        $.post(path + "Administracion/DeleteLab",
+            {
+                idLaboratorio: IdLaboratorio
+            },
+            function (data) {
+                if (data.response) {
+                    var tabla = $('#AddLaboratorios').DataTable();
+                    tabla.ajax.reload();
+                    var tablalab = $('#Laboratorios').DataTable();
+                    tablalab.ajax.reload();
+
+                    //Se actualiza el numero de laboratorios asignados al proveedor
+                    var element = document.getElementById("LaboratoriosAsignados");
+                    element.setAttribute("placeholder", tablalab.rows().count() - 1);
+                }else{
+                    ShowAlert(data.message, data.response);
+                }
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    }
+
+    function removeclass() {
+        //se ocultan los botones
+        $("#btn-modificar").addClass('d-none');
+        $("#btn-eliminar").addClass('d-none');
+        $("#btn-AddMonedas").addClass('d-none');
+        $("#btn-Agregar").addClass('d-none');
+
+        //Se muestran los botones
+        $("#hiddenBTN").removeClass("d-none") 
+    }
+
+    function removeclassMonedas() {
+        //se ocultan los botones
+        $("#btn-AddMonedas").addClass('d-none');
+        $("#btn-modificar").addClass('d-none');
+        $("#btn-eliminar").addClass('d-none');
+        $("#btn-Agregar").addClass('d-none');
+
+        //Se muestran los botones
+        $("#label_asignar").removeClass("d-none")
+        $("#hiddenBTNMonedas").removeClass("d-none")
+        $("#AsignarMonedas").removeClass("d-none")
+    }
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3>Vas a eliminar al Proveedor:</h3>
+                <label>@Model.Nombre</label>
+                <h3>¿Estas seguro?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal"> Cancelar </button>
+                <button type="button" onclick="deleteProveedor()" class="btn btn-verde"> Aceptar </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ListaLaboratoriosModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLaboratorio">Asigna Laboratorios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row label__bold">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Nombre)
+                            <input type="text" class="form-control" id="txt_box_Proveedor_modal" placeholder="@Model.Nombre" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="LaboratoriosAsignados" class="form-label">Laboratorios Asignados: </label>
+                            <input type="text" class="form-control" id="LaboratoriosAsignados" placeholder="@Model.NumLabAsignados" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <table id="AddLaboratorios" class="display " style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Laboratorio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nombre</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal"> Cancelar </button>
+            </div>
+        </div>
+    </div>
+</div>

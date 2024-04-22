@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "Cotizacion";
+}
+
+<h1>Cotizaciones</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="Cotizacion" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Acceder</th>
+                    <th>Cliente</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Acceder</th>
+                    <th>Cliente</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#Cotizacion').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path+"Empleados/GetClientes",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    "data": "acceder",
+                    render: function (data, type) {                        
+                        if (type === 'display') {
+                            return '<a href="'+path+'Empleados/CotizacionDetail?IdCliente=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                        }
+
+                        return data;
+                    },
+                },
+                { "data": "cliente" }
+            ]
+        });
+    });
+</script>

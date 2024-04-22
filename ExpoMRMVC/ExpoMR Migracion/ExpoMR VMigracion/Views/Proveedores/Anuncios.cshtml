@@ -1,0 +1,216 @@
+﻿@{
+    ViewData["Title"] = "Anuncios";
+}
+
+<h3>Anuncios</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="Anuncios" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th> </th>
+                    <th>N° Anuncio</th>
+                    <th>Anuncio</th>
+                    <th>Fecha Inicio</th>
+                    <th>Hora Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Hora Fin</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <button type="button" id="bt-agregarAnuncio" class="btn btn-azul-medio" onclick="reiniciaModal()" data-bs-toggle="modal" data-bs-target="#exampleModal"> Agregar </button>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agrega un Anuncio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+                <div class="modal-body txt-gris">
+                    <div class="d-flex justify-content-center">
+                        <label hidden id="lblidAnuncio"></label>
+                    </div>
+                    <div class="d-flex justify-content-center txt-bold">
+                        ¿Qué descripción quieres que aparezca en tu anuncio?
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <textarea id="txaDescripcion" required rows="5" cols="50"></textarea>
+                    </div>
+
+                    <br />
+                    <div class="d-flex justify-content-center txt-bold">
+                        <strong>Establece la fecha de publicación del anuncio</strong>
+                    </div>
+                    <br />
+                    <div class="d-flex justify-content-center">
+                        <strong>Inicio</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <label>Fecha: </label>
+                        <input style="width:150px; margin-left:5px" type="date" id="inFeInicio" required />
+                        &nbsp;&nbsp;
+                        <label>Hora: </label>
+                        <input style="width:150px; margin-left:5px" type="time" id="inHoraInicio" required />
+                    </div>
+                    <br />
+                    <div class="d-flex justify-content-center">
+                        <strong>Fin</strong>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <label>Fecha: </label>
+                        <input style="width:150px; margin-left:5px" type="date" id="inFeFin" required />
+                        &nbsp;&nbsp;
+                        <label>Hora: </label>
+                        <input style="width:150px; margin-left:5px" type="time" id="inHoraFin" required />
+                    </div>
+                    <br />
+                    <div class="text-center justify-content-around">
+                        <button class="btn btn-verde-medio" onclick="guardarAnuncio()">Aceptar</button>
+                        <button class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eliminarModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-center txt-bold">
+                    <label>Vas a eliminar el anuncio</label>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <strong>N°:</strong> &nbsp;
+                    <strong id="stridAnuncio"></strong>
+                </div>
+                <div class="d-flex justify-content-center txt-bold">
+                    <label>¿Estas Seguro?</label>
+                </div>
+                <br />
+                <div class="text-center justify-content-around">
+                    <button class="btn btn-verde-medio" onclick="borrarAnuncio()">Aceptar</button>
+                    <button class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#Anuncios').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Proveedores/GetAnuncios",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    render: function (data, type, row) {
+                        return '<button id = "bt-AgregarProductos" onclick="editarAnuncio(' + row.idAnuncio + ')" class="btn btn-naranja-ch fa fa-pen-to-square" data-bs-toggle="modal" data-bs-target="#exampleModal"> </button>';
+                    }
+                },
+                { "data": "idAnuncio" },
+                { "data": "anuncio" },
+                { "data": "feInicio" },
+                { "data": "horaInicio" },
+                { "data": "feTermino" },
+                { "data": "horaTermino" },
+                {
+                    render: function (data, type, row) {
+                        return '<button id="bt-eliminarAnuncio" class="btn  btn-rojo-ch fa fa-xmark" onclick="abrirBorrarModal(' + row.idAnuncio + ')" data-bs-toggle="modal" data-bs-target="#eliminarModal"></button>';
+                    }
+                }
+            ]
+        });
+    });
+
+    function reiniciaModal() {
+        var modal = document.getElementById("exampleModal");
+
+        var campos = modal.querySelectorAll("input, textarea, label");
+
+        campos.forEach(function (campo) {
+            campo.value = "";
+        });
+    }
+
+    function editarAnuncio(idAnuncio) {
+        reiniciaModal();
+        $.ajax({
+            type: "POST",
+            url: path + "Proveedores/GetAnuncio?idAnuncio=" + idAnuncio,
+            success: function (resultado) {
+                document.getElementById('lblidAnuncio').value = "" + resultado.idAnuncio;
+                document.getElementById('txaDescripcion').value = "" + resultado.anuncio;
+                document.getElementById('inFeInicio').value = resultado.feInicio;
+                document.getElementById('inHoraInicio').value = resultado.horaInicio;
+                document.getElementById('inFeFin').value = resultado.feTermino;
+                document.getElementById('inHoraFin').value = resultado.horaTermino;
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function guardarAnuncio() {
+        const idAnuncio = document.getElementById('lblidAnuncio').value;
+        const anuncio = document.getElementById('txaDescripcion').value;
+        const feInicio = document.getElementById('inFeInicio').value + '  ' + document.getElementById('inHoraInicio').value;
+        const feTermino = document.getElementById('inFeFin').value + '  ' + document.getElementById('inHoraFin').value;
+
+        $.ajax({
+            type: "POST",
+            url: path + "Proveedores/GuardarAnuncio",
+            dataSrc: "",
+            data: {
+                idAnuncio: idAnuncio,
+                descripcion: anuncio,
+                feInicio: feInicio,
+                feTermino: feTermino
+            },
+            success: function (resultado) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function abrirBorrarModal(idAnuncio) {
+        document.getElementById('stridAnuncio').innerHTML = "" + idAnuncio;
+
+    }
+
+    function borrarAnuncio() {
+        $.ajax({
+            type: "POST",
+            url: path + "Proveedores/eliminarAnuncio?idAnuncio=" + document.getElementById('stridAnuncio').innerHTML,
+            success: function (resultado) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>

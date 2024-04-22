@@ -1,0 +1,159 @@
+﻿@model MiCuentaViewModel;
+
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> UserManager;
+
+@{
+    ViewData["Title"] = "MiCuenta";
+}
+
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+            <div class="accordion" id="accordionPanelsStayOpenExample">             
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                            Datos de Facturación
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                        <div class="accordion-body">
+                            <div id="alert_Facturacion"></div>
+                            <div class="col-12 pb-2">
+                                <strong>Cliente: </strong> <label class="label__Cliente">@Model.Nombre</label>
+                            </div>
+                            <div class="col-12 pb-2">
+                                <strong>RFC: </strong> <label class="label__RFC">@Model.RFC</label>
+                            </div>
+                            <div class="col-12 pb-2">
+                                <strong>Dirección Fiscal: </strong> <label class="label__Direccion">@Model.Direccion</label>
+                            </div>
+                            <div class="col-12 pb-2">
+                                @Html.LabelFor(m => m.IdTipoDoc, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.IdTipoDoc, new SelectList(Model.TipoDocumentos, "IdTipoDoc", "TipoDoc"), new { id = "cmb-TipoDoc", @class = "form-control text-left  w-auto", name = "cmb-TipoDoc",  title="cmb"})
+                            </div>
+                            <div class="col-12 pb-2">
+                                <strong>Condiciones de Pago: </strong>
+                            </div>
+                            <div class="col-12 pb-2">
+                                <strong>Plazo: </strong>
+                            </div>
+                            <div class="col-12 pb-2">
+                                @Html.LabelFor(m => m.IdUsoCFDI, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.IdUsoCFDI, new SelectList(Model.UsoCFDI, "IdUsoCFDI", "UsoCFDI"), new { id = "cmb-UsosCFDI", @class = "form-control text-left  w-auto", name = "cmb-UsosCFDI",  title="cmb"})
+                            </div>
+                            <div class="col-12 pb-2">
+                                <button id="btn_save_facturacion" class="btn btn-azul"> Guardar <i class=""></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                            Datos de Entrega
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+                        <div class="accordion-body">
+                            <div id="alert_Entrega"></div>
+                           <div class="col-12 pb-2">
+                                @Html.LabelFor(m => m.IdTipoVenta, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.TiposVenta, "IdTipoVenta", "TipoVenta"), new { id = "cmb-TipoVenta", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})
+                            </div>
+                           <div class="col-12 pb-2">
+                                @Html.LabelFor(m => m.Entrega, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.Entrega, new SelectList(Model.Direccciones, "IdEntrega", "Entrega"), new { id = "cmb-Entrega", @class = "form-control text-left", name = "cmb-Entrega",  title="cmb"})
+                            </div>
+                           <div class="col-12 pb-2">
+                                @Html.LabelFor(m => m.IdTransporte, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.IdTransporte, new SelectList(Model.Trasportes, "IdTrasportes", "Transporte"), new { id = "cmb-Transporte", @class = "form-control text-left", name = "cmb-Transporte",  title="cmb"})
+                            </div>
+                           <div class="col-12 pb-2">
+                                @Html.LabelFor(m => m.IdPorte, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.IdPorte, new SelectList(Model.Portes, "Idporte", "Porte"), new { id = "cmb-Porte", @class = "form-control text-left", name = "cmb-Porte",  title="cmb"})
+                            </div>
+                            <div class="col-12 pb-2">
+                                <button id="btn_save_entrega" class="btn btn-azul"> Guardar <i class=""></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>
+<script>
+    function ChangeTipoDocumento(tipoDocumento) {        
+        var cmbCFDI = document.getElementById("cmb-UsosCFDI")
+
+        switch (tipoDocumento) {
+            case "0":
+                cmbCFDI.value = "23";
+                cmbCFDI.setAttribute("disabled", "");
+                break;
+            case "1":
+                cmbCFDI.value = "23"
+                cmbCFDI.removeAttribute("disabled");
+                break;
+            case "2":
+                cmbCFDI.value = "23"
+                cmbCFDI.setAttribute("disabled", "");
+                break;
+        }
+    }
+
+    $(document).ready(function(){
+
+
+        $("#cmb-TipoDoc").change(function () {
+            ChangeTipoDocumento(this.value)
+        });        
+    });
+
+    $("#btn_save_facturacion").on("click", function(){
+        let UsoCFDI = $("#cmb-UsosCFDI").val()
+        let TipoDoc = $("#cmb-TipoDoc").val()
+
+        if ((TipoDoc === "1" && UsoCFDI === "0") || (TipoDoc === "1" && UsoCFDI === "23")) {
+            alert("Seleccione un Uso de CFDI")
+        }else{
+            $.post(path + "MiCuenta/SaveTipoDoc",
+                {
+                    UsoCFDI: UsoCFDI,
+                    TipoDoc: TipoDoc
+
+                },
+                function (data) {
+                    ShowAlert(data.message, data.response, "alert_Facturacion")
+                }
+            ).error(function () {
+                ShowAlert("Hubo un error al intentar guardar", false, "alert_Facturacion");
+            });
+        }
+    });
+    $("#btn_save_entrega").on("click", function () {
+        let TipoVenta = $("#cmb-TipoVenta").val()
+        let Entrega = $("#cmb-Entrega").val()
+        let Transporte = $("#cmb-Transporte").val()
+        let Porte = $("#cmb-Porte").val()
+
+        if (TipoVenta === "" && UsoCFDI === "0") {
+            alert("Seleccione un Tipo de Venta")
+        }else{
+            $.post(path + "MiCuenta/Entrega",
+                {
+                    TipoVenta: TipoVenta,
+                    Entrega: Entrega,
+                    Transporte: Transporte,
+                    Porte: Porte
+                },
+                function (data) {
+                    ShowAlert(data.message, data.response, "alert_Entrega")
+                }).error(function () {
+                    ShowAlert("Hubo un error al intentar guardar", false, "alert_Entrega");
+                });
+        }
+    });
+</script>

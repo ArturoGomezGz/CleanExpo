@@ -1,0 +1,267 @@
+﻿@model int
+@{
+    ViewData["Title"] = "DetallePedido";
+}
+<div id="divPedido" class="row">
+    <h1>Pedido</h1>
+    <div class="col-md-8 text-justify">
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Cliente:</strong>
+            </div> 
+            <laber id="cliente">1</laber>
+        </div>
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>RFC:</strong>
+            </div>
+            <laber id="rfc">2</laber>
+        </div>
+        <br />
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Tipo de Comprobante:</strong>
+            </div>
+            <label id="tipoC">3</label>
+        </div>
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Uso del CFDI:</strong>
+            </div>
+            <laber id="usoCFDI">4</laber>
+        </div>
+        <br />
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Tipo de Envio:</strong>
+            </div>
+            <label id="envio">5</label>
+        </div>
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Direccion de Entrega:</strong>
+            </div>
+            <label id="direccion">6</label>
+        </div>
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Observaciones:</strong>
+            </div>
+            <label id="observacion">7</label>
+        </div>
+        <br />
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Transportista:</strong>
+            </div>
+            <label id="transportista">8</label>
+        </div>
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Porte:</strong>
+            </div>
+            <label id="porte">9</label>
+        </div>
+        <br />
+        <div class="d-flex">
+            <div class="w-25">
+                <strong>Capturo:</strong>
+            </div>
+            <label id="capturo">10</label>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="h-50"></div>
+        <div class="d-flex">
+            <div class="w-50 text-end">
+                <strong>Subtotal:</strong>
+            </div>
+            &nbsp;
+            <label>$</label>
+            <label id="lblSubtotal"></label>
+        </div>
+
+        <div class="d-flex">
+            <div class="w-50 text-end">
+                <strong>IVA:</strong>
+            </div>
+            &nbsp;
+            <label>$</label>
+            <label id="lblIVA"></label>
+        </div>
+        <hr />
+        <div class="d-flex">
+            <div class="w-50 text-end">
+                <strong>Total:</strong>
+            </div>
+            &nbsp;
+            <label>$</label>
+            <label id="lblTotal"></label>
+        </div>
+        <br />
+        <br />
+        <div class="d-flex">
+            <div class="w-50 text-end">
+                <strong>Total Productos:</strong>
+            </div>
+            &nbsp;
+            <label id="lblTotalProd"></label>
+        </div>
+        
+    </div>
+    <br />
+    <br />
+    
+    <h2>Productos</h2>
+    <br />
+    <div class="col-md-12">
+        <table id="Pedido" class="table table-striped dt-responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th> </th>
+                    <th>Nombre</th>
+                    <th>Presentacion</th>
+                    <th>Laboratorio</th>
+                    <th>Pzas Solicitadas</th>
+                    <th>Pzas Pendientes</th>
+                    <th>Precio Final</th>
+                    <th>Total</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <a class="btn btn-primary text-light" asp-controller="Empleados" asp-action="Pedidos">Buscar Cliente</a>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function() {
+        var tblPedido = $('#Pedido').DataTable();
+        tblPedido.destroy();        
+
+        tblPedido = $('#Pedido').DataTable({
+            responsive: true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Empleados/getProductosPedido?idPedido=" + @Model,
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    render: function (data, type, row) {
+                        return '<button class="fa fa-pen-to-square btn btn-warning btn-editar" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
+                            '<button class="fa fa-check btn btn-success btn-confirmar" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
+                            '<button class="fa fa-ban btn btn-danger btn-cancelar" style="display: none" onclick="cancelarEdicion($(this).closest(\'tr\'))"></button>';
+                    }
+                },
+                { "data": "nombre" },
+                { "data": "presentacion" },
+                { "data": "laboratorio" },
+                { "data": "cantidad" },
+                { "data": "porSurtir", "editable": true },
+                { "data": "precioFinal" },
+                { "data": "total" },
+                {
+                    render: function (data, type, row) {
+                        return '<button class="fa fa-xmark btn btn-danger" onclick="eliminarProducto(' + row.idProducto + ')"></button>';
+                    }
+                }
+            ]
+        });
+
+        $.ajax({
+            type: "POST",
+            url: path + "Empleados/pedidoCliente?idPedido=" + @Model,
+            success: function (resultado) {
+                document.getElementById('cliente').innerHTML = " " + resultado.cliente;
+                document.getElementById('rfc').innerHTML = " " + resultado.rfc;
+                document.getElementById('tipoC').innerHTML = " " + resultado.documento;
+                document.getElementById('usoCFDI').innerHTML = " " + resultado.usoCFDI;
+                document.getElementById('envio').innerHTML = " " + resultado.tipoVenta;
+                document.getElementById('direccion').innerHTML = " " + resultado.dirEntrega;
+                document.getElementById('observacion').innerHTML = " " + resultado.obsv;
+                document.getElementById('transportista').innerHTML = " " + resultado.transportista;
+                document.getElementById('porte').innerHTML = " " + resultado.porte;
+                document.getElementById('capturo').innerHTML = " " + resultado.capturo;
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: path + "Empleados/getTotalPedido?idPedido=" + @Model,
+            success: function (resultado) {
+                document.getElementById('lblSubtotal').innerHTML = " " + resultado.subtotal;
+                document.getElementById('lblIVA').innerHTML = " " + resultado.iva;
+                document.getElementById('lblTotal').innerHTML = " " + resultado.total;
+                document.getElementById('lblTotalProd').innerHTML = " " + resultado.prods;
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+    function editarFila(fila, data) {
+        fila.find('.btn-editar').hide();
+        fila.find('.btn-cancelar, .btn-confirmar').show();
+        fila.find('td:nth-child(6)').attr('contenteditable', true).css('background-color', 'gray').addClass('editando');
+    }
+
+    function cancelarEdicion(fila) {
+        fila.find('.btn-cancelar, .btn-confirmar').hide();
+        fila.find('.btn-editar').show();
+        fila.find('.editando').attr('contenteditable', false).css('background-color', 'white').removeClass('editando');
+
+        var tblPedidos = $('#Pedido').DataTable();
+        var datos = tblPedidos.row(fila).data();
+        tblPedidos.row(fila).data(datos).draw();
+    }
+
+    function confirmarEdicion(fila, idProducto) {
+        fila.find('.btn-cancelar, .btn-confirmar').hide();
+        fila.find('.btn-editar').show();
+
+        var tblPedidos = $('#Pedido').DataTable();
+
+        var datos = tblPedidos.row(fila).data();
+        datos["porSurtir"] = fila.find('.editando').text();
+
+        $.ajax({
+            type: "POST",
+            url: path + "Empleados/actualizarProducto?idPedido=" + @Model + "&idProducto=" + idProducto + "&cantidad=" + datos["porSurtir"],
+            success: function (resultado) {
+                tblPedidos.row(fila).data(datos).draw();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+
+        fila.find('.editando').attr('contenteditable', false).css('background-color', 'white').removeClass('editando');
+        location.reload();
+    }
+
+    function eliminarProducto(idProducto){
+        $.ajax({
+            type: "POST",
+            url: path + "Empleados/eliminaProducto?idPedido=" + @Model + "&idProducto=" + idProducto,
+            success: function (resultado) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>

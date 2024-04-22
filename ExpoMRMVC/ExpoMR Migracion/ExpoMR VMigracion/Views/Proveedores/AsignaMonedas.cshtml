@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewData["Title"] = "AsignaMonedas";
+}
+
+
+<div class="d-flex flex-column flex-md-row justify-content-center  align-items-center">
+    <div class="row col-md-7 col-12">
+        <div id="divMonedas">
+            <div class="d-flex flex-column align-items-center">
+                <strong id="lblCliente"></strong>
+                <br />
+                <a asp-controller="Proveedores" asp-action="Monedas" class="btn btn-naranja text-light">Cambiar Cliente</a>
+            </div>
+            <br />
+            <div class="d-flex justify-content-between">
+                <div class="d-flex flex-column align-items-center">
+                    <strong>Monedas de Regalo</strong>
+                    <br />
+                    <label class="txt-azul txt-bold">Por Regalar</label>
+                    <br />
+                    <input type="number" id="txtMonedasRegalo" />
+                    <br />
+                    <button class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#popAgregarMonedas" onclick="SeleccionaTipoAsignacion(1)">Agregar</button>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                    <strong>Monedas de Contacto</strong>
+                    <laber id="lblMonedasContacto"></laber>
+                    <label class="txt-azul txt-bold">Por Asignar</label>
+                    <br />
+                    <input type="number" id="txtContacto" />
+                    <br />
+                    <button class="btn btn-azul-medio" id="btnContacto" data-bs-toggle="modal" data-bs-target="#popAgregarMonedas" onclick="SeleccionaTipoAsignacion(2)">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 col-12 d-inline-flex  justify-content-md-end justify-content-sm-center align-items-center">
+        <div class=" p-4 d-flex flex-column justify-content-center align-items-center contenedor">
+            <strong> Saldo Monedas </strong>
+            <label style="font-size:1.3em;font-weight: 700; color: #F1592B" id="monedas"></label>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="popAgregarMonedas">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label id="lblTipo" hidden></label>
+                <div class="d-flex justify-content-center m-2">
+                    <label>Vas a regalar monedas al cliente:</label>
+                </div>
+                <div class="d-flex justify-content-center m-2 txt-bold txt-azul">
+                    <br />
+                    <label id="lblnombreclienteRegalo"></label>
+                </div>
+                <div class="d-flex justify-content-center m-2">
+                    <br />
+                    <label>¿Estas Seguro?</label>
+                </div>
+                <br />
+                <div class="text-center justify-content-around">
+                    <button class="btn btn-verde-medio" data-bs-dismiss="modal" onclick="AsignaMonedas()">Aceptar</button>
+                    <button class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="popMensaje">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-center m-2">
+                    <br />
+                    <label id="lblMensaje"></label>
+                </div>
+                <div class="d-flex justify-content-around">
+                    <button class="btn btn-verde-medio" onclick="reloadpage()" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "POST",
+            url: path + "Proveedores/getClienteAsignar?idCliente=" + @Model,
+            success: function (resultado) {
+                document.getElementById('lblCliente').innerHTML = resultado.nombre;
+                document.getElementById('lblnombreclienteRegalo').innerHTML = resultado.nombre;
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: path + "Proveedores/getMonedasContacto?idCliente=" + @Model,
+            success: function (resultado) {
+                document.getElementById('lblMonedasContacto').innerHTML = resultado.monedasContacto;
+                document.getElementById('txtContacto').disabled = true;
+                if (resultado.monedasContacto == 0){
+                    document.getElementById('btnContacto').disabled = false;
+                    document.getElementById('txtContacto').value = resultado.monedas;
+                }
+                else{
+                    document.getElementById('txtContacto').value = 0;
+                    document.getElementById('btnContacto').disabled = true;
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: path + "Proveedores/GetMonedas",
+            success: function (resultado) {
+                document.getElementById('monedas').innerHTML = " " + resultado;
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+    function SeleccionaTipoAsignacion(tipoAsignacion){
+        document.getElementById('lblTipo').value = tipoAsignacion;
+    }
+
+    function AsignaMonedas(){
+        var tipoAsignacion = document.getElementById('lblTipo').value;
+        var monedas = document.getElementById('txtMonedasRegalo').value;
+
+        $.ajax({
+            type: "POST",
+            url: path+ "Proveedores/AsignarMonedas?idCliente=" + @Model + '&tipoAsignacion=' + tipoAsignacion + '&monedas=' + monedas,
+            success: function (resultado) {
+                if(resultado == 1){
+                    document.getElementById('lblMensaje').innerHTML = 'Asignación de Monedas correcta';
+                }
+                else {
+                    document.getElementById('lblMensaje').innerHTML = 'No fue posible asignar las monedas';
+                }
+                $('#popMensaje').modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function reloadpage(){
+        location.reload();
+    }
+</script>

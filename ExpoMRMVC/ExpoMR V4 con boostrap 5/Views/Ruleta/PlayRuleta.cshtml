@@ -1,0 +1,112 @@
+﻿@model PlayRuletaViewModel
+@{
+    ViewData["Title"] = "PlayRuleta";
+}
+
+<link href="~/css/owl.carousel.min.css" rel="stylesheet" />
+<link href="~/css/owl.theme.default.min.css" rel="stylesheet" />
+<script type="text/javascript" src="~/js/codeRoulette.js" ></script>
+
+<script type="text/javascript">
+    function play()
+    {
+        $.ajax({
+            url: path + 'Ruleta/GetData?IdRuleta=' + @Model.IdRuleta,
+            method: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            success: function (response) {  
+                if (response.response){
+                    var str = response.result;
+                    var data = str.split(',');
+                    console.log(data)
+                    playRoulette(data[0], data[1], data[2], data[3], data[4]);
+                }else{
+                    ShowAlert(response.message, response.response)
+                }                
+            },
+            failure: function (response) {
+            }
+        });
+    }
+</script>
+
+
+<style>
+    img 
+    {
+        transition: -webkit-transform 4s ease-out;
+    }
+</style>
+<div id="liveAlertPlaceholder"></div>
+<div class="row">    
+    <div class="col-lg-6  col-md-5 col-sm-12  justify-content-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="container" style="position: relative; left: 0; top: 0;">
+                    <img id="imgRoulette" src="~/Imagenes/ruleta.png" style="max-width: 100%;" />
+                    <img src="~/Imagenes/cabezalRuleta.png" class="pointer" style="max-width: 100%;" />
+                </div>
+            </div>
+            <div class="col-md-12" style="text-align: center;">
+                <button class="btn btn-lg btn-ruleta-dorada" onclick="play()">Girar Ruleta</button>
+            </div>
+        </div>                
+    </div>
+    <div class="col-lg-6 col-md-7 col-sm-12">
+        <div class="row">
+            <p style="font-size:0.9em; font-style:oblique">* Las imágenes son de caracter ilustrativo, los premios pueden variar en color y presentación.</p>
+            @{
+                List<PremioRuleta> Premios = ExpoMR.Controllers.RuletaController.GetPremios(Model.IdRuleta);
+                foreach (PremioRuleta model in Premios)
+                {
+                    <div class="col-md-55 col-md-6 cuadro-premio">
+                        <div class="row" style="text-align:center">
+                            <div class="col-2" style="z-index:10">
+                                <img src="@string.Format("/Imagenes/seccion"+model.Seccion.ToString()+".png")" alt="image" style="min-width:50%">
+                            </div>
+                            <div class="col-8  premio__min-width" >
+                                <img class="img__max-width" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image">
+                            </div>
+                            <div class="col col-sm-12">
+                                <p class="txt-ruleta-activa">@string.Format(model.Premio)</p>
+                                <p class="txt-ruleta-descripcion">@string.Format(model.Descripcion)</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }            
+        </div>
+    </div>
+</div>
+
+<div id="divPremio" class="center"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="Premio_Modal" tabindex="-1" aria-labelledby="Premio_Modal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+          <div class="row">
+              <div class="col-md-6">
+                 <img id="imgPremio" />
+              </div>
+              <div class="col-md-6">
+                <img class="mb-2" id="imgFelicidades" src="~/Imagenes/felicidades.png" />
+                <p class=mb-2>
+                    Tu premio en la Ruleta de la ExpoMR es
+                </p>
+                <p id="pPremio"></p>
+                <p class="mb-2" id="pDescripcion"></p>
+                <p>
+                    Medicinas Rosario te da las gracias por participar
+                </p>
+              </div>
+          </div>      
+      </div>
+      <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+        </div>
+    </div>
+  </div>
+</div>

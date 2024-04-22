@@ -1,0 +1,597 @@
+﻿using ExpoMR.Clases;
+using ExpoMR.Datos;
+using ExpoMR.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
+using System.Data;
+using System.Drawing;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Org.BouncyCastle.Utilities;
+using System.Runtime.CompilerServices;
+
+namespace ExpoMR.Controllers
+{
+    [Authorize(Roles = "Cliente,ClienteVIP,Proveedor")]
+
+    public class StandController : Controller
+    {
+        //Variables para obtener (la sesión, el Usuario, path de carpeta wwwroot)
+        private readonly UserManager<IdentityUser> _userManager;
+        private static IConfiguration _configuration;
+        private readonly IWebHostEnvironment webHostEnvironment;
+
+        public StandController(UserManager<IdentityUser> userManager, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        {
+            _userManager = userManager;
+            _configuration = configuration;
+            this.webHostEnvironment = webHostEnvironment;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Editar(int idProveedor)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (!currentUser.EmailConfirmed)
+            {
+                return RedirectToAction("Index", "MiCuenta");
+            }
+            else
+            {
+                int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+
+                //Se guarda el registro de vista del cliente al stand
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
+                    || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                {
+                    Log.SaveVisita(Cliente, idProveedor, 0);
+                }
+
+                StandVIewModel Stand = new StandVIewModel();
+
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
+
+                SqlDataReader dr = dB.ExecuteReader("GetStandProv", ref parameters);
+
+                while (dr.Read())
+                {
+                    Stand.Proveedor = (int)dr["Proveedor"];
+                    Stand.Nombre = (string)dr["Nombre"];
+                    Stand.Descripcion = (string)dr["Descripcion"];
+                    Stand.Rank = (byte)dr["Rank"];
+                    Stand.Chat = (string)dr["Chat"];
+                    Stand.Paleta = (byte)dr["Paleta"];
+                    Stand.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
+                    Stand.Background = (dr["Background"] != DBNull.Value ? (byte[])dr["Background"] : Array.Empty<byte>());
+                    Stand.IdUsuario = Cliente;
+                    Stand.Activedhcp = "active";
+                }
+
+                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                {
+                    if (isFechaExpoVIP == true)
+                    {
+                        return View(Stand);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "MiCuenta");
+                    }
+                }
+                else
+                {
+                    if (isFechaExpoVIP == true)
+                    {
+                        return RedirectToAction("Index", "MiCuenta");
+                    }
+                    else
+                    {
+                        return View(Stand);
+                    }
+                }                
+            }
+        }
+
+        public async Task<IActionResult> EditarIndex(int idProveedor, int IdSal)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (!currentUser.EmailConfirmed)
+            {
+                return RedirectToAction("Index", "MiCuenta");
+            }
+            else
+            {
+                int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+
+                //Se guarda el registro de vista del cliente al stand
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
+                    || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                {                    
+                    Log.SaveVisita(Cliente, idProveedor, 0);
+                }
+
+                List<StandVIewModel> StandProveedor = new();
+                StandVIewModel Stand = new StandVIewModel();
+
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
+
+                SqlDataReader dr = dB.ExecuteReader("GetStandProv", ref parameters);
+
+                while (dr.Read())
+                {                   
+                    Stand.Proveedor = (int)dr["Proveedor"];
+                    Stand.Nombre = (string)dr["Nombre"];
+                    Stand.Descripcion = (string)dr["Descripcion"];
+                    Stand.Rank = (byte)dr["Rank"];
+                    Stand.Chat = (string)dr["Chat"];
+                    Stand.Paleta = (byte)dr["Paleta"];
+                    Stand.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
+                    Stand.Background = (dr["Background"] != DBNull.Value ? (byte[])dr["Background"] : Array.Empty<byte>());
+                    Stand.IdUsuario = Cliente;
+                    Stand.Activedhcp = null;
+                    Stand.Activestatic = "active";
+
+                    StandProveedor.Add(Stand);
+                }
+
+                DB dB2 = new();
+                SqlParameter[] parameters2 = new SqlParameter[1];
+                parameters2[0] = new SqlParameter("@IdSal", IdSal);
+
+                SqlDataReader dr2 = dB2.ExecuteReader("GetStandProv", ref parameters2);
+
+                while (dr2.Read())
+                { 
+                    Stand.Sal = (string)dr2["Sal"];
+                }
+
+                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                {
+                    if (isFechaExpoVIP == true)
+                    {
+                        return View("~/Views/Stand/Editar.cshtml", StandProveedor);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "MiCuenta");
+                    }
+                }
+                else
+                {
+                    if (isFechaExpoVIP == true)
+                    {
+                        return RedirectToAction("Index", "MiCuenta");
+                    }
+                    else
+                    {
+                        return View("~/Views/Stand/Editar.cshtml", StandProveedor);
+                    }
+                }
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetFotos(int idProducto)
+        {
+            using (var dbFotos = new ApplicationDbContextFotos())
+            {
+                FotosViewModel foto = dbFotos.Fotos
+                            .Where(foto => foto.IdProducto == idProducto)
+                            .FirstOrDefault();
+                return Json(foto.Foto);
+            }
+        }
+
+        public JsonResult GetImageProductByLab(int idProveedor, int IdUsuario)
+        {
+            List<Producto> productos = new List<Producto>();          
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@proveedor", idProveedor);
+            parameters[1] = new SqlParameter("@cliente", IdUsuario);
+
+            SqlDataReader dr = dB.ExecuteReader("ExpoStandProductos", ref parameters, CommandType.StoredProcedure, "IndigoCS");
+
+            while (dr.Read())
+            {
+                Producto producto = new Producto();
+
+                producto.PrecioMR = (decimal)dr["PrecioMR"];
+                producto.IdProducto = (Int16)dr["IdProducto"];
+                producto.Nombre = (string)dr["Nombre"];
+                producto.Presentacion = (string)dr["Presentacion"];
+                producto.Formula = (dr["Formula"] != DBNull.Value ? (string)dr["Formula"] : "");
+                producto.Descuento = (decimal)dr["Descuento"];
+                producto.DescuentoCLiente = (int)(dr["DescuentoCLiente"]);
+                producto.PrecioFinal = (decimal)(dr["PrecioFinal"]);
+
+                productos.Add(producto);
+            }
+
+            return Json(productos);
+        }
+
+        public async Task<List<string>> GetRoles()
+        {
+            var userId = _userManager.GetUserId(User); // Obtiene el ID del usuario actualmente autenticado
+            var user = await _userManager.FindByIdAsync(userId); // Encuentra el usuario por su ID
+            var roles = await _userManager.GetRolesAsync(user); // Obtiene los roles del usuario
+
+            return roles.ToList();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetProductosBusqueda(int IdProveedor, string Busqueda, int IdUsuario)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            ResponseModel rm = new();
+
+            try
+            {
+                string querySearhTerms = "";
+                string[] busqueda = Busqueda.Split(' ');
+                int n = 1;
+                string[] fields = { "vProductos.Nombre", "vProductos.Presentacion", "vProductos.Formula" };
+
+                //Se guarda el registro de vista del cliente al stand
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
+                    || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                {
+                    Log.SaveBusqueda(IdUsuario, IdProveedor, Busqueda);
+                }
+
+                foreach (string w in busqueda)
+                {
+                    querySearhTerms += "And (";
+                    foreach (string f in fields)
+                    {
+                        querySearhTerms += f + " like '%" + w + "%' Or ";
+                    }
+                    querySearhTerms = querySearhTerms[..^3] + ") ";
+                    n++;
+                }
+
+                string query = "DECLARE @search TTCotizar"
+                               + " INSERT @search(IdPersona, IdProducto)"
+                               + "  SELECT " + IdUsuario + ", vProductos.IdProducto"
+                               + "  FROM ExpoMR.dbo.mLaboratorios INNER JOIN"
+                               + "  ExpoMR.dbo.vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio"
+                               + "  WHERE mLaboratorios.Proveedor = " + IdProveedor
+                               + " " + querySearhTerms
+                               + " SELECT CAST(Precios.Precio AS DECIMAL(9,2)) AS PrecioMR,"
+                               + " vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, ISNULL(vProductos.Formula, '') AS Formula,"
+                               + " CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2)) +" //Descuento General
+                               + " CAST(((Precios.Precio - CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2))) *" //Precio del Cliente
+                               + " ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2)) AS Descuento," //Descuento Especifico del Cliente
+                               + " CASE WHEN dProductosDescuento.Descuento IS NULL THEN 0 ELSE 1 END AS DescuentoCliente,"
+                               + " CAST(Precios.Precio - (CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2)) +" //Precio menos Descuento General
+                               + " CAST(((Precios.Precio - CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2))) *" //Precio del Cliente
+                               + " ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2))) AS DECIMAL(9,2)) AS PrecioFinal" //Descuento Especifico del Cliente
+                               + " FROM dbo.GetMultiPrecioExpo(@search) AS Precios INNER JOIN"
+                               + " ExpoMR.dbo.vProductos ON Precios.IdProducto = vProductos.IdProducto LEFT OUTER JOIN"
+                               + " ExpoMR.dbo.dProductosDescuento ON vProductos.IdProducto = dProductosDescuento.IdProducto AND dProductosDescuento.Cliente =" + IdUsuario
+                               + " ORDER BY vProductos.Nombre, vProductos.Presentacion";
+
+                DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
+
+                var jsonData = new
+                {
+                    rows = (
+                       from c in dt.AsEnumerable()
+                       select new
+                       {
+                           IdProducto = c[1],
+                           Nombre = c[2],
+                           Presentacion = c[3],
+                           Formula = c[4],
+                           Descuento = c[5],
+                           DescuentoCliente = c[6],
+                           PrecioFinal = c[7],
+                           imgProducto = GeneralesController.GetFoto(Convert.ToInt32(c[1]))
+                       }).ToArray()
+                };
+
+                rm.Response = true;
+                rm.Message = "ok";
+                rm.Result = jsonData.rows;
+
+            }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
+            }
+
+            return Json(rm);
+        }
+
+        public static List<ArticulosProveedores> GetPromocionArticulo(int idProveedor)
+        {
+            List<ArticulosProveedores> ArticulosProveedor = new();          
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
+
+            SqlDataReader dr = dB.ExecuteReader("GetArticulosProv", ref parameters);
+
+            while (dr.Read())
+            {
+                ArticulosProveedores Articulo = new ArticulosProveedores();
+
+                Articulo.IdArticulo = (Int16)dr["IdArticulo"];
+                Articulo.Nombre = (string)dr["Nombre"];
+                Articulo.Descripcion = (string)dr["Descripcion"];
+                Articulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
+                Articulo.Foto = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
+
+                ArticulosProveedor.Add(Articulo);
+            }
+
+            return ArticulosProveedor;
+        }
+
+        public static List<Promocion> GetPromociones(int idProveedor, int IdUsuario)
+        {
+            List<Promocion> Promociones = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@proveedor", idProveedor);
+            parameters[1] = new SqlParameter("@cliente", IdUsuario);
+
+            SqlDataReader dr = dB.ExecuteReader("PromocionesActivasCliente", ref parameters);
+
+            while (dr.Read())
+            {
+                Promocion Promocion = new Promocion();
+
+                Promocion.IdPromocion = (Int16)dr["IdPromocion"];
+                Promocion.Monto = (float)dr["Monto"];
+                Promocion.Piezas = (Int16)dr["Piezas"];
+                Promocion.Producto = (string)dr["Producto"];
+                Promocion.Disponibilidad = (int)dr["Disponibilidad"];
+                Promocion.Obtenida = (bool)dr["Obtenida"];
+                Promocion.IdTipoPromocion = (byte)dr["IdTipoPromocion"];
+                Promocion.Premios = (string)dr["Premios"];
+
+                Promociones.Add(Promocion);
+            }
+
+            foreach (var p in Promociones)
+            {
+                p.ImgDisponibilidad = GetImageUrlDisponibilidad(p.Obtenida, p.Disponibilidad);
+            }
+
+            return Promociones;
+        }
+
+        public static List<Promocion> GetPromocionesEscalonadas(int idProveedor, int IdUsuario)
+        {
+            List<Promocion> PromocionesEscalonadas = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@proveedor", idProveedor);
+            parameters[1] = new SqlParameter("@cliente", IdUsuario);
+            parameters[2] = new SqlParameter("@idtipopromo", 4);
+
+            SqlDataReader dr = dB.ExecuteReader("PromocionesActivasCliente", ref parameters);
+
+            while (dr.Read())
+            {
+                Promocion PromocionEscalonada = new Promocion();
+
+                PromocionEscalonada.IdPromocion = (Int16)dr["IdPromocion"];
+                PromocionEscalonada.Monto = (float)dr["Monto"];
+                PromocionEscalonada.Piezas = (Int16)dr["Piezas"];
+                PromocionEscalonada.Producto = (string)dr["Producto"];
+                PromocionEscalonada.Disponibilidad = (int)dr["Disponibilidad"];
+                PromocionEscalonada.Obtenida = (bool)dr["Obtenida"];
+                PromocionEscalonada.IdTipoPromocion = (byte)dr["IdTipoPromocion"];
+                PromocionEscalonada.Premios = (string)dr["Premios"];
+
+                PromocionesEscalonadas.Add(PromocionEscalonada);
+            }
+
+            foreach (var p in PromocionesEscalonadas)
+            {
+                p.ImgDisponibilidad = GetImageUrlDisponibilidad(p.Obtenida, p.Disponibilidad);
+            }
+
+            return PromocionesEscalonadas;
+        }
+
+        public static string GetPromocionCondicionResumen(object idtipopromocion, object monto, object piezas, object producto)
+        {
+            string Condicion = "";
+            string Productostr = producto.ToString();
+            string Monto = "";
+
+            _ = int.TryParse(idtipopromocion.ToString(), out int Idtipopromocion);
+            _ = int.TryParse(piezas.ToString(), out int Piezasint);
+
+            if (string.IsNullOrEmpty(Productostr))
+                Productostr = "Productos de este proveedor";
+
+            if (!string.IsNullOrEmpty(monto.ToString()))
+                Monto = string.Format("{0:C}", Convert.ToDecimal(monto));
+
+            switch (Idtipopromocion)
+            {
+                case 1:
+                    Condicion = "Por haber visitado este Stand, llévate";
+                    break;
+                case 2:
+                    if (string.IsNullOrEmpty(Monto))
+                    {
+                        Condicion = "Por cada <strong>" + Piezasint + " Piezas</strong> de compra de " + Productostr + " llévate";
+                    }
+                    else
+                    {
+                        Condicion = "Por cada <strong>" + Monto + " Pesos</strong> de compra de " + Productostr + " llévate";
+                    }
+                    break;
+                case 3:
+                    if (string.IsNullOrEmpty(Monto))
+                    {
+                        Condicion = "En la compra de <strong>" + Piezasint + " Piezas</strong> de " + Productostr + " llévate";
+                    }
+                    else
+                    {
+                        Condicion = "En la compra de <strong>" + Monto + " Pesos</strong> de " + Productostr + " llévate";
+                    }
+                    break;
+                case 4:
+                    if (string.IsNullOrEmpty(Monto))
+                    {
+                        Condicion = "Compra <strong>" + Piezasint + " Piezas</strong> de " + Productostr + " y llévate";
+                    }
+                    else
+                    {
+                        Condicion = "Compra <strong>" + Monto + " Pesos</strong> de " + Productostr + " y llévate";
+                    }
+                    break;
+            }
+
+            return Condicion;
+        }
+
+        public static string GetImageUrlDisponibilidad(bool obtenida, int disponible)
+        {
+            string imageUrl = "../Imagenes/agotada.png";
+
+            if (obtenida)
+            {
+                imageUrl = "../Imagenes/ganada.png";
+            }
+            else if (disponible >= 50)
+            {
+                imageUrl = "../Imagenes/disponible.png";
+            }
+            else if (disponible > 0)
+            {
+                imageUrl = "../Imagenes/pocasPiezas.png";
+            }
+            return imageUrl;
+        }
+
+        [HttpPost]
+        public List<Anuncios> GetAnuncios(int idProveedor)
+        {
+            List<Anuncios> Anuncios = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@stand", idProveedor);
+
+            SqlDataReader dr = dB.ExecuteReader("StandAnuncios", ref parameters);
+
+            while (dr.Read())
+            {
+                Anuncios Anuncio = new Anuncios();
+
+                Anuncio.Anuncio = (string)dr["Anuncio"];
+
+                Anuncios.Add(Anuncio);
+            }
+
+            return Anuncios;
+        }
+
+        [HttpPost]
+        public List<ArticulosProveedores> GetAnuncio(int IdArticulo)
+        {
+            List<ArticulosProveedores> Articulos = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+
+            SqlDataReader dr = dB.ExecuteReader("GetArticuloProv", ref parameters);
+
+            while (dr.Read())
+            {
+                ArticulosProveedores Articulo = new ArticulosProveedores();
+
+                Articulo.IdArticulo = (Int16)dr["IdArticulo"];
+                Articulo.Nombre = (string)dr["Nombre"];
+                Articulo.Descripcion = (string)dr["Descripcion"];
+                Articulo.IDdArticulos = (int)dr["IDdArticulos"];
+                Articulo.Foto = (byte[])dr["Foto"];
+
+                Articulos.Add(Articulo);
+            }
+
+            return Articulos;
+        }
+
+        [HttpPost]
+        public JsonResult DetalleProducto(int IdProducto)
+        {
+            int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+
+            CotizaProducto ProdCotizado = new CotizaProducto();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@cliente", Cliente);
+            parameters[1] = new SqlParameter("@idproducto", IdProducto);
+            
+            SqlDataReader dr = dB.ExecuteReader("ExpoCotizarVerProducto", ref parameters, CommandType.StoredProcedure, "IndigoCS");
+
+            while (dr.Read())
+            {
+                ProdCotizado.IdProducto = (Int16)dr["IdProducto"];
+                ProdCotizado.Nombre = (string)dr["Nombre"];
+                ProdCotizado.Presentacion = (string)dr["Presentacion"];
+                ProdCotizado.Unidades = (string)dr["Unidades"];
+                ProdCotizado.Publico = (decimal)dr["Publico"];
+                ProdCotizado.Neto = (decimal)dr["Neto"];
+                ProdCotizado.Iva = (bool)(dr["Iva"]);
+                ProdCotizado.Laboratorio = (string)(dr["Laboratorio"]);
+                ProdCotizado.Caja = (Int16)dr["Caja"];
+                ProdCotizado.Codigo = (string)dr["Codigo"];
+                ProdCotizado.Restringido = (bool)(dr["Restringido"]);
+                ProdCotizado.Cantidad = (int)dr["Cantidad"];
+                ProdCotizado.Formula = (dr["Formula"] != DBNull.Value ? (string)dr["Formula"] : "");
+                ProdCotizado.Controlado = (bool)(dr["Controlado"]);
+                ProdCotizado.PrecioMR = (decimal)dr["PrecioMR"];
+                ProdCotizado.DescuentoExpo = (decimal)dr["DescuentoExpo"];
+                ProdCotizado.DescuentoCliente = (bool)(dr["DescuentoCliente"]);
+                ProdCotizado.ValorIva = (decimal)dr["ValorIva"];
+                ProdCotizado.PrecioFinal = (decimal)dr["PrecioFinal"];
+            }
+
+            return Json(ProdCotizado);
+        }
+
+        [HttpPost]
+        public JsonResult GetFotoProducto(int IdProducto)
+        {
+            byte[] foto = GeneralesController.GetFoto(IdProducto);
+            return Json(foto);
+        }
+    }
+}

@@ -1,0 +1,914 @@
+﻿@model StandVIewModel
+
+<style>
+    .x_content_card
+    {
+        padding: 3px;
+        width: 60%;
+        margin: auto auto auto;
+        margin-top: 10%;
+        margin-bottom: 10%;
+    }
+
+    img
+    {
+        opacity: 1;
+        transition: opacity 1s;
+    }
+
+    img[data-src]
+    {
+        opacity: 0;
+    }
+
+    .carrousel
+    {
+        transition: all 0.4s ease;
+        border-radius: 1em;
+        overflow: hidden;
+    }
+
+    .carrousel .grande 
+    {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.4s ease;
+        border-radius: 1em;
+        transition: all 0.5s ease;
+        transform: translateX(0%);
+    }
+
+    .carrousel .img 
+    {
+        min-height: 10vh;
+        color: var(--blanco);
+        transition: all 0.4s ease;
+        border-radius: 1em;
+        padding: 1em;
+        margin: 0.5em;
+        font-size: 1.3em;
+        min-height: 80px;
+    }
+
+    .carrousel .puntos 
+    {
+        width: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        list-style-type: none;
+    }
+
+    .carrousel .punto 
+    {
+        width: 1em !important;
+        height: 1em;
+        margin: 1em 1em 0;
+        color: var(--negro);
+        border-radius: 1em;
+        list-style-type: none;
+    }
+
+    .carrousel .punto.activo 
+    {
+        background-color: lightblue !important;
+    }
+
+    table.dataTable.nowrap td 
+    {
+        white-space: break-spaces;
+    }
+</style>
+
+@Html.HiddenFor(m => m.Proveedor)
+@Html.HiddenFor(m => m.IdUsuario)
+<div class="col-md-12">
+    <div class="card" style="background:url(data:image/jpeg;base64,@Convert.ToBase64String(Model.Logo))">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12 col-md-4 ">
+                    <div class="card x_content_card">
+                        <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Background))" alt="image">
+                        <div class="card-block text-center">
+                            <h5 class="text-bold text-center">@Model.Nombre</h5>
+                            <label class="w-100">@Model.Descripcion</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-8 p-4">
+                    <div class="accordionPromociones">
+                        <div class="carrousel">
+                            <div class="grande" id="divAnuncios"></div>
+                            <ul class="puntos" id="puntosLista"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12 margin_auto">
+                    <div class="container shadow min-vh-100 py-2">
+                        <div class="container network_wrapper col-sm p-2 ">
+                            <div class="card">
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link @Model.Activedhcp" aria-current="true" data-bs-toggle="tab" href="#dhcp">Productos</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link @Model.Activestatic" data-bs-toggle="tab" href="#static">Busqueda</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#static2">Promoción</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body tab-content">
+                                    @*Productos Stand*@
+                                    <div class="tab-pane @Model.Activedhcp" id="dhcp">
+                                        <div class="form-group">
+                                            <div id="liveAlertPlaceholderProductos"></div>
+                                            <div class="row">
+                                                <table id="ProductoStand" class="display nowrap" style="width:100%"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*Busqueda Stand*@
+                                    <div class="tab-pane @Model.Activestatic" id="static">
+                                        <div class="col-md-10">
+                                            <div class="input-group mb-3 ">
+                                                <input type="text" id="txtBuscar" class="form-control" placeholder="Nombre, Presentación,Fórmula" aria-label="Sales " aria-describedby="basic-addon2" value="@Model.Sal">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="searchStand()">Buscar <i class="fa fa-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="liveAlertPlaceholder"></div>
+                                        <div id="busqueda__Result" class="card-text"></div>
+                                    </div>
+                                    @*Promociones*@
+                                    <div class="tab-pane" id="static2">
+                                        <div class="row">
+                                            <h3>Articulos y Promociones</h3>
+                                            @{
+                                                List<ArticulosProveedores> ArticulosProveedor = ExpoMR.Controllers.StandController.GetPromocionArticulo(Model.Proveedor);
+                                                if (ArticulosProveedor.Count == 0)
+                                                {
+                                                        <p>Este Stand no tiene Artículos Promocionales todavía...</p>
+                                                }
+                                                foreach (ExpoMR.Models.ArticulosProveedores model in ArticulosProveedor)
+                                                {
+                                                    <div class=" col-md-6 col-lg-3 mt-4">
+                                                        <div class="card card-inverse card-info" style="padding-top: 9px;">
+                                                            <a href="#" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="margin: auto;">
+                                                                <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
+                                                                </a>
+                                                            <div class="card-block" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="text-align: center;">
+                                                                <a href="#"><h6 class="card-title">@String.Format(model.Nombre)</h6></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <h3>Promociones</h3>
+                                            @{
+                                                List<Promocion> ModeloPromocion = ExpoMR.Controllers.StandController.GetPromociones(Model.Proveedor, Model.IdUsuario);
+                                                if (ModeloPromocion.Count == 0)
+                                                {
+                                                        <p>Este Stand no tiene Promociones todavía...</p>
+                                                }
+                                                foreach (ExpoMR.Models.Promocion modelo in ModeloPromocion)
+                                                {
+                                                    string Productostr = modelo.Producto == null ? "Productos de este proveedor" : modelo.Producto;
+                                                        <div class="col-md-6 col-lg-3 mt-4">
+                                                            <div class="card card-inverse card-info h-100" style="padding-top: 9px;">
+                                                                <div class="d-flex justify-content-center" style="min-height:130px;">
+                                                                    <div class="my-auto">
+                                                                        @switch (modelo.IdTipoPromocion)
+                                                                        {
+                                                                            case 1:
+                                                                                    <p class="mh-30 text-center">Por haber visitado este Stand, llévate</p>
+                                                                            break;
+                                                                            case 2:
+                                                                                    <p class="mh-30 text-center">
+                                                                                        Por cada
+                                                                                        @if (modelo.Monto == null)
+                                                                                        {
+                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas</strong>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) monto</strong>
+                                                                                        }
+                                                                                            de compra de @String.Format(Productostr)
+                                                                                            llévate
+                                                                                    </p>
+                                                                                break;
+                                                                            case 3:
+                                                                                    <p class="mh-30 text-center">
+                                                                                        En la compra de
+                                                                                        @if (modelo.Monto == null)
+                                                                                        {
+                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                        }
+                                                                                            de @String.Format(Productostr)
+                                                                                            llévate
+                                                                                    </p>
+                                                                            break;
+                                                                            case 4:
+                                                                                    <p class="mh-30 text-center">
+                                                                                        Compra
+                                                                                        @if (modelo.Monto == null)
+                                                                                        {
+                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                        }
+                                                                                        de @String.Format(Productostr)
+                                                                                        llévate
+                                                                                    </p>
+                                                                            break;
+                                                                            default:
+                                                                                    <p class="mh-30 text-center">Condición desconocida</p>
+                                                                            break;
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-block mt-1 mb-1 text-center">
+                                                                    <strong>@String.Format(modelo.Premios)</strong>
+                                                                </div>
+                                                                <a href="#" style="margin: auto;">
+                                                                    <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                }
+                                            }
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <h3>Promociones Escalonadas</h3>
+                                            @{
+                                                List<Promocion> ModeloPromocionEscalonada = ExpoMR.Controllers.StandController.GetPromocionesEscalonadas(Model.Proveedor, Model.IdUsuario);
+                                                if (ModeloPromocionEscalonada.Count == 0)
+                                                {
+                                                    <p>Este Stand no tiene Promociones todavía...</p>
+                                                }
+                                                foreach (ExpoMR.Models.Promocion modelo in ModeloPromocionEscalonada)
+                                                {
+                                                    string Productostr = modelo.Producto == null ? "Productos de este proveedor" : modelo.Producto;
+                                                        <div class="col-md-6 col-lg-3 mt-4">
+                                                            <div class="card card-inverse card-info h-100" style="padding-top: 9px;">
+                                                                <div class="d-flex justify-content-center" style="min-height:130px;">
+                                                                    <div class="my-auto">
+                                                                        @switch (modelo.IdTipoPromocion)
+                                                                        {
+                                                                            case 1:
+                                                                                    <p class="mh-30 text-center">Por haber visitado este Stand, llévate</p>
+                                                                            break;
+                                                                            case 2:
+                                                                                    <p class="mh-30 text-center">
+                                                                                        Por cada
+                                                                                        @if (modelo.Monto == null)
+                                                                                        {
+                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas</strong>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) monto</strong>
+                                                                                        }
+                                                                                            de compra de @String.Format(Productostr)
+                                                                                            y llévate
+                                                                                    </p>
+                                                                            break;
+                                                                            case 3:
+                                                                                    <p class="mh-30 text-center">
+                                                                                        En la compra de
+                                                                                    @if (modelo.Monto == null)
+                                                                                    {
+                                                                                        <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                    }
+                                                                                        de @String.Format(Productostr)
+                                                                                        y llévate
+                                                                                    </p>
+                                                                            break;
+                                                                            case 4:
+                                                                                    <p class="mh-30 text-center">
+                                                                                        Compra
+                                                                                    @if (modelo.Monto == null)
+                                                                                    {
+                                                                                        <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                    }
+                                                                                        de @String.Format(Productostr)
+                                                                                        y llévate
+                                                                                </p>
+                                                                            break;
+                                                                            default:
+                                                                                        <p class="mh-30 text-center">Condición desconocida</p>
+                                                                            break;
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-block mt-1 mb-1 text-center">
+                                                                    <strong>@String.Format(modelo.Premios)</strong>
+                                                                </div>
+                                                                <a href="#" style="margin: auto;">
+                                                                    <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">        
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <img id="PromoImgModal" class="card-img-top mw-100 img_articulo_Modal margin_auto " src="" alt="image" />
+                </div>
+                <div class="row text-center">
+                    <p id="titulo_Promo" class="fw-bold p-2">Titulo </p>
+                    <p id="descripcion_Promo">Descripción</p>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-outline-success w-25 margin_auto" data-bs-dismiss="modal"> Aceptar </button>
+                </div>
+            </div>      
+        </div>
+    </div>
+</div>
+
+<script>
+    let ValorIva
+    let Precio
+
+    function AgregarProducto()
+    {
+        let IdProducto = $("#IdProducto").val()
+        let Cantidad = $("#cantidad").val()
+        let PrecioMR = $("#PrecioMR").val()
+
+        if (Cantidad > 0)
+        {
+            $.post(path + "Producto/AddCarrito",
+                {
+                    idProducto: IdProducto,
+                    cantidad: Cantidad,
+                    unitario: PrecioMR
+                },
+                function (data)
+                {
+                    CloseModal("ModalProducto")
+                    ShowAlert(data.message, data.response, "liveAlertPlaceholderProductos")
+                    GetCarrito();
+                    GetMonedas()
+                }).error(function ()
+                {
+                    CloseModal("ModalProducto")
+                    ShowAlert("No fue posible cargar sus datos", false, "liveAlertPlaceholderProductos");
+                });
+        } 
+        else
+        {
+            ShowAlert("La Cantidad debe ser mayor a Cero", false, "liveAlertPlaceholderModal");
+        }
+    }
+
+    function detalleProducto(IdProducto)
+    {
+        var elemento = document.getElementById('collapseImage');
+
+        // Verifica si el elemento tiene la clase 'show'
+        if (elemento.classList.contains('show'))
+        {
+           toggleCollapse()
+        }
+        
+        OpenModal("ModalProducto")
+        $.ajax({
+            type: "POST",
+            url: path + "Stand/DetalleProducto?IdProducto=" + IdProducto,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (resultado)
+            {
+                document.getElementById('nombre').innerHTML = " " + resultado.nombre;
+                document.getElementById('presentacion').innerHTML = " " + resultado.presentacion;
+                document.getElementById('idproducto').innerHTML = " " + resultado.idProducto;
+                document.getElementById('PrecioPublico').innerHTML = " " + FormatoMoneda(resultado.publico)
+                document.getElementById('precioMR').innerHTML = " " + FormatoMoneda(resultado.precioMR)
+                document.getElementById('descuentoExpo').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo)
+                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:red'>Sin Iva</span>" : " <span style='color:green'>Con Iva</span>";
+                document.getElementById('codigo').innerHTML = " " + resultado.codigo;
+                document.getElementById('preciofinal').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
+                document.getElementById('getiva').innerHTML = " ";
+                document.getElementById('restingido').innerHTML = " " + resultado.cantidad;
+                document.getElementById('subtotal').innerHTML = " " + FormatoMoneda(0);
+                document.getElementById('valoriva').innerHTML = " " + FormatoMoneda(0);
+                document.getElementById('total').innerHTML = " " + FormatoMoneda(0);
+                $("#IdProducto").val(IdProducto)
+                $("#PrecioMR").val(resultado.precioMR)
+                $("#cantidad").val(0)
+
+                if (resultado.restringido) 
+                {
+                    $("#div_restringido").removeClass("d-none");
+                } 
+                else 
+                {
+                    $("#div_restringido").addClass('d-none');
+                }
+
+                ValorIva = resultado.valorIva
+                Precio = resultado.precioFinal
+            },
+            error: function (xhr, status, error)
+            {
+                console.log(error);
+            }
+        });
+
+        cantidad.oninput = function ()
+        {
+            let precio = Precio
+            let valoriva = ValorIva
+
+            let subtotal = cantidad.value * precio;
+            let iva = cantidad.value * precio * valoriva;
+            let total = cantidad.value * precio * (1 + valoriva);
+
+            document.getElementById('subtotal').innerHTML = FormatoMoneda(subtotal)
+            document.getElementById('valoriva').innerHTML = FormatoMoneda(iva)
+            document.getElementById('total').innerHTML = FormatoMoneda(total)
+        }
+    }
+
+    function ser()
+    {
+        var elements = document.querySelectorAll('img[data-id]');
+        var index = 0;
+        console.log(elements)
+    }
+
+    function searchStand()
+    {
+        CloseAlert("liveAlertPlaceholder")
+        let imagen = ''
+        let IdProveedor = $("#Proveedor").val();
+        let Busqueda = $("#txtBuscar").val();
+        let idUsuario = $("#IdUsuario").val();
+        let lista = "";
+        $("#busqueda__Result").html("")
+
+        if (Busqueda != "")
+        {
+            $.post(path + "Stand/GetProductosBusqueda",
+                {
+                    IdProveedor: IdProveedor,
+                    Busqueda: Busqueda,
+                    idUsuario: idUsuario
+                },
+                function (data)
+                {
+                    if (data.response)
+                    {
+                        if (data.result.length > 0)
+                        {
+                            $.each(data.result, function (index, value)
+                            {
+                                if (value.imgProducto.length > 0)
+                                    imagen = ' src="data:image/png;base64,' + value.imgProducto + '"'
+                                else
+                                    imagen = 'src="' + path + 'Imagenes/noimage.png"'
+
+                                lista += '<div class="tab-content_productos mb-4">'
+                                    + '    <div class="lista__busqueda_stand">'
+                                    + '        <div class="listaStand_article">'
+                                    + '            <a href="' + path + 'Producto/Index?idProducto=' + value.idProducto + "&idProveedor=" + IdProveedor + '" style = " margin: auto;" > '
+                                    + '                <img class="card-img-top" ' + imagen + ' alt="image">'
+                                    + '             </a>'
+                                    + '        </div>'
+                                    + '       <div class="listaStand_descripcion standProducto">'
+                                    + '           <a href="' + path + 'Producto/Index?idProducto=' + value.idProducto + '">'
+                                    + '            ' + value.nombre
+                                    + '            </a>'
+                                    + '            <p>' + value.presentacion + '</p>'
+                                    + '            <p><strong>Fórmula:</strong></p>'
+                                    + '            <label>' + value.formula + '</label>'
+                                    + '      </div>'
+                                    + '     <div class="listaStand_actions">'
+                                    + '           <p><strong>Descuento: </strong><label class="label_Descuento_stnd"> ' + FormatoMoneda(value.descuento) + '</label></p>'
+                                    + '           <p>Precio Final: <label class="label_PrecioFinal_stnd"> ' + FormatoMoneda(value.precioFinal) + '</label></p>'
+                                    + '     </div>'
+                                    + '    </div>'
+                                    + '     <hr />'
+                                    + '   </div>';
+                            });
+                            $("#busqueda__Result").append(lista)
+                        } 
+                        else
+                        {
+                            ShowAlert("No hay coincidencias para el filtro aplicado", false)
+                        }
+                    } 
+                    else
+                    {
+                        ShowAlert(data.message, data.response)
+                    }
+                }).error(function ()
+                {
+                    ShowAlert("No fue posible cargar sus datos", false)
+                }
+            );
+        }
+    }
+
+    function CloseAlert(IdElement) 
+    {
+        let alertPlaceholder = document.getElementById(IdElement)
+        alertPlaceholder.innerHTML = "";
+    }
+
+    function MostrarArticulo(IdArticulo, IdArticulos)
+    {
+        OpenModal('exampleModal')
+        var imageElement = document.getElementById("PromoImg_" + IdArticulo);
+    
+        // Get the value of the src attribute
+        var imageUrl = imageElement.src;
+        var imageElementModal = document.getElementById("PromoImgModal");
+        imageElementModal.src = imageUrl
+        $.ajax({
+            type: "POST",
+            url: path + "Stand/GetAnuncio?IdArticulo=" + IdArticulos,
+            success: function (resultado)
+            {
+                var TituloElement = document.getElementById("titulo_Promo");
+                var DescripcionElement = document.getElementById("descripcion_Promo");
+
+                $("#titulo_Promo").html(resultado[0])
+                $("#descripcion_Promo").html(resultado[1])
+
+                console.log(resultado[0])
+                console.log(resultado[1])
+            },
+            error: function (xhr, status, error)
+            {
+                console.log(error);
+            }
+        });
+    }
+
+    function OnDemandImage()
+    {
+        let IdProducto = $("#IdProducto").val()
+        $("#imgModalOndemand").html('')
+        $.post(path + "Stand/GetFotoProducto",
+        {
+            idProducto: IdProducto
+        },
+        function (data)
+        {
+            $("#imgModalOndemand").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />')
+        }).error(function () 
+        {
+            CloseModal("ModalProducto")
+            ShowAlert("No fue posible cargar sus datos", false, "liveAlertPlaceholderProductos");
+        });
+    }
+
+    $(document).ready(function ()
+    {
+        if($("#txtBuscar").val() !="")
+        {
+            searchStand()
+        }
+        $.ajax({
+            type: "POST",
+            url: path + "Stand/GetAnuncios?idProveedor=" + @Model.Proveedor,
+            success: function (resultado)
+            {
+                var divAnuncios = document.getElementById('divAnuncios');
+                var puntosLista = document.getElementById('puntosLista');
+                resultado.forEach(function (anuncio) {
+                    
+                    // Crear un nuevo párrafo
+                    var nuevoParrafo = document.createElement("p");
+                    nuevoParrafo.classList.add("img");
+                    nuevoParrafo.classList.add("Accordioncolor");
+
+                    // Crear el contenido del párrafo
+                    var contenido = document.createTextNode(anuncio.anuncio);
+
+                    // Agregar el contenido al párrafo
+                    nuevoParrafo.appendChild(contenido);
+
+                    // Agregar el párrafo al div
+                    divAnuncios.appendChild(nuevoParrafo);
+
+                    var nuevoElemento = document.createElement("li");
+                    nuevoElemento.classList.add("punto");
+                    puntosLista.appendChild(nuevoElemento);
+                });
+
+                configuraAnuncios();
+
+                setPaletaColors(@Model.Paleta);
+            },
+            error: function (xhr, status, error)
+            {
+                console.log(error);
+            }
+        });
+
+        const table = $('#ProductoStand').DataTable({
+            responsive: true,
+            "language":
+            {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax":
+            {
+                url: path + "Stand/GetImageProductByLab?idProveedor=" + @Model.Proveedor+"&IdUsuario="+@Model.IdUsuario,
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": 
+            [                                
+                { "data": "nombre", title: "Nombre" },
+                { "data": "presentacion", title: "Presentación" },
+                { "data": "formula", title: "Fórmula" },
+                {
+                    "data": "precioMR", title: "Precio Final",
+                    "render": function (data, type, row) 
+                    {
+                        console.log(data);
+
+                        return FormatoMoneda(data);
+                    }
+                },
+                {
+                    "data": "idProducto", title: "Agregar",
+					render: function (data, type, row) 
+                    {
+                        return '<button onClick="detalleProducto('+data+')" type="button" class="btn btn-sm btn-verde circle__button"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+					}
+
+                }
+            ]
+        });        
+    });
+</script>
+
+<script type="text/javascript">
+
+    function configuraAnuncios()
+    {
+        const grande = document.querySelector('.grande');
+        const punto = document.querySelectorAll('.punto');
+        const anuncio = document.querySelectorAll('.img');
+
+        var puntos = document.querySelectorAll('.punto').length;
+        var tamanio = 100 * puntos;
+
+        grande.style.width = tamanio + '%';
+
+        anuncio.forEach((cadaAnuncio, i) => {
+
+            anuncio[i].style.width = (100 / puntos) + '%';
+        })
+
+        // Cuando CLICK en punto
+        // Saber la posición de ese punto
+        // Aplicar un transform translateX al grande
+        // QUITAR la clase activo de TODOS puntos
+        // AÑADIR la clase activo al punto que hemos hecho CLICK
+        var posicion = 0;
+        var operacion = 0;
+
+        // Recorrer TODOS los punto
+        punto.forEach((cadaPunto, i) =>
+
+            // Asignamos un CLICK a cadaPunto
+            punto[i].addEventListener('click', () => {
+                // Guardar la posición de ese PUNTO
+                posicion = i
+
+                // Calculando el espacio que debe DESPLAZARSE el GRANDE
+                operacion = posicion * -(100 / puntos)
+                // MOVEMOS el grand
+                grande.style.transform = `translateX(${operacion}%)`
+
+                // Recorremos TODOS los punto
+                punto.forEach((cadaPunto, i) => {
+                    // Quitamos la clase ACTIVO a TODOS los punto
+                    punto[i].classList.remove('activo')
+                })
+                // Añadir la clase activo en el punto que hemos hecho CLICK
+                punto[i].classList.add('activo')
+
+            })
+        )
+    }
+
+    var posicion = 0;
+
+    function update()
+    {
+        const punto = document.querySelectorAll('.punto');
+        var puntos = document.querySelectorAll('.punto').length;
+        const grande = document.querySelector('.grande');
+
+        if (punto.length > 0)
+        {
+            // Quitamos la clase ACTIVO del punto actual
+            punto[posicion].classList.remove('activo')
+        }
+
+        //asignamos la posicion
+        if (posicion >= puntos - 1)
+        {
+            posicion = 0;
+        }
+        else
+        {
+            posicion++;
+        }
+
+        // Calculando el espacio que debe DESPLAZARSE el GRANDE
+        operacion = posicion * -(100 / puntos)
+
+        // MOVEMOS el grande
+        grande.style.transform = `translateX(${operacion}%)`
+
+        if (punto.length > 0)
+        {
+            // Añadir la clase activo en el punto que hemos hecho CLICK
+            punto[posicion].classList.add('activo')
+        }
+
+    }
+
+    //Se mueve la posicion del carrucel cada 5 segundos
+    setInterval(update, 8000);
+
+    function setPaletaColors(paleta) {
+
+        let elements = document.getElementsByClassName("Accordioncolor");
+        let puntos = document.getElementsByClassName("punto");
+
+        //anuncios
+        for (let i = 0; i < elements.length; i++)
+        {
+            switch (i) 
+            {
+                case 0:
+                case 4:
+                    elements[i].classList.add("standAnuncioPaleta" + paleta + "Color1");
+                    break;
+                case 1:
+                case 5:
+                    elements[i].classList.add("standAnuncioPaleta" + paleta + "Color2");
+                    break;
+                case 2:
+                case 6:
+                    elements[i].classList.add("standAnuncioPaleta" + paleta + "Color3");
+                    break;
+                case 3:
+                case 7:
+                    elements[i].classList.add("standAnuncioPaleta" + paleta + "Color4");
+                    break;
+                default:
+                    elements[i].style.backgroundColor = "gray";
+                    break;
+            }
+        }
+
+        //puntos
+        for (let i = 0; i < puntos.length; i++)
+        {
+            puntos[i].classList.add("standAnuncioPaleta" + paleta + "Color1");
+        }
+    }
+</script>
+
+<!-- Modal captura de productos -->
+<div class="modal fade" id="ModalProducto" tabindex="-1" aria-labelledby="ModalProductolLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalProductoLabel">Captura de Productos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="descripcionProducto" class="col-md-12">
+                    <div id="liveAlertPlaceholderModal"></div>
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">                                        
+                                        <div class="col-sm-6 md-55 text-justify">
+                                            <div class="row">                                                
+                                                <h5 class="card-title "><a class="btn btn-link" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><i class="fa fa-plus-square"></i> <label id="nombre"></label></a></h5>
+                                                <div class="collapse" id="collapseImage">
+                                                    <div id="imgModalOndemand" class="card card-body"></div>
+                                                </div>
+                                                <label class="label__Presentacion" id="presentacion"></label>                                                
+                                            </div>
+                                            <div class="row">
+                                                <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
+                                            </div>
+                                            <div id="div_restringido" class="row d-none">
+                                                <strong>Restringido a </strong> <label class="label__producto" id="restingido"></label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Precio MR: </strong><label class="label__PrecioMR" id="precioMR"></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">                                                
+                                                <div class="col-6">
+                                                    <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo"></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <h6>
+                                                    <strong>Iva: </strong><label class="label__DescuentoExpo" id="iva"></label>
+                                                    <label id="getiva"> </label>
+                                                </h6>
+                                            </div>
+                                            <div class="row">
+                                                <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 md-55">
+                                            <input type="hidden" id="IdProducto"/>
+                                            <input type="hidden" id="PrecioMR" />                                           
+                                            <div class="contenedor__Producto">
+                                                <div class="mb-4 ">
+                                                    <bold>Precio Final: </bold><label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                                </div>
+                                                <div class="mb-4 d-grid">
+                                                    <bold>Cantidad: </bold><input id="cantidad" type="number" min="0" value="0" placeholder="0" />
+                                                </div>
+                                                <div class="mb-4">
+                                                    <bold>Subtotal: </bold><label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                                </div>
+                                                <div class="mb-4">
+                                                    <bold>Iva: </bold><label class="contenedor__Producto__iva" id="valoriva"></label>
+                                                </div>
+                                                <hr class="new1" />
+                                                <div class="mb-4">
+                                                    <bold>Total: </bold><label class="contenedor__Producto__Total" id="total"></label>
+                                                </div>
+                                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-warning mb-3">Añadir a Carrito</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,103 @@
+﻿@model Empleados;
+
+@{
+    ViewData["Title"] = "Editar Empleado";
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+
+<h1>Empleado</h1>
+
+<div class="row">
+    <div id="liveAlertPlaceholder"></div>
+    <div class="col-md-6 label__bold">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                @Html.LabelFor(m => m.Nombre)
+                <input type="text" class="form-control" id="Empleado" placeholder="@Model.Nombre" disabled>
+            </div>
+            <div class="col-md-6 mb-3">
+                @Html.LabelFor(m => m.Email)
+                <input type="text" class="form-control" id="Email" placeholder="@Model.Email" value="@Model.Email" disabled>
+            </div>
+            <div class="col-md-6 mb-3">
+                @Html.LabelFor(m => m.Rol)
+                @Html.DropDownListFor(model => model.IdRol, new SelectList(Model.Roles, "IdRol", "Role"), new { id = "cmb-Roles", @class = "form-control text-left", name = "cmb-Roles", disabled="disabled", title="cmb"})
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row d-flex">
+            <div class="col-md-12 d-flex justify-content-center mb-4">
+                <button id="btn-modificar" type="button" class="btn btn-azul col-md-55 ">Cambiar Rol</button>
+                <div id="hiddenBTN" class="d-none col-md-55 text-center">
+                    <button type="button" class="btn btn-outline-success" onclick="save()" title="btn-save">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn  btn-outline-danger" onclick="cancel()" title="btn-cancel">
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>        
+    </div>    
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <a asp-controller="Administracion" asp-action="Empleados" class="btn btn-azul col-md-55"><i class="fa fa-arrow-left" aria-hidden="true"></i> Ir a Usuarios </a>
+    </div>    
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var element = document.getElementById("cmb-Roles")
+
+        $("#btn-modificar").click(function () {
+
+            $("#btn-modificar").addClass('d-none');
+            $("#hiddenBTN").removeClass("d-none");
+
+            element.removeAttribute("disabled");
+        })
+    })
+
+    function save() {
+
+        const UserName = $("#Email").val();
+        const Rol = $("#cmb-Roles").val()
+        var select = document.getElementById("cmb-Roles");
+        var selectedText = select.options[select.selectedIndex].text;
+
+        $.post(path + "Administracion/CambiarRolEmpleado",
+            {
+                UserName: UserName,
+                Rol: selectedText
+            },
+            function (data) {
+                $("#hiddenBTN").addClass('d-none');
+                $("#btn-modificar").removeClass("d-none")
+
+                var element = document.getElementById("cmb-Roles")
+                element.setAttribute("disabled", "");
+
+                ShowAlert(data.message, data.response);
+            }
+        ).error(function () {
+            ShowAlert("No fue posible cargar sus datos", false);
+        });
+    }
+
+    function cancel() {
+        $("#hiddenBTN").addClass('d-none');
+        $("#btn-modificar").removeClass("d-none")
+
+        var element = document.getElementById("cmb-Roles")
+        element.setAttribute("disabled", "");
+
+        location.reload();
+    }
+
+</script>
+

@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="~/imagenes/favicon.ico" type="image/ico" />
+
+    <title>Medicinas Rosario </title>
+
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="~/css/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css">
+    <!-- Font Awesome -->
+    <link href="~/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="~/css/build/css/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a b-jg4w9kbpph="" href="/Home" class="site_title"><img src="~/imagenes/logo.png" alt="Logo" /></a>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <!-- menu profile quick info -->
+                    <div class="profile clearfix">
+                        <div class="profile_pic">
+                            <img src="~/imagenes/user.png" alt="..." class="img-circle profile_img">
+                        </div>
+                        <div class="profile_info">
+                            <span>Bienvenido,</span>
+                            <h2>Mario Valenzuela</h2>
+                        </div>
+                    </div>
+                    <!-- /menu profile quick info -->
+
+                    <br />
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">                        
+                        <div class="menu_section">
+                            <h3>Ayuda</h3>
+                            <ul class="nav side-menu">
+                                <li>
+                                    <a><i class="fa fa-phone"></i> Contacto Rosario </a>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-list-alt"></i> indice </a>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-info-circle"></i> Info </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <nav class="nav navbar-nav">
+                        <partial name="_LoginRegistroVistaParcial" />
+                    </nav>
+                </div>
+            </div>
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                @RenderBody()
+            </div>
+            <!-- /page content -->
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+                    Expo MR - 2022
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="~/js/jquery/dist/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/css/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="~/build/js/custom.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js" type="text/javascript"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            if ($('.bbb_viewed_slider').length) {
+                var viewedSlider = $('.bbb_viewed_slider');
+
+                viewedSlider.owlCarousel(
+                    {
+                        loop: true,
+                        margin: 30,
+                        autoplay: true,
+                        autoplayTimeout: 6000,
+                        nav: false,
+                        dots: false,
+                        responsive:
+                        {
+                            0: { items: 1 },
+                            575: { items: 2 },
+                            768: { items: 3 },
+                            991: { items: 4 },
+                            1199: { items: 6 }
+                        }
+                    });
+
+                if ($('.bbb_viewed_prev').length) {
+                    var prev = $('.bbb_viewed_prev');
+                    prev.on('click', function () {
+                        viewedSlider.trigger('prev.owl.carousel');
+                    });
+                }
+
+                if ($('.bbb_viewed_next').length) {
+                    var next = $('.bbb_viewed_next');
+                    next.on('click', function () {
+                        viewedSlider.trigger('next.owl.carousel');
+                    });
+                }
+            }
+
+
+        });
+
+        $(function () {
+            $("#datePicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1930:2022',
+                dateFormat: 'yy-mm-dd'
+            })
+        })
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

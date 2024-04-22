@@ -1,0 +1,8 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<a asp-controller="Ruleta" asp-action="" class="btn @String.Format(ExpoMR.Clases.WebSite.GetRuleta(ExpoMR.Controllers.GeneralesController.GetClientes(@UserManager.GetUserName(User)))) position-relative" id="Ruleta">
+    <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/ruleta.svg" /></i> Ruleta
+</a>

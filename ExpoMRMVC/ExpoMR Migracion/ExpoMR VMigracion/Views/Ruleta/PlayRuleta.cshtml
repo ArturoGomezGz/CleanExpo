@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "PlayRuleta";
+}
+<link href="~/css/owl.carousel.min.css" rel="stylesheet" />
+<link href="~/css/owl.theme.default.min.css" rel="stylesheet" />
+<script type="text/javascript" src="~/js/codeRoulette.js"></script>
+<script type="text/javascript">
+    function play() {
+        $.ajax({
+            url: path + 'Ruleta/GetData',
+            method: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            success: function (response) {
+                var str = response.d;
+                var data = str.split(',');
+                playRoulette(data[0], data[1], data[2], data[3]);
+            },
+            failure: function (response) {
+            }
+
+        });
+
+        document.getElementById("imgButton").onclick = displayButton();
+
+    }
+
+</script>
+
+
+<style>
+    img {
+        transition: -webkit-transform 4s ease-out;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-6  col-md-5 col-sm-12 d-flex justify-content-center">
+        <div id="container__Ruleta" class="Container__Ruleta">
+            <img id="imgButton" src="~/Imagenes/botonGira.png" class="imgbutton" onclick="play()" onmouseover="displayButton()" onmouseout="hideButton()" alt="Girar boton" />
+            <img id="imgRoulette" src="~/Imagenes/ruleta.png" style="width: -webkit-fill-available;" alt="Ruleta"/>
+            <img src="~/Imagenes/cabezalRuleta.png" class="pointer" alt="Cabeza ruleta"/>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-7 col-sm-12">
+        <div class="row">
+            <p style="font-size:0.9em; font-style:oblique">* Las imágenes son de caracter ilustrativo, los premios pueden variar en color y presentación.</p>
+            @{
+                List<PremiosRuletaModel> Premios = ExpoMR.Controllers.RuletaController.GetPremios();
+                foreach (PremiosRuletaModel model in Premios)
+                {
+                    <div class="col-md-55 col-md-6" >
+                        <div class="row" style="text-align:center">
+                            <div class="col-2" style="z-index:10">
+                                <img src="@string.Format(model.seccion.ToString())" alt="image" style="min-width:50%">
+                            </div>
+                            <div class="col-8  premio__min-width" >
+                                <img class="img__max-width" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.fotoPremio))" alt="image">
+                            </div>
+                            <div class="col col-sm-12">
+                                <p class="txt-ruleta-activa">@string.Format(model.premio)</p>
+                                <p class="txt-ruleta-descripcion">@string.Format(model.descripcion)</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }            
+        </div>
+    </div>
+</div>
+
+<div id="divPremio" class="center">
+    @*<table style="width:100%">
+        <tr>
+            <td>
+                <img id="imgPremio" />
+            </td>
+            <td>
+                <img id="imgFelicidades" src="~/Imagenes/felicidades.png" />
+                <br /><br />
+                Tu premio en la Ruleta de la ExpoMR es
+                <br /><br />
+                <p id="pPremio"></p>
+                <p id="pDescripcion"></p>
+                <br /><br />
+                Medicinas Rosario te da las gracias por participar
+                <br /><br />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <img id="ibtAceptar" src="~/Imagenes/aceptar.png" />
+            </td>
+        </tr>
+    </table>*@
+</div>

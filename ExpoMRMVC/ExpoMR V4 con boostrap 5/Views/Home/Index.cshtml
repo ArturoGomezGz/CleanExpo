@@ -1,0 +1,131 @@
+﻿@using ExpoMR.Models
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="row mb-5">
+        <div class="titulo_div col-md-12">
+            <h2>
+                Bienvenido a Expo Medicinas Rosario 2023
+            </h2>
+        </div> 
+        <div class="col-sm-12">
+            <div class="card-box ">
+                <div class="bbb_viewed">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="bbb_main_container">
+                                    <div class="bbb_viewed_title_container">
+                                        <div class="bbb_viewed_nav_container">
+                                            <div class="bbb_viewed_nav bbb_viewed_prev"><i class="fa fa-chevron-left"></i></div>
+                                            <div class="bbb_viewed_nav bbb_viewed_next"><i class="fa fa-chevron-right"></i></div>
+                                        </div>
+                                    </div>
+                                    <div class="bbb_viewed_slider_container">
+                                        <div class="owl-carousel owl-theme bbb_viewed_slider">                                        
+                                        @{
+                                            List<StandVIewModel> ModeloImagenes = ExpoMR.Controllers.HomeController.GetImage();
+                                                foreach (ExpoMR.Models.StandVIewModel model in ModeloImagenes)
+                                            {
+                                                <div class="owl-item">
+                                                    <div class="bbb_viewed_item discount d-flex flex-column align-items-center justify-content-center text-center">
+                                                        <div class="bbb_viewed_image">
+                                                            <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                                                <img class="img_Carrousell_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" src="" alt="image">
+                                                            </a>
+                                                        </div>
+                                                        <div class="bbb_viewed_content text-center">
+                                                            <div class="bbb_viewed_name">
+                                                                <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())"> @String.Format(model.Nombre)</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="titulo_div col-md-12">
+            <h3>Visita el stand de los Laboratorios Participantes</h3>
+        </div>        
+        @{
+            foreach (ExpoMR.Models.StandVIewModel model in ModeloImagenes)
+            {
+                <div class="col-md-4 col-lg-3 mt-4">
+                    <div class="h-100 card card-inverse card-info align-center">
+                        <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;" >
+                            <img id="Proveedor_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="card-img-top" style="width: 150px; height: 150px; margin: auto;" src="" alt="image">                                                               
+                        </a>
+                        <div class="mx-auto w-75 card-block index_name" style="text-align: center;">
+                            <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())"><h6 class="index_name">@String.Format(model.Nombre)</h6></a>
+                        </div>
+                    </div>
+                </div> 
+            }
+        }       
+    </div>
+</div>
+
+<script>
+    async function GetImgAsync(proveedorId) {
+
+        try {
+            const response = await fetch(`/imagenes/GetLogoProveedor?IdProveedor=${proveedorId}`);
+
+            if (!response.ok) {
+                throw new Error('Ocurrió un error al hacer la solicitud.');
+            }
+
+            const data = await response.text() // Suponiendo que el controlador devuelve texto
+
+            if(data.length > 0)
+                document.getElementById("Proveedor_" + proveedorId).src = "data:image/png;base64," + data;
+            else
+                document.getElementById("Proveedor_" + proveedorId).src = "../Imagenes/noimage.png";
+            
+            var imagenesConClaseimg_Carrousell = document.querySelectorAll('img.img_Carrousell_' + proveedorId);
+
+            // Iterar sobre los elementos seleccionados
+            imagenesConClaseimg_Carrousell.forEach(function (imagen) {
+                if (data.length > 0)
+                    imagen.src = "data:image/png;base64," + data;
+                else
+                    imagen.src = "../Imagenes/noimage.png";
+            });
+        } catch (error) {
+            document.getElementById("Proveedor_" + proveedorId).src = "../Imagenes/noimage.png";
+            var imagenesConClaseimg_Carrousell = document.querySelectorAll('img.img_Carrousell_' + proveedorId);
+
+            // Iterar sobre los elementos seleccionados
+            imagenesConClaseimg_Carrousell.forEach(function (imagen) {
+                imagen.src = "../Imagenes/noimage.png";
+            });
+            console.error('Error:', error);
+        }
+    }
+
+    function srcImg(){
+        var elements = document.querySelectorAll('img.card-img-top');
+        
+        for (var i = 0; i < elements.length; i++) {
+            var proveedorId = elements[i].getAttribute("data-id");
+            GetImgAsync(proveedorId)
+        }       
+    }
+
+    $(document).ready(function(){    
+        srcImg()
+    })
+</script>

@@ -1,0 +1,43 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace ExpoMR.Models
+{
+    [Keyless]
+    public class UsuarioExpo
+    {
+        public int IdEmail { get; set; }
+
+        public string Nombre { get; set; }
+
+        public string Email { get; set; }
+
+        public int IdTipoPersona { get; set; }
+
+        public string TipoPersona { get; set; }
+
+        public bool Vip { get; set; }
+
+        public bool Usuario { get; set; }
+
+        public bool Lock { get; set; }
+
+        public string Sucursal { get; set; }
+
+        public string Ruta { get; set; }
+
+        public string Invitacion { get; set; }
+    }
+
+    public class UsuariosNotificacion
+    {
+        [Key]
+        public int IdPersona { get; set; }
+
+        public string Nombre { get; set; }
+
+        public byte Notificado { get; set; }
+
+        public string Email { get; set; }
+    }
+}

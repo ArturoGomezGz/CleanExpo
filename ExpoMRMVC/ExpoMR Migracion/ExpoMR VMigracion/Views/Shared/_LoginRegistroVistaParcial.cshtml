@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    @if (User.IsInRole("Cliente")){
+        <li role="presentation" class="nav-item open" style="font-size: 24px">
+            <a asp-controller="Carrito" asp-action="" class="btn btn-naranja position-relative" id="navbarDropdown1">
+                <i class="fa fa-shopping-cart fa-lg"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id="cantidad_carrito"></span>
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            </a>
+        </li>
+    }    
+    <li class="li__logOut">
+        <form id="LogOutForm" method="post" asp-controller="Cuentas" asp-action="SalirAplicacion">
+            <button type="submit" id="btn_logout" class="btn btn-rojo" title="Cerrar sesión"><i class="fa fa-sign-out" aria-hidden="true"></i></button>
+        </form>
+    </li>      
+
+}else{
+        
+}

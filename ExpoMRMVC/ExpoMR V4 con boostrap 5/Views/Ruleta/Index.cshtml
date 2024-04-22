@@ -1,0 +1,58 @@
+﻿@model List<InfoRuletas>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col-md-12 justify-content-center d-flex">
+        <a asp-controller="Ayuda" asp-action="CondicionesRuleta" type="button" class="btn__Condiciones btn btn-naranja btn-lg mb-3">Condiciones Ruleta</a>
+    </div>
+    
+    @foreach (InfoRuletas item in Model)
+    {
+        <!--Clasica-->
+        <hr class="" />
+        <div class="col-md-12 mb-2 @item.RuletaNormalized">
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
+                    <div class="ruleta" style="border:none">
+                        @if (item.Activa == 1)
+                        { 
+                            <a asp-controller="Ruleta" asp-action="PlayRuleta" asp-route-IdRuleta="@item.IdRuleta" alt="Play Ruleta" class="mx-auto">
+                                <img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="~/Imagenes/ruleta@{@item.IdRuleta;}.png" alt="image" />
+                            </a>
+                            <div class="card-block">
+                                <p class="txt-ruleta-activa">Se activa con @item.Monedas</p>
+                            </div>
+                            <a asp-controller="Ruleta" asp-action="PlayRuleta" asp-route-IdRuleta="@item.IdRuleta" type="button" class="btn__Condiciones btn btn-azul btn-lg mb-3 mx-auto">Prueba tu Suerte</a>
+                        }else{
+                            <a href="#" alt="Play Ruleta" class="mx-auto">
+                                <img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="~/Imagenes/ruletaDeshabilitada@{@item.IdRuleta;}.png" alt="image" />
+                            </a>
+                            <div class="card-block">
+                                <p class="txt-ruleta-activa">Se activa con @item.Monedas</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-8 col-lg-9 mt-2">
+                    <div class="row">
+                        @{
+                            List<PremioRuleta> ModeloImagenes = ExpoMR.Controllers.RuletaController.GetImageRuleta(item.IdRuleta);
+                            foreach (ExpoMR.Models.PremioRuleta model in ModeloImagenes)
+                            {                            
+                                <div class="col-12 col-sm-12 col-md-3 mb-2">
+                                    <div class="h-100 card ruleta-premio">
+                                        <img class="img__max-width card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
+                                        <p>@String.Format(model.Premio)</p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }  
+</div>
+

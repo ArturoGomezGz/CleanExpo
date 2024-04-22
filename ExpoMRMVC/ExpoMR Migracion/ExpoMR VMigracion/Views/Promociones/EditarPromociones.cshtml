@@ -1,0 +1,636 @@
+﻿@model int
+<div class="d-flex justify-content-around my-4">
+    <h4>Seleccione un tipo de promocion:</h4>
+</div>
+<div id="divBotones" class="d-md-flex justify-content-around">
+    <div>
+        <button class="btn btn-primary my-2" onclick="selectPromocion('Simple', 1)">Por Visita De Cliente <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/porVisita.svg" /></i></button>
+        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(1)"></i>
+    </div>
+    <div>
+        <button class="btn btn-primary  my-2" onclick="selectPromocion('Compuesta', 2)">Acumulable <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/acumulable.svg" /></i></button>
+        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(2)"></i>
+    </div>
+    <div>
+        <button class="btn btn-primary my-2" onclick="selectPromocion('Compuesta', 3)">No Acumulable <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/noAcumulable.svg" /></i></button>
+        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(3)"></i>
+    </div>
+    <div>
+        <button class="btn btn-primary my-2" onclick="selectPromocion('Compuesta', 4)">Escalonada <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/escalonada.svg" /></i></button>
+        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(4)"></i>
+    </div>
+    <label id="lblpromoSel" hidden></label>
+</div>
+<div id="tipoPromocion" hidden>
+    <div class="d-flex justify-content-around my-4">
+        <h4 id="lblPromo"></h4>
+    </div>
+    <div id="tipoPromocionBtn" class="justify-content-around my-4" hidden>
+        <div>
+            <button class="btn btn-primary" onclick="selTipoPromo('Monto', 1)">Por Monto <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/monto.svg" /></i></button>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="selTipoPromo('Piezas', 2)">Por Piezas<i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/piezas.svg" /></i></button>
+        </div>
+        <label id="lbltipoPromo" hidden></label>
+    </div>
+    <div id="configPromo" class="card border-primary mb-3" hidden>
+        <div class="card-header">
+            <strong>Si la promoción es para un cliente en específico, búscalo.</strong>
+            <div class="d-flex m-2">
+                <i class="fa fa-search my-1 mx-2" aria-hidden="true" onclick="BuscarClientes()" data-bs-toggle="modal" data-bs-target="#BuscarClienteModal"></i>
+                <p>Buscar Cliente Específico</p>
+            </div>
+            <div class="d-flex m-2">
+                <input type="checkbox" class="mb-3 mx-2" id="chkTodosClientes" checked />
+                <p>Promoción para Todos los Clientes</p>
+            </div>
+            <label id="lblIdCliente" hidden></label>
+            <label id="lblNombreCliente"></label>
+        </div>
+        <div class="card-header">
+            <strong>Si es de un producto en específico, búscalo.</strong>
+
+            <div class="d-flex m-2">
+                <i class="fa fa-search my-1 mx-2" aria-hidden="true" onclick="BuscarProductos()" data-bs-toggle="modal" data-bs-target="#BuscarProductoModal"></i>
+                <p>Buscar Producto Específico</p>
+            </div>
+            <div class="d-flex m-2">
+                <input type="checkbox" class="mb-3 mx-2" id="chkTodosProductos" checked />
+                <p>Promoción para Todos los Productos</p>
+            </div>
+            <label id="lblIdProducto" hidden></label>
+            <label id="lblNombreProducto"></label>
+        </div>
+        <div class="card-body">
+            <strong id="lblConfigTitulo"></strong>
+            <div class="d-flex m-2">
+                <p id="lblConfigDes1"></p>
+                <input id="txtCantidadPromo" type="number" class="mb-2 mx-2" />
+                <p id="lblConfigDes2"></p>
+            </div>
+        </div>
+    </div>
+    <div id="ConfiguraPiezas" class="card border-primary p-2 mb-3" hidden>
+        <strong>Captura la cantidad de piezas que vas a regalar.</strong>
+        <div class="d-flex m-2">
+            <p>llévate</p>
+            <input id="txtCantidadArticulos" type="number" class="mx-2" />
+            <p> artículos o productos</p>
+            <button class="btn btn-primary mx-2" onclick="ValidaCantidadArticulos()">Agregar</button>
+        </div>
+    </div>
+    <div id="ArticulosPromocion" class="card border-primary p-2 mb-3" hidden>
+        <table id="tblArticulosPromo" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th> </th>
+                    <th>Artuculo</th>
+                    <th>Cantidad</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="botonesTermino" class="d-flex justify-content-around my-4">
+    <button id="btnSiguiente" class="btn btn-primary" onclick="AgregaConfig(0)" hidden>Siguiente <i class="fa fa-chevron-right"></i></button>
+    <button id="btnAceptar" onclick="ActualizaPromo()" class="btn btn-success" hidden>Aceptar</button>
+    <button class="btn btn-danger" onclick="Salir()">Salir</button>
+</div>
+
+
+<div class="modal fade" id="infoModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Salir"></button>
+            </div>
+            <div class="modal-body">
+                <p id="textoInfo"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="BuscarClienteModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Asignar Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Salir"></button>
+            </div>
+            <div class="modal-body">
+                <table id="tblClientes" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th> </th>
+                            <th>Cliente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="BuscarProductoModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecciona un Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Salir"></button>
+            </div>
+            <div class="modal-body">
+                <table id="tblProductos" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th> </th>
+                            <th>Codigo</th>
+                            <th>Producto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ArticulosModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecciona el Artículo</h5>
+            </div>
+            <div class="modal-body">
+                <table id="tblArticulos" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th> </th>
+                            <th>Articulo</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<label id="idPromocion" hidden></label>
+
+<script>
+    $(document).ready(function () {
+        if (@Model > 0) {
+            GetPromoById(@Model);
+        }
+    });
+
+    function GetPromoById(idPromocion) {
+        $.ajax({
+            url: path + "Promociones/GetPromoById?idPromocion=" + idPromocion,
+            type: 'POST',
+            success: function (response) {
+                document.getElementById('idPromocion').innerHTML = @Model;
+                if (response.tipoPromo > 1) {
+                    selectPromocion('Compuesta', response.tipoPromo);
+                    if (response.monto != null) {
+                        selTipoPromo('Monto', 1);
+                        document.getElementById('txtCantidadPromo').value = response.monto;
+                    } else {
+                        selTipoPromo('Piezas', 2);
+                        document.getElementById('txtCantidadPromo').value = response.piezas;
+                    }
+                    if (response.idCliente != null) {
+                        ClienteSelected(response.idCliente, response.cliente)
+                    }
+                    if (response.idProducto != null) {
+                        ProductoSelected(response.idProducto, response.producto)
+                    }
+                }else {
+                    selectPromocion('Simple', response.tipoPromo);
+                }
+                AgregaConfig(1);
+                document.getElementById('ArticulosPromocion').hidden = false;
+                btnAceptar.hidden = false;
+                GetTablaArticulos(idPromocion);
+            },
+            error: function () {
+                alert('Error al subir la imagen');
+            }
+        });
+    }
+
+    function infoModal(boton) {
+        var textInfo = document.getElementById('textoInfo');
+        switch (boton) {
+            case 1:
+                textInfo.innerHTML = 'Se otorga al momento de ingresar al stand sin condición de compra';
+                break;
+            case 2:
+                textInfo.innerHTML = 'Se otorga cada que el cliente acumula el monto o piezas requeridos. <br> <br> Ejemplo: Por cada $200 pesos de compra llévate 1 boleto para la rifa';
+                break;
+            case 3:
+                textInfo.innerHTML = 'Se otorga cuando el cliente cumple con la condición de compra y solamente puede ser acreedor a una promoción. <br> <br>'
+                    + 'Ejemplo: En la compra de 10 piezas de paracetamol, llévate 1 pieza extra';
+                break;
+            case 4:
+                textInfo.innerHTML = 'Se otorga cuando el cliente llega a la meta de compra establecida por nivel y solamente puede ser acreedor a una promoción,'
+                    + 'obteniendo del nivel más alto alcanzado. <br> <br> Ejemplo: En la compra de $500 pesos llévate el kitA; en la compra de $1000 llévate el kitB.'
+                    + ' <br> Si el cliente compra $1500, sólo se ganará el kitB';
+                break;
+        }
+    }
+
+    function selectPromocion(tipo, boton) {
+        var tipoPromocion = document.getElementById('tipoPromocion');
+        var tipoPromocionBtn = document.getElementById('tipoPromocionBtn');
+        var lblPromo = document.getElementById('lblPromo');
+        var btnSiguiente = document.getElementById('btnSiguiente');
+
+        var botones = document.getElementById('divBotones').getElementsByTagName('button');
+
+        desactivaBotones(botones, boton);
+
+        tipoPromocion.hidden = false;
+        document.getElementById('configPromo').hidden = true;
+        document.getElementById('lblpromoSel').innerHTML = boton;
+
+        if (tipo == 'Compuesta') {
+            lblPromo.innerHTML = 'Seleccione una opción:';
+            tipoPromocionBtn.classList.add('d-flex');
+            btnSiguiente.hidden = true;
+            var botones = document.getElementById('tipoPromocionBtn').getElementsByTagName('button');
+            desactivaBotones(botones, 0);
+        } else if (tipo == 'Simple') {
+            lblPromo.innerHTML = 'Haz clic en "Siguiente" para agregar los Artículos';
+            tipoPromocionBtn.classList.remove('d-flex');
+            botonesTermino.hidden = false;
+            btnSiguiente.hidden = false;
+        }
+    }
+
+    function selTipoPromo(tipoPromo, boton) {
+        var botones = document.getElementById('tipoPromocionBtn').getElementsByTagName('button');
+        desactivaBotones(botones, boton);
+
+        var configPromo = document.getElementById('configPromo');
+        var btnSiguiente = document.getElementById('btnSiguiente');
+
+        configPromo.hidden = false;
+        btnSiguiente.hidden = false;
+
+        document.getElementById('lbltipoPromo').innerHTML = tipoPromo;
+
+        var lblConfigDes1 = document.getElementById('lblConfigDes1');
+        var lblConfigDes2 = document.getElementById('lblConfigDes2');
+        var lblConfigTitulo = document.getElementById('lblConfigTitulo');
+
+        if (tipoPromo == 'Monto') {
+            lblConfigTitulo.innerHTML = 'Captura el monto de compra.';
+            lblConfigDes1.innerHTML = 'En la compra de ';
+            lblConfigDes2.innerHTML = 'Pesos';
+        }
+        else if (tipoPromo == 'Piezas') {
+            lblConfigTitulo.innerHTML = 'Captura el número de piezas.';
+            lblConfigDes1.innerHTML = 'Por cada ';
+            lblConfigDes2.innerHTML = 'Piezas';
+        }
+
+    }
+
+    function desactivaBotones(botones, botonNum) {
+        for (var i = 0; i < botones.length; i++) {
+            var botonSel = botones[i];
+
+            if (botonNum - 1 == i) {
+                botonSel.classList.add('btn-primary');
+                botonSel.classList.remove('btn-secondary');
+            }
+            else {
+                botonSel.classList.add('btn-secondary');
+                botonSel.classList.remove('btn-primary');
+            }
+        }
+    }
+
+    function BuscarClientes() {
+        var tblClientes = $('#tblClientes').DataTable();
+        tblClientes.destroy();
+        tblClientes = $('#tblClientes').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Promociones/GetClientes",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    render: function (data, type, row) {
+                        return '<button onclick="ClienteSelected(' + row.idCliente + ', \'' + row.cliente + '\')" class="btn fa fa-chevron-right" data-bs-dismiss="modal"> </button>';
+                    }
+                },
+                { "data": "cliente" }
+            ]
+        });
+    }
+
+    function BuscarProductos() {
+        var tblProductos = $('#tblProductos').DataTable();
+        tblProductos.destroy();
+        tblProductos = $('#tblProductos').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Promociones/GetProdcutos",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    render: function (data, type, row) {
+                        return '<button onclick="ProductoSelected(' + row.idProducto + ', \'' + row.producto + '\')" class="btn fa fa-chevron-right" data-bs-dismiss="modal"> </button>';
+                    }
+                },
+                { "data": "codigo" },
+                { "data": "producto" }
+            ]
+        });
+    }
+
+    var chkTodosProductos = document.getElementById('chkTodosProductos');
+    var chkTodosClientes = document.getElementById('chkTodosClientes');
+
+    chkTodosClientes.addEventListener('change', function () {
+        var lblNombreCliente = document.getElementById('lblNombreCliente');
+        var lblIdCliente = document.getElementById('lblIdCliente');
+
+        if (this.checked) {
+            lblNombreCliente.innerHTML = '';
+            lblIdCliente.innerHTML = '';
+        }
+        else {
+            $('#BuscarClienteModal').modal('show');
+            BuscarClientes();
+            chkTodosClientes.checked = true;
+        }
+    })
+
+    chkTodosProductos.addEventListener('change', function () {
+        var lblIdProducto = document.getElementById('lblIdProducto');
+        var lblNombreProducto = document.getElementById('lblNombreProducto');
+
+        if (this.checked) {
+            lblNombreProducto.innerHTML = '';
+            lblIdProducto.innerHTML = '';
+        }
+        else {
+            $('#BuscarProductoModal').modal('show');
+            BuscarProductos();
+            chkTodosProductos.checked = true;
+        }
+    })
+
+    function ClienteSelected(idCliente, nombre) {
+        var lblNombreCliente = document.getElementById('lblNombreCliente');
+        var lblIdCliente = document.getElementById('lblIdCliente');
+
+        lblNombreCliente.innerHTML = nombre;
+        lblIdCliente.innerHTML = idCliente;
+        chkTodosClientes.checked = false;
+    }
+
+    function ProductoSelected(idCliente, producto) {
+        var lblIdProducto = document.getElementById('lblIdProducto');
+        var lblNombreProducto = document.getElementById('lblNombreProducto');
+
+        lblNombreProducto.innerHTML = producto;
+        lblIdProducto.innerHTML = idCliente;
+        chkTodosProductos.checked = false;
+    }
+
+    function AgregaConfig(editar) {
+        var promo = document.getElementById('lblpromoSel').innerHTML;
+        var tipoPromo = document.getElementById('lbltipoPromo').innerHTML;
+        var cantidadPromo = document.getElementById('txtCantidadPromo').value;
+        var btnSiguiente = document.getElementById('btnSiguiente');
+
+        btnSiguiente.hidden = true;
+
+        var configuraPiezas = document.getElementById('ConfiguraPiezas');
+        if (promo == 1) {
+            configuraPiezas.hidden = false;
+            if (editar == 0)
+                AgregaPromocion(promo, tipoPromo, cantidadPromo);
+        } else {
+            if (promo != '' && tipoPromo != '' && cantidadPromo > 0) {
+                configuraPiezas.hidden = false;
+                if (editar == 0)
+                    AgregaPromocion(promo, tipoPromo, cantidadPromo);
+            }
+            else if (cantidadPromo <= 0) {
+                btnSiguiente.hidden = false;
+                alert('agregue por lo menos una pieza o una monto de compra minimo mayor a 0');
+            }
+        }
+    }
+
+    function AgregaPromocion(promo, tipo, cantidad) {
+        var idCliente = document.getElementById('lblIdCliente').innerHTML;
+        var idProducto = document.getElementById('lblIdProducto').innerHTML;
+
+        $.ajax({
+            url: path + "Promociones/AgregarPromocion",
+            type: 'POST',
+            dataSrc: "",
+            data: {
+
+                promo: promo,
+                tipo: tipo,
+                cantidad: cantidad,
+                idCliente: idCliente,
+                idProducto: idProducto
+            },
+            success: function (response) {
+                document.getElementById('idPromocion').innerHTML = response;
+            },
+            error: function () {
+                alert('Error al subir la imagen');
+            }
+        });
+    }
+
+    function ValidaCantidadArticulos() {
+        var txtCantidadArticulos = document.getElementById('txtCantidadArticulos').value;
+
+        if (txtCantidadArticulos > 0) {
+            GetArticulos();
+            $('#ArticulosModal').modal('show');  
+        } else {
+            alert('ingrese una cantidad de articulos mayor a 0');
+        }
+    }
+
+    function GetArticulos() {
+        var tblArticulos = $('#tblArticulos').DataTable();
+        tblArticulos.destroy();
+        tblArticulos = $('#tblArticulos').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Promociones/GetArticulosProveedor",
+                type: 'POST',
+                dataSrc: "",
+            },
+            "columns": [
+                {
+                    render: function (data, type, row) {
+                        return '<button  class="btn fa fa-chevron-right" onclick="ArticuloSelected(' + row.idArticulo + ')" data-bs-dismiss="modal"> </button>';
+                    }
+                },
+                { "data": "articulo" },
+                {
+                    "data": "foto",
+                    render: function (data, type) {
+                        return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
+                    }
+                }
+            ]
+        });
+    }
+
+    function ArticuloSelected(idArticulo) {
+        var txtCantidadArticulos = document.getElementById('txtCantidadArticulos').value;
+        var idPromocion = document.getElementById('idPromocion').innerHTML;
+        var btnAceptar = document.getElementById('btnAceptar');
+
+        document.getElementById('ArticulosPromocion').hidden = false;
+        btnAceptar.hidden = false;
+
+        $.ajax({
+            url: path + "Promociones/AgregarArticulo",
+            type: 'POST',
+            data: {
+
+                idPromocion: idPromocion,
+                idArticulo: idArticulo,
+                cantidad: txtCantidadArticulos
+            },
+            success: function (response) {
+                GetTablaArticulos(idPromocion);
+            },
+            error: function () {
+                alert('Error al subir la imagen');
+            }
+        });
+    }
+
+    function GetTablaArticulos(idPromocion) {
+        var tblArticulosPromo = $('#tblArticulosPromo').DataTable();
+        tblArticulosPromo.destroy();
+        tblArticulosPromo = $('#tblArticulosPromo').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Promociones/GetArticulosPromo?idPromocion=" + idPromocion,
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    render: function (data, type, row) {
+                        return '<button class="btn btn-danger fa fa-xmark" onclick="EliminaArticulo(' + row.idArticulo + ')"> </button>';
+                    }
+                },
+                { "data": "articulo" },
+                { "data": "cantidad" },
+                {
+                    "data": "foto",
+                    render: function (data, type) {
+                        return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
+                    }
+                }
+            ]
+        });
+    }
+
+    function ActualizaPromo() {
+        var idPromocion = document.getElementById('idPromocion').innerHTML;
+        var promo = document.getElementById('lblpromoSel').innerHTML;
+        var tipoPromo = document.getElementById('lbltipoPromo').innerHTML;
+        var cantidadPromo = document.getElementById('txtCantidadPromo').value;
+        var idCliente = document.getElementById('lblIdCliente').innerHTML;
+        var idProducto = document.getElementById('lblIdProducto').innerHTML;
+
+        $.ajax({
+            url: path + "Promociones/ActualizaPromocion",
+            type: 'POST',
+            dataSrc: "",
+            data: {
+
+                promo: promo,
+                idPromocion: idPromocion,
+                tipo: tipoPromo,
+                cantidad: cantidadPromo,
+                idCliente: idCliente,
+                idProducto: idProducto
+            },
+            success: function (response) {
+                if(response == 1)
+                    document.location = '@Url.Action("Promociones")';
+                    else 
+                    alert('La promocion no puede ser actualizada porque ya la obtuvieron clientes');
+
+            },
+            error: function () {
+                alert('Error al subir la imagen');
+            }
+        });
+    }
+
+    function EliminaArticulo(idArticulo) {
+        var idPromocion = document.getElementById('idPromocion').innerHTML;
+
+        $.ajax({
+            url: path + "Promociones/EliminaArticulo",
+            type: 'POST',
+            data: {
+                idPromocion: idPromocion,
+                idArticulo: idArticulo
+            },
+            success: function (response) {
+                GetTablaArticulos(idPromocion);
+            },
+            error: function () {
+                alert('Error al subir la imagen');
+            }
+        });
+
+    }
+
+    function Salir() {
+        document.location = '@Url.Action("Promociones")';
+    }
+</script>

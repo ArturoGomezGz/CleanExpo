@@ -1,0 +1,13 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ExpoMR.Models
+{
+    [Keyless]
+    public class RuletaGiro
+    {
+        public decimal GradosGiro { get; set; }
+        public Int16 IdPremio { get; set; }
+        public string Premio { get; set; }
+        public string Descripcion { get; set; }
+    }
+}

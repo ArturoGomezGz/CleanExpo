@@ -1,0 +1,81 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+     @if (SignInManager.IsSignedIn(User)){
+    <li class="nav-item dropdown">
+        <a class="usuario nav-link  dropbtn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @UserManager.GetUserName(User)
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            @if (User.IsInRole("Administrador") || User.IsInRole("Cliente"))
+                {
+                    <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="Index">Cambiar Contraseña</a>
+                    </li>
+                    <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="MiCuenta">Mi Cuenta</a>
+                     </li>
+                    <li><hr class="dropdown-divider"></li>                   
+                }
+            @if (User.IsInRole("Vendedor"))
+                {
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Empleados" asp-action="Cotizacion"> Cotizacion</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Empleados" asp-action="Pedidos"> Pedidos</a>
+                </li>
+                    <li><hr class="dropdown-divider"></li>
+                }
+            @if(User.IsInRole("Administrador")){
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Usuarios"> Usuarios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Proveedor"> Proveedor</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Notificaciones"> Notificaciones</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Empleados"> Empleados</a>
+                </li>
+                }
+            @if (User.IsInRole("Proveedor"))
+            {
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Anuncios"> Anuncios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Articulos"> Articulos</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Monedas"> Monedas</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Configuracion" asp-action="Configuracion"> Configuración</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Estadisticas" asp-action="Estadisticas"> Estadisticas</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Precios"> Precios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Promociones" asp-action="Promociones"> Promociones</a>
+                </li>
+                }
+            </ul>       
+        </li>
+     }
+     else{   
+        <div class="profile_login">
+            <a class="btn btn-azul-medio" asp-controller="Cuentas" asp-action="Registro"> Registro </a>
+            <a class="btn btn-verde" asp-controller="Cuentas" asp-action="Acceso">Acceder</a>
+        </div>
+     }
+

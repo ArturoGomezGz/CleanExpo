@@ -1,0 +1,57 @@
+﻿@model AccesoViewModel;
+
+@{
+    ViewData["Title"] = "Acceso de ususarios";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="row no-gutter">
+    <!-- Imagen de lado izquierdo -->
+    <div class="col-md-6 d-none d-md-flex bg-image"></div>
+
+    <!-- Formulario de Acceso-->
+    <div class="col-md-6 bg-light">
+        <div class="login d-flex align-items-center py-5">
+            <!-- Demo content-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 col-xl-7 mx-auto">
+                        <h3 class="display-4">Iniciar Sesión</h3>                        
+                        <form asp-controller="Cuentas" asp-action="Acceso" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+                            <div class="form-group mb-3">
+                                <label asp-for="Email" class="col-md-12"></label>
+                                <input asp-for="Email" class=" form-control rounded-pill border-0 shadow-sm px-4" placeholder="Ingresa el correo electrónico" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Password" class="col-md-12"></label>
+                                <input asp-for="Password" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary" placeholder="Ingresar la Contraseña" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="custom-control custom-checkbox mb-3">
+                                <div class="custom-check">
+                                    <label asp-for="RememberMe" class="col-md-12">
+                                        <input asp-for="RememberMe" />
+                                        @Html.DisplayNameFor(m => m.RememberMe)
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-large w-100 btn-lg">Acceder <i class="bi bi-box-arrow-in-right"></i></button>
+                            <p><a asp-action="Registro">Registrarse como nuevo Usuario</a></p>
+                            <p><a asp-action="OlvidoPassword">¿Olvidaste tu Contraseña?</a></p>                            
+                        </form>
+                    </div>
+                </div>
+            </div><!-- End -->
+
+        </div>
+    </div>
+    <!-- End -->
+
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

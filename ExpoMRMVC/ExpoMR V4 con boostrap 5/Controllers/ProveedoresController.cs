@@ -1,0 +1,611 @@
+﻿using ExpoMR.Clases;
+using ExpoMR.Datos;
+using ExpoMR.Models;
+using System.Web;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using Microsoft.AspNetCore.Hosting;
+using Org.BouncyCastle.Asn1.X500;
+using System.Runtime.CompilerServices;
+
+namespace ExpoMR.Controllers
+{
+    //[Authorize(Roles = "Proveedor")]
+    public class ProveedoresController : Controller
+    {
+        //Variables para obtener (la sesión, el Usuario, path de carpeta wwwroot)
+        private static IConfiguration _configuration;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IWebHostEnvironment webHostEnvironment;
+
+        public ProveedoresController(UserManager<IdentityUser> userManager, IConfiguration config, IWebHostEnvironment webHostEnvironment)
+        {
+            _configuration = config;
+            _userManager = userManager;
+            this.webHostEnvironment = webHostEnvironment;
+        }
+
+        public IActionResult AddArticulo(string Nombre, string Descripcion, int CantidadArticulo)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@Nombre", Nombre);
+            parameters[1] = new SqlParameter("@Descripcion", Descripcion);
+            parameters[2] = new SqlParameter("@Cantidad", CantidadArticulo);
+            parameters[3] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+
+            dB.ExecuteNonQuery("AddArticuloProv", ref parameters);
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult ArticuloGuardarImagen(IFormFile file, int IdArticulo, int orden)
+        {
+            try
+            {
+                // Verifica si se recibió un archivo
+                if (file != null && file.Length > 0)
+                {
+                    byte[] imagenBytes;
+                    using (var ms = new MemoryStream())
+                    {
+                        // Guardar la imagen en formato JPEG en el MemoryStream
+                        Image imagen = Image.FromStream(file.OpenReadStream());
+                        imagen.Save(ms, ImageFormat.Jpeg);
+
+                        // Obtener el arreglo de bytes de la imagen
+                        imagenBytes = ms.ToArray();
+                    }
+
+                    DB dB = new();
+                    SqlParameter[] parameters = new SqlParameter[3];
+                    parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+                    parameters[1] = new SqlParameter("@Orden", orden);
+                    parameters[2] = new SqlParameter("@Foto", imagenBytes);
+
+                    dB.ExecuteNonQuery("AddFotoArticuloProv", ref parameters);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Json(new { success = true });
+        }
+
+        public IActionResult Articulos()
+        {
+            return View();
+        }
+
+        public IActionResult AsignaMonedas(int idCliente)
+        {
+            return View(idCliente);
+        }
+
+        public IActionResult Contacto()
+        {
+            return View();
+        }
+
+        public IActionResult DetalleArticulo(int IdArticulo)
+        {
+            return View(IdArticulo);
+        }
+
+        public IActionResult MiStand()
+        {
+            var parametros = new RouteValueDictionary
+            {
+                {"idProveedor", HttpContext.Session.GetString("ClienteSel")}
+            };
+            
+            IActionResult stand = RedirectToAction("Editar", "Stand", parametros);
+
+            return stand;
+        }
+
+        public IActionResult Precios(int idCliente = 0)
+        {
+            return View(idCliente);
+        }
+
+        public IActionResult Preguntas()
+        {
+            return View();
+        }
+
+        public IActionResult Privacidad()
+        {
+            return View();
+        }
+
+        public ActionResult Anuncios()
+        {
+            return View();
+        }
+
+        public ActionResult Monedas()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult articuloEditar(int IdArticulo, string Nombre, string Descripcion, int Cantidad)
+        {
+            ResponseModel rm = new ResponseModel();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[4];
+                parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+                parameters[1] = new SqlParameter("@Nombre", Nombre);
+                parameters[2] = new SqlParameter("@Descripcion", Descripcion);
+                parameters[3] = new SqlParameter("@Cantidad", Cantidad);
+
+                dB.ExecuteNonQuery("EditArticuloProv", ref parameters);
+
+                rm.Response = true;
+                rm.Message = "El articulo se modifico con exito";
+            }
+            catch (Exception e)
+            {
+                rm.Message = e.Message;
+            }
+
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult ArticuloEliminaFoto(int IDdArticulos)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IDdArticulos", IDdArticulos);
+
+            dB.ExecuteNonQuery("DeleteFotoArticuloProv", ref parameters);
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public JsonResult articuloEliminar(int IdArticulo)
+        {
+            ResponseModel rm = new ResponseModel();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@idarticulo", IdArticulo);
+
+            int ret = dB.ExecuteReturnValue("ArticulosEliminar", ref parameters);
+
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult ArticuloSeleccionado(int IdArticulo)
+        {
+            ArticulosProveedores DetalleArticulo = new ArticulosProveedores();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+
+            SqlDataReader dr = dB.ExecuteReader("GetArticuloProv", ref parameters);
+
+            while (dr.Read())
+            {
+                DetalleArticulo.IdArticulo = (Int16)dr["IdArticulo"];
+                DetalleArticulo.Nombre = (string)dr["Nombre"];
+                DetalleArticulo.Descripcion = (string)dr["Descripcion"];
+                DetalleArticulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
+                DetalleArticulo.Foto = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
+                DetalleArticulo.Proveedor = (int)dr["Proveedor"];
+                DetalleArticulo.Cantidad = (Int16)dr["Cantidad"];
+            }
+
+            return Json(DetalleArticulo);
+        }
+
+        [HttpPost]
+        public JsonResult AsignarMonedas(int idCliente, int tipoAsignacion, int monedas)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[5];
+            parameters[0] = new SqlParameter("@origen", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@destino", idCliente);
+            parameters[2] = new SqlParameter("@idmotivo", tipoAsignacion == 1? "12" : "6" );
+            parameters[3] = new SqlParameter("@monedas", monedas);
+            parameters[4] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+
+            int ret = dB.ExecuteReturnValue("MonedasAsignar", ref parameters);
+
+            return Json(ret);
+        }
+
+        [HttpPost]
+        public JsonResult ddlLisCliente()
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+
+            SqlDataReader dr = dB.ExecuteReader("GetVisitasStandProv", ref parameters);
+
+            var jsonData = new
+            {
+                rows = (
+                        from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                        select new
+                        {
+                            cliente = row["IdPersona"],
+                            nombre = row["Nombre"]
+                        }).ToArray()
+            };
+
+            return Json(jsonData.rows);
+        }
+
+        [HttpPost]
+        public JsonResult eliminarAnuncio(int idAnuncio)
+        {
+            ResponseModel rm = new();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdAnuncio", idAnuncio);
+
+                dB.ExecuteNonQuery("DeleteAnuncioProv", ref parameters);
+                rm.Response = true;
+            }
+            catch (Exception ex)
+            {
+                rm.Response = false;
+                rm.Message = ex.Message;
+            }
+
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult GetAnuncio(int idAnuncio)
+        {
+            mAnuncios anuncio = new mAnuncios();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdAnuncio", idAnuncio);
+
+            SqlDataReader dr = dB.ExecuteReader("GetAnuncioProv", ref parameters);
+
+            while (dr.Read())
+            {
+                anuncio.IdAnuncio = (int)dr["IdAnuncio"];
+                anuncio.Proveedor = (int)dr["Proveedor"];
+                anuncio.Anuncio = (string)dr["Anuncio"];
+                anuncio.FeInicio = (DateTime)dr["FeInicio"];
+                anuncio.FeTermino = (DateTime)dr["FeTermino"];
+                anuncio.Rank = (byte)dr["Rank"];
+            }
+
+            return Json(anuncio);           
+        }
+
+        [HttpPost]
+        public JsonResult GetAnuncios()
+        {
+            List<mAnuncios> Anuncios = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+
+            SqlDataReader dr = dB.ExecuteReader("GetAnunciosProv", ref parameters);
+
+            while (dr.Read())
+            {
+                mAnuncios anuncio = new mAnuncios();
+
+                anuncio.IdAnuncio = (int)dr["IdAnuncio"];
+                anuncio.Proveedor = (int)dr["Proveedor"];
+                anuncio.Anuncio = (string)dr["Anuncio"];
+                anuncio.FeInicio = (DateTime)dr["FeInicio"];
+                anuncio.FeTermino = (DateTime)dr["FeTermino"];
+                anuncio.Rank = (byte)dr["Rank"];
+
+                Anuncios.Add(anuncio);
+            }
+
+            return Json(Anuncios);
+        }
+
+        [HttpPost]
+        public JsonResult GetArticulos()
+        {
+            List<ArticulosProveedores> Articulos = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+
+            SqlDataReader dr = dB.ExecuteReader("GetArticulosProv", ref parameters);
+
+            while (dr.Read())
+            {
+                ArticulosProveedores DetalleArticulo = new ArticulosProveedores();
+
+                DetalleArticulo.IdArticulo = (Int16)dr["IdArticulo"];
+                DetalleArticulo.Nombre = (string)dr["Nombre"];
+                DetalleArticulo.Descripcion = (string)dr["Descripcion"];
+                DetalleArticulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
+                DetalleArticulo.Foto = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
+                DetalleArticulo.NumFoto = (dr["NumFoto"] != DBNull.Value ? (byte)dr["NumFoto"] : (byte)0);
+
+                Articulos.Add(DetalleArticulo);
+            }
+
+            return Json(Articulos);
+        }
+
+        [HttpPost]
+        public JsonResult getClienteAsignar(int idCliente)
+        {
+            Clientes Visita = new Clientes();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@Cliente", idCliente);
+
+            SqlDataReader dr = dB.ExecuteReader("GetVisitasStandProv", ref parameters);
+
+            while (dr.Read())
+            {
+                Visita.IdPersona = (int)dr["IdPersona"];
+                Visita.Nombre = (string)dr["Nombre"];
+            }
+
+            return Json(Visita);
+        }
+
+        [HttpPost]
+        public JsonResult GetClientes()
+        {
+            List<Clientes> Visitas = new();
+  
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+
+            SqlDataReader dr = dB.ExecuteReader("GetVisitasStandProv", ref parameters);
+
+            while (dr.Read())
+            {
+                Clientes Visita = new Clientes();
+
+                Visita.IdPersona = (int)dr["IdPersona"];
+                Visita.Nombre = (string)dr["Nombre"];
+
+                Visitas.Add(Visita);
+            }
+
+            return Json(Visitas);
+        }
+
+        [HttpPost]
+        public JsonResult getMonedas()
+        {
+            int monedas = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+
+            return Json(monedas);
+        }
+
+        [HttpPost]
+        public JsonResult getMonedasContacto(int idCliente)
+        {
+            MonedasActuales MonedasActuales = new MonedasActuales();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@Cliente", idCliente);
+
+            SqlDataReader dr = dB.ExecuteReader("GetMonedasContacto", ref parameters);
+
+            while (dr.Read())
+            {
+                MonedasActuales.monedas = (int)dr["Monedas"];
+                MonedasActuales.monedasContacto = (int)dr["MonedasContacto"];
+            }
+
+            return Json(MonedasActuales);
+        }
+
+        [HttpPost]
+        public JsonResult getPreciosCliente(int cliente)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@cliente", cliente);
+            parameters[1] = new SqlParameter("@proveedor", HttpContext.Session.GetString("ClienteSel"));
+            parameters[2] = new()
+            {
+                ParameterName = "@itemscount",
+                DbType = DbType.Int32,
+                Direction = ParameterDirection.Output
+            };
+
+            SqlDataReader dr = dB.ExecuteReader("ExpoProveedorPrecios", ref parameters, commandType: CommandType.StoredProcedure, "IndigoCS");
+
+            var jsonData = new
+            {
+                rows = (
+                        from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                        select new
+                        {
+                            idproducto = row["IdProducto"],
+                            codigo = row["Codigo"],
+                            producto = row["Producto"],
+                            costo = row["Costo"],
+                            comprado = row["Comprado"],
+                            carrito = row["Carrito"],
+                            pedido = row["Pedido"],
+                            preciocliente = row["PrecioCliente"],
+                            descuentoexpo = row["DescuentoExpo"],
+                            precioexpo = row["PrecioExpo"],
+                            descuentoadicional = row["DescuentoAdicional"],
+                            preciofinal = row["PrecioFinal"]                                                 
+                        }).ToArray()
+            };
+
+            return Json(jsonData.rows);
+        }
+
+        [HttpPost]
+        public JsonResult GuardarAnuncio(int idAnuncio, string descripcion, string feInicio, string feTermino)
+        {
+            ResponseModel rm = new();
+
+            try 
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[5];
+                parameters[0] = new SqlParameter("@IdAnuncio", idAnuncio);
+                parameters[1] = new SqlParameter("@Proveedor", HttpContext.Session.GetString("ClienteSel"));
+                parameters[2] = new SqlParameter("@Anuncio", descripcion);
+                parameters[3] = new SqlParameter("@FeInicio", Convert.ToDateTime(convierteFecha(feInicio)));
+                parameters[4] = new SqlParameter("@FeTermino", Convert.ToDateTime(convierteFecha(feTermino)));
+
+                dB.ExecuteNonQuery("AddAnuncioProv", ref parameters);
+
+                rm.Response = true;
+                rm.Message = "El anuncio se guardo correctamente";
+            }
+            catch (Exception ex)
+            {
+                rm.Response = false;
+                rm.Message = ex.Message;
+            }
+
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult imgArticulo(int IdArticulo)
+        {
+            List<ArticulosProveedores> Articulo = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+
+            SqlDataReader dr = dB.ExecuteReader("GetArticuloProv", ref parameters);
+
+            while (dr.Read())
+            {
+                ArticulosProveedores DetalleArticulo = new ArticulosProveedores();
+
+                DetalleArticulo.IdArticulo = (Int16)dr["IdArticulo"];
+                DetalleArticulo.Nombre = (string)dr["Nombre"];
+                DetalleArticulo.Descripcion = (string)dr["Descripcion"];
+                DetalleArticulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
+                DetalleArticulo.Foto = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
+                DetalleArticulo.NumFoto = (dr["NumFoto"] != DBNull.Value ? (byte)dr["NumFoto"] : (byte)0);
+
+                Articulo.Add(DetalleArticulo);
+            }
+
+            return Json(Articulo);
+        }
+
+        [HttpPost]
+        public JsonResult OrdenFoto(int IdArticulo)
+        {
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+
+            dr = dB.ExecuteReader("GetOrdenFotoArticuloProv", ref parameters);
+
+            var jsonData = new
+            {
+                rows = (
+                from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                 select new
+                 {
+                     ordenfoto = row["OrdenFoto"]
+                 }).ToArray()
+            };
+
+            return Json(jsonData.rows);
+        }
+
+        [HttpPost]
+        public void ArticuloGuardarOrdenFoto(int NumFoto, int IDdArticulos)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IDdArticulos", IDdArticulos);
+            parameters[1] = new SqlParameter("@NumFoto", NumFoto);
+
+            dB.ExecuteNonQuery("EditOrdenFotoArticuloProv", ref parameters);
+        }
+
+        public string convierteFecha(string fecha)
+        {
+            string[] split = fecha.Split(' ');
+            string[] splitFecha = split[0].Split('-');
+
+            return splitFecha[2] + "/" + splitFecha[1] + "/" + splitFecha[0] + " " + split[2];
+        }
+
+        [HttpPost]
+        public void productoAgregarDescuento(int IdCliente, int IdProducto, decimal PorcentajeDescuento)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@IdProducto", IdProducto);
+            parameters[2] = new SqlParameter("@Descuento", PorcentajeDescuento);
+            parameters[3] = new SqlParameter("@Cliente", IdCliente);
+
+             dB.ExecuteNonQuery("AddDescuentoProv", ref parameters);
+        }
+
+        [HttpPost]
+        public Int16 ValidaDescuento(decimal PorcentajeDescuento, decimal Costo, decimal PrecioExpo)
+        {
+            Int16 res = 0; //El % de descuento debe ser mayor a 0
+
+            if (PorcentajeDescuento > 0)
+             res = ValidaDescuentovsCosto(PorcentajeDescuento, Costo, PrecioExpo);
+
+            return res;
+        }
+
+        protected Int16 ValidaDescuentovsCosto(decimal PorcentajeDescuento, decimal Costo, decimal PrecioExpo)
+        {
+            decimal MontoDescuento = PrecioExpo * PorcentajeDescuento / 100;
+
+            Int16 res = 2; //El descuento otorgado es mayor al costo, mostrar aviso al proveedor
+
+            if (PrecioExpo - MontoDescuento > Costo)
+                res = 1; //El descuento otorgado es valido
+
+            return res;
+        }
+    }
+}

@@ -1,0 +1,480 @@
+﻿@model ConfiguracionViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+    ViewData["Title"] = "Configuracion";
+}
+<div class="col-sm-12 col-md-12 ">
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                <li class="nav-item">
+                    <a class="nav-link active link-item-titulo " aria-current="true" data-bs-toggle="tab" href="#configuracion"> Configuración del Stand</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#interactividad"> Interactividad </a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body tab-content">
+            <div class="tab-pane active" id="configuracion">
+                <div class="form-group">
+                    <div class="row">
+                        <h4 class="text-center">Configuración</h4>
+                        <form method="post" role="form">
+                            <div class="text-danger" asp-validation-summary="All"></div>
+                            <div class="col-md-6 text-center mx-auto mb-4">
+                                <label asp-for="NombreStand"></label>
+                                <input asp-for="NombreStand" id="NombreStand" class="w-60 form-control" placeholder="Ingresar el nombre para el Stand" />
+                                <span asp-validation-for="NombreStand" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 text-center mx-auto mb-4">
+                                <label asp-for="DescripcionStand"></label>
+                                <textarea asp-for="DescripcionStand" id="DescripcionStand" class="form-control"></textarea>
+                                <span asp-validation-for="DescripcionStand" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-8 text-center mx-auto mt-4">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <label style="height:50px" asp-for="Logo"></label>
+                                        <img class="w-50 mx-auto" style="max-height:250px;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="Logo" />
+                                        <input asp-for="Logo" type="file" class="form-control-file" id="Logo">
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <label style="height:50px" asp-for="Fondo"></label>
+                                        <img class="w-50" style="max-height:250px;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Fondo))" alt="Logo" />
+                                        <input asp-for="Fondo" type="file" class="form-control-file" id="Fondo">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 text-center mx-auto mt-4">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label asp-for="Color" class="control-label"></label>
+                                        <div style="height: 150px">
+                                            <select id="ddlColores">
+                                                <option value="1">Azul</option>
+                                                <option value="2">Aqua</option>
+                                                <option value="3">Rojo</option>
+                                                <option value="4">Verde</option>
+                                                <option value="5">Otoño</option>
+                                                <option value="6">Gris</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 text-center mx-auto mt-4">
+                                <button type="button" class="btn btn-azul-medio" onclick="guardarConfiguracion()">Guardar Cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="interactividad">
+                <div class="row">
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <h4>¿Cuántas visitas a tu Stand premiarás por día de la Expo?</h4>
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <h5>¿Que día premiarás?</h5>
+                        <div class="d-flex justify-content-center">
+                            @Html.DropDownListFor(model => model.Fecha, new SelectList(Model.Fechas, "Fecha", "Fecha"), new { id = "cmb_Fechas", @class = " text-left ", name = "cmb-Fechas", title="cmb"})
+                        </div>
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <h5>¿Cuántas visitas premiarás?</h5>
+                        <div class="d-flex justify-content-center">
+                            <input type="number" id="Numero_visitas" value="1" />
+                            <label id="lblCantidadMonedas" class="mx-2"> 100 Monedas por dia</label>
+                        </div>
+                        <button onclick="AgregarDia()" type="button" class="btn btn-verde-medio w-25 d-block mx-auto mt-4"> Aceptar </button>
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <table id="productos__info" class="display" style="width:100%"></table>
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <h5>¿Cuales productos premiarás por visita?</h5>
+                        <div class="d-flex justify-content-center">
+                            <button class="btn-azul btn-primary" onclick="BuscarProductos()" data-bs-toggle="modal" data-bs-target="#BuscarProductoModal">Agregar</button>
+                        </div>
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <label id="ProductoSelEditar" hidden></label>
+                        <table id="ProductosMax" class="display" style="width:100%"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="BuscarProductoModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecciona un Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Salir"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center flex-wrap">
+                <div class="col-md-7 m-2">
+                    <label id="idProductoSel" hidden></label>
+                    <table id="tblProductos" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th> </th>
+                                <th>Codigo</th>
+                                <th>Producto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4 m-auto">
+                    <h5>Cantidad de Visitas a premiar</h5>
+                    <input type="number" id="txtCantidadVisitas" value="1"/>
+                </div>
+            </div>
+            <div class="card m-2 d-flex flex-column align-items-center">
+                <h5>¿En qué días será premiado?</h5>
+                <div class="d-flex flex-wrap" id="diasPremiados">
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-around">
+                <button type="button" class="btn btn-success" onclick="AgregarProductos()">Agregar</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function ()
+    {
+        tableUsuarios()
+
+        const miSelect = document.getElementById('ddlColores');
+
+        miSelect.value = @Model.Color;
+
+        var monedas = document.getElementById('cmb_Fechas').value;
+
+        if (monedas.split(',')[2] == "1")
+        {
+            lblCantidadMonedas.innerText += ' Presencial';
+        }
+
+        ProductosMax();
+
+        $('#tblProductos tbody').on('click', 'tr', function ()
+        {
+            if ($(this).hasClass('selected'))
+            {
+                $(this).removeClass('selected');
+                document.getElementById('idProductoSel').innerText = '';
+            }
+            else
+            {
+                $('#tblProductos tbody tr.selected').removeClass('selected');
+
+                $(this).addClass('selected');
+                document.getElementById('idProductoSel').innerText = $('#tblProductos tbody tr.selected label').text()
+            }
+        });
+    });
+
+    function tableUsuarios()
+    {
+        $('#productos__info').DataTable({
+            pageLength: 7,
+            "language": 
+            {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "bDestroy": true,
+            "ajax":
+            {
+                url: path + "Configuracion/GetfechasMoneda",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": 
+            [
+                { "data": "fecha", title: " Fechas " },
+                { "data": "visitas", title: " Visitas a premiar " },
+                { "data": "monedas", title: " Monedas " }
+            ]
+        });
+    }
+
+    function Reload()
+    {
+        $('#productos__info').dataTable().fnDestroy();
+        tableUsuarios()
+    }
+
+    function guardarConfiguracion()
+    {
+        var logo = document.getElementById('Logo').files[0];
+        var fondo = document.getElementById('Fondo').files[0];
+        var nombre = document.getElementById('NombreStand').value;
+        var descripcion = document.getElementById('DescripcionStand').value;
+        var color = document.getElementById('ddlColores').value;
+
+        var formData = new FormData();
+
+        formData.append('logo', logo);
+        formData.append('fondo', fondo);
+        formData.append('nombre', nombre);
+        formData.append('descripcion', descripcion);
+        formData.append('color', color);
+
+        console.log(formData);
+
+        $.ajax({
+            url: path + 'Configuracion/GuardarConfiguracion',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (result) 
+            {
+                alert('Guardado');
+                window.location.reload();
+            },
+            error: function (xhr, status, error) 
+            {
+                alert('Error al subir la imagen.');
+            }
+        });
+    }
+
+    var numero_visitas = document.getElementById('Numero_visitas');
+    var cmb_Fechas = document.getElementById('cmb_Fechas');
+
+    numero_visitas.addEventListener('change', function ()
+    {
+        var lblCantidadMonedas = document.getElementById('lblCantidadMonedas');
+
+        lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';
+
+        if (cmb_Fechas.value.split(',')[2] == "1")
+        {
+            lblCantidadMonedas.innerText += ' Presencial';
+        }
+    });
+
+    cmb_Fechas.addEventListener('change', function ()
+    {
+        var lblCantidadMonedas = document.getElementById('lblCantidadMonedas');
+
+        lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';
+
+        if (cmb_Fechas.value.split(',')[2] == "1")
+        {
+            lblCantidadMonedas.innerText += ' Presencial';
+        }
+    });
+
+    function AgregarDia()
+    {
+        var fecha = document.getElementById('cmb_Fechas').value;
+
+        $.ajax({
+            url: path + "Configuracion/AgregarDia",
+            type: 'POST',
+            dataSrc: "",
+            data: 
+            {
+                visitas: numero_visitas.value,
+                fecha: fecha.split(',')[0]
+            },
+            success: function (response)
+            {
+                tableUsuarios();
+            },
+            error: function ()
+            {
+                alert('Error al subir la imagen');
+            }
+        });
+    }
+
+    function ProductosMax() 
+    {
+        $('#ProductosMax').DataTable({
+            pageLength: 7,
+            "language": 
+            {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "bDestroy": true,
+            "ajax":
+            {
+                url: path + "Configuracion/GetProductosMax",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": 
+            [
+                {
+                    render: function (data, type, row) 
+                    {
+                        return '<button  class="btn btn-warning fa fa-pencil" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"> </button>'
+                            + '<button class="fa fa-check btn btn-success" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>'
+                            + ' <label class="lblid" hidden> ' + row.idProducto + '</label>';
+                    }
+                },
+                { "data": "fecha", title: " Dia a premiar " },
+                { "data": "nombre", title: " Producto " },
+                { "data": "visitas", title: " No. Visitas a Premiar " },
+                { "data": "maximo", title: " Costo en monedas " }
+            ]
+        });
+    }
+
+    function BuscarProductos() 
+    {
+        var tblProductos = $('#tblProductos').DataTable();
+
+        tblProductos.destroy();
+        tblProductos = $('#tblProductos').DataTable({
+            "language": 
+            {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax":
+            {
+                url: path + "Promociones/GetProdcutos",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns":
+            [
+                {
+                    render: function (data, type, row)
+                    {
+                        return '<button onclick="SelProducto(' + row.idProducto + ')" class="btn fa fa-chevron-right"> </button>'
+                            + ' <label hidden> ' + row.idProducto + '</label>';
+                    }
+                },
+                { "data": "codigo" },
+                { "data": "producto" }
+            ]
+        });
+
+        document.getElementById('txtCantidadVisitas').value = 1;
+        
+        var diasPremiados = document.getElementById('diasPremiados');
+        
+        while (diasPremiados.firstChild) 
+        {
+            diasPremiados.removeChild(diasPremiados.firstChild);
+        }
+
+        Array.from(cmb_Fechas.options).forEach(option =>{
+
+            const diaDiv = document.createElement("div");
+            diaDiv.classList.add('m-1');
+            diaDiv.classList.add('p-1');
+
+            const inputSel = document.createElement("input");
+            inputSel.type = "checkbox";
+            inputSel.classList.add('m-1');
+
+            const lblDia = document.createElement("label");
+            lblDia.innerText = option.innerHTML;
+
+            diaDiv.appendChild(inputSel);
+            diaDiv.appendChild(lblDia);
+
+            diasPremiados.appendChild(diaDiv);
+        })
+    }
+
+    function SelProducto(idProducto) 
+    {
+        document.getElementById('idProductoSel').innerText = idProducto;
+    }
+
+    function AgregarProductos()
+    {
+        var producto = document.getElementById('idProductoSel').innerText;
+        var diasPremiados = document.getElementById('diasPremiados').querySelectorAll('div');
+        var visitas = document.getElementById('txtCantidadVisitas').value;
+
+        if(producto == '' || visitas < 1)
+        {
+            alert('Seleccione algun producto o agregue un numero de visitas mayor a 1');
+        } 
+        else 
+        {
+            diasPremiados.forEach(dia => {
+                if (dia.querySelector('input').checked)
+                {
+                    $.ajax({
+                        url: path + "Configuracion/AgregarProductosMaximo",
+                        type: 'POST',
+                        dataSrc: "",
+                        data: 
+                        {
+                            visitas: visitas,
+                            fecha: dia.querySelector('label').innerText,
+                            idProducto: producto
+                        },
+                        success: function (response) 
+                        {
+                            $('#BuscarProductoModal').modal('hide');
+                            ProductosMax();
+                        },
+                        error: function () 
+                        {
+                            alert('Error al subir la imagen');
+                        }
+                    });
+                }
+            })
+        }        
+    }
+
+    function editarFila(fila, data)
+    {
+        fila.find('.btn-warning').hide();
+        fila.find('.btn-success').show();
+        fila.find('td:nth-child(4)').attr('contenteditable', true).css('background-color', 'gray').addClass('editando');
+    }
+
+    function confirmarEdicion(fila, idProducto)
+    {
+        fila.find('.btn-success').hide();
+        fila.find('.btn-warning').show();
+
+        var ProductosMax = $('#ProductosMax').DataTable();
+
+        var datos = ProductosMax.row(fila).data();
+        datos["porSurtir"] = fila.find('.editando').text();
+
+        $.ajax({
+            url: path + "Configuracion/AgregarProductosMaximo",
+            type: 'POST',
+            dataSrc: "",
+            data: 
+            {
+                visitas: fila.find('.editando').text(),
+                fecha: fila.find('td:nth-child(2)').text(),
+                idProducto: fila.find('.lblid').text()
+            },
+            success: function (response) 
+            {
+                fila.find('.editando').attr('contenteditable', false).css('background-color', 'white').removeClass('editando');
+                ProductosMax();                
+            },
+            error: function () 
+            {
+                alert('Error al subir la imagen');
+            }
+        });
+    }
+
+</script>

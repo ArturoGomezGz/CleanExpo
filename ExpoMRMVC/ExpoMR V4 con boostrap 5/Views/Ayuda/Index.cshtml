@@ -1,0 +1,108 @@
+﻿<input type="hidden" id="hdfSal" />
+<partial name="_Ayuda_Index_Partial" />
+
+<script>
+    let array;
+
+    function buscarPorLetra(letra) {      
+        buscar(letra,'')
+    }
+
+    function search(){
+        buscar('', $(".input_busqueda").val())
+    }
+
+    function buscar(letra, palabra) {
+        let cadena = '';
+        $("#lista").html('')
+        $("#divLaboratorio").html('')
+        $.post(path + "Ayuda/GetSales",
+            { 
+                letra: letra,
+                palabra: palabra
+            },
+            function (data) {
+                $.each(data, function (index, value) {                    
+                    if (value.habilitado){
+                        cadena += '<div class="col-md-4 col-sm-6"><a class="resultSal a_decoration" href="#divLaboratorio" onclick="buscarLaboratorio('+ value.idSal +', this)">'
+                                + value.sal + '</a></div>';
+                    }
+                    else
+                        cadena += '<div class="col-md-4 col-sm-6"><a class="resultSal a_decoration_none">' + value.sal + '</a></div>'
+                });
+
+                $("#lista").append(cadena)
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false)
+        });
+    }
+
+    function buscarLaboratorio(Sal,element){
+        var block = $('<div class="block-loading container" />');
+        $("#main").prepend(block);
+        var textoEnlace = element.textContent || element.innerText;
+        document.getElementById('hdfSal').value = textoEnlace;
+        let cadena = '<div class="row">';
+        $("#divLaboratorio").html('')
+        $.post(path + "Ayuda/GetLaboratorioBySal",
+            {
+                Sal: Sal
+            },
+            function (data) {
+                $.each(data, function (index, value) {
+                    cadena += '<div class="col-md-55 col-md-6 col-lg-4 mt-4">'
+                        + '<div class="h-100 card card-inverse card-info">'
+                        + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal=' + Sal + '" style=" margin: auto;">'
+                                        + '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + value.logo + '" alt="image" />'
+                                    +'</a>'
+                                    +'<div class="card-block" style="text-align: center;">'
+                        + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal='+Sal+'"><h6 class="card-title">' + value.nombre + '</h6></a>'
+                                    +'</div>'
+                                +'</div>'
+                             +'</div>'                   
+                });
+                cadena += '</div>';
+                $("#divLaboratorio").append(cadena)
+                block.remove();
+            }).error(function () {
+                alerta(false, "No fue posible cargar sus datos")
+            });
+    }
+</script>
+
+<style>
+    .text-center > .btn {
+        width: 2.5rem;
+    }
+
+    .a_decoration{
+        text-decoration: underline;
+        color:var(--azul-oscuro);
+    }
+
+    .a_decoration:hover {
+        text-decoration: underline;
+        color: var(--verde);
+    }
+
+    .a_decoration_none{
+        text-decoration:unset;
+        /*color:var(--gris);*/
+    }
+
+    .a_decoration_none:hover {
+        text-decoration: unset;
+        color: var(--gris);
+    }
+
+    .col-md-4 {
+    margin-top:5px;
+    margin-bottom:5px;
+    }
+
+    .lab{
+        max-width: 150px;
+    }
+
+  
+</style>

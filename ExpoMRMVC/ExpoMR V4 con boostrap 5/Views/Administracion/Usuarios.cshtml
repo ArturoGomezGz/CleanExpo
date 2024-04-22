@@ -1,0 +1,269 @@
+﻿@model AdminstracionViewModel
+@{
+    ViewData["Title"] = "Usuarios";
+	Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+
+<h1>Usuarios</h1>
+<div id="liveAlertPlaceholder"></div>
+<div class="row mb-4">
+    <div class="col-md-3 mb-4">		
+		@Html.LabelFor(m => m.IdTipoUsuario, new { @class = "fw-bold"})
+		@Html.DropDownListFor(model => model.IdTipoUsuario, new SelectList(Model.TipoUsuario, "IdTipoUsuario", "TipoUsuario"), new { id = "IdTipoCliente", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})		
+    </div>
+    <div class="col-md-3 mb-4">		
+		@Html.LabelFor(m => m.Ruta, new { id="labelRuta",  @class = "fw-bold" })
+		@Html.DropDownListFor(model => model.Ruta, new SelectList(Model.Rutas, "IdRuta", "Descripcion"), new { id = "IdRuta", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})		
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="row">
+		<table id="Usuarios" class="display nowrap" style="width:100%"></table>
+    </div>
+</div>
+<div class="row mb-4">
+	<div class="col-md-3"><button id="InvitacionMasiva" type="button" class="btn btn-azul btn-large" onclick="InvitacionMasiva();"> Enviar <i class="fa fa-envelope" aria-hidden="true"></i></button></div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		
+		tableUsuarios() //Se llena la tabla
+
+		$("#IdRuta").change(function(){
+			Reload()
+		});
+
+		$("#IdTipoCliente").change(function(){
+			if(this.value != 1){
+				$('#IdRuta').addClass('d-none');
+				$('#div_check').addClass('d-none');
+				$('#labelRuta').addClass('d-none');
+				$('#InvitacionMasiva').addClass('d-none');
+			}else{
+				$('#IdRuta').removeClass('d-none');
+				$('#labelRuta').removeClass('d-none');
+				$('#div_check').removeClass('d-none');
+				$('#InvitacionMasiva').removeClass('d-none');
+			}
+
+			Reload()
+		});
+	});
+
+	function tableUsuarios() {
+		let idTipoUsuario = $("#IdTipoCliente").val();
+		let idRuta = idTipoUsuario == 1 ? $("#IdRuta").val() : 0
+
+		$('#Usuarios').DataTable({
+			responsive: true,
+			pageLength: 7,
+			"language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+			"bDestroy": true,
+			"ajax": {
+				url: path + "Administracion/GetUsuarios?IdTipoUsuario=" + idTipoUsuario + "&IdRuta=" + idRuta,
+				type: 'POST',
+				dataSrc: ""
+			},
+			"columns":
+				[
+					{
+						"data": "idEmail",
+						orderable: false,
+						render: function (data, type, row) {
+							if (row.idEmail != 0 && row.usuario == true && type === 'display') {
+								return '<a href="' + path + 'Administracion/EditarUsuario?IdEmail=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+							}
+
+							return '';
+						},
+					},
+					{
+						"data": null,
+						targets: 0,
+						orderable: false,
+						render: function (data, type, row, meta) {
+							if (row.idEmail != 0 && row.usuario == true && type === 'display') {
+								return data = '<div class="checkbox"><input type="checkbox" id="chkSel" class="dt-checkboxes" value="' + row.idEmail + '"></div>';
+							}
+
+							return '';
+						},
+						checkboxes: {
+							'selectRow': true
+						},
+					},
+					{ "data": "nombre", title: "Nombre" },
+					{ "data": "email", title: "Email" },
+					{ "data": "tipoPersona", title: "Tipo" },
+					{ "data": "sucursal", title: "Sucursal" },
+					{ "data": "invitacion", title: "Invitacion" },
+					{
+						"data": "vip",
+						title: "VIP",
+						render: function (data, type) {
+							if (!data) {
+								
+								return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-square-o" aria-hidden="true"></i>';
+							}
+							
+							return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-check-square-o" aria-hidden="true"></i>';
+						},
+					},
+					{
+						"data": "usuario",
+						title: "Usuario",
+						render: function (data, type) {
+							if (!data) {
+								return '<i class="fa fa-square-o" aria-hidden="true"></i>';
+							}
+
+							return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+						},
+					},
+					{
+						"data": "lock",
+						title: "Bloqueado",
+						render: function (data, type) {
+							if (!data) {
+								return '<i class="fa fa-square-o" aria-hidden="true"></i>';
+							}
+
+							return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+						},
+					},
+					{
+						"data": "invitacion",
+						orderable: false,
+						render: function (data, type, row) {
+							if (!row.invitacion && row.usuario == false ) {
+								return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" class="btn btn-verde circle__button"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+							}
+
+							return ''
+						}
+					}
+				]
+		});
+	}
+
+	function InvitacionMasiva() {
+
+		const cb = document.querySelectorAll('input[type=checkbox]:checked[Id="chkSel"]'); //Se seleccionan todos los controles de tipo checkbox y su id= chkSel
+		console.log(cb);
+
+		if (cb.length < 1) { //Se valida que debe existir al menos 1 checkbox seleccionado para el envio de invitacion
+			alert('Debes selecionar un email para enviar invitacion')
+		}
+		{
+			$("input[type=checkbox]:checked").each(function () {
+
+				if ($(this).prop('checked') && $(this).val() > 0) {
+
+
+					const IdEmail = $(this).val();
+					const UserName = $(this).closest('tr').find('td:eq(3)').text();
+					const Vip = $(this).closest('tr').find('.hdn').val();
+
+					$.post(path + "Administracion/InvitacionMasivaClientes",
+						{
+							IdEmail: IdEmail,
+							UserName: UserName,
+							Vip: Vip
+						},
+						function (data) {
+							ShowAlert(data.message, data.response);
+						}).error(function () {
+							ShowAlert("No fue posible cargar sus datos", false);
+						});
+				};
+			});
+		}
+	}
+
+	function Reload(){
+		$('#Usuarios').dataTable().fnDestroy();
+		$('#Usuarios').html('')
+		tableUsuarios()		
+    }
+
+	function DarDeAlta(email, idEmail)
+	{	
+		if (email === undefined || email.replace(/\s+/g, "") === "") 
+		{
+			ShowAlert("El usuario no puede darse de alta por falta de Email", false)
+		}
+		else
+		{
+			$("#userName").val(email)
+			$("#idEmail").val(idEmail)
+			const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+			myModal.show();
+		}		
+	}
+
+	function addUsuario(){		
+		let idEmail = $("#idEmail").val();
+		let UserName = $("#userName").val();
+		let TipoCliente = $("#IdTipoCliente").val()
+		var checkbox = document.getElementById("ChangeVIP");
+		var Vip = checkbox.checked;
+		let Sucursal = $("#cmb-Sucursal").val()
+
+		if (Sucursal === "" || Sucursal === "0")
+		{
+			ShowAlert("Seleccione una Sucursal para Continuar", false)
+		}
+		else
+		{
+			$.post(path + "Administracion/AddUser",
+				{
+					idEmail: idEmail,
+					UserName: UserName,
+					TipoCliente: TipoCliente,				
+					Vip: Vip,
+					Sucursal: Sucursal					
+				},
+				function (data) {
+					var myModalEl = document.getElementById('exampleModal');
+					var modal = bootstrap.Modal.getInstance(myModalEl)
+					modal.hide()
+					ShowAlert(data.message, data.response)					
+					$("#btn-close").click();
+					Reload()
+				}).error(function () {
+					ShowAlert("No fue posible cargar sus datos", false);
+				});
+		}
+	}
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Dar de alta el usuario</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<input class="form-check-input" type="hidden" id="userName">
+				<input class="form-check-input" type="hidden" id="idEmail">
+				<div class="form-check form-switch checkBox" id="div_check">
+					<input class="form-check-input" type="checkbox" id="ChangeVIP">
+					<label class="form-check-label" for="ChangeVIP"> VIP</label>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-4">
+						@Html.LabelFor(m => m.IdSucrsal, new { @class = "fw-bold" })
+						@Html.DropDownListFor(model => model.IdSucrsal, new SelectList(Model.Sucursales, "IdSucursal", "Sucursal"), new { id = "cmb-Sucursal", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" onclick="addUsuario()" class="btn btn-success">Aceptar</button>
+				<button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
+			</div>
+		</div>
+	</div>
+</div>

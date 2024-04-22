@@ -1,0 +1,700 @@
+﻿@model Cotizacion
+
+@{
+    ViewData["Title"] = "GetCotizacion";
+}
+
+<h1>Orden</h1>
+
+<div class="col-md-12">
+    <div class="row">
+         <div id="liveAlertDetailCotizacion"></div>
+        <div class="col-8">
+            <label hidden>@Model.IdCliente</label><br />
+            <label hidden>@Model.IdCotizacion</label><br />
+            <strong>Cliente: </strong><label>@Model.Cliente</label><br />
+            <strong>RFC: </strong><label>@Model.RFC</label><br /><br />
+            <strong>Tipo de Comprobante:</strong>
+            <label>
+                @Html.DropDownListFor(model => model.IdDocumento, new SelectList(Model.TipoDocumentos, "IdDocumento", "Documentos"), new { id = "txtDocumento", @class= "form-select", name = "Documento", disabled="disabled", title="cmb"})
+            </label>
+            <br />
+            <strong>Uso del CFDI: </strong>
+            <label>
+                @Html.DropDownListFor(model => model.IdUsoCFDI, new SelectList(Model.CFDI, "IdUsoCFDI", "UsoCFDI"), new { id = "txtUsoCFDI", @class= "form-select", name = "Documento", disabled="disabled", title="cmb"})
+            </label>
+            <br />
+            <br />
+            <strong>Tipo de Envio: </strong>
+            <label>
+                @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.Venta, "IdTipoVenta", "TipoVenta"), new { id = "txtTipoVenta",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+            </label>
+            <br />
+            <strong>Direccion de Entrega: </strong>
+            <label>
+                @Html.DropDownListFor(model => model.Direccion, new SelectList(Model.Direcciones, "Entrega", "DirEntrega"), new { id = "txtDirEntrega",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+            </label><br />
+            <strong>Observaciones:</strong><lable><input type="text" id="txtObsv" value="@Model.Observaciones" class="form-control" disabled /></lable>
+            <br />
+            <br />
+            <strong>Transportista:</strong><label id="lblTransportista">@Model.Transportista</label><br />
+            <strong>Porte:</strong><lable id="lblPorte">@Model.Porte</lable><br />
+        </div>
+        <div id="divCotizacionTotal" class="col-4 d-none">
+            <div class="carritoTotal">
+                <strong>Credito: </strong><label id="lblcredito"></label><br />
+                <strong>Subtotal: </strong><label id="lblsubtotal"></label><br />
+                <strong>Iva: </strong><label id="lbliva"></label><br />
+                <strong></strong><label>---------------------</label><br />
+                <strong>Total: </strong><label id="lbltotal"></label><br /><br />
+                <strong>Total de Productos: </strong><label id="lbltotalProductos"></label><br /><br />
+                <div id="btnColocaOrden">
+                    <button id="colocaOrden" onclick="colocarOrden()" class="btn btn-warning">Coloca tu Orden</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <br /><br />
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <button type="button" id="btGuardarDatosCotizacion" onclick="GuardarDatosCotizacion()" class="btn btn-success">Guardar</button>
+        </div>
+        <div class="col-md-6">
+            <button type="button" id="btCancelDatosCotizacion" class="btn btn-danger" onclick="CancelGuadar()" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+    </div> 
+
+</div>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-4">
+            <button type="button" id="AgregarProductos" onclick="btnagregarProductos()" class="btn btn-primary col-md-55" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Productos</button>
+        </div>
+        <div class="col-md-4">
+            <button id="btn-modificar" onclick="modificarCotizacion()" type="button" class="btn btn-primary col-md-55" data-bs-toggle="modal" data-bs-target="#editDatosCliente">Editar</button>
+        </div>
+        <div class="col-md-4">
+            <button type="button" id="buscarCliente" class="btn btn-primary col-md-55" >Buscar cliente</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal captura de productos -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Captura de Productos</h5>
+                <button type="button" onclick="cerrarCapturaProductos()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-10">
+                    <strong>Cliente: </strong><label class="label__producto">@Model.Cliente</label><br /><br />
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="txtBuscar" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-secondary" value="Buscar" onclick="BuscarListaProducto()">Buscar </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="divMostrarProductos" class="col-12">
+                    <table id="BuscarProducto" class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Precentación</th>
+                                <th scope="col">Formula</th>
+                                <th scope="col">Laboratorio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="descripcionProducto" class="col-md-12">
+                    <div id="liveAlertPlaceholder"></div>
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <img class="card-img-top" id="imgProducto" alt="image">
+                                        </div>
+                                        <div class="col-md-6 text-justify">
+                                            <div class="row">
+                                                <h5 class="card-title "><i class="fa fa-plus-square"></i><label id="nombre"></label></h5>
+                                                <label class="label__Presentacion" id="presentacion"></label>
+                                            </div>
+                                            <div class="row">
+                                                <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
+                                            </div>
+                                            <div class="row">
+                                                <strong>Restringido a </strong> <label class="label__producto" id="restingido"></label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <strong>Precio Publico: </strong> <label class="label__publico" id="publico"></label>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Precio MR: </strong><label class="label__PrecioMR" id="precio"></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <strong>Precio Neto: </strong><label class="label__Neto" id="neto"></label>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoexpo"></label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <h6>
+                                                    <strong>Iva:</strong><label class="label__DescuentoExpo" id="iva"></label>
+                                                    <label id="getiva"></label>
+                                                </h6>
+                                            </div>
+                                            <div class="row">
+                                                <strong>Formula: </strong> <label class="label__Formula" id="formula"></label>
+                                            </div>
+                                            <div class="row">
+                                                <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio"></label>
+                                            </div>
+                                            <div class="row">
+                                                <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja"></label>
+                                            </div>
+                                            <div class="row">
+                                                <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="contenedor__Producto">
+                                                <div class="mb-4 ">
+                                                    <bold>Precio Final:</bold><label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                                </div>
+                                                <div class="mb-4 d-grid">
+                                                    <bold>Cantidad:</bold><input id="cantidad" type="number" min="0" value="0" placeholder="0" />
+                                                </div>
+                                                <div class="mb-4">
+                                                    <bold>Subtotal:</bold><label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                                </div>
+                                                <div class="mb-4">
+                                                    <bold>Iva:</bold><label class="contenedor__Producto__iva" id="valoriva"></label>
+                                                </div>
+                                                <hr class="new1" />
+                                                <div class="mb-4">
+                                                    <bold>Total:</bold><label class="contenedor__Producto__Total" id="total"></label>
+                                                </div>
+                                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-warning mb-3">Añadir a Carrito</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" id="IraProductos" onclick="regresaProductos()" class="btn btn-primary col-md-55">Ir a Productos</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Productos -->
+<div class="row">
+    <div class="col-md-12">
+        <table id="Productos" class="table" style="width:100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Presentacion</th>
+                    <th>Laboratorio</th>
+                    <th>Cantidad</th>
+                    <th>PrecioFinal</th>
+                    <th>Total</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Valida Cotizacion -->
+<div class="modal fade" id="modalValidaCotizacion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label id="lblValidaCotizacion"></label><br />
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmar Cliente -->
+<div class="modal fade" id="modalConfirmarCliente" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>El pedido del cliente</p>
+                <label id="lblConfirmarCliente">@Model.Cliente</label><br />
+                <p>será enviado a surtir a almacén y no se podrán hacer cambios.</p>
+                <button type="button" onclick="PedidoAgregar()" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function btnagregarProductos() {
+        document.getElementById("txtBuscar").value = "";
+        $('#descripcionProducto').hide();
+        //$('#BuscarProducto').dataTable().fnDestroy();
+        
+    }
+
+    function cerrarCapturaProductos(){
+    
+        location.reload();
+    }
+
+    function regresaProductos(){
+        $('#descripcionProducto').hide();
+        $('#BuscarProducto').show();
+    }
+
+    function modificarCotizacion() {
+        document.getElementById("txtDocumento").disabled = false;
+        document.getElementById("txtUsoCFDI").disabled = false;
+        document.getElementById("txtTipoVenta").disabled = false;
+        document.getElementById("txtDirEntrega").disabled = false;
+        document.getElementById("txtObsv").disabled = false;
+        $("#AgregarProductos").hide();
+        $("#buscarCliente").hide();
+        $("#btGuardarDatosCotizacion").show();
+        $("#btCancelDatosCotizacion").show();
+        $("#btn-modificar").hide();
+        
+    }
+
+    function GuardarDatosCotizacion(){
+        let IdCotizacion = @Model.IdCotizacion;
+        let IdDocumento = document.getElementById("txtDocumento").value;
+        let IdUsoCFDI = document.getElementById("txtUsoCFDI").value;
+        let IdTipoVenta = document.getElementById("txtTipoVenta").value;
+        let IdEntrega = document.getElementById("txtDirEntrega").value;
+        let Obsv = document.getElementById("txtObsv").value;
+
+        $.post(path + "Empleados/EditarClienteCotizacion",
+            {
+                idcotizacion: IdCotizacion,
+                iddocumento: IdDocumento,
+                idusocfdi: IdUsoCFDI,
+                idtipoventa: IdTipoVenta,
+                identrega: IdEntrega,
+                obsv: Obsv
+            },
+            function (data) {   
+                ShowAlert(data.message, data.response, "liveAlertDetailCotizacion")
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+        window.location.reload();
+     
+    }
+
+    function CancelGuadar(){
+        $("#AgregarProductos").show();
+        $("#buscarCliente").show();
+        $("#btn-modificar").show();
+        $("#btGuardarDatosCotizacion").hide();
+        $("#btCancelDatosCotizacion").hide();
+        document.getElementById("txtDocumento").disabled = true;
+        document.getElementById("txtUsoCFDI").disabled = true;
+        document.getElementById("txtTipoVenta").disabled = true;
+        document.getElementById("txtDirEntrega").disabled = true;
+    }
+
+    function BuscarListaProducto() {
+        $('#descripcionProducto').hide();
+        $('#divMostrarProductos').show();
+        let Busqueda = $("#txtBuscar").val();
+        $('#BuscarProducto').dataTable().fnDestroy();
+        
+        $('#BuscarProducto').DataTable({
+                    "ajax": {
+                "url": path+"Empleados/ProductoBusqueda?Busqueda=" + Busqueda + "&IdCotizacion=" + @Model.IdCotizacion,
+                        type: 'POST',
+                        dataSrc: ""
+                    },
+                    "columns": [
+                        {
+                            "data":  "idProducto",
+                            render: function (data, type) {
+                                if (type === 'display') {
+                                    return '<a onclick="detalleProducto(' + data + ')" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                                }
+                                return data;
+                            },
+                        },
+                        { "data": "nombre" },
+                        { "data": "presentacion" },
+                        { "data": "formula" },
+                        { "data": "laboratorio" }
+                    ]
+        });
+    }
+
+    $('#buscarCliente').click(function () {       
+        document.location = '@Url.Action("Cotizacion")';
+        });
+
+    function regresarBuscarProductos(){
+        $('#descripcionProducto').hide();
+        document.getElementById("txtBuscar").value = "";
+        $('#BuscarProducto').dataTable().fnDestroy();
+    
+    }
+
+</script>
+<script>
+    window.onload = function () {
+
+        $.ajax({
+            type: "POST",
+            url: path + "Empleados/TotalCotizacion?IdCliente=" + @Model.IdCliente,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (resultado) {
+                document.getElementById('lblcredito').innerHTML = " $" + resultado.credito;
+                document.getElementById('lblsubtotal').innerHTML = " $" + resultado.subtotal;
+                document.getElementById('lbliva').innerHTML = " $" + resultado.iva;
+                document.getElementById('lbltotal').innerHTML = " $" + resultado.total;
+                document.getElementById('lbltotalProductos').innerHTML = " " + resultado.productos;
+                if (resultado.productos != 0) {
+                    $("#divCotizacionTotal").removeClass("d-none");
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $("#descripcionProducto").hide();
+        $("#btGuardarDatosCotizacion").hide();
+        $("#btCancelDatosCotizacion").hide();
+        document.getElementById('getiva').style.display = 'none';
+
+        $("btn-modificar").click(function () {
+            removeclass()
+
+            var element = document.getElementById("Documento")
+            element.removeAttribute("disabled");
+        })
+
+        let IdCliente = @Model.IdCliente;
+        let IdCotizacion = @Model.IdCotizacion;
+
+        $('#Productos').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+
+            },
+            "ajax": {
+                url: path + "Empleados/ProductosCapturados?IdCliente=" + IdCliente,
+                type: 'POST',
+                dataSrc: ""
+                   
+            },
+            "columns": [
+                {
+                    "data": "idProducto",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"s/><a class="btn btn-link Edit" ><i class="fa-regular fa-pen-to-square btn btn-outline-success"></i></a><a class="btn btn-outline-success Update" style="display:none"><i class="fa fa-check" aria-hidden="true"></i></a><a class="btn  btn-outline-danger Cancel" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                        }
+                        return data;
+                    },
+                },
+                { "data": "nombre" },
+                { "data": "presentacion" },
+                { "data": "laboratorio" },
+                { "data": "cantidad",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<input class="text" type="text" value="' + data + '" disabled style="width:70px; heigth:70px"/>';
+                        }
+                        return data;
+                    },
+                
+                },
+                { "data": "precioFinal" },
+                { "data": "total" },
+                {
+                    "data": "idProducto",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<a class="btn btn-link Borrar" id="btnBorrarProducto" onclick="BorrarProducto(' + data + ')"><i class="fa-sharp fa-regular fa-circle-xmark btn btn-outline-danger"></i></a>';
+                        }
+                        return data;
+                    },
+                },
+            ]
+        });
+
+        $('#Productos').on('click','.Edit', function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find(".text").length > 0) {
+                    $(this).find(".text").show();
+                }
+            });
+            row.find(".Update").show();
+            row.find(".Cancel").show();
+            row.find(".Borrar").hide();
+            var inputElement  = row.find('.text');
+            inputElement.prop('disabled', false);
+            $(this).hide();
+            //$("#btnBorrarProducto").hide();
+        });
+
+        //Cancel event handler.
+        $('#Productos').on('click', '.Cancel', function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find(".text").length > 0) {
+                    var input = $(this).find(".text");
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Update").hide();
+            row.find(".Cancel").hide();
+            row.find(".Borrar").show();
+            var inputElement = row.find('.text');
+            inputElement.prop('disabled', true);
+        });
+
+        //Update event handler.
+        $('#Productos').on('click', '.Update', function () {
+            var row = $(this).closest("tr");
+            var input, inputhidden;
+            $("td", row).each(function () {
+                if ($(this).find(".text").length > 0) {
+                    input = row.find('.text').val();
+                    inputhidden = row.find('.hdn').val();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Cancel").hide();
+            $(this).hide();
+
+            $.post(path + "Empleados/CotizacionEditarCantidadProducto",
+                {
+                    idcliente: IdCliente,
+                    idproducto: inputhidden,
+                    cantidad: input,
+                    idcotizacion: IdCotizacion
+
+                },
+                function (data) {
+                    window.location.reload()
+
+                }).error(function () {
+                    ShowAlert("No fue posible cargar sus datos", false);
+                });
+        });
+        //if ($('#Productos').DataTable().rows.legth > 0)
+        //{
+        //    $("#divCotizacionTotal").show()
+        //}
+        //$.ajax({
+        //    type: "POST",
+        //    url: path + "Empleados/TotalCotizacion?IdCliente=" + @Model.IdCliente,
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    success: function (resultado) {
+        //        document.getElementById('lblcredito').innerHTML = " $" + resultado.credito;
+        //        document.getElementById('lblsubtotal').innerHTML = " $" + resultado.subtotal;
+        //        document.getElementById('lbliva').innerHTML = " $" + resultado.iva;
+        //        document.getElementById('lbltotal').innerHTML = " $" + resultado.total;
+        //        document.getElementById('lbltotalProductos').innerHTML = " " + resultado.productos;
+
+        //        //console.log(resultado.credito)
+        //        if (resultado.productos == 0) {
+        //            $("#divCotizacionTotal").hide();
+        //        } else {
+        //            $("#divCotizacionTotal").show();
+        //        }
+
+        //    },
+        //    error: function (xhr, status, error) {
+        //        console.log(error);
+        //    }
+        //});
+        
+    });
+ 
+    function BorrarProducto(data)
+        {
+            let IdProducto = data;
+            let Cliente = @Model.IdCliente;
+
+            $.post(path + "Empleados/ProductoDelete",
+                {
+                    idproducto: IdProducto,
+                    cliente: Cliente
+                },
+                function (data){
+                    window.location.reload()
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+        }
+
+    function detalleProducto(IdProducto)
+    {
+        $('#descripcionProducto').show();
+        $('#divMostrarProductos').hide();
+        
+        $.ajax({
+            type: "POST",
+            url: path + "Empleados/detalleProducto?IdProducto=" + IdProducto + "&Cliente=" + @Model.IdCliente,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (resultado) {
+                document.getElementById('imgProducto').src = "data:image/png;base64," + resultado.imgProducto;
+                document.getElementById('nombre').innerHTML = " " + resultado.nombre;
+                document.getElementById('presentacion').innerHTML = " " + resultado.presentacion;
+                document.getElementById('idproducto').innerHTML = " " + resultado.idproducto;
+                document.getElementById('restingido').innerHTML = " " + resultado.restringido;
+                document.getElementById('publico').innerHTML = " " + resultado.publico;
+                document.getElementById('precio').innerHTML = " " + resultado.preciomr;
+                document.getElementById('neto').innerHTML = " " + resultado.neto;
+                document.getElementById('descuentoexpo').innerHTML = " " + resultado.descuentoexpo;
+                document.getElementById('iva').innerHTML = resultado.iva == false ? 0 : 1 ;
+                document.getElementById('formula').innerHTML = " " + resultado.formula;
+                document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
+                document.getElementById('caja').innerHTML = " " + resultado.caja;
+                document.getElementById('codigo').innerHTML = " " + resultado.codigo;
+                document.getElementById('preciofinal').innerHTML = " " + resultado.preciofinal;
+                document.getElementById('getiva').innerHTML = " " + resultado.valoriva;            
+
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });      
+
+        cantidad.oninput = function () {
+
+            let precio = parseFloat(document.getElementById('preciofinal').innerHTML);
+            let valoriva = parseFloat(document.getElementById('getiva').innerHTML);
+
+            let subtotal = cantidad.value * precio;
+            let iva = cantidad.value * precio * valoriva;
+            let total = cantidad.value * precio * (1 + valoriva);
+
+            document.getElementById('subtotal').innerHTML = FormatoMoneda(subtotal);
+            document.getElementById('valoriva').innerHTML = iva.toFixed(2);
+            document.getElementById('total').innerHTML = FormatoMoneda(total);
+        }
+
+    }
+
+    function AgregarProducto() {
+        let Cliente = @Model.IdCliente;
+        let IdProducto = document.getElementById('idproducto').innerHTML;
+        let Cantidad = $("#cantidad").val();
+        let PrecioMR = document.getElementById('preciofinal').innerHTML;
+
+        if (Cantidad > 0) {
+            $.post(path + "Empleados/AddCotizacion",
+                {
+                    cliente: Cliente,
+                    idProducto: IdProducto,
+                    unitario: PrecioMR,
+                    cantidad: Cantidad
+                },
+                function (data) {
+                    ShowAlert(data.message, data.response)
+                    GetCarrito();
+                    GetMonedas();
+                    $('#BuscarProducto').show();                    
+                }).error(function () {
+                    ShowAlert("No fue posible cargar sus datos", false);
+                });
+        } else {
+            ShowAlert("La Cantidad debe ser mayor a Cero", false);
+        }
+    }
+
+    function colocarOrden(){
+
+        var IdDocumento = $("#txtDocumento").val();
+        var IdUsoCFDI = $("#txtUsoCFDI").val();
+
+        if(IdDocumento == 1 && IdUsoCFDI == 0)
+        {
+            window.alert("No se puede colocar el pedido ya que no tiene uso CFDI definido, favor de contactar a Credito y Cobranza")
+        }
+        else
+        {
+            $.ajax({
+                type: "POST",
+                url: path + "Empleados/colocarOrden?IdCliente=" + @Model.IdCliente,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    const myModal = new bootstrap.Modal(document.getElementById('modalValidaCotizacion'));
+                    const myModalConfirmar = new bootstrap.Modal(document.getElementById('modalConfirmarCliente'));
+                    switch (resultado) {
+
+                        case 0:
+                            document.getElementById('lblValidaCotizacion').innerHTML = 'Revisa que la cotizacion tenga productos'
+                            myModal.show();
+                            break;
+                        case 1:
+                            document.getElementById('lblValidaCotizacion').innerHTML = 'Revisa que el cliente tenga crédito suficiente'
+                            myModal.show();
+                            break;
+                        case 2:
+                            myModalConfirmar.show();
+                            break;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+    }
+
+    function PedidoAgregar(){
+
+        $.ajax({
+            type: "POST",
+            url: path + "Empleados/ExpoPedidoAgregar?IdCliente=" + @Model.IdCliente,
+            success: function (resultado) {
+                const myModalConfirmar = new bootstrap.Modal(document.getElementById('modalConfirmarCliente'));
+                myModalConfirmar.hide();
+                document.location = '@Url.Action("Cotizacion")';
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    
+    }
+    
+</script>

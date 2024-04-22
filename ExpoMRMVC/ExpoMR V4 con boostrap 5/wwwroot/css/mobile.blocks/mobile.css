@@ -1,0 +1,101 @@
+﻿
+/*  Carrito */
+.listaCarrito {    
+    min-height: 25vh !important;    
+}
+.listaCarrito_article {
+    border: 1px solid #000;
+    width: 45%;
+    height: 15vh;
+    background-color: #EAEDED;
+    display:flex;
+}
+
+.listaCarrito_descripcion {
+    border: 1px solid #000;
+    width: 55%;
+    height: 15vh;
+    background-color: #EAEDED;
+}
+
+.listaCarrito_actions {
+    background-color: #EAEDED;
+    border: 1px solid #000;
+    width: 100%;
+    height: 10vh;
+}
+
+.tab-content_productos {
+    order: 2;
+}
+.tab-content_productos {
+    order: 1;
+}
+
+.bf-ui-tab {
+    padding: 0 0 0 !important;
+    /* width: auto; */
+}
+
+.input_busqueda {
+    margin-left: 8%;
+}
+
+/**
+    Ruleta
+*/
+.imgbutton {
+    position: absolute;
+    top: 128px;
+    left: 129px;
+    z-index: 10;
+    width: 27%
+}
+
+.li__logOut {
+    margin-top: 3%;
+    margin-left: 0%; 
+}
+
+.premio__min-width {
+    min-width: 50%;
+}
+
+/**Stand*/
+.listaStand_article {
+    width: 45%;
+    display: flex;
+}
+
+.listaStand_descripcion {
+    width: 55%;
+}
+
+.listaStand_actions {
+    width: 100%;
+}
+
+/**CARRITO*/
+.tab-content_total {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    background-color: white;
+}
+.promocion {
+display:none;
+}
+
+.imagenCarrito {
+    width: 65px;
+}
+
+.col-sm-55 {
+    /*border: 1px solid #000;*/
+    width: 49%;
+    height: 100%;
+    /*background-color: #EAEDED;*/
+    display: block;
+}

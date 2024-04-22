@@ -1,0 +1,164 @@
+﻿@model ConfiguracionViewModel
+@{
+    ViewData["Title"] = "Configuracion";
+}
+<div class="col-sm-12 col-md-12 ">
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                <li class="nav-item">
+                    <a class="nav-link active link-item-titulo " aria-current="true" data-bs-toggle="tab" href="#configuracion"> Configuración del Stand</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#interactividad"> Interactividad </a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body tab-content">
+            <div class="tab-pane active" id="configuracion">
+                <div class="form-group">
+                    <div class="row">                       
+                        <h4 class="text-center">Configuración</h4>
+                        <form method="post" role="form">
+                            <div class="text-danger" asp-validation-summary="All"></div>
+                            <div class="col-md-6 text-center mx-auto mb-4">
+                                <label asp-for="NombreStand"></label>
+                                <input asp-for="NombreStand" id="NombreStand" class="w-60 form-control" placeholder="Ingresar el nombre para el Stand" />
+                                <span asp-validation-for="NombreStand" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 text-center mx-auto mb-4">
+                                <label asp-for="DescripcionStand" ></label>
+                                <textarea asp-for="DescripcionStand" id="DescripcionStand" class="form-control"></textarea>
+                                <span asp-validation-for="DescripcionStand" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-8 text-center mx-auto mt-4">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <label style="height:50px" asp-for="Logo"></label>
+                                        <img class="w-50 mx-auto" style="max-height:250px;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="Logo" />
+                                        <input asp-for="Logo" type="file" class="form-control-file" id="Logo">
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <label style="height:50px" asp-for="Fondo"></label>
+                                        <img class="w-50" style="max-height:250px;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Fondo))" alt="Logo" />
+                                        <input asp-for="Fondo" type="file" class="form-control-file" id="Fondo">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 text-center mx-auto mt-4">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label asp-for="Color" class="control-label"></label>
+                                        <div style="height: 150px">    
+                                            <select id="ddlColores">
+                                                <option value="1">Azul</option>
+                                                <option value="2">Aqua</option>
+                                                <option value="3">Rojo</option>
+                                                <option value="4">Verde</option>
+                                                <option value="5">Otoño</option>
+                                                <option value="6">Gris</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 text-center mx-auto mt-4">
+                                <button type="button" class="btn btn-azul-medio" onclick="guardarConfiguracion()">Guardar Cambios</button>
+                            </div>
+                            
+                         </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="interactividad">
+                <div class="row">
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <h4>¿Cuántas visitas a tu Stand premiarás por día de la Expo?</h4>
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <h5>¿Que día premiarás?</h5>
+                        @Html.DropDownListFor(model => model.Fecha, new SelectList(Model.Fechas, "valueFecha", "Fecha"), new { id = "cmb_Fechas", @class = "form-control text-left", name = "cmb-Fechas", title="cmb"})
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <h5>¿Cuántas visitas premiarás?</h5>
+                        <input type="number" id="Numero_visitas" value="1"/>
+                        <button type="button" class="btn btn-verde-medio w-25 d-block mx-auto mt-4"> Aceptar </button>
+                    </div>
+                    <div class="col-md-7 text-center mx-auto mb-4">
+                        <table id="productos__info" class="display" style="width:100%"></table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        tableUsuarios()
+        
+        const miSelect = document.getElementById('ddlColores');
+
+        miSelect.value = @Model.Color;
+    });
+
+    function tableUsuarios() {
+        $('#productos__info').DataTable({
+            pageLength: 7,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "bDestroy": true,
+            "ajax": {
+                url: path + "Configuracion/GetfechasMoneda",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                { "data": "fecha", title: " Fechas " },
+                { "data": "mxVisitas", title: " Visitas a premiar " },
+                { "data": "monedas", title: " Monedas " }
+            ]
+        });
+
+        
+    }
+    function Reload() {
+        $('#productos__info').dataTable().fnDestroy();
+        tableUsuarios()
+    }
+
+    function guardarConfiguracion (){
+        var logo = document.getElementById('Logo').files[0];
+        var fondo = document.getElementById('Fondo').files[0];
+        var nombre = document.getElementById('NombreStand').value;
+        var descripcion = document.getElementById('DescripcionStand').value;
+        var color = document.getElementById('ddlColores').value;
+
+        var formData = new FormData();
+
+        formData.append('logo', logo);
+        formData.append('fondo', fondo);
+        formData.append('nombre', nombre);
+        formData.append('descripcion', descripcion);
+        formData.append('color', color);
+
+        console.log(formData);
+
+        $.ajax({
+            url: path + 'Configuracion/GuardarConfiguracion',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                alert('Guardado');
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                alert('Error al subir la imagen.');
+            }
+        });
+    }
+</script>

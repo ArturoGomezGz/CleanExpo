@@ -1,0 +1,370 @@
+﻿@model EditarUsuarioViewModel;
+@{
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+<h1>Usuario</h1>
+
+<div class="row">
+    <div id="liveAlertPlaceholder"></div>
+    <div class="col-md-4 label__bold">
+        @Html.HiddenFor(m => m.IdEmail)
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                @Html.LabelFor(m => m.Nombre)
+                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="@Model.Nombre" disabled>
+            </div>
+            <div class="col-md-12 mb-3">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m=>m.Email, new { @class = "form-control", name = "cmb-TipoDoc",  title="user name", disabled = "disabled"})
+            </div>
+            @if (Model.Usuario)
+            {
+                <div class="col-md-12 mb-3">
+                    <div class="form-check form-switch">
+                        @Html.CheckBoxFor(m => m.Lock, new { id = "LockCheck", @class = "form-check-input", name = "flexSwitchCheckChecked", title = "flexSwitchCheckChecked" })
+                        <label class="form-check-label" for="LockCheck">Bloqueado</label>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-4 label__bold">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div>
+                    @Html.LabelFor(m => m.TipoUsuario)                   
+                    @Html.TextBoxFor(m => m.TipoUsuario, new { @class = "form-control", name = "cmb-TipoDoc", title = "user name", disabled = "disabled" })
+                </div>
+                @if (Model.IdTipoUsuario == 1)
+                {
+                    <div class="form-check form-switch">
+                        @Html.CheckBoxFor(m => m.VIP, new { id = "VipCheck", @class = "form-check-input", name = "flexSwitchCheckChecked", title="flexSwitchCheckChecked"})
+                        <label class="form-check-label" for="VipCheck">VIP</label>
+                    </div>
+                }
+            </div>
+            <div class="col-md-12 mb-3">
+                @Html.LabelFor(m => m.Sucursal)
+                @Html.DropDownListFor(model => model.IdSucursal, new SelectList(Model.Sucursales, "IdSucursal", "Sucursal"), new { id = "cmb-sucursales", @class = "form-control text-left", name = "cmb-sucursales", disabled="disabled",  title="cmb"})
+            </div>
+            @if (Model.Usuario)
+            {
+                <div class="col-md-12 mb-3">
+                    @Html.LabelFor(m => m.Invitacion)
+                    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="@Model.Invitacion" disabled>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="row d-flex">
+            @if (Model.Usuario)
+            {
+                <div class="col-md-12 d-flex justify-content-center mb-3">
+                    <button id="btn-invitacion" onclick="reenviar()" type="button" class="btn btn-azul col-md-55"> Reenviar Invitación </button>
+                </div>
+                <div class="col-md-12 d-flex justify-content-center mb-3">
+                    <button id="btn-password" type="button" class="btn btn-azul col-md-55" data-bs-toggle="modal" data-bs-target="#CambiarPasswordModal"> Cambiar Password </button>
+                </div>
+            }
+            <div class="col-md-12 d-flex justify-content-center mb-3">
+                <button id="btn-edit" onclick="editar()" type="button" class="btn btn-azul col-md-55"> Cambiar Sucursal </button>
+                <div id="hiddenBTN" class="d-none col-md-55 text-center">
+                    <button type="button" class="btn btn-outline-success" onclick="save()" title="btn-save">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn  btn-outline-danger" onclick="cancel()" title="btn-cancel">
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            @if (Model.Usuario)
+            {
+                <div class="col-md-12 d-flex justify-content-center mb-3">
+                    <button id="btn-eliminar" type="button" class="btn btn-rojo col-md-55" data-bs-toggle="modal" data-bs-target="#DeleteModal"> Eliminar </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <a asp-controller="Administracion" asp-action="Usuarios" class="btn btn-azul col-md-55"><i class="fa fa-arrow-left" aria-hidden="true"></i> Ir a Usuarios </a>
+    </div>
+</div>
+
+<script>
+
+    //Evento para control checkbox de bloquear o desbloquear usuario
+    const chklock = document.getElementById('LockCheck')
+   
+    if (chklock != null) 
+    {
+        chklock.addEventListener('change', (event) => {
+            if (event.currentTarget.checked) {
+                bloquear();
+            } else {
+                bloquear();
+            }
+        })
+    }
+
+    function bloquear() {
+        var element = document.getElementById('Email');
+
+        $.post(path + "Administracion/Bloquear",
+            {
+                email: element.value
+            },
+            function (data) {
+                ShowAlert(data.message, data.response);
+                if (data.result) {
+                    $("#lockButton").removeClass("fa-lock");
+                    $("#lockButton").addClass("fa-unlock-alt")
+                } else {
+                    $("#lockButton").removeClass("fa-unlock-alt");
+                    $("#lockButton").addClass("fa-lock")
+                }
+            }).error(function () {
+                modal.hide()
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    }
+
+    //Evento para control checkbox VIP
+    const chkVip = document.getElementById('VipCheck')
+    chkVip.addEventListener('change', (event) => {
+        if (event.currentTarget.checked) {
+            ChangeVIP(true);
+        } else {
+            ChangeVIP(false);
+        }
+    })
+
+    function ChangeVIP(vip) {
+        const IdEmail = $("#IdEmail").val();
+        $.post(path + "Administracion/ChangeVip",
+            {
+                IdEmail: IdEmail,
+                Vip: vip
+            },
+            function (data) {
+                ShowAlert(data.message, data.response);
+                if (data.result) {
+                    $("#lockButton").removeClass("fa-lock");
+                    $("#lockButton").addClass("fa-unlock-alt")
+                } else {
+                    $("#lockButton").removeClass("fa-unlock-alt");
+                    $("#lockButton").addClass("fa-lock")
+                }
+            }).error(function () {
+                modal.hide()
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    }
+
+
+    function editar(){
+        //se ocultan los botnes
+        $("#btn-invitacion").addClass('d-none');
+        $("#btn-password").addClass('d-none');
+        $("#btn-eliminar").addClass('d-none');
+        $("#btn-edit").addClass('d-none');
+
+        //Se muestran los botones de aceptar y cancelar
+        $("#hiddenBTN").removeClass("d-none");
+
+        var element = document.getElementById("cmb-sucursales")
+        element.removeAttribute("disabled");
+    }
+    function save() {
+
+        const IdEmail = $("#IdEmail").val();
+        const Sucursal = $("#cmb-sucursales").val();
+
+        if (Sucursal === "0") {
+            ShowAlert("Seleccione una sucursal.", false);
+        } else {
+            $.post(path + "Administracion/CambiarSucursal",
+                {
+                    IdEmail: IdEmail,
+                    Sucursal: Sucursal
+                },
+                function (data) {
+                    ShowAlert(data.message, data.response);
+                    cancel()
+                }
+            ).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+        }
+    }
+    function cancel(){
+        //Se ocultan los botones de aceptar y cancelar
+        $("#hiddenBTN").addClass('d-none');
+
+        //Se muestran los botones
+        $("#btn-invitacion").removeClass('d-none');
+        $("#btn-password").removeClass('d-none');
+        $("#btn-eliminar").removeClass('d-none');
+        $("#btn-edit").removeClass("d-none")
+
+        var element = document.getElementById("cmb-sucursales")
+        element.setAttribute("disabled", "");
+
+        //Hace la recarga de la pagina
+        window.location.reload();
+    }
+
+    function changePassword() {
+        var myModalEl = document.getElementById('CambiarPasswordModal');
+        var modal = bootstrap.Modal.getInstance(myModalEl)
+        const Password = $("#Password").val()
+        const ConfirmPassword = $("#ConfirmPassword").val()
+        const email = $("#Email").val();
+
+        if (Password == ConfirmPassword) {
+            $.post(path + "Administracion/CambiarPassword",
+                {
+                    Password: Password,
+                    ConfirmPassword: ConfirmPassword,
+                    email: email
+                },
+                function (data) {
+                    modal.hide()
+                    $("#Password").val("")
+                    $("#ConfirmPassword").val("")
+                    ShowAlert(data.message, data.response);
+                }).error(function () {
+                    modal.hide()
+                    ShowAlert("No fue posible cargar sus datos", false);
+                });
+        } else {
+            ShowAlert("las contraseñas no Coinsiden", false, "liveAlertModal");
+        }
+    }
+
+    function reenviar(){
+
+        const Vip = document.getElementById("VipCheck");
+        const IdEmail = $("#IdEmail").val();
+        const UserName = $("#Email").val();
+
+        let Vipvalue = false;
+
+        if (Vip.checked) {
+            Vipvalue = true;
+        } else {
+           Vipvalue = false;
+        }
+
+        $.post(path + "Administracion/ReenviarInvitacion",
+            {
+                IdEmail: IdEmail,
+                UserName: UserName,
+                Vip: Vipvalue
+            },
+            function (data) {
+                ShowAlert(data.message, data.response);
+        }).error(function () {
+            ShowAlert("No fue posible cargar sus datos", false);
+        });       
+
+    }
+
+    function eliminarUsuario(){
+        //const IdPersona = $("#IdPersona").val();
+        const IdEmail = $("#IdEmail").val();
+        const UserName = $("#Email").val();
+
+        var block = $('<div class="block-loading" />');
+        $("#DeleteModal").prepend(block);
+
+        $.post(path + "Administracion/EliminarUsuario",
+            {
+                IdEmail: IdEmail,
+                UserName: UserName
+            },
+            function (data) {
+                if(data.response){
+                    location.reload()
+                }else{
+                    block.remove();
+                    var myModalEl = document.getElementById('DeleteModal');
+                    var modal = bootstrap.Modal.getInstance(myModalEl)
+                    modal.hide()
+                    ShowAlert(data.message, false);
+
+                    var url = '@Url.Action("Usuarios")';
+                    window.location.href = url;
+                }
+            }
+        ).error(function () { 
+            block.remove();
+            var myModalEl = document.getElementById('DeleteModal');
+            var modal = bootstrap.Modal.getInstance(myModalEl)
+            modal.hide()
+            ShowAlert("No fue posible cargar sus datos", false);
+        });
+    }
+
+</script>
+
+<!-- Modal Password-->
+<div class="modal fade" id="CambiarPasswordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar Contraseña</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">     
+                <div id="liveAlertModal"></div>
+                <div class="row mt-4">                      
+                    <div class="m-auto">
+                        <div class="mb-3">
+                            <label asp-for="Password" class="col-md-12"></label>
+                            <input asp-for="Password" class="form-control" placeholder="Ingresar la Contraseña" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="col-md-12"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="Ingresar la Contraseña" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>                            
+                        <button type="button" onclick="changePassword()" class="btn btn-azul w-100">Cambiar Contraseña <i class="bi bi-box-arrow-in-right"></i></button>                            
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DELETE-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">            
+            <div class="modal-body">
+                <div id="liveAlertModal"></div>
+                <div class="row mt-4">
+                    <div class="m-auto">
+                        <div class="mb-3 aling_center_modal">
+                           <strong>Vas a eliminar el usuario: </strong>                          
+                        </div>
+                        <div class="mb-3 aling_center_modal">
+                            @Model.Email
+                        </div>
+                        <div class="mb-3 aling_center_modal">
+                            <strong>¿Estas seguro?</strong>
+                        </div>
+                        <div class="m-auto aling_center_modal">
+                            <button type="button" onclick="eliminarUsuario()" class="btn btn-verde btn-lg m-auto">Aceptar</button>
+                            <button type="button" class="btn btn-rojo btn-lg m-auto" data-bs-dismiss="modal">cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

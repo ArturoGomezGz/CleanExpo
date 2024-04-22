@@ -1,0 +1,197 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item dropdown">
+        <a class="usuario nav-link  dropbtn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @UserManager.GetUserName(User)
+        </a>
+        <input type="hidden" id="hdfuserlogged" value="@UserManager.GetUserName(User)" />
+        @using (Html.BeginForm("Submit", "Home", FormMethod.Post))
+        {
+            List<Clientes> ClientesSeleccion = ExpoMR.Controllers.GeneralesController.GetClientesSeleccion(@UserManager.GetUserName(User));
+
+            <select id="ddlClientes">
+                @foreach (ExpoMR.Models.Clientes Cllientes in ClientesSeleccion)
+                {
+                    <option value="@Cllientes.IdPersona">@Cllientes.Nombre</option>
+                }
+            </select>
+        }
+  @*       <select id="ddlClientes"></select> *@
+    </li>
+    <li class="nav-item dropdown">
+        <a class="usuario nav-link  dropbtn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Menu
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            @if (User.IsInRole("Administrador") || User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+            {
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="Index">Cambiar Contraseña</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="MiCuenta">Mi Cuenta</a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+            }
+            @if (User.IsInRole("Vendedor") || User.IsInRole("Capturista"))
+            {
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Empleados" asp-action="Cotizacion"> Cotizacion</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Empleados" asp-action="Pedidos"> Pedidos</a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+            }
+            @if (User.IsInRole("Administrador"))
+            {
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Usuarios"> Usuarios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Proveedor"> Proveedor</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Notificaciones"> Notificaciones</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Administracion" asp-action="Empleados"> Empleados</a>
+                </li>            
+            }
+            @if (User.IsInRole("Proveedor"))
+            {
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Anuncios"> Anuncios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Articulos"> Articulos</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Monedas"> Monedas</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Configuracion" asp-action="Configuracion"> Configuración</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Estadisticas" asp-action="Estadisticas"> Estadisticas</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="Precios"> Precios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Promociones" asp-action="Promociones"> Promociones</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Proveedores" asp-action="MiStand"> Mi Stand</a>
+                </li>            
+            }
+        </ul>       
+    </li>
+}
+else
+{   
+    <div class="profile_login">
+        <a class="btn btn-verde" asp-controller="Cuentas" asp-action="Acceso">Acceder</a>
+    </div>
+}
+
+<script type="text/javascript">
+
+    $(window).on('load', function ()
+    {
+        var lasValue = sessionStorage.getItem('SelValue');
+        SetClienteSel(lasValue);
+
+        let element = document.getElementById("ddlClientes");
+        element.value = lasValue;
+    })
+
+
+    $(document).ready(function ()
+    {   
+        var select = document.getElementById("ddlClientes");
+        var lasValue = sessionStorage.getItem('SelValue');
+
+        if (lasValue === undefined || lasValue == null || lasValue.length <= 0)
+        {
+            sessionStorage.setItem('SelValue', select.value);
+        }
+
+        select.addEventListener('change', function (e)
+        {
+            sessionStorage.setItem('SelValue', select.value);
+            SetClienteSel(select.value);
+        });
+ 
+        // //Se obtiene el email con el que se inicio sesion
+        // var userlogged = document.getElementById("hdfuserlogged").value;
+
+        // //Se ejecuta la funcion, para obtener la lista de clientes que tienen el email asignado en indigo
+        // $.ajax({
+        //     url: path + "Generales/GetClientesSeleccion?UserName=" + userlogged,
+        //     contentType: "application/json; charset=utf-8",
+        //     type: 'POST',
+        //     dataType: 'json',
+        //     success: function (data) {
+
+        //         // Se cargan los datos el control select "ddlClientes"
+        //         var select = $('#ddlClientes');
+        //         select.empty();
+               
+        //         $.each(data, function (index, item) {
+        //             select.append($('<option></option>').val(item.idpersona).text(item.nombre));
+        //         });
+        //    }
+        // });
+
+
+          //Se obtiene el primer id del control select "ddlClientes", al cargar por primera vez la pagina
+        //var ClienteSel = $('#ddlClientes').val();
+        //console.log('este es el valor seleccionado al carga la pagina  desde afuera de ajax ' + $('#ddlClientes').val());
+        
+        //SetClienteSel(ClienteSel);
+       
+
+        //Se obtiene el id, al seleccionar un registro del control select "ddlClientes"
+        // $('#ddlClientes').change(function ()
+        // {
+        //    var ClienteSel = $('#ddlClientes').val();
+
+        //     sessionStorage.setItem("SelItem", ClienteSel);
+
+        //     //console.log('valor guardado en sessionStorage ' + sessionStorage.getItem("SelItem"));
+        //     //console.log('este es el valor seleccionado desde el control select ' + $('#ddlClientes').val());
+        //     //SetClienteSel(ClienteSel);
+        // });
+    });
+
+    //Se ejecuta la funcion para asignar el valor de idpersona en la variable de session "ClienteSel"
+    function SetClienteSel(IdPersona)
+    {
+        $.post(path + "Generales/SetSessionClienteSel?IdPersona=" + IdPersona,
+            function (data) {
+                //Se ejecutan las funciones de java script del index.js para inicilizar las opciones del cliente
+                GetMonedas(data);
+                GetRuleta(data);
+                GetCarrito(data);
+            }).error(function ()
+            {
+                alerta(false, "No fue posible incializar su perfil de (carrito, ruleta y monedas)");
+            }
+        );
+    }
+   
+</script>

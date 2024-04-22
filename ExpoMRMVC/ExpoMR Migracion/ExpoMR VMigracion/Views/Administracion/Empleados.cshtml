@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Empleados";
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+
+<h1>Empleados</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="Empleados" class="display " style="width:100%">
+            <thead>
+                <tr>
+                    <th>Acceder</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Acceder</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#Empleados').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Administracion/GetEmpleados",
+                type: 'POST',
+                dataSrc: ""
+            },
+            responsive: true,
+            "columns": [
+                {
+                    "data": "acceder",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<a href="'+path+'Administracion/EditarEmpleado?IdPersona=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                        }
+
+                        return data;
+                    },
+                },
+                { "data": "nombre" },
+                { "data": "email" },
+                { "data": "rol" }
+            ]
+        });
+    });
+</script>

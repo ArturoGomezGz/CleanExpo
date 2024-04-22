@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewData["Title"] = "Cargar Producto";
+}
+
+<div class="row">
+    <h6>Cargar Archivo de Productos a tu Carro de Compras</h6>
+    <ol>
+        <li>-En un archivo CSV especifique en la primera columna el número del producto y en la segunda la cantidad solicitada</li>
+        <li>-No especifique más columnas de las mencionadas</li>
+        <li>-El archivo no deberá exceder los 500 registros</li>
+        <li>-Valide que no es un robot y seleccione el archivo antes de subirlo</li>
+        <li>-<a class="btn btn-link" asp-controller="CargarProducto" asp-action="CargarProducto"> Video de Ayuda </a></li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-6 pb-4">        
+        <GoogleRecaptcha:RecaptchaV2Control ID="gRecaptcha" SiteKey="6LdJMSEUAAAAAA64LidQn_V7QhRjA0tkjUsApIm4" SecretKey="6LdJMSEUAAAAADbALp3hhQ6NCkxTUA1Pc2CKHSEl" runat="server" />
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="chkBorrarCarrito">
+            <label class="form-check-label" for="chkBorrarCarrito">
+                Vaciar Mi Carrito
+            </label>
+        </div>        
+
+        <div class="mb-3 pb-4">
+            <input class="form-control" placeholder="Ningun Archivo Seleccionado" type="file" id="formFile">
+        </div>
+        
+        <div class="mb-3 justify-content-center d-flex">
+            <button type="submit" onclick="subirArchivo()" class="btn btn-azul mb-3">Cargar Archivo <i class="fa fa-upload" aria-hidden="true"></i></button>
+        </div>
+        
+    </div>
+</div>
+
+<style>
+    ol{
+        list-style: none;
+    }
+</style>
+
+<script>
+    function subirArchivo() {
+        var chkBorrarCarrito = document.getElementById('chkBorrarCarrito');
+        var input = document.getElementById('formFile');
+        var file = input.files[0];
+
+        if (file) {
+            if (file.name.split('.').pop() == 'csv'){
+                var formData = new FormData();
+                formData.append('formFile', file);
+                formData.append('borrarCarrito', chkBorrarCarrito.checked);
+
+                // Realizar una solicitud AJAX para enviar el archivo al servidor
+                $.ajax({
+                    url: '/CargarProducto/ProcesarArchivo',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        window.location.href = "/Carrito/Index";
+                    },
+                    error: function (error) {
+                        alert('Error al cargar el archivo: ', error);
+                    }
+                });
+            } else {
+                alert('Seleccione un archivo de extensión CSV');
+            }
+        } else {
+            alert('No se seleccionó ningún archivo.');
+        }
+    }
+</script>

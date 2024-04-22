@@ -1,0 +1,193 @@
+﻿@model AdminstracionViewModel
+@{
+    ViewData["Title"] = "Usuarios";
+	Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+
+<h1>Usuarios</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-4">		
+		@Html.LabelFor(m => m.IdTipoUsuario, new { @class = "fw-bold" })
+		@Html.DropDownListFor(model => model.IdTipoUsuario, new SelectList(Model.TipoUsuario, "IdTipoUsuario", "TipoUsuarios"), new { id = "IdTipoCliente", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})		
+    </div>
+    <div class="col-md-3 mb-4">		
+		@Html.LabelFor(m => m.Ruta, new { @class = "fw-bold" })
+		@Html.DropDownListFor(model => model.Ruta, new SelectList(Model.Rutas, "IdRuta", "Ruta"), new { id = "IdRuta", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})		
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="row">
+        <table id="Usuarios" class="display " style="width:100%">
+            <thead>
+                <tr> 
+					<th></th>
+                    <th>Acceder</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Tipo</th>
+                    <th>Sucursal</th>
+                    <th>Invitacion</th>
+					<th>estado</th>
+                    <th>Usuario</th>
+					<th>Agregar</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+					<th></th>
+					<th>Acceder</th>
+					<th>Nombre</th>
+					<th>Email</th>
+					<th>Tipo</th>
+					<th>Sucursal</th>
+					<th>Invitacion</th>
+					<th>estado</th>
+					<th>Usuario</th>
+					<th>Agregar</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div class="row mb-4">
+	<div class="col-md-3"><button type="button" class="btn btn-primary btn-large"> Enviar <i class="fa fa-envelope" aria-hidden="true"></i></button></div>
+</div>
+<script>
+	$(document).ready(function () {
+		tableUsuarios()
+
+		$("#IdRuta").change(function(){
+			Reload()
+		});
+
+		$("#IdTipoCliente").change(function(){
+			if(this.value != 1){
+				$('#IdRuta').addClass('d-none');
+			}else{
+				$('#IdRuta').removeClass('d-none');;
+			}
+
+			Reload()
+		});
+	});
+    function tableUsuarios(){
+		let idTipoUsuario = $("#IdTipoCliente").val();
+		let idRuta = idTipoUsuario == 1 ? $("#IdRuta").val() : 0
+
+		$('#Usuarios').DataTable({
+			 pageLength: 7,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+			"bDestroy": true,
+            "ajax": {
+				url: path + "Administracion/GetUsuarios?IdTipoUsuario=" + idTipoUsuario + "&IdRuta=" + idRuta,
+                type: 'POST',
+                dataSrc: ""
+			}, 
+			'columnDefs': [
+				{
+					'targets': 0,
+					'checkboxes': {
+						'selectRow': true
+					}
+				}
+			],
+			'select': {
+				'style': 'multi'
+			},
+			"columns": [
+				{ "data": "idpersona" },
+				{
+					"data": "acceder",
+					render: function (data, type) {
+						if (type === 'display') {
+							return '<a href="' + path + 'Administracion/EditarUsuario?IdPersona=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+						}
+						return data;
+					},
+				},
+				{ "data": "nombre" },
+				{ "data": "email" },
+				{
+					"data": "tipo",
+					render: function (data, type) {
+						if(data == 1){
+							return ' Cliente ';
+						}
+						return data;
+					},
+				},
+				{ "data": "sucursal" },
+				{ "data": "invitacion" },
+				{ "data": "estado",
+						render: function (data, type) {
+							if (!data) {
+								return '';
+							}else{
+							return '<i class="fa fa-unlock-alt" aria-hidden="true"></i>';
+							}
+							return data;
+						}
+				},
+				{
+					"data": "usuario",
+					render: function (data, type) {
+						if (!data) {
+							return '<i class="fa fa-square-o" aria-hidden="true"></i>';
+						}
+						return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+					}
+				},
+				{ "data": "agregar",
+					render: function(data, type,row){
+						//console.log(row.acceder)
+						if (data) {
+							return '';
+						}
+						return '<button onClick="DarDeAlta()" type="button" class="btn btn-success circle__button"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+					}
+				},
+			]
+        });
+    }
+	function Reload(){
+		$('#Usuarios').dataTable().fnDestroy();
+		tableUsuarios()		
+    }
+	function DarDeAlta(){
+		const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+		myModal.show();
+	}
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Dar de alta el usuario</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="form-check form-switch">
+					<input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+					<label class="form-check-label" for="flexSwitchCheckDefault"> VIP</label>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mb-4">
+						@Html.LabelFor(m => m.IdSucrsal, new { @class = "fw-bold" })
+						@Html.DropDownListFor(model => model.IdSucrsal, new SelectList(Model.Sucursales, "IdSucrsal", "Sucursal"), new { id = "IdRuta", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>

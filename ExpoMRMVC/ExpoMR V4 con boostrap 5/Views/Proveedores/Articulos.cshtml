@@ -1,0 +1,129 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+    ViewData["Title"] = "Articulos";
+}
+
+
+<h3>Artículos</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="Articulos" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Acceder</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Imagen</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12 text-center">
+        <button type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#exampleModal"> Agregar</button>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Artículo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formGuardarArticulo" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label txt-bold">Nombre del Artículo:</label>
+                        <input type="text" class="form-control" id="txtNombre">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label txt-bold">Descripción:</label>
+                        <textarea class="form-control" id="txtDescripcion"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label txt-bold">Cantidad total disponible:</label>
+                        <input type="number" class="form-control" id="txtCantidadArticulo">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer text-center">
+                <button type="button" class="btn btn-verde-medio" id="btnGuardarArticulo" onclick="AddArticulo()">Aceptar</button>
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () 
+    {
+        $('#Articulos').DataTable({
+            pageLength: 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']],
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Proveedores/GetArticulos",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    "data": "idArticulo",
+                    render: function (data, type) 
+                    {
+                        if (type === 'display') 
+                        {
+                            return '<a href="'+ path +'Proveedores/DetalleArticulo?IdArticulo=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                        }
+
+                        return data;
+                    },
+                },
+                { "data": "nombre" },
+                { "data": "descripcion" },
+                { "data": "foto",
+                    render: function (data, type) 
+                    {
+                        if(data != "" ){
+                        return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
+                        }else {
+                            return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="' + path + '/Imagenes/noimage.png" alt="image" />'
+                        }
+                    }
+                },
+            ]
+        });
+    });
+
+    function AddArticulo()
+    {
+        let Nombre = $('#txtNombre').val();
+        let Descripcion = $('#txtDescripcion').val();
+        let Cantidad = $('#txtCantidadArticulo').val();
+
+            $.ajax({
+                url: path+ "Proveedores/AddArticulo",
+                type: 'POST',
+                data: 
+                {                    
+                    nombre: Nombre,
+                    descripcion: Descripcion,
+                    cantidadarticulo: Cantidad
+                },
+                success: function (response) 
+                {
+                    window.location.reload();
+                },
+                error: function ()
+                {
+                    alert('Error al subir la imagen');
+                }
+            });    
+    }
+
+</script>

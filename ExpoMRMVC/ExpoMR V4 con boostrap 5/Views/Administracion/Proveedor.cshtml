@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewData["Title"] = "Proveedor";
+	Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+
+<h1>Alta Proveedor</h1>
+<div id="liveAlertPlaceholder"></div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="Proveedor" class="display " style="width:100%"></table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#Proveedor').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Administracion/GetProveedores",
+                type: 'POST',
+                dataSrc: ""
+            },
+            responsive: true,
+            "columns": [
+                {
+                    "data": "idPersona",
+                    orderable: false,
+                    render: function (data, type, row) {                        
+                        if (type === 'display' && row.alta == 1  ) {
+                            return '<a href="' + path + 'Administracion/EditProveedor?IdProveedor=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                        }else{
+                            return ''
+                        }
+                        return data;
+                    },
+                },
+                { "data": "nombre", title: "Nombre" },
+                { "data": "descripcion", title: "Descripción" },
+                {
+                    "data": "alta",
+                    title: "Alta",
+                    render: function (data, type, row) {                           
+                        if (data == 1) {
+                            return '';
+                        }
+                        return '<button onClick="DarDeAlta(' + row.idPersona + ')" type="button" class="btn btn-verde circle__button"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+                    }
+                }
+            ]
+        });
+    });
+
+    function DarDeAlta(IdPersona) {
+        $.post(path + "Administracion/AddProveedor",
+            {
+                IdPersona: IdPersona
+            },
+            function (data) {
+                if (data.response) {
+                    var tabla = $('#Proveedor').DataTable();
+                    tabla.ajax.reload();
+                }
+                ShowAlert(data.message, data.response);
+            }).error(function () {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    }
+</script>

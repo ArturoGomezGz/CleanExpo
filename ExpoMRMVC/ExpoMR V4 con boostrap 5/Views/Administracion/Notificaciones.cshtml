@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewData["Title"] = "Notificaciones";
+	Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+}
+
+<h1>Clientes</h1>
+
+@*<link type="text/css" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css" rel="stylesheet" />*@
+<div class="row">
+    <table id="example" class="display" cellspacing="0" width="100%"></table>
+</div>
+<div class="row">
+    <div id="correo" class="col-md-3"><button type="button" id="SendOrder" class="btn btn-azul btn-large"> Enviar <i class="fa fa-envelope" aria-hidden="true"></i></button></div>    
+</div>
+@*<script type="text/javascript" src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>*@
+<script>
+    var table;
+
+    function getSelected() {
+        var checkedId = [];
+        var selectedIds = table.columns().checkboxes.selected()[0];
+
+        selectedIds.forEach(function (selectedId) {
+            checkedId.push(selectedId);
+        });
+
+        $.post(path + "Notificaciones/SendPromos",
+            {
+                IdClientes: checkedId
+            },
+            function (data) {
+                $.each(data, function (index, value) {
+                    console.log(value)
+                });
+            }).error(function () {
+                alerta(false, "No fue posible cargar sus datos")
+            });
+
+        return (checkedId)
+    }
+
+    $(document).ready(function () {
+        table = $('#example').DataTable({
+            responsive: true,
+            "ajax": {
+                url: path + "Administracion/GetUsusariosNotificacion",
+                type: 'POST',
+                dataSrc: ""
+            },
+            'columnDefs': [
+                {
+                    'targets': 0,
+                    'checkboxes': {
+                        'selectRow': true
+                    }
+                }
+            ],           
+            'select': {
+                'style': 'multi'
+            },
+             "columns": [
+                { "data": "idPersona"},
+                { "data": "nombre", title: "Nombre" },
+                { "data": "email", title: "Email" },
+                { "data": "notificado", title: "Promociones" }
+             ]
+        });
+        
+        $("#SendWelcome").click(function () {
+            $.post("/Notificaciones/SendWelcome",
+                {
+                    //string name, string email, string password, bool vip
+                    name: 'Mario Valenzuela',
+                    email: 'mariovs1091@gmail.com',
+                    password: 'Admin123*',
+                    vip: true
+                },
+                function (data) {                                         
+                       console.log(data)
+                }).error(function () {
+                    alerta(false, "No fue posible cargar sus datos")
+                });
+        })
+        $("#OlvidoPassword").click(function () {
+            $.post("/Notificaciones/OlvidoPassword",
+                {
+                    letra: letra,
+                    palabra: palabra
+                },
+                function (data) {
+                    $.each(data, function (index, value) {                        
+                       console.log(value)
+                    });
+                }).error(function () {
+                    alerta(false, "No fue posible cargar sus datos")
+                });
+        })
+        $("#SendPromos").click(function () {
+            $.post("/Notificaciones/SendPromos",
+                {
+                    IdCliente: 5535
+                },
+                function (data) {
+                    $.each(data, function (index, value) {                        
+                       console.log(value)
+                    });
+                }).error(function () {
+                    alerta(false, "No fue posible cargar sus datos")
+                });
+        })
+        $("#SendOrder").click(function () {
+            let arrayIdPersonas = getSelected()
+            console.log(arrayIdPersonas)
+            if(arrayIdPersonas.length > 0){
+                $.post(path + "/Notificaciones/SendOrder",
+                    {
+                        IdClientes: arrayIdPersonas
+                    },
+                    function (data) {
+                        console.log(data)
+                    }).error(function () {
+                        alerta(false, "No fue posible cargar sus datos")
+                    });
+            }else{
+                
+            }
+            
+        })
+    });
+</script>

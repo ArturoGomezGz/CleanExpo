@@ -1,0 +1,127 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+    ViewData["Title"] = "Monedas";
+}
+
+<h3>Monedas</h3>
+<div class="d-flex flex-column flex-md-row justify-content-center  align-items-center">
+    <div class="row col-md-7 col-12">
+        <div id="divClientes">
+            <table id="Clientes" class="display">
+                <thead>
+                    <tr>
+                        <th> </th>
+                        <th>Nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+               @* <tfoot>
+                    <tr>
+                        <th> </th>
+                        <th>Nombre</th>
+                    </tr>
+                </tfoot>*@
+            </table>
+        </div>
+        <div id="divMonedas">
+            <div class="d-flex flex-column align-items-center">
+                <strong id="lblCliente"></strong>
+                <br />
+                <button class="btn btn-azul-medio" onclick="mostrarClientes()">Cambiar Clientes</button>
+            </div>
+            <br />
+            <div class="d-flex justify-content-between">
+                <div class="d-flex flex-column align-items-center">
+                    <h3>Monedas de Regalo</h3>
+                    <br />
+                    <label>Por Regalar</label>
+                    <br />
+                    <input type="number" id="txtMonedasRegalo" />
+                    <br />
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#popAgregarMonedas" onclick="SeleccionaTipoAsignacion(1)">Agregar</button>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                    <h3>Monedas de Contacto</h3>
+                    <laber id="lblMonedasContacto"></laber>
+                    <label>Por Asignar</label>
+                    <br />
+                    <input type="number" id="txtContacto" />
+                    <br />
+                    <button class="btn btn-azul-medio" id="btnContacto" data-bs-toggle="modal" data-bs-target="#popAgregarMonedas" onclick="SeleccionaTipoAsignacion(2)">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 col-12 d-inline-flex  justify-content-md-end justify-content-sm-center align-items-center">
+        <div class=" p-4 d-flex flex-column justify-content-center align-items-center contenedor">
+            <strong> Saldo Monedas </strong>
+            <label style="font-size:1.3em;font-weight: 700; color: #F1592B" id="monedas"></label>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="popAgregarMonedas">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label id="lblTipo" hidden></label>
+                <div class="d-flex justify-content-center m-2 txt-bold">
+                    <label>Vas a regalar monedas al cliente:</label>
+                </div>
+                <div class="d-flex justify-content-center m-2">
+                    <br />
+                    <label id="lblnombreclienteRegalo"><strong>s</strong></label>
+                </div>
+                <div class="d-flex justify-content-center m-2 txt-bold">
+                    <br />
+                    <label>¿Estas Seguro?</label>
+                </div>
+                <br />
+                <div class="d-flex justify-content-around">
+                    <button class="btn btn-verde-medio" data-bs-dismiss="modal" onclick="AsignaMonedas()">Aceptar</button>
+                    <button class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var idCliente = '';
+    $(document).ready(function () {
+        $("#divMonedas").hide();
+        $('#Clientes').dataTable().fnDestroy();
+        $('#Clientes').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "ajax": {
+                url: path + "Proveedores/GetClientes",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    "data": "cliente",
+                    render: function (data, type, row) {
+                        return '<a class="btn btn-link" href="' + path + 'Proveedores/AsignaMonedas?idCliente=' + row.idPersona + '"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                    }
+                },
+                { "data": "nombre" },
+            ]
+        });
+        $.ajax({
+            type: "POST",
+            url: path + "Proveedores/GetMonedas",
+            success: function (resultado) {
+                document.getElementById('monedas').innerHTML = " " + resultado;
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+</script>
