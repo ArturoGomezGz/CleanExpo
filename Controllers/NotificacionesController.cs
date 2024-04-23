@@ -1,10 +1,13 @@
 ﻿#define TESTMODE
+
+using ExpoMR.Clases;
 using ExpoMR.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Nancy.Json;
 using System.Data;
 
 namespace ExpoMR.Controllers
@@ -29,36 +32,6 @@ namespace ExpoMR.Controllers
                                             + "Si usted no es el destinatario o no es alguna persona autorizada por éste para recibir el mensaje,<br/>"
                                             + "usted no deberá utilizar, copiar, revelar o tomar ninguna acción basada en este mensaje.<br/>"
                                             + "Si recibe este mensaje por error, por favor notifíquelo de inmediato al remitente y bórrelo de su computadora.<br/>";
-        public async Task<string> SendWelcome(string name, string email, string password, bool vip)
-        {
-            string linkExpo = vip ? "https://expomr.online" : "https://expomr.online";
-
-            string body = "<br/>Hola " + name + "<br/><br/>"
-                    + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2022<br/><br/>"
-                    + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
-                    + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
-                    + "Usuario: " + email + "<br/>"
-                    + "Contraseña:  " + password + "<br/>"
-                    + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
-                    + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
-                    + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
-                +avisoConfidencialidad;
-            try
-            {
-#if (TESTMODE)
-                await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Asunto", body);
-#else
-                    
-                await _emailSender.SendEmailAsync(email, "Asunto", body);
-#endif
-                pMessage = "Mensaje Enviado Con exíto";
-            }
-            catch (Exception e)
-            {
-                pMessage = "Hubo un error al envir el correo: "+ e.Message;
-            }
-            return pMessage;
-        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
@@ -82,7 +55,7 @@ namespace ExpoMR.Controllers
                         + avisoConfidencialidad;
                
 #if (TESTMODE)
-                await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR", body);
+                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR", body);
 #else
                     
                   await _emailSender.SendEmailAsync(opViewModel.Email, "Recuperar Contraseña ExpoMR", body);
@@ -91,64 +64,101 @@ namespace ExpoMR.Controllers
             }
             return View(opViewModel);
         }
-        public async Task<bool> SendPromos(int[] IdClientes)
+
+        public async Task<string> SendWelcome(string name, string email, string password, bool vip)
         {
-            foreach (int IdCliente in IdClientes) {
-                string email = "";
-                string body = string.Empty;
-                string query = "SELECT dPromoCliente.IdPromocion, vPersonas.Nombre AS Cliente, " +
-                                    "CAST(dPromoCliente.Cantidad AS NVARCHAR(12)) + ' ' + mArticulos.Nombre AS Nombre, " +
-                                    "mArticulos.Descripcion, mUsuarios.UserName " +
-                                    "FROM dpromocliente INNER JOIN " +
-                                    "dpromociones ON dpromociones.idpromocion = dpromocliente.idpromocion INNER JOIN " +
-                                    "marticulos ON marticulos.Idarticulo = dPromociones.IdArticulo INNER JOIN " +
-                                    "vPersonas ON vPersonas.IdPersona = dPromoCliente.Cliente INNER JOIN " +
-                                    "mUsuarios ON vPersonas.IdPersona = mUsuarios.IdPersona " +
-                                    "WHERE dPromoCliente.Cliente =" + IdCliente;
+            string linkExpo = vip ? "https://expomr.online" : "https://expomr.online";
 
-                DataTable dataTable = SqlQueryDT("ExpoMRCS", query);
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    if (string.IsNullOrEmpty(email))
-                        email = row.Field<string>(4);
-
-                    if (string.IsNullOrEmpty(body))
-                    {
-                        body = "<table width='100%'>" +
-                                    "<caption style='margin:10px; font-size:1.2em'><b>PROMOCIONES OBTENIDAS</b></caption>" +
-                                    "<tr><table border=2 style='width:100%'>" +
-                                        "<tr><td colspan='2'><b>Cliente: </b>" + row.Field<string>(1) + "</td>" +
-                                    "</tr>" +
-                                    "<tr align='center'>" +
-                                        "<td width='30%'><b>Nombre del Artículo</b></td>" +
-                                        "<td><b>Descripción</b></td>" +
-                                    "</tr>";
-                    }
-
-                    body += "<tr><td>"
-                        + row.Field<string>(2) + "</td><td>"
-                        + row.Field<string>(3) + "</td></tr>";
-
-                }
-
-                body += "</table></tr><br/><br/><br/>"
-                     + avisoConfidencialidad;
-                try
-                {
-
+            string body = "<br/>Hola " + name + "<br/><br/>"
+                    + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2022<br/><br/>"
+                    + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
+                    + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
+                    + "Usuario: " + email + "<br/>"
+                    + "Contraseña:  " + password + "<br/>"
+                    + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
+                    + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
+                    + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
+                + avisoConfidencialidad;
+            try
+            {
 #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Promociones Obtenidas", body);
+                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Asunto", body);
 #else
-                  await _emailSender.SendEmailAsync(email, "Recuperar Contraseña ExpoMR", body);
-#endif                    
-                }
-                catch (Exception ex)
-                {
-                    string ms= ex.Message;
-                }
+                    
+                await _emailSender.SendEmailAsync(email, "Asunto", body);
+#endif
+                pMessage = "Mensaje Enviado Con exíto";
             }
-            return true;
+            catch (Exception e)
+            {
+                pMessage = "Hubo un error al envir el correo: " + e.Message;
+            }
+
+            return pMessage;
         }
+
+        public async Task<JsonResult> SendPromos(int IdCliente)
+        {
+            var rm = new ResponseModel();
+
+            string email = "";
+            string body = string.Empty;
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+
+            SqlDataReader dr = dB.ExecuteReader("GetDetailNotificacion", ref parameters);
+
+            while (dr.Read())
+            {
+                if (string.IsNullOrEmpty(email))
+                    email = (string)dr["Email"];
+
+                if (string.IsNullOrEmpty(body))
+                {
+                    body = "<table width='100%'>" +
+                                "<caption style='margin:10px; font-size:1.2em'><b>PROMOCIONES OBTENIDAS</b></caption>" +
+                                "<tr><table border=2 style='width:100%'>" +
+                                    "<tr><td colspan='2'><b>Cliente: </b>" + (string)dr["Cliente"] + "</td>" +
+                                "</tr>" +
+                                "<tr align='center'>" +
+                                    "<td width='30%'><b>Nombre del Artículo</b></td>" +
+                                    "<td><b>Descripción</b></td>" +
+                                "</tr>";
+                }
+
+                body += "<tr><td>"
+                    + (string)dr["Articulo"] + "</td><td>"
+                    + (string)dr["Descripcion"] + "</td></tr>";
+            }
+
+            body += "</table></tr><br/><br/><br/>"
+                    + avisoConfidencialidad;
+            try
+            {
+#if (TESTMODE)
+                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Promociones Obtenidas", body);
+#else
+                             await _emailSender.SendEmailAsync(email, "Promociones Obtenidas", body);
+#endif
+            }
+            catch (Exception ex)
+            {
+                Log.LogNotificacion(IdCliente, 1); //1 = Notificacion de promocion
+
+                rm.Response = false;
+                rm.Message = ex.Message;
+            }
+
+            Log.LogNotificacion(IdCliente, 1); //1 = Notificacion de promocion
+
+            rm.Response = true;
+            rm.Message = "Se envio la notificacion correctamente al email: " + email;
+
+            return Json(rm);
+        }
+        
         public async Task<bool> SendOrder(int IdPedido)
         {
             var user = _userManager.GetUserAsync(User);
@@ -245,7 +255,7 @@ namespace ExpoMR.Controllers
             try
             {
 #if (TESTMODE)
-                await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Pedido en firme", body);
+                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Pedido en firme", body);
 #else
                     
                 await _emailSender.SendEmailAsync(email, "Pedido en firme", body);
@@ -258,6 +268,7 @@ namespace ExpoMR.Controllers
                 return false;
             }
         }
+        
         public DataTable SqlQueryDT(string dataBase, string query)
         {
             DataTable dt =  new();
