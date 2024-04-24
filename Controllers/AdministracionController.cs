@@ -460,68 +460,6 @@ namespace ExpoMR.Controllers
                 return Json(rm);
             }
 
-            [HttpPost]
-            public async Task<JsonResult> ReenviarInvitacion(int IdEmail, string UserName, bool Vip)
-            {
-                var rm = new ResponseModel();
-
-                try
-                {
-                    var usuario = await _userManager.FindByEmailAsync(UserName);
-
-                    if (usuario != null)
-                    {
-
-                        string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
-                        var resultado = await _userManager.ResetPasswordAsync(usuario, token, "Expo2024");
-
-                        if (resultado.Succeeded)
-                        {
-                            string linkExpo = Vip ? "https://expomr.online" : "https://expomr.online";
-
-                            string body = "<br/>Hola " + UserName + "<br/><br/>"
-                                    + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2022<br/><br/>"
-                                    + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
-                                    + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
-                                    + "Usuario: " + UserName + "<br/>"
-                                    + "Contraseña:  Expo2024 <br/>"
-                                    + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
-                                    + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
-                                    + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
-                                + avisoConfidencialidad;
-                        
-                            #if (TESTMODE)
-                                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Bienvenido a Expo Virtual Medicinas Rosario", body);
-                            #else
-
-                                await _emailSender.SendEmailAsync(UserName, "Confirmar su cuenta - ExpoMR",
-                                    "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
-                                await _signInManager.SignInAsync(usuario, isPersistent: false);
-                            #endif
-                        
-                            WebSite.InsertFeNotificacion(IdEmail);
-                            WebSite.InsertIinvitacion(IdEmail, Vip, "SUCCESS");
-
-                            rm.Response = true;
-                            rm.Message = "Se envio la invitacion correctamente";
-                        }
-                        else
-                        {
-                            rm.Response = false;
-                            rm.Message = "Hubo un error al cambiar la contraseña y al enviar la invitación";
-                        }
-				    }
-			    }
-                catch (Exception e)
-                {
-                    WebSite.InsertIinvitacion(IdEmail, Vip, e.Message);
-                    rm.Response = false;
-                    rm.Message = e.Message;
-                }
-
-                return Json(rm);
-            }
-    
             public JsonResult CambiarSucursal(int IdEmail, int Sucursal)
             {
                 var rm = new ResponseModel();

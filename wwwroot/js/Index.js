@@ -47,7 +47,8 @@ function GetCarrito(IdPersona)
     );
 }
 
-function FormatoFecha() {
+function FormatoFecha()
+{
     var fechaActual = new Date();
     var diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     var diaSemanaActual = diasSemana[fechaActual.getDay()];
@@ -73,7 +74,8 @@ function FormatoFechaDataTable(fecha)
     return fechaFormateada;
 }
 
-function Getmonth(mes) {
+function Getmonth(mes)
+{
     var cadenaMesActual = "";
     switch (mes) {
         case 1:
@@ -116,13 +118,16 @@ function Getmonth(mes) {
 
     return cadenaMesActual;
 }
-function FormatoMoneda(number) {
+
+function FormatoMoneda(number)
+{
     const currencyFormatter = number.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
     //const formattedNumber = currencyFormatter.format(number);
     return currencyFormatter;
 }
-function ShowAlert(message, type = false, IdElement = "liveAlertPlaceholder") { //false = danger, true = success
 
+function ShowAlert(message, type = false, IdElement = "liveAlertPlaceholder") //false = danger, true = success
+{ 
     let tipo = type ? "success" : "danger";
     const alertPlaceholder = document.getElementById(IdElement)
     alertPlaceholder.innerHTML = "";
@@ -140,7 +145,9 @@ function ShowAlert(message, type = false, IdElement = "liveAlertPlaceholder") { 
 
     appendAlert(message, tipo)
 }
-function Getpath() {
+
+function Getpath()
+{
     var rutaRelativaCompleta = window.location.href;
     if (rutaRelativaCompleta.includes("ExpoMRDev")) {
         return "../../ExpoMRDev/";
@@ -149,42 +156,56 @@ function Getpath() {
         return "../";
     }
 }
-function resetTimer() {    
+
+function resetTimer()
+{    
     clearTimeout(timer);
     timer = setTimeout(logout, inactivityTimeout);
 }
-function logout() {
+
+function logout()
+{
     // Realizar acciones de cierre de sesión o redireccionamiento
     //console.log(inactivityTimeout)
     $("#btn_logout").click();
     // Ejemplo: window.location.href = "/logout";
 }
-function CloseModal(IdModal) {
+
+function CloseModal(IdModal)
+{
     var myModalEl = document.getElementById(IdModal);
     var modal = bootstrap.Modal.getInstance(myModalEl)
     modal.hide()
 }
-function OpenModal(IdModal) {
+
+function OpenModal(IdModal)
+{
     const myModal = new bootstrap.Modal(document.getElementById(IdModal));
     myModal.show();;
 }
-function toggleCollapse() {
+
+function toggleCollapse()
+{
     var collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
     var collapseList = collapseElementList.map(function (collapseEl) {
         return new bootstrap.Collapse(collapseEl)
     })
 }
+
 /**
  * Mandar Email
  */
-function SendMail(IdPedido) {
+function SendMail(IdPedido)
+{
     $.post("/Notificaciones/SendOrder",
         {            
             IdPedido: IdPedido
         },
-        function (data) {
+        function (data)
+        {
             console.log(data)
-        }).error(function () {
+        }).error(function ()
+        {
             alerta(false, "No fue posible cargar sus datos")
         }
     );

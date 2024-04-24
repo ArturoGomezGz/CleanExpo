@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Nancy.Json;
 using System.Data;
+using System.Runtime.Intrinsics.X86;
+using ExpoMR.Datos;
 
 namespace ExpoMR.Controllers
 {
@@ -40,10 +42,10 @@ namespace ExpoMR.Controllers
             if (ModelState.IsValid)
             {
                 var usuario = await _userManager.FindByEmailAsync(opViewModel.Email);
+
                 if (usuario == null)
-                {
-                    return RedirectToAction("ConfirmacionOlvidoPassword");
-                }
+                    return RedirectToAction(nameof(CuentasController.ConfirmacionOlvidoPassword), "Cuentas");
+
                 var codigo = await _userManager.GeneratePasswordResetTokenAsync(usuario);
                 var urlRetorno = Url.Action("ResetPassword", "Cuentas", new { userId = usuario.Id, code = codigo }, protocol: HttpContext.Request.Scheme);
 
@@ -54,47 +56,74 @@ namespace ExpoMR.Controllers
                         + "<a href='mailto:ventas@medicinasrosario.com.mx'>Soporte ExpoMR</a><br/><br/><br/>"
                         + avisoConfidencialidad;
                
-#if (TESTMODE)
+            #if (TESTMODE)
                 await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR", body);
-#else
-                    
-                  await _emailSender.SendEmailAsync(opViewModel.Email, "Recuperar Contraseña ExpoMR", body);
-#endif
-                return RedirectToAction("ConfirmacionOlvidoPassword");
+            #else                    
+                await _emailSender.SendEmailAsync(opViewModel.Email, "Recuperar Contraseña ExpoMR", body);
+            #endif
+
+                return RedirectToAction(nameof(CuentasController.ConfirmacionOlvidoPassword), "Cuentas");
             }
+
             return View(opViewModel);
         }
 
-        public async Task<string> SendWelcome(string name, string email, string password, bool vip)
+        [HttpPost]
+        public async Task<JsonResult> SendWelcome(int IdEmail, string UserName, bool Vip)
         {
-            string linkExpo = vip ? "https://expomr.online" : "https://expomr.online";
+            var rm = new ResponseModel();
 
-            string body = "<br/>Hola " + name + "<br/><br/>"
-                    + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2022<br/><br/>"
-                    + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
-                    + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
-                    + "Usuario: " + email + "<br/>"
-                    + "Contraseña:  " + password + "<br/>"
-                    + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
-                    + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
-                    + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
-                + avisoConfidencialidad;
             try
             {
-#if (TESTMODE)
-                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Asunto", body);
-#else
-                    
-                await _emailSender.SendEmailAsync(email, "Asunto", body);
-#endif
-                pMessage = "Mensaje Enviado Con exíto";
+                var usuario = await _userManager.FindByEmailAsync(UserName);
+
+                if (usuario != null)
+                {
+                    string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
+                    var resultado = await _userManager.ResetPasswordAsync(usuario, token, "Expo2024");
+
+                    if (resultado.Succeeded)
+                    {
+                        string linkExpo = Vip ? "https://expomr.online" : "https://expomr.online";
+
+                        string body = "<br/>Hola " + UserName + "<br/><br/>"
+                                + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2022<br/><br/>"
+                                + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
+                                + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
+                                + "Usuario: " + UserName + "<br/>"
+                                + "Contraseña:  Expo2024 <br/>"
+                                + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
+                                + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
+                                + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
+                                + avisoConfidencialidad;
+
+                        #if (TESTMODE)
+                            await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Bienvenido a Expo Virtual Medicinas Rosario", body);
+                        #else
+                            await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
+                        #endif
+
+                        WebSite.InsertFeNotificacion(IdEmail);
+                        WebSite.InsertIinvitacion(IdEmail, Vip, "SUCCESS");
+
+                        rm.Response = true;
+                        rm.Message = "Se envio la invitacion correctamente";
+                    }
+                    else 
+                    {
+                        rm.Response = false;
+                        rm.Message = "No se pudo Generar la contraseña para enviarla en la invitación";
+                    }
+                }
             }
             catch (Exception e)
             {
-                pMessage = "Hubo un error al envir el correo: " + e.Message;
+                WebSite.InsertIinvitacion(IdEmail, Vip, e.Message);
+                rm.Response = false;
+                rm.Message = e.Message;
             }
 
-            return pMessage;
+            return Json(rm);
         }
 
         public async Task<JsonResult> SendPromos(int IdCliente)
@@ -137,11 +166,11 @@ namespace ExpoMR.Controllers
                     + avisoConfidencialidad;
             try
             {
-#if (TESTMODE)
-                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Promociones Obtenidas", body);
-#else
-                             await _emailSender.SendEmailAsync(email, "Promociones Obtenidas", body);
-#endif
+                #if (TESTMODE)
+                    await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Promociones Obtenidas", body);
+                #else
+                    await _emailSender.SendEmailAsync(email, "Promociones Obtenidas", body);
+                #endif
             }
             catch (Exception ex)
             {
@@ -161,35 +190,26 @@ namespace ExpoMR.Controllers
         
         public async Task<bool> SendOrder(int IdPedido)
         {
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int IdPersona = GeneralesController.GetIdPersonas(username);
-            int IdCliente = GeneralesController.GetClientes(username);
-
             decimal Total = 0;
             string email = "";
             string obsv = "";
             string body = string.Empty;
-            
-            string query = "SELECT vPedidoDatos.IdPedido, vPedidoDatos.Cliente, vPedidoDatos.RFC, vPedidoDatos.Documento, " +
-                                "vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Porte, vPedidoDatos.Transportista, " +
-                                "vProductos.IdProducto, vProductos.Codigo, vProductos.Producto, vPedidos.Unitario, vPedidos.Descuento, vPedidos.Cantidad, " +
-                                "(vPedidos.PrecioIva * vPedidos.Cantidad) AS Total, vPedidos.PrecioIva, CASE WHEN vProductos.Iva = 1 THEN  Indigo.dbo.GetIva(0) * 100 ELSE 0 END AS Iva, mUsuarios.UserName, " +
-                                "vPedidoDatos.Obsv " +
-                                "FROM vPedidoDatos INNER JOIN " +
-                                "mUsuarios ON vPedidoDatos.IdPersona = mUsuarios.IdPersona INNER JOIN " +
-                                "vPedidos ON vPedidoDatos.IdPedido = vPedidos.IdPedido INNER JOIN " +
-                                "vProductos ON vProductos.IdProducto = vPedidos.IdProducto " +
-                                "WHERE vPedidos.IdPedido = " + IdPedido + " AND vPedidoDatos.IdPersona =" + IdCliente;
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
-            foreach (DataRow row in dataTable.Rows)
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@IdPedido", IdPedido);
+
+            SqlDataReader dr = dB.ExecuteReader("GetDetailOrder", ref parameters);
+
+            while (dr.Read())
             {
                 if (string.IsNullOrEmpty(email))
                 {
-                    email = row.Field<string>(17);
-                    obsv = row.Field<string>(18);
+                    email = (string)dr["Email"];
+                    obsv = (string)dr["Obsv"];
                 }
+
                 if (string.IsNullOrEmpty(body))
                 {
                     body = "<table width='100%'>" +
@@ -198,11 +218,11 @@ namespace ExpoMR.Controllers
                                 "</caption>" +
                                 "<tr>" +
                                     "<table border=2 width='100%'>" +
-                                        "<tr><td width='70%'></td><td width='30%'><b>Orden: </b>" + row.Field<int>(0) + "</td></tr>" +
-                                        "<tr><td colspan='2'><b>Cliente: </b>" + row.Field<string>(1) + "</td></tr>" +
-                                        "<tr><td width='30%'><b>RFC: </b>" + row.Field<string>(2) + "</td>" +
-                                            "<td width ='70%'><b>Tipo de Docto.: </b>" + row.Field<string>(3) + "</td></tr>" +
-                                        "<tr><td colspan ='2'><b>Dirección de Entrega: </b>" + row.Field<string>(5) + "</td></tr>" +
+                                        "<tr><td width='70%'></td><td width='30%'><b>Orden: </b>" + dr["IdPedido"].ToString() + "</td></tr>" +
+                                        "<tr><td colspan='2'><b>Cliente: </b>" + dr["Cliente"].ToString() + "</td></tr>" +
+                                        "<tr><td width='30%'><b>RFC: </b>" + dr["RFC"].ToString() + "</td>" +
+                                            "<td width ='70%'><b>Tipo de Docto.: </b>" + dr["Documento"].ToString() + "</td></tr>" +
+                                        "<tr><td colspan ='2'><b>Dirección de Entrega: </b>" + dr["DirEntrega"].ToString() + "</td></tr>" +
                                     "</table>" +
                                 "</tr></br>" +
                                 "<tr>" +
@@ -216,26 +236,28 @@ namespace ExpoMR.Controllers
                                             "<td width='8%'><b>IVA</b></td width='12%'>" +
                                             "<td width='8%'><b>Precio Final</b></td>" +
                                             "<td><b>Total</b></td>" +
-                                        "</tr>";
+                                "</tr>";
                 }
+
                 try
                 {
-                    body += "<tr><td>" + row.Field<string>(9) + "</td><td>"
-                                       + row.Field<string>(10) + "</td><td>"
-                                       + row.Field<float>(11) + "</td><td>"
-                                       + row.Field<decimal>(12) + "</td><td>"
-                                       + row.Field<int>(13) + "</td><td>"
-                                       + row.Field<float>(16) + "</td><td>"
-                                       + row.Field<decimal>(15) + "</td><td>"
-                                       + row.Field<decimal>(14) + "</td></tr>";
-                   Total += row.Field<decimal>(14);
+                    body += "<tr><td>" + dr["Codigo"].ToString() + "</td><td>"
+                                       + dr["Producto"].ToString() + "</td><td>"
+                                       + dr["Unitario"].ToString() + "</td><td>"
+                                       + dr["Descuento"].ToString() + "</td><td>"
+                                       + dr["Cantidad"].ToString() + "</td><td>"
+                                       + dr["Iva"].ToString() + "</td><td>"
+                                       + dr["PrecioIva"].ToString() + "</td><td>"
+                                       + dr["Total"].ToString() + "</td></tr>";
+                    Total += (decimal)dr["Total"];
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     string e = ex.Message;
                     return false;
                 }
             }
-
+               
             body += "<tr align='right'>" +
                         "<td colspan='6'></td><td><b>Total:</b></td>" +
                         "<td>" + Total + "</td>" +
@@ -254,34 +276,20 @@ namespace ExpoMR.Controllers
                  + avisoConfidencialidad;           
             try
             {
-#if (TESTMODE)
-                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Pedido en firme", body);
-#else
-                    
-                await _emailSender.SendEmailAsync(email, "Pedido en firme", body);
-#endif
+                #if (TESTMODE)
+                    await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Pedido en firme", body);
+                #else                   
+                    await _emailSender.SendEmailAsync(email, "Pedido en firme", body);
+                #endif
+                
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+
                 return false;
             }
-        }
-        
-        public DataTable SqlQueryDT(string dataBase, string query)
-        {
-            DataTable dt =  new();
-            SqlConnection cnn = new(_configurationDB["ConnectionStrings:" + dataBase]);
-            SqlCommand cmd =  new();
-            SqlDataAdapter sqlDA; cnn.Open();
-            cmd.CommandText = query;
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            sqlDA = new SqlDataAdapter(cmd);
-            sqlDA.Fill(dt);
-            cnn.Close();
-            return dt;
-        }
+        }        
     }
 }

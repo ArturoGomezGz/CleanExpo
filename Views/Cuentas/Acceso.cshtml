@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-lg-10 col-xl-7 mx-auto">
                         <h3 class="display-6">Bienvenido<img src="~/Imagenes/logoExpo.png" style="vertical-align: text-bottom;" /></h3>
-                            <form asp-controller="Cuentas" asp-action="Acceso" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+                        <form asp-controller="Cuentas" asp-action="Acceso" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
                             <div class="text-danger" asp-validation-summary="All"></div>
                             <div class="form-group mb-3">
                                 <label asp-for="Email" class="col-md-12"></label>
@@ -40,20 +40,17 @@
                             <button type="submit" class="btn btn-large btn-grad-sesion w-100 btn-lg">Iniciar Sesión</button>
                             @*<p class="link-acceso"><a asp-action="Registro">Regístrate como nuevo Usuario</a></p>*@
                             <p class="link-acceso"><a asp-action="OlvidoPassword">¿Olvidaste tu Contraseña?</a></p>
-                        </form>
-                    </>
+                        </form>                     
+                    </div>
                 </div>
-            </div><!-- End -->
-
+            </div>
         </div>
     </div>
-    <!-- End -->
-
-</div>
 </div>
 
-@section Scripts{
+@section Scripts
+{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
+}

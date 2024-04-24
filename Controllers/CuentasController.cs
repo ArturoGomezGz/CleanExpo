@@ -319,43 +319,14 @@ namespace ExpoMR.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [AllowAnonymous]
-        public async Task<IActionResult> OlvidoPassword(OlvidoPasswordViewModel opViewModel)
-        {
-            if (ModelState.IsValid) { 
-                var usuario = await _userManager.FindByEmailAsync(opViewModel.Email);
-                if (usuario == null) {
-                    return RedirectToAction("ConfirmacionOlvidoPassword");
-                }
-
-                var codigo = await _userManager.GeneratePasswordResetTokenAsync(usuario);
-
-                var urlRetorno = Url.Action("ResetPassword", "Cuentas", new { userId = usuario.Id, code = codigo }, protocol: HttpContext.Request.Scheme);
-
-#if (TESTMODE)
-                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR",
-                     "Por favor recupre su contraseña entrando en el siguiente enlace: <a href=\"" + urlRetorno + "\"> Enlace </a>");
-#else
-                    
-                    await _emailSender.SendEmailAsync(opViewModel.Email, "Recuperar Contraseña ExpoMR", 
-                    "Por favor recupre su contraseña entrando en el siguiente enlace: <a href=\"" + urlRetorno + "\"> Enlace </a>");
-#endif
-                return RedirectToAction("ConfirmacionOlvidoPassword");
-            }  
-
-            return View(opViewModel);
-        }
-
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ConfirmacionOlvidoPassword()
         {
             return View();
         }
-        [HttpGet]
 
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult RegistroConfirmacion()
         {
