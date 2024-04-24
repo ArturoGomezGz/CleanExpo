@@ -33,9 +33,7 @@ namespace ExpoMR.Controllers
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@idpersona", HttpContext.Session.GetString("ClienteSel"));
 
-            int ret = dB.ExecuteReturnValue("MonedasSaldo", ref parameters);
-
-            return ret;
+            return dB.ExecuteReturnValue("MonedasSaldo", ref parameters);
         }
 
         public string GetRuleta(int IdPersona)
@@ -76,9 +74,7 @@ namespace ExpoMR.Controllers
             parameters[0] = new SqlParameter("@cliente", IdPersona);
             parameters[1] = new SqlParameter("@usuario", IdPersona);
 
-            int ret = (int)dB.ExecuteScalar("ExpoCountProducts", ref parameters);
-
-            return ret;
+            return (int)dB.ExecuteScalar("ExpoCountProducts", ref parameters);
         }
 
         public int GetIdPersona(string UserName)  //se tendra que eliminar puesto que ya no se utilizara

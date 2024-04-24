@@ -102,31 +102,42 @@
     if (chklock != null) 
     {
         chklock.addEventListener('change', (event) => {
-            if (event.currentTarget.checked) {
+
+            if (event.currentTarget.checked) 
+            {
                 bloquear();
-            } else {
+            } 
+            else 
+            {
                 bloquear();
             }
         })
     }
 
-    function bloquear() {
+    function bloquear() 
+    {
         var element = document.getElementById('Email');
 
         $.post(path + "Administracion/Bloquear",
             {
                 email: element.value
             },
-            function (data) {
+            function (data) 
+            {
                 ShowAlert(data.message, data.response);
-                if (data.result) {
+
+                if (data.result) 
+                {
                     $("#lockButton").removeClass("fa-lock");
                     $("#lockButton").addClass("fa-unlock-alt")
-                } else {
+                } 
+                else 
+                {
                     $("#lockButton").removeClass("fa-unlock-alt");
                     $("#lockButton").addClass("fa-lock")
                 }
-            }).error(function () {
+            }).error(function () 
+            {
                 modal.hide()
                 ShowAlert("No fue posible cargar sus datos", false);
             });
@@ -135,37 +146,49 @@
     //Evento para control checkbox VIP
     const chkVip = document.getElementById('VipCheck')
     chkVip.addEventListener('change', (event) => {
-        if (event.currentTarget.checked) {
+
+        if (event.currentTarget.checked) 
+        {
             ChangeVIP(true);
-        } else {
+        } 
+        else 
+        {
             ChangeVIP(false);
         }
     })
 
-    function ChangeVIP(vip) {
+    function ChangeVIP(vip) 
+    {
         const IdEmail = $("#IdEmail").val();
+
         $.post(path + "Administracion/ChangeVip",
             {
                 IdEmail: IdEmail,
                 Vip: vip
             },
-            function (data) {
+            function (data) 
+            {
                 ShowAlert(data.message, data.response);
-                if (data.result) {
+                if (data.result) 
+                {
                     $("#lockButton").removeClass("fa-lock");
                     $("#lockButton").addClass("fa-unlock-alt")
-                } else {
+                } 
+                else 
+                {
                     $("#lockButton").removeClass("fa-unlock-alt");
                     $("#lockButton").addClass("fa-lock")
                 }
-            }).error(function () {
+            }).error(function ()
+            {
                 modal.hide()
                 ShowAlert("No fue posible cargar sus datos", false);
             });
     }
 
 
-    function editar(){
+    function editar()
+    {
         //se ocultan los botnes
         $("#btn-invitacion").addClass('d-none');
         $("#btn-password").addClass('d-none');
@@ -178,29 +201,37 @@
         var element = document.getElementById("cmb-sucursales")
         element.removeAttribute("disabled");
     }
-    function save() {
 
+    function save() 
+    {
         const IdEmail = $("#IdEmail").val();
         const Sucursal = $("#cmb-sucursales").val();
 
-        if (Sucursal === "0") {
+        if (Sucursal === "0")
+        {
             ShowAlert("Seleccione una sucursal.", false);
-        } else {
+        } 
+        else 
+        {
             $.post(path + "Administracion/CambiarSucursal",
                 {
                     IdEmail: IdEmail,
                     Sucursal: Sucursal
                 },
-                function (data) {
+                function (data)
+                {
                     ShowAlert(data.message, data.response);
                     cancel()
                 }
-            ).error(function () {
+            ).error(function () 
+            {
                 ShowAlert("No fue posible cargar sus datos", false);
             });
         }
     }
-    function cancel(){
+
+    function cancel()
+    {
         //Se ocultan los botones de aceptar y cancelar
         $("#hiddenBTN").addClass('d-none');
 
@@ -217,64 +248,73 @@
         window.location.reload();
     }
 
-    function changePassword() {
+    function changePassword()
+    {
         var myModalEl = document.getElementById('CambiarPasswordModal');
         var modal = bootstrap.Modal.getInstance(myModalEl)
         const Password = $("#Password").val()
         const ConfirmPassword = $("#ConfirmPassword").val()
         const email = $("#Email").val();
 
-        if (Password == ConfirmPassword) {
+        if (Password == ConfirmPassword)
+        {
             $.post(path + "Administracion/CambiarPassword",
                 {
                     Password: Password,
                     ConfirmPassword: ConfirmPassword,
                     email: email
                 },
-                function (data) {
+                function (data) 
+                {
                     modal.hide()
                     $("#Password").val("")
                     $("#ConfirmPassword").val("")
                     ShowAlert(data.message, data.response);
-                }).error(function () {
+                }).error(function ()
+                {
                     modal.hide()
                     ShowAlert("No fue posible cargar sus datos", false);
                 });
-        } else {
+        } 
+        else
+        {
             ShowAlert("las contraseñas no Coinsiden", false, "liveAlertModal");
         }
     }
 
-    function reenviar(){
-
-        const Vip = document.getElementById("VipCheck");
+    function reenviar()
+    {
+        const ChkVIP = document.getElementById("VipCheck");
         const IdEmail = $("#IdEmail").val();
         const UserName = $("#Email").val();
 
-        let Vipvalue = false;
+        let IsVip = false; //Esto aplica para usuarios que son empleados y proveedores
 
-        if (Vip.checked) {
-            Vipvalue = true;
-        } else {
-           Vipvalue = false;
+        if (ChkVIP !== null) //Esto aplica para usuarios que son clientes 
+        {
+            if (ChkVIP.checked)
+                IsVip = true;
+            else
+                IsVip = false;
         }
 
         $.post(path + "Notificaciones/SendWelcome",
             {
                 IdEmail: IdEmail,
                 UserName: UserName,
-                Vip: Vipvalue
+                Vip: IsVip
             },
-            function (data) {
-                ShowAlert(data.message, data.response);
-        }).error(function () {
-            ShowAlert("No fue posible cargar sus datos", false);
-        });       
-
+            function (data) 
+            {
+                ShowAlert(data.message, data.response);            
+            }).error(function () 
+            {
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
     }
 
-    function eliminarUsuario(){
-        //const IdPersona = $("#IdPersona").val();
+    function eliminarUsuario()
+    {
         const IdEmail = $("#IdEmail").val();
         const UserName = $("#Email").val();
 
@@ -286,10 +326,14 @@
                 IdEmail: IdEmail,
                 UserName: UserName
             },
-            function (data) {
-                if(data.response){
+            function (data) 
+            {
+                if(data.response)
+                {
                     location.reload()
-                }else{
+                }
+                else
+                {
                     block.remove();
                     var myModalEl = document.getElementById('DeleteModal');
                     var modal = bootstrap.Modal.getInstance(myModalEl)
@@ -300,7 +344,8 @@
                     window.location.href = url;
                 }
             }
-        ).error(function () { 
+        ).error(function ()
+        { 
             block.remove();
             var myModalEl = document.getElementById('DeleteModal');
             var modal = bootstrap.Modal.getInstance(myModalEl)

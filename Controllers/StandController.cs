@@ -126,7 +126,6 @@ namespace ExpoMR.Controllers
                     Log.SaveVisita(Cliente, idProveedor, 0);
                 }
 
-                List<StandVIewModel> StandProveedor = new();
                 StandVIewModel Stand = new StandVIewModel();
 
                 DB dB = new();
@@ -148,15 +147,15 @@ namespace ExpoMR.Controllers
                     Stand.IdUsuario = Cliente;
                     Stand.Activedhcp = null;
                     Stand.Activestatic = "active";
-
-                    StandProveedor.Add(Stand);
                 }
 
                 DB dB2 = new();
-                SqlParameter[] parameters2 = new SqlParameter[1];
+                SqlParameter[] parameters2 = new SqlParameter[3];
                 parameters2[0] = new SqlParameter("@IdSal", IdSal);
+                parameters2[1] = new SqlParameter("@letra", "");
+                parameters2[2] = new SqlParameter("@sal", "");
 
-                SqlDataReader dr2 = dB2.ExecuteReader("GetStandProv", ref parameters2);
+                SqlDataReader dr2 = dB2.ExecuteReader("GetSales", ref parameters2);
 
                 while (dr2.Read())
                 { 
@@ -169,7 +168,7 @@ namespace ExpoMR.Controllers
                 {
                     if (isFechaExpoVIP == true)
                     {
-                        return View("~/Views/Stand/Editar.cshtml", StandProveedor);
+                        return View("~/Views/Stand/Editar.cshtml", Stand);
                     }
                     else
                     {
@@ -184,7 +183,7 @@ namespace ExpoMR.Controllers
                     }
                     else
                     {
-                        return View("~/Views/Stand/Editar.cshtml", StandProveedor);
+                        return View("~/Views/Stand/Editar.cshtml", Stand);
                     }
                 }
             }

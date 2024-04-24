@@ -10,7 +10,6 @@
         <a class="usuario nav-link  dropbtn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             @UserManager.GetUserName(User)
         </a>
-        <input type="hidden" id="hdfuserlogged" value="@UserManager.GetUserName(User)" />
         @using (Html.BeginForm("Submit", "Home", FormMethod.Post))
         {
             List<Clientes> ClientesSeleccion = ExpoMR.Controllers.GeneralesController.GetClientesSeleccion(@UserManager.GetUserName(User));
@@ -22,7 +21,6 @@
                 }
             </select>
         }
-  @*       <select id="ddlClientes"></select> *@
     </li>
     <li class="nav-item dropdown">
         <a class="usuario nav-link  dropbtn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -135,47 +133,6 @@ else
             sessionStorage.setItem('SelValue', select.value);
             SetClienteSel(select.value);
         });
- 
-        // //Se obtiene el email con el que se inicio sesion
-        // var userlogged = document.getElementById("hdfuserlogged").value;
-
-        // //Se ejecuta la funcion, para obtener la lista de clientes que tienen el email asignado en indigo
-        // $.ajax({
-        //     url: path + "Generales/GetClientesSeleccion?UserName=" + userlogged,
-        //     contentType: "application/json; charset=utf-8",
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     success: function (data) {
-
-        //         // Se cargan los datos el control select "ddlClientes"
-        //         var select = $('#ddlClientes');
-        //         select.empty();
-               
-        //         $.each(data, function (index, item) {
-        //             select.append($('<option></option>').val(item.idpersona).text(item.nombre));
-        //         });
-        //    }
-        // });
-
-
-          //Se obtiene el primer id del control select "ddlClientes", al cargar por primera vez la pagina
-        //var ClienteSel = $('#ddlClientes').val();
-        //console.log('este es el valor seleccionado al carga la pagina  desde afuera de ajax ' + $('#ddlClientes').val());
-        
-        //SetClienteSel(ClienteSel);
-       
-
-        //Se obtiene el id, al seleccionar un registro del control select "ddlClientes"
-        // $('#ddlClientes').change(function ()
-        // {
-        //    var ClienteSel = $('#ddlClientes').val();
-
-        //     sessionStorage.setItem("SelItem", ClienteSel);
-
-        //     //console.log('valor guardado en sessionStorage ' + sessionStorage.getItem("SelItem"));
-        //     //console.log('este es el valor seleccionado desde el control select ' + $('#ddlClientes').val());
-        //     //SetClienteSel(ClienteSel);
-        // });
     });
 
     //Se ejecuta la funcion para asignar el valor de idpersona en la variable de session "ClienteSel"

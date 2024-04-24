@@ -39,5 +39,4 @@ namespace ExpoMR.Models
         [NotMapped]
         public string Sal { get; set; }
     }
-
 }

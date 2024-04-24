@@ -1,7 +1,9 @@
-﻿using ExpoMR.Datos;
+﻿using ExpoMR.Clases;
+using ExpoMR.Datos;
 using ExpoMR.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -14,55 +16,82 @@ namespace ExpoMR.Controllers
         {
             return View();
         }
-        public IActionResult Contacto() { 
+
+        public IActionResult Contacto() 
+        { 
             return View();
         }       
-        public IActionResult Preguntas() {
+
+        public IActionResult Preguntas() 
+        {
             return View();
         }
-        public IActionResult Privacidad() {
+
+        public IActionResult Privacidad() 
+        {
             return View();
         }
-        public IActionResult CondicionesRuleta() {
+
+        public IActionResult CondicionesRuleta() 
+        {
             return View();
         }
-        public IActionResult TerminosyCondiciones() {
+
+        public IActionResult TerminosyCondiciones() 
+        {
             return View();
         }
+
         [HttpPost]
         public JsonResult GetSales(string letra, string palabra)
         {
-            using var dbIndigo = new ApplicationDbContextIndigo();
+            List<mSales> Sales = new();
 
-            var result = dbIndigo.Set<SalesBuscar>()
-                .FromSqlRaw("Select mSales.IdSal, mSales.Sal, " +
-                " CAST(Case When COUNT(mProductos.IdProducto) = 0 Then 0 Else 1 End as bit) as Habilitado " +
-                " From mSales inner join " +
-                " dProdSal on mSales.IdSal = dProdSal.IdSal left outer join " +
-                " ExpoMR.dbo.mProductos on dProdSal.IdProducto = mProductos.IdProducto " +
-                " Where UPPER(LEFT(mSales.Sal, 1)) = UPPER( CASE WHEN '" + letra + "' = '' THEN NULL ELSE '" + letra + "' END) " +
-                " Or mSales.Sal Like Case When '" + palabra + "' = '' Then Null Else '%" + palabra + "%' End" +
-                " Group by mSales.IdSal, mSales.Sal Order by mSales.Sal").ToList();
-            return Json(result);
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@IdSal", "0");
+            parameters[1] = new SqlParameter("@letra", letra != null ? letra : "");
+            parameters[2] = new SqlParameter("@sal", palabra != null ? palabra : "");
+
+            SqlDataReader dr = dB.ExecuteReader("GetSales", ref parameters);
+
+            while (dr.Read())
+            {
+                mSales sal = new mSales();
+
+                sal.IdSal = (Int16)dr["IdSal"];
+                sal.Sal = (string)dr["Sal"];
+                sal.Habilitado = (bool)dr["Habilitado"];
+
+                Sales.Add(sal);
+            }
+
+            return Json(Sales);
         }
 
         [HttpPost]
-        public JsonResult GetLaboratorioBySal(int Sal) {
-            //using var dbExpo = new ApplicationDbContextExpo();
-            //return Json(dbExpo.Set<StandImage>()
-            //    .FromSqlRaw("Select mProveedores.IdPersona as Proveedor, mProveedores.Nombre," +
-            //    " mStands.Logo" +
-            //    " From mProveedores inner join" +
-            //    " mLaboratorios on mProveedores.IdPersona = mLaboratorios.Proveedor inner join" +
-            //    " mProductos on mLaboratorios.IdLaboratorio = mProductos.IdLaboratorio inner join" +
-            //    " mStands on mStands.Proveedor = mProveedores.IdPersona inner join" +
-            //    " Indigo.dbo.dProdsal on mProductos.IdProducto = dProdSal.IdProducto inner join" +
-            //    " Indigo.dbo.mSales on dProdSal.IdSal = mSales.IdSal" +
-            //    " Where mSales.IdSal = " + Sal + "" +
-            //    " Group by mProveedores.IdPersona, mProveedores.Nombre, mStands.Logo" +
-            //    " Order by mProveedores.Nombre").ToList());
+        public JsonResult GetLaboratorioBySal(int Sal) 
+        {
+            List<StandVIewModel> Proveedores = new();
 
-            return Json("");
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdSal", Sal);
+
+            SqlDataReader dr = dB.ExecuteReader("GetLaboratoriobySal", ref parameters);
+
+            while (dr.Read())
+            {
+                StandVIewModel proveedor = new StandVIewModel();
+
+                proveedor.Proveedor = (int)dr["Proveedor"];
+                proveedor.Nombre = (string)dr["Nombre"];
+                proveedor.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
+
+                Proveedores.Add(proveedor);
+            }
+
+            return Json(Proveedores);
         }
     }
 }

@@ -239,6 +239,7 @@ namespace ExpoMR.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
             returnUrl ??= Url.Content("~/");
+            HttpContext.Session.Remove("ClienteSel"); //Se elimina la variable de session que almacena el idpersona del cliente seleccionado del control ddlClientes en la vista _loginUser
 
             if (ModelState.IsValid)
             {
@@ -281,6 +282,7 @@ namespace ExpoMR.Controllers
                     return View(accViewModel);
                 }
             }
+
             return View(accViewModel);
         }
 

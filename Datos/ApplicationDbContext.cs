@@ -96,7 +96,7 @@ namespace ExpoMR.Datos
 
         public DbSet<mSales> mSales { get; set; }
 
-        public DbSet<SalesBuscar> Sales { get; set; }
+        //public DbSet<SalesBuscar> Sales { get; set; }
 
         public DbSet<CotizaProducto> CotizaProductos { get; set; }
 
