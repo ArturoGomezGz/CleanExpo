@@ -144,205 +144,256 @@ namespace ExpoMR.Controllers
 
         public int GetCantidadCarrito(int IdPersona, int cliente)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            List<SqlParameter> parms = new List<SqlParameter>
-            {
-                new SqlParameter { ParameterName = "@cliente", Value = cliente },
-                new SqlParameter { ParameterName = "@usuario", Value = IdPersona }
-            };
+            int resultCantidad = 0;
             try
             {
-                var returnStore = dbExpo.Set<ReturnStore>().FromSqlRaw($"EXEC ExpoCountProducts @cliente = {parms[0].Value}, @usuario = {parms[1].Value}").ToList();
-                return returnStore[0].Productos;
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("@cliente", cliente);
+                parameters[1] = new SqlParameter("@usuario", IdPersona);
+
+                SqlDataReader dr = dB.ExecuteReader("ExpoCountProducts", ref parameters);
+
+                if (dr.Read())
+                {
+                    resultCantidad = Convert.ToInt32(dr["Productos"]);
+                }
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
+                resultCantidad = 0;
             }
-            return 0;
+
+            return resultCantidad;
         }
 
         [HttpPost]
         public JsonResult ProductoDelete(int IdProducto, int Cliente)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            ResponseModel rm = new();
+			ResponseModel rm = new();
 
-            try
-            {
-                var user = _userManager.GetUserAsync(User);
-                string username = user.Result.UserName.ToString();
-                int Usuario = GeneralesController.GetIdPersonas(username);
+			try
+			{
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[3];
+				var user = _userManager.GetUserAsync(User);
+				string username = user.Result.UserName.ToString();
+				int Usuario = GeneralesController.GetIdPersonas(username);
+				
+				parameters[0] = new SqlParameter("@cliente", Cliente);
+				parameters[1] = new SqlParameter("@usuario", Usuario);
+				parameters[2] = new SqlParameter("@IdProducto", IdProducto);
 
-                dbExpo.Database.ExecuteSqlRaw("DECLARE @idcotizacion INT " +
-                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion " + Cliente + "," + Usuario +
-                                "UPDATE dCotizaciones " +
-                                "SET Solicitado = 0, " +
-                                "PorConfirmar = 0 " +
-                                "WHERE dCotizaciones.IdCotizacion = @idcotizacion " +
-                                "AND dCotizaciones.IdProducto = " + IdProducto);
-                rm.Response = true;
-                rm.Message = "producto eliminado";
-            }
-            catch (Exception e)
-            {
-                rm.Message = e.Message;
-            }
+				dB.ExecuteNonQuery("ExpoPedidoQuitar", ref parameters);
+
+				rm.Response = true;
+				rm.Message = "producto eliminado";
+			}
+			catch (Exception e)
+			{
+				rm.Message = e.Message;
+			}
+
             return Json(rm);
         }
 
         [HttpPost]
         public JsonResult AddCotizacion(int cliente, int idProducto, decimal unitario, int cantidad)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int IdPersona = GeneralesController.GetIdPersonas(username);
-            var parameters = new object[]
-                {
-                    cliente,
-                    idProducto,
-                    unitario,
-                    cantidad,
-                    IdPersona
-                };
-            ResponseModel rm = new();
-            try
-            {
-                dbExpo.Database.ExecuteSqlRaw("EXEC CotizarAgregar @cliente = {0}, @idproducto = {1}, @unitario = {2}, @cantidad = {3}, @usuario = {4}", parameters);
+			ResponseModel rm = new();
 
-                rm.Response = true;
-                rm.Message = "El producto se agrego al carrito";
-                rm.Result = GetCantidadCarrito(IdPersona, cliente);
-            }
-            catch (Exception e)
-            {
-                rm.Message = e.Message;
-            }
-            return Json(rm);
+			try
+			{
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[5];
+				var user = _userManager.GetUserAsync(User);
+				string username = user.Result.UserName.ToString();
+				int Usuario = GeneralesController.GetIdPersonas(username);
+
+				parameters[0] = new SqlParameter("@cliente", cliente);
+				parameters[1] = new SqlParameter("@idproducto", idProducto);
+				parameters[2] = new SqlParameter("@unitario", unitario);
+				parameters[3] = new SqlParameter("@cantidad", cantidad);
+				parameters[4] = new SqlParameter("@usuario", idProducto);
+
+				dB.ExecuteNonQuery("CotizarAgregar", ref parameters);
+
+				rm.Response = true;
+				rm.Message = "El producto se agrego al carrito";
+				rm.Result = GetCantidadCarrito(Usuario, cliente);
+			}
+			catch (Exception e)
+			{
+				rm.Message = e.Message;
+			}
+
+			return Json(rm);
         }
 
         [HttpPost]
         public JsonResult GetPedidosCarrito(int IdCliente, int IdUsuario, int IdPedido = 0)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            ResponseModel rm = new();
+			ResponseModel rm = new();
+            List<PedidosCarrito> pedidos = new List<PedidosCarrito>();
+
             try
             {
-                List<PedidosCarrito> pedidos = dbExpo.Set<PedidosCarrito>()
-                    .FromSqlRaw("SELECT ROW_NUMBER() OVER(PARTITION BY vPedidos.IdPedido,vProductos.IdLaboratorio " +
-                               "ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS RegistroProveedor, mLaboratorios.Proveedor, " +
-                               "ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio, vPedidos.IdPedido ORDER BY mProveedores.Nombre, " +
-                               "vProductos.Nombre ASC) AS RegistroPedido, vPedidos.IdPedido, vProductos.IdProducto, vProductos.Nombre, " +
-                               "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio " +
-                               "FROM vPedidos INNER JOIN " +
-                               "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
-                               "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
-                               "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
-                               " WHERE vPedidos.Cliente = " + IdCliente +
-                               " AND vPedidos.Usuario = " + IdUsuario +
-                               " AND (vPedidos.IdPedido = " + IdPedido + " OR " + IdPedido + " = 0) " +
-                               "ORDER BY vPedidos.IdPedido, mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre")
-                    .ToList();
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[3];
+				var user = _userManager.GetUserAsync(User);
+				string username = user.Result.UserName.ToString();
+				int Usuario = GeneralesController.GetIdPersonas(username);
 
-                if (pedidos.Count > 0)
+				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+				parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+				parameters[2] = new SqlParameter("@IdPedido", IdPedido);
+
+				SqlDataReader dr = dB.ExecuteReader("GetPedidosCarrito", ref parameters);
+
+                while (dr.Read())
                 {
+                    PedidosCarrito pedidoCarrito = new PedidosCarrito() 
+                    { 
+                        RegistroProveedor = Convert.ToInt32(dr["RegistroProveedor"]),
+                        Proveedor = Convert.ToInt32(dr["Proveedor"]),
+						RegistroPedido = Convert.ToInt32(dr["RegistroPedido"]),
+                        IdPedido = Convert.ToInt32(dr["IdPedido"]),
+						IdProducto = Convert.ToInt32(dr["IdProducto"]),
+						Nombre = dr["Nombre"].ToString(),
+						Presentacion = dr["Presentacion"].ToString(),
+						Cantidad = Convert.ToInt32(dr["Cantidad"]),
+						PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
+						Total = Convert.ToDecimal(dr["Total"]),
+						Laboratorio = dr["Laboratorio"].ToString()
+					};
+
+                    pedidos.Add(pedidoCarrito);
+				}
+
                     rm.Result = pedidos;
-                    rm.Response = true;
-                }
-                else
-                {
-                    rm.Response = false;
-                }
+                    rm.Response = pedidos.Count > 0;
+				    rm.Message = pedidos.Count > 0 ? "" : "No Hay Pedidos por mostrar";
 
-            }
+			}
             catch (Exception e)
             {
                 rm.Message = e.Message;
                 rm.Response = false;
             }
-            return Json(rm);
+
+			return Json(rm);
         }
 
         [HttpPost]
         public JsonResult GetDatosFacturacion(int IdCliente)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            ResponseModel rm = new();
-            try
-            {
-                List<DatosFacturacion> datos = dbExpo.Set<DatosFacturacion>().FromSqlRaw("DECLARE @idcotizacion INT" +
-                    " EXEC @idcotizacion = dbo.CotizarGetCotizacion " + IdCliente + ", " + IdCliente + " " +
-                    "SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, vCotizacionDatos.IdDocumento, " +
-                    "vCotizacionDatos.Documento, ISNULL(vCotizacionDatos.IdUsoCFDI, 0) AS IdUsoCFDI, vCotizacionDatos.UsoCFDI " +
-                    "FROM vCotizacionDatos WHERE vCotizacionDatos.IdCotizacion = @idcotizacion").ToList();
+			ResponseModel rm = new();
+            List<DatosFacturacion> Datos = new List<DatosFacturacion>();
 
-                if (datos.Count > 0)
-                {
-                    rm.Result = datos;
-                    rm.Response = true;
-                }
-                else
-                {
-                    rm.Response = false;
-                    rm.Message = "No hay Promociones Ganadas.";
-                }
-            }
-            catch (Exception e)
-            {
-                rm.Message = e.Message;
-                rm.Response = false;
-            }
+			try
+			{
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[1];
+				var user = _userManager.GetUserAsync(User);
+				string username = user.Result.UserName.ToString();
+				int Usuario = GeneralesController.GetIdPersonas(username);
+
+				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+				SqlDataReader dr = dB.ExecuteReader("GetDatosFacturacion", ref parameters);
+
+				while (dr.Read())
+				{
+					DatosFacturacion Dato = new DatosFacturacion()
+					{
+                        IdCotizacion = Convert.ToInt32(dr["IdCotizacion"]),
+						Cliente = dr["Cliente"].ToString(),
+						RFC = dr["RFC"].ToString(),
+                        IdDocumento = Convert.ToInt32(dr["IdDocumento"]),
+						Documento = dr["Documento"].ToString(),
+						IdUsoCFDI = Convert.ToInt32(dr["IdUsoCFDI"]),
+						UsoCFDI = dr["UsoCFDI"].ToString()
+					};
+
+					Datos.Add(Dato);
+				}
+
+				rm.Result = Datos;
+				rm.Response = Datos.Count > 0;
+				rm.Message = Datos.Count > 0 ? "" : "No Hay Datos Disponibles";
+			}
+			catch (Exception e)
+			{
+				rm.Message = e.Message;
+				rm.Response = false;
+			}
+
             return Json(rm);
         }
 
         [HttpPost]
         public JsonResult GetDatosTransporte(int IdCliente, int IdUsuario, int IdDocumento, int IdUsoCFDI)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            try
+            Cotizacion UpdCot = new Cotizacion()
             {
-                dbExpo.Database.ExecuteSqlRaw("DECLARE @idcotizacion INT" +
-                    " EXEC @idcotizacion = dbo.CotizarGetCotizacion " + IdCliente + ", " + IdUsuario + " " +
-                    " UPDATE mCotizaciones " +
-                    " SET mCotizaciones.IdDocumento = " + IdDocumento + "," +
-                    " mCotizaciones.IdUsoCFDI = CASE WHEN " + IdDocumento + " = 1 " +
-                    " THEN " + IdUsoCFDI + " ELSE 23 END " + // 23 S01 Sin Efectos Fiscales 
-                    " WHERE mCotizaciones.IdCotizacion = @idcotizacion");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+                IdCliente = IdCliente,
+                IdDocumento = IdDocumento,
+                IdUsoCFDI = IdUsoCFDI,
+                IdTipoVenta = 0,
+                IdTransporte = 0,
+                IdPorte = 0, 
+                Direccion = 0,
+                Observaciones = ""
+            };
+            ActualizaUsoCFDI(UpdCot, IdUsuario);
 
-            ResponseModel rm = new();
-            try
-            {
-                List<Transporte> transportes = dbExpo.Set<Transporte>()
-                    .FromSqlRaw("DECLARE @idcotizacion INT EXEC @idcotizacion = dbo.CotizarGetCotizacion " + IdCliente + ", " + IdUsuario + " " +
-                    " SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.IdTipoVenta, vCotizacionDatos.TipoVenta," +
-                    " vCotizacionDatos.Entrega, vCotizacionDatos.DirEntrega, vCotizacionDatos.IdTransporte, vCotizacionDatos.Transportista," +
-                    " vCotizacionDatos.IdPorte, vCotizacionDatos.Porte, vCotizacionDatos.Obsv " +
-                    " FROM vCotizacionDatos" +
-                    " WHERE vCotizacionDatos.IdCotizacion = @idcotizacion")
-                    .ToList();
+			ResponseModel rm = new();
+            List<Transporte> transportes = new List<Transporte>();
 
-                if (transportes.Count > 0)
+			try
+			{
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[2];
+				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+				parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+
+			 	SqlDataReader dr = dB.ExecuteReader("GetDatosTransporte", ref parameters);
+
+                while (dr.Read())
                 {
-                    rm.Result = transportes;
-                    rm.Response = true;
-                }
-                else
-                {
-                    rm.Response = false;
-                    rm.Message = "No hay Promociones Ganadas.";
-                }
-            }
-            catch (Exception e)
-            {
-                rm.Message = e.Message;
-                rm.Response = false;
-            }
+                    Transporte transporte = new Transporte()
+                    {
+                        IdCotizacion = Convert.ToInt32(dr["IdCotizacion"]),
+						IdTipoVenta = Convert.ToInt16(dr["IdTipoVenta"]),
+						TipoVenta = dr["TipoVenta"].ToString(),
+						Entrega = Convert.ToInt32(dr["Entrega"]),
+						DirEntrega = dr["DirEntrega"].ToString(),
+                        IdTransporte = Convert.ToInt32(dr["IdTransporte"]),
+                        Transportista = dr["Transportista"].ToString(),
+						IdPorte = Convert.ToInt16(dr["IdPorte"]),
+                        Porte = dr["Porte"].ToString(),
+                        Obsv = dr["Obsv"].ToString()
+					};
+
+                    transportes.Add(transporte);
+				}
+
+				if (transportes.Count > 0)
+				{
+					rm.Result = transportes;
+					rm.Response = true;
+				}
+				else
+				{
+					rm.Response = false;
+					rm.Message = "No hay Promociones Ganadas.";
+				}
+			}
+			catch (Exception e)
+			{
+				rm.Response = false;
+				rm.Message = e.Message;
+			}
+
             return Json(rm);
         }
 
@@ -526,6 +577,38 @@ namespace ExpoMR.Controllers
             }
             return Json(rm);
         }
+
+        public bool ActualizaUsoCFDI(Cotizacion cotizacion, int IdUsuario)
+        {
+            bool result; 
+
+			try
+			{
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[4];
+
+				parameters[0] = new SqlParameter("@IdCliente", cotizacion.IdCliente);
+				parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+				parameters[2] = new SqlParameter("@IdDocumento", cotizacion.IdDocumento);
+				parameters[3] = new SqlParameter("@IdUsoCFDI", cotizacion.IdUsoCFDI);
+                parameters[4] = new SqlParameter("@IdTipoVenta", cotizacion.IdTipoVenta);
+                parameters[5] = new SqlParameter("@IdTransporte", cotizacion.IdTransporte);
+                parameters[6] = new SqlParameter("@IdPorte", cotizacion.IdPorte);
+                parameters[7] = new SqlParameter("@IdDireccion", cotizacion.Direccion);
+                parameters[8] = new SqlParameter("@Obsv", cotizacion.Observaciones);
+
+
+				dB.ExecuteNonQuery("CotizarActualizarDatos", ref parameters);
+
+                result = true;
+			}
+			catch (Exception e)
+			{
+                result = false;
+			}
+
+            return result;
+		}
 
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {

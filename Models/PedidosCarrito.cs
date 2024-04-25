@@ -11,7 +11,7 @@ namespace ExpoMR.Models
         public int Proveedor { get; set; }
         public Int64 RegistroPedido { get; set; }
         public int IdPedido { get; set; }
-        public Int16 IdProducto { get; set; }
+        public int IdProducto { get; set; }
         public string Nombre { get; set; }
         public string Presentacion { get; set; }
         public int Cantidad { get; set; }
