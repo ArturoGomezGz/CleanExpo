@@ -59,7 +59,7 @@ namespace ExpoMR.Controllers
             parameters[1] = new SqlParameter("@Nombre", nombre);
             parameters[2] = new SqlParameter("@Descripcion", descripcion);
             parameters[3] = new SqlParameter("@Paleta", color);
-            parameters[4] = new SqlParameter("@Logo", WebSite.ConvertToByteArray(logo));
+            parameters[4] = new SqlParameter("@Logo",  WebSite.ConvertToByteArray(logo) );
             parameters[5] = new SqlParameter("@Background", WebSite.ConvertToByteArray(fondo));
 
             dB.ExecuteNonQuery("EditStandProv", ref parameters);

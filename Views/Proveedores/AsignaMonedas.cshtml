@@ -1,6 +1,4 @@
-﻿
-@{
-    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
+﻿@{
     ViewData["Title"] = "AsignaMonedas";
 }
 
@@ -122,7 +120,7 @@
         });
         $.ajax({
             type: "POST",
-            url: path + "Proveedores/GetMonedas",
+            url: path + "Generales/GetMonedas",
             success: function (resultado) {
                 document.getElementById('monedas').innerHTML = " " + resultado;
             },

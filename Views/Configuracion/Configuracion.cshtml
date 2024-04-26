@@ -1,6 +1,5 @@
 ﻿@model ConfiguracionViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutProveedor.cshtml";
     ViewData["Title"] = "Configuracion";
 }
 <div class="col-sm-12 col-md-12 ">
@@ -229,8 +228,6 @@
         formData.append('nombre', nombre);
         formData.append('descripcion', descripcion);
         formData.append('color', color);
-
-        console.log(formData);
 
         $.ajax({
             url: path + 'Configuracion/GuardarConfiguracion',

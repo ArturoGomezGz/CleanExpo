@@ -68,6 +68,7 @@ namespace ExpoMR.Controllers
         {
             return View();
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -79,7 +80,8 @@ namespace ExpoMR.Controllers
             List<StandVIewModel>LogosProveedores = new();
 
             DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[0];
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", "0");
             SqlDataReader dr = dB.ExecuteReader("GetLogoProv", ref parameters);
 
             while (dr.Read())
@@ -88,71 +90,12 @@ namespace ExpoMR.Controllers
 
                 Logo.Proveedor = (int)dr["Proveedor"];
                 Logo.Nombre = (string)dr["Nombre"];
-                //Logo.Logo = (byte[])dr["Logo"];
+                Logo.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
 
                 LogosProveedores.Add(Logo);
             }
 
             return LogosProveedores;
-        }
-
-        public static List<StandVIewModel> GetImageById(int Id)
-        {
-            using (var dbContext = new ApplicationDbContextExpo())
-            {
-                return dbContext.Stands.Where(stand => stand.Proveedor.Equals(Id)).ToList();
-            }
-        }
-
-        public static List<Producto> GetImageProductByLab(int idProveedor, int IdUsuario)
-        {
-            using (var dbContext = new ApplicationDbContextIndigo())
-            {
-                var parameters = new object[]
-                {
-                    idProveedor,
-                    IdUsuario
-                };
-
-                List<Producto> productos = dbContext.Set<Producto>()
-                    .FromSqlRaw("EXEC ExpoStandProductos @proveedor = {0}, @cliente = {1}", parameters)
-                    .ToList();
-
-                foreach (var p in productos)
-                {
-                    p.imgProducto = p.IdProducto;
-                    p.imgProductos = GeneralesController.GetFoto(p.IdProducto);
-                }
-                return productos;
-            }
-        }
-
-        public static List<PremioRuleta> GetImageRuleta(int idRuleta)
-        {
-            using (var dbContext = new ApplicationDbContextExpo())
-            {
-                return dbContext.PremioRuletas.Where(ruleta => ruleta.IdRuleta == idRuleta).ToList();
-            }
-        }
-
-        public static byte[] GetFotos(int idProducto)
-        {
-            FotosViewModel FotoProducto = new FotosViewModel();
-
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@idproducto", idProducto);
-
-            SqlDataReader dr = dB.ExecuteReader("GetFotoProd", ref parameters);
-
-            while (dr.Read())
-            {
-                FotoProducto.IdFoto = (int)dr["IdFoto"];
-                FotoProducto.IdProducto = (int)dr["IdProducto"];
-                FotoProducto.Foto = (byte[])dr["Foto"];
-            }
-
-            return (FotoProducto.Foto);
         }
     }
 }

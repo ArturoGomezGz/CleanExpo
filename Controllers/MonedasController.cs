@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente,ClienteVIP,Proveedor")]
     public class MonedasController : Controller
     {
         //Variables para verificar La sesión Y el Usuario

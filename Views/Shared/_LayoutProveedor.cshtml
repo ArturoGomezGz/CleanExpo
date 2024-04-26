@@ -30,6 +30,13 @@
             <a class="navbar-brand" href="#">
                 <img src="~/Imagenes/logoMR.png" alt="Expo MR">
             </a>
+            <a asp-controller="Monedas" asp-action="" class="btn btn-moneda gradient-moneda position-relative" id="moneda">
+                <i class="fa fa-usd" aria-hidden="true"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id="cantidad_monedas"></span>
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">

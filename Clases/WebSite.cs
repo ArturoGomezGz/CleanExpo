@@ -45,6 +45,16 @@ namespace ExpoMR.Clases
             return Array.Empty<byte>();
         }
 
+        public static string ConvertToBase64(byte[] Objeto)
+        {
+            if (Objeto == null || Objeto.Length == 0)
+            {
+                return null;
+            }
+
+            return Convert.ToBase64String(Objeto);
+        }
+
         public enum TipoPromocion
         {
             Visita_Stand = 1,
@@ -60,8 +70,8 @@ namespace ExpoMR.Clases
             parameters[0] = new SqlParameter("@idpersona", idPersona);
 
             int ret = dB.ExecuteReturnValue("MonedasSaldo", ref parameters);
-            
-            return ret;
+
+            return ret < 0 ? 0 : ret;
         }
 
         public static string GetRuleta(int cliente)

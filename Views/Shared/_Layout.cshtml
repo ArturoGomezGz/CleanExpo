@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -36,16 +41,23 @@
             <a class="" asp-controller="Home" asp-action="">
                 <img src="~/Imagenes/logoMR.png" alt="Expo MR">
             </a>
-            <a asp-controller="Monedas" asp-action="" class="btn btn-moneda gradient-moneda position-relative" id="moneda">
-                <i class="fa fa-usd" aria-hidden="true"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    <span id="cantidad_monedas"></span>
-                    <span class="visually-hidden">unread messages</span>
-                </span>
-            </a>
-            <a asp-controller="Ruleta" asp-action="" class="btn btn-ruleta-inactiva position-relative" id="Ruleta">
-                <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/ruleta.svg" /></i> Ruleta
-            </a>
+            
+            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
+            {
+                <a asp-controller="Monedas" asp-action="" class="btn btn-moneda gradient-moneda position-relative" id="moneda">
+                    <i class="fa fa-usd" aria-hidden="true"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="cantidad_monedas"></span>
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                </a>
+            }
+            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+            {
+                <a asp-controller="Ruleta" asp-action="" class="btn btn-ruleta-inactiva position-relative" id="Ruleta">
+                    <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/ruleta.svg" /></i> Ruleta
+                </a>
+            }
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -68,30 +80,51 @@
     <!--/ Cuerpo de la pagina-->
 
     <!--Footer-->
-    <footer id="footer" class="pb-2 pt-2">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-12 col-lg">
-                    <a asp-area="" asp-controller="Ayuda" asp-action="Contacto">Contacto Rosario</a>
-                </div>
-                <div class="col-12 col-lg">
-                    <a asp-area="" asp-controller="Ayuda" asp-action="Index">Índice de Sales</a>
-                </div>
-                <div class="col-12 col-lg">
-                    <a asp-area="" asp-controller="Ayuda" asp-action="Privacidad">Privacidad</a>
-                </div>
-                <div class="col-12 col-lg">
-                    <a asp-area="" asp-controller="Ayuda" asp-action="Preguntas">Preguntas Frecuentes</a>
-                </div>
-                <div class="col-12 col-lg">
-                    <a asp-area="" asp-controller="Ayuda" asp-action="CondicionesRuleta">Condiciones Ruleta</a>
-                </div>
-                <div class="col-12 col-lg">
-                    <a asp-area="" asp-controller="Ayuda" asp-action="TerminosyCondiciones">Términos y Condiciones</a>
+    @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+    {
+        <footer id="footer" class="pb-2 pt-2">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Ayuda" asp-action="Contacto">Contacto Rosario</a>
+                    </div>
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Ayuda" asp-action="Index">Índice de Sales</a>
+                    </div>
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Ayuda" asp-action="Privacidad">Privacidad</a>
+                    </div>
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Ayuda" asp-action="Preguntas">Preguntas Frecuentes</a>
+                    </div>
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Ayuda" asp-action="CondicionesRuleta">Condiciones Ruleta</a>
+                    </div>
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Ayuda" asp-action="TerminosyCondiciones">Términos y Condiciones</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    }
+    else
+    {
+        <footer id="footer" class="pb-4 pt-4">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Proveedores" asp-action="Contacto">Contacto Rosario</a>
+                    </div>
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Proveedores" asp-action="Privacidad">Privacidad</a>
+                    </div>
+                    <div class="col-12 col-lg">
+                        <a asp-area="" asp-controller="Proveedores" asp-action="Preguntas">Preguntas</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    }
     <!--/ Footer-->
 
     <!-- JavaScript Bundle with Popper -->
@@ -146,6 +179,7 @@
     </script>
     <script src="~/js/index.js"></script>
     <script src="~/js/IndexClientes.js"></script>
+    <script src="~/js/indexProveedores.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

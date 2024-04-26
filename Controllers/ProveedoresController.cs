@@ -14,6 +14,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Org.BouncyCastle.Asn1.X500;
 using System.Runtime.CompilerServices;
+using Org.BouncyCastle.Ocsp;
 
 namespace ExpoMR.Controllers
 {
@@ -404,13 +405,6 @@ namespace ExpoMR.Controllers
             return Json(Visitas);
         }
 
-        [HttpPost]
-        public JsonResult getMonedas()
-        {
-            int monedas = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
-
-            return Json(monedas);
-        }
 
         [HttpPost]
         public JsonResult getMonedasContacto(int idCliente)

@@ -29,11 +29,7 @@ namespace ExpoMR.Controllers
 
         public int GetMonedas() 
         {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@idpersona", HttpContext.Session.GetString("ClienteSel"));
-
-            return dB.ExecuteReturnValue("MonedasSaldo", ref parameters);
+            return WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
         }
 
         public string GetRuleta(int IdPersona)
@@ -75,29 +71,6 @@ namespace ExpoMR.Controllers
             parameters[1] = new SqlParameter("@usuario", IdPersona);
 
             return (int)dB.ExecuteScalar("ExpoCountProducts", ref parameters);
-        }
-
-        public int GetIdPersona(string UserName)  //se tendra que eliminar puesto que ya no se utilizara
-        {
-            string query = "Select IdPersona" +
-                " from mUsuarios" +
-                " where UserName ='"+UserName+"'";
-            DataTable dataTable = SqlQueryDT("ExpoMRCS", query);
-
-            int IdPersona = dataTable.Rows[0].Field<int>(0);
-            return IdPersona;
-        }
-
-        public int GetCliente(string UserName)
-        {
-            string query = "Select Referencia" +
-                " from mUsuarios" +
-                " where UserName ='" + UserName+"'";
-            DataTable dataTable = SqlQueryDT("ExpoMRCS", query);
-
-            int IdPersona = dataTable.Rows[0].Field<int>(0);
-
-            return IdPersona;
         }
 
         public static int GetIdPersonas(string UserName)
@@ -213,61 +186,20 @@ namespace ExpoMR.Controllers
             return dt;
         }
 
-        public static void SqlQuery(string dataBase, string query)
-        {
-            SqlConnection cnn = new(_configuration["ConnectionStrings:" + dataBase]);
-            SqlCommand cmd = new();
-            cnn.Open();
-            cmd.CommandText = query;
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            cmd.ExecuteNonQuery();
-            cnn.Close();
-        }
-
-        public static DataTable SqlStoreProcedure(string dataBase, string StoreProcedure, SqlParameter[] parameter)
-        {
-            DataTable dt = new();
-            SqlConnection cnn = new(_configuration["ConnectionStrings:" + dataBase]);
-            SqlCommand cmd = new();
-            SqlDataAdapter sqlDA;
-            cnn.Open();
-            // 2. set the command object so it knows to execute a stored procedure
-            cmd.CommandType = CommandType.StoredProcedure;
-            //// 3. add parameter to command, which will be passed to the stored procedure
-            cmd.Parameters.Add(parameter);
-            cmd.CommandText = StoreProcedure;
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            sqlDA = new SqlDataAdapter(cmd);
-            sqlDA.Fill(dt);
-            cnn.Close();
-
-            return dt;
-        }
-
-        public byte[] GetfotosPromo(string type, int id)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@type", type);
-            parameters[1] = new SqlParameter("@id", id);
-            DB dB = new();
-            dB.ExecuteReader("ExpoGetImage", ref parameters);
-            byte[] f = Array.Empty<byte>();
-
-            return f;
-        }
-
         public static byte[] GetFoto(int idProducto)
         {
-            string query = "SELECT Foto FROM mFotos where IdProducto =" + idProducto;
-            DataTable dataTable = SqlQueryDT("FotosCS", query);
-            byte[] fotos;
+            byte[] fotos = Array.Empty<byte>();
 
-            if (dataTable.Rows.Count > 0)
-                fotos = dataTable.Rows[0].Field<byte[]>(0);
-            else
-                fotos = Array.Empty<byte>();
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProducto", idProducto);
+
+            SqlDataReader dr = dB.ExecuteReader("GetFotoProd", ref parameters);
+           
+            while (dr.Read())
+            {
+                fotos = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
+            }
 
             return fotos;
         }

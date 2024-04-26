@@ -139,10 +139,11 @@ else
     function SetClienteSel(IdPersona)
     {
         $.post(path + "Generales/SetSessionClienteSel?IdPersona=" + IdPersona,
-            function (data) {
+            function (data) 
+            {
                 //Se ejecutan las funciones de java script del index.js para inicilizar las opciones del cliente
                 GetMonedas(data);
-                GetRuleta(data);
+                GetRuleta(data);               
                 GetCarrito(data);
             }).error(function ()
             {

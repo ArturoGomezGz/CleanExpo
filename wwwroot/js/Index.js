@@ -4,7 +4,7 @@ var timer;
 
 function GetMonedas(IdPersona)
 {
-    $.post(path + "Generales/GetMonedas?IdPersona=" + IdPersona,
+    $.post(path + "Generales/GetMonedas",
         function (data)
         {
             $("#cantidad_monedas").html(data)
@@ -21,7 +21,8 @@ function GetRuleta(IdPersona)
 {
     $.post(path + "Generales/GetRuleta?IdPersona=" + IdPersona,
         function (data)
-        {
+        {   
+            $("#Ruleta").removeClass("btn-ruleta-inactiva btn-ruleta-clasica btn-ruleta-dorada btn-ruleta-platinum btn-ruleta-jugada");
             $("#Ruleta").addClass(data);
         }
     ).error(

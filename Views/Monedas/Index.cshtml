@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
@@ -14,17 +13,21 @@
     {
         $('#Monedas').DataTable({
             responsive: true,
-            "language": {
+            "language": 
+            {
                 "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
             },
-            "ajax": {
+            "ajax": 
+            {
                 url: path + "Generales/GetRegistroMonedas",
                 type: 'POST',
                 dataSrc:""
             },
-            "columns": [
+            "columns": 
+            [
                 {"data": "fecha", title: "Fecha",
-                    "render": function (data, type, row) {
+                    "render": function (data, type, row)
+                    {
                         return data;
                     }
                 },
@@ -35,14 +38,16 @@
         });
 
         $.post(path + "Generales/GetMonedas",
-            function (data) {
+            function (data) 
+            {
                
                 var dia = FormatoFecha();              
                
                 $("#Saldo_monedas").html("Saldo al "+dia+" " + data + " Monedas")
-            }).error(function () {
+            }).error(function () 
+            {
                 alerta(false, "No fue posible cargar sus monedas")
             }
-            );
+        );
     });
 </script>

@@ -103,7 +103,7 @@ namespace ExpoMR.Controllers
                 using var dbExpo = new ApplicationDbContextExpo();
 
                 int ruleta = dbExpo.mRuletas.Where(x => x.IdRuleta == IdRuleta).Select(x => x.Monedas).FirstOrDefault();
-                int monedas = GetMonedas();
+                int monedas = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
 
                 if (monedas < ruleta)
                 {
@@ -145,7 +145,7 @@ namespace ExpoMR.Controllers
             var dbExpo = new ApplicationDbContextExpo();
 
             int ruleta = dbExpo.mRuletas.Where(x => x.IdRuleta == IdRuleta).Select(x => x.Monedas).FirstOrDefault();
-            int monedas = GetMonedas();
+            int monedas = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
 
             if (monedas < ruleta)
             {
@@ -261,16 +261,6 @@ namespace ExpoMR.Controllers
             }
 
             return PremiosRuleta;
-        }
-
-        public int GetMonedas()
-        {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@idpersona", HttpContext.Session.GetString("ClienteSel"));
-            int ret = dB.ExecuteReturnValue("MonedasSaldo", ref parameters);
-
-            return ret;
         }
 
         private string ConvertirDatosBinariosABase64(byte[] datosBinarios)
