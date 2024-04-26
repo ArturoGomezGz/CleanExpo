@@ -34,33 +34,7 @@ namespace ExpoMR.Controllers
 
         public string GetRuleta(int IdPersona)
         {
-            DB dB = new DB();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@cliente", IdPersona);
-
-            string ret = dB.ExecuteScalar("Select dbo.GetRuleta(@cliente) as Ruleta", ref parameters, System.Data.CommandType.Text).ToString();
-            string CssClass = "";
-
-            switch (ret)
-            {
-                case "0":
-                    CssClass = "btn-ruleta-inactiva";
-                    break;
-                case "1":
-                    CssClass = "btn-ruleta-clasica";
-                    break;
-                case "2":
-                    CssClass = "btn-ruleta-dorada";
-                    break;
-                case "3":
-                    CssClass = "btn-ruleta-platinum";
-                    break;
-                default:
-                    CssClass = "btn-ruleta-jugada";
-                    break;
-            }
-
-            return CssClass;
+            return WebSite.GetRuleta(IdPersona);
         }
 
         public int GetCarrito(int IdPersona)

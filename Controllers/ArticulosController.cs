@@ -12,7 +12,6 @@ namespace ExpoMR.Controllers
         public IActionResult Articulos()
         {
             return RedirectToAction("Proveedores", "Articulos");
-            //return View();
         }
     }
 }

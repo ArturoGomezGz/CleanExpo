@@ -95,22 +95,24 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                PlayRuletaViewModel Ruleta = new()
-                {
-                    IdRuleta = IdRuleta
-                };
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdRuleta", IdRuleta);
 
-                using var dbExpo = new ApplicationDbContextExpo();
+                int monedasRuleta = dB.ExecuteReturnValue("GetMonedasRuleta", ref parameters);
+                int monedasCliente = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
 
-                int ruleta = dbExpo.mRuletas.Where(x => x.IdRuleta == IdRuleta).Select(x => x.Monedas).FirstOrDefault();
-                int monedas = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
-
-                if (monedas < ruleta)
+                if (monedasCliente < monedasRuleta)
                 {
                     return RedirectToAction("Index", "Ruleta");
                 }
                 else
                 {
+                    PlayRuletaViewModel Ruleta = new()
+                    { 
+                        IdRuleta = IdRuleta
+                    };
+
                     bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                     if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
@@ -137,102 +139,6 @@ namespace ExpoMR.Controllers
                     }
                 }
             }
-        }
-
-        public JsonResult GetData(int IdRuleta)
-        {
-            ResponseModel rm = new();
-            var dbExpo = new ApplicationDbContextExpo();
-
-            int ruleta = dbExpo.mRuletas.Where(x => x.IdRuleta == IdRuleta).Select(x => x.Monedas).FirstOrDefault();
-            int monedas = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
-
-            if (monedas < ruleta)
-            {
-                rm.Response = false;
-                rm.Result = "0,,,";
-                rm.Message = "No tienes monedas sufucientes para girar la Ruleta";
-            }
-            else
-            {
-                List<RuletaGiro> ruletaGiro = new();
-
-                DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@Cliente", HttpContext.Session.GetString("ClienteSel"));
-                parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
-                SqlDataReader dr = dB.ExecuteReader("RuletaGiro", ref parameters);
-
-                while (dr.Read())
-                {
-                    RuletaGiro Giro = new RuletaGiro();
-
-                    Giro.GradosGiro = (decimal)dr["GradosGiro"];
-                    Giro.IdPremio = (Int16)dr["IdPremio"];
-                    Giro.Premio = (string)dr["Premio"];
-                    Giro.Descripcion = (string)dr["Descripcion"];
-
-                    ruletaGiro.Add(Giro);
-                }
-
-                if (ruletaGiro != null && ruletaGiro.Count() > 0)
-                {
-                    string foto = ConvertirDatosBinariosABase64(dbExpo.PremioRuletas.Where(x => x.IdPremio == ruletaGiro[0].IdPremio).Select(x => x.Foto).FirstOrDefault());
-                    rm.Response = true;
-                    rm.Result = ruletaGiro[0].GradosGiro + "," + ruletaGiro[0].IdPremio + "," + ruletaGiro[0].Premio + "," + ruletaGiro[0].Descripcion + "," + foto;
-                }
-                else
-                {
-                    rm.Response = false;
-                    rm.Result = "0,,,";
-                }
-            }
-
-            return Json(rm);
-        }
-
-        public static List<PremioRuleta> GetPremios(int idRuleta)
-        {
-            List<PremioRuleta> PremiosRuleta = new();
-
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdRuleta", idRuleta);
-
-            SqlDataReader dr = dB.ExecuteReader("GetPremiosRuleta", ref parameters);
-
-            while (dr.Read())
-            {
-                PremioRuleta Premio = new PremioRuleta();
-
-                Premio.IdPremio = (Int16)dr["IdPremio"];
-                Premio.Premio = (string)dr["Premio"];
-                Premio.Descripcion = (string)dr["Descripcion"];
-                Premio.IdRuleta = (byte)dr["IdRuleta"];
-                Premio.Seccion = (byte)dr["Seccion"];
-                Premio.Foto = (byte[])dr["Foto"];
-                Premio.Cantidad = (Int16)dr["Cantidad"];
-
-                PremiosRuleta.Add(Premio);
-            }
-
-            return PremiosRuleta;
-        }
-
-        static string RemoveAccents(string text)
-        {
-            string normalized = text.Normalize(NormalizationForm.FormD);
-            StringBuilder stringBuilder = new StringBuilder();
-
-            foreach (char c in normalized)
-            {
-                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-                {
-                    stringBuilder.Append(c);
-                }
-            }
-
-            return stringBuilder.ToString();
         }
 
         public static List<PremioRuleta> GetImageRuleta(int idRuleta)
@@ -263,14 +169,115 @@ namespace ExpoMR.Controllers
             return PremiosRuleta;
         }
 
-        private string ConvertirDatosBinariosABase64(byte[] datosBinarios)
+        public static List<PremioRuleta> GetPremios(int idRuleta)
         {
-            if (datosBinarios == null || datosBinarios.Length == 0)
+            List<PremioRuleta> PremiosRuleta = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdRuleta", idRuleta);
+
+            SqlDataReader dr = dB.ExecuteReader("GetPremiosRuleta", ref parameters);
+
+            while (dr.Read())
             {
-                return null;
+                PremioRuleta Premio = new PremioRuleta();
+
+                Premio.IdPremio = (Int16)dr["IdPremio"];
+                Premio.Premio = (string)dr["Premio"];
+                Premio.Descripcion = (string)dr["Descripcion"];
+                Premio.IdRuleta = (byte)dr["IdRuleta"];
+                Premio.Seccion = (byte)dr["Seccion"];
+                Premio.Foto = (byte[])dr["Foto"];
+                Premio.Cantidad = (Int16)dr["Cantidad"];
+
+                PremiosRuleta.Add(Premio);
             }
 
-            return Convert.ToBase64String(datosBinarios);
+            return PremiosRuleta;
+        }
+
+        public JsonResult GetData(int IdRuleta)
+        {
+            ResponseModel rm = new();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdRuleta", IdRuleta);
+
+            int monedasRuleta = dB.ExecuteReturnValue("GetMonedasRuleta", ref parameters);
+            int monedasCliente = WebSite.SaldoMonedas(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+
+            if (monedasCliente < monedasRuleta)
+            {
+                rm.Response = false;
+                rm.Result = "0,,,";
+                rm.Message = "No tienes monedas sufucientes para girar la Ruleta";
+            }
+            else
+            {
+                List<RuletaGiro> ruletaGiro = new();
+
+                DB dB2 = new();
+                SqlParameter[] parameters2 = new SqlParameter[2];
+                parameters2[0] = new SqlParameter("@Cliente", HttpContext.Session.GetString("ClienteSel"));
+                parameters2[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+                SqlDataReader dr = dB2.ExecuteReader("RuletaGiro", ref parameters2);
+
+                while (dr.Read())
+                {
+                    RuletaGiro Giro = new RuletaGiro();
+
+                    Giro.GradosGiro = (decimal)dr["GradosGiro"];
+                    Giro.IdPremio = (Int16)dr["IdPremio"];
+                    Giro.Premio = (string)dr["Premio"];
+                    Giro.Descripcion = (string)dr["Descripcion"];
+
+                    ruletaGiro.Add(Giro);
+                }
+
+                if (ruletaGiro != null && ruletaGiro.Count() > 0)
+                {
+                    string foto = "";
+
+                    DB dB3 = new();
+                    SqlParameter[] parameters3 = new SqlParameter[1];
+                    parameters3[0] = new SqlParameter("@IdPremio", ruletaGiro[0].IdPremio);
+
+                    SqlDataReader dr2 = dB3.ExecuteReader("GetPremio", ref parameters3);
+
+                    while (dr2.Read())
+                    {
+                        foto = WebSite.ConvertToBase64((dr2["Foto"] != DBNull.Value ? (byte[])dr2["Foto"] : Array.Empty<byte>()));
+                    }
+
+                    rm.Response = true;
+                    rm.Result = ruletaGiro[0].GradosGiro + "," + ruletaGiro[0].IdPremio + "," + ruletaGiro[0].Premio + "," + ruletaGiro[0].Descripcion + "," + foto;
+                }
+                else
+                {
+                    rm.Response = false;
+                    rm.Result = "0,,,";
+                }
+            }
+
+            return Json(rm);
+        }
+
+        static string RemoveAccents(string text)
+        {
+            string normalized = text.Normalize(NormalizationForm.FormD);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (char c in normalized)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }

@@ -24,13 +24,13 @@ namespace ExpoMR.Datos
 
     public class ApplicationDbContextExpo : DbContext
     {
-        public DbSet<StandVIewModel> Stands { get; set; }
+        //public DbSet<StandVIewModel> Stands { get; set; }
 
-        public DbSet<mProveedores> mProveedores { get; set; }
+        //public DbSet<mProveedores> mProveedores { get; set; }
 
-        public DbSet<PremioRuleta> PremioRuletas { get; set; }
+        //public DbSet<PremioRuleta> PremioRuletas { get; set; }
 
-        public DbSet<mRuleta> mRuletas { get; set; }
+        //public DbSet<mRuleta> mRuletas { get; set; }
  
         public DbSet<Promocion> Promociones { get; set; }
 
