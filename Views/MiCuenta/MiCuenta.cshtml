@@ -68,7 +68,7 @@
                             </div>
                            <div class="col-12 pb-2">
                                 @Html.LabelFor(m => m.IdTransporte, new { @class = "fw-bold" })
-                                @Html.DropDownListFor(model => model.IdTransporte, new SelectList(Model.Trasportes, "IdTrasportes", "Transporte"), new { id = "cmb-Transporte", @class = "form-control text-left", name = "cmb-Transporte",  title="cmb"})
+                                @Html.DropDownListFor(model => model.IdTransporte, new SelectList(Model.Trasportes, "IdTrasporte", "Transporte"), new { id = "cmb-Transporte", @class = "form-control text-left", name = "cmb-Transporte",  title="cmb"})
                             </div>
                            <div class="col-12 pb-2">
                                 @Html.LabelFor(m => m.IdPorte, new { @class = "fw-bold" })
@@ -85,10 +85,12 @@
     </div>
 </div>
 <script>
-    function ChangeTipoDocumento(tipoDocumento) {        
+    function ChangeTipoDocumento(tipoDocumento) 
+    {        
         var cmbCFDI = document.getElementById("cmb-UsosCFDI")
 
-        switch (tipoDocumento) {
+        switch (tipoDocumento) 
+        {
             case "0":
                 cmbCFDI.value = "23";
                 cmbCFDI.setAttribute("disabled", "");
@@ -104,44 +106,54 @@
         }
     }
 
-    $(document).ready(function(){
-
-
-        $("#cmb-TipoDoc").change(function () {
+    $(document).ready(function()
+    {
+        $("#cmb-TipoDoc").change(function () 
+        {
             ChangeTipoDocumento(this.value)
         });        
     });
 
-    $("#btn_save_facturacion").on("click", function(){
+    $("#btn_save_facturacion").on("click", function()
+    {
         let UsoCFDI = $("#cmb-UsosCFDI").val()
         let TipoDoc = $("#cmb-TipoDoc").val()
 
-        if ((TipoDoc === "1" && UsoCFDI === "0") || (TipoDoc === "1" && UsoCFDI === "23")) {
+        if ((TipoDoc === "1" && UsoCFDI === "0") || (TipoDoc === "1" && UsoCFDI === "23")) 
+        {
             alert("Seleccione un Uso de CFDI")
-        }else{
+        }
+        else
+        {
             $.post(path + "MiCuenta/SaveTipoDoc",
                 {
                     UsoCFDI: UsoCFDI,
                     TipoDoc: TipoDoc
-
                 },
-                function (data) {
+                function (data) 
+                {
                     ShowAlert(data.message, data.response, "alert_Facturacion")
                 }
-            ).error(function () {
+            ).error(function ()
+            {
                 ShowAlert("Hubo un error al intentar guardar", false, "alert_Facturacion");
             });
         }
     });
-    $("#btn_save_entrega").on("click", function () {
+
+    $("#btn_save_entrega").on("click", function () 
+    {
         let TipoVenta = $("#cmb-TipoVenta").val()
         let Entrega = $("#cmb-Entrega").val()
         let Transporte = $("#cmb-Transporte").val()
         let Porte = $("#cmb-Porte").val()
 
-        if (TipoVenta === "" && UsoCFDI === "0") {
+        if (TipoVenta === "" && UsoCFDI === "0") 
+        {
             alert("Seleccione un Tipo de Venta")
-        }else{
+        }
+        else
+        {
             $.post(path + "MiCuenta/Entrega",
                 {
                     TipoVenta: TipoVenta,
@@ -149,9 +161,11 @@
                     Transporte: Transporte,
                     Porte: Porte
                 },
-                function (data) {
+                function (data) 
+                {
                     ShowAlert(data.message, data.response, "alert_Entrega")
-                }).error(function () {
+                }).error(function () 
+                {
                     ShowAlert("Hubo un error al intentar guardar", false, "alert_Entrega");
                 });
         }

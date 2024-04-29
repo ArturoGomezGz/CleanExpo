@@ -29,20 +29,15 @@
                                 <input asp-for="ConfirmPassword" class="form-control" placeholder="Ingresar la Contraseña" />
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
-                            @*</div>
-                        <div class="col-sm-4">
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6 offset-md-3">*@
-                                <button type="submit" class="btn btn-azul w-100">Cambiar Contraseña <i class="bi bi-box-arrow-in-right"></i></button>
-                            @*</div>*@
+                            <button type="submit" class="btn btn-azul w-100">Cambiar Contraseña <i class="bi bi-box-arrow-in-right"></i></button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
 
-        @section Scripts{
+        @section Scripts
+        {
             @{
                 await Html.RenderPartialAsync("_ValidationScriptsPartial");
             }

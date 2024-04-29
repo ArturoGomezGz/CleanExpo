@@ -7,6 +7,8 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using ExpoMR.Datos;
 using Microsoft.EntityFrameworkCore;
+using ExpoMR.Clases;
+using System.Net;
 
 namespace ExpoMR.Controllers
 {
@@ -42,7 +44,6 @@ namespace ExpoMR.Controllers
                     return RedirectToAction("Error");
                 }
                 string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
-                //string code = token.Replace(" ", "+");
                 var resultado = await _userManager.ResetPasswordAsync(usuario, token, model.Password);
 
                 if (resultado.Succeeded)
@@ -69,6 +70,7 @@ namespace ExpoMR.Controllers
                             // Puedes mostrar un mensaje de error o tomar acciones adicionales
                         }
                     }
+
                     return RedirectToAction("ConfirmacionCambioPassword");
                 }
                 else
@@ -76,8 +78,10 @@ namespace ExpoMR.Controllers
                     ValidarErrores(resultado);
                 }
             }
+
             return View(model);
         }
+
         [HttpGet]
         public IActionResult ConfirmacionCambioPassword()
         {
@@ -86,69 +90,48 @@ namespace ExpoMR.Controllers
 
         public async Task<IActionResult> MiCuenta()
         {
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int cliente = GeneralesController.GetClientes(username);
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
 
-            string query = "SELECT vPersonas.Nombre, vPersonas.RFC, mDocumentos.IdDocumento , ISNULL(mSatUsoCFDI.IdUsoCFDI,0) AS IdUsoCFDI,"
-                             + "   Indigo.dbo.FormatAddress(vPersonas.CalleNum, vPersonas.Colonia, vPersonas.Ciudad, vPersonas.Estado, vPersonas.CP) AS Direccion,"
-                             + "   mClientes.IdTipoVenta, dDirecciones.IdDireccion, ISNULL(mClientes.IdTransporte,0) AS IdTransporte,"
-                             + "   ISNULL(mClientes.IdPorte,0) AS IdPorte"
-                             + "   FROM ExpoMR.dbo.mClientes INNER JOIN"
-                             + "   mDocumentos ON mClientes.IdDocumento = mDocumentos.IdDocumento INNER JOIN"
-                             + "   mPerEmp ON mClientes.IdPersona = mPerEmp.IdPersona INNER JOIN"
-                             + "   vPersonas ON mPerEmp.IdPersona = vPersonas.IdPersona INNER JOIN"
-                             + "   dDirecciones ON mPerEmp.Persona = dDirecciones.Persona AND dDirecciones.Fiscal = 1 LEFT OUTER JOIN"
-                             + "   mSatUsoCFDI ON mClientes.IdUsoCFDI = mSatUsoCFDI.IdUsoCFDI"
-                             + "   WHERE mClientes.IdPersona = " + cliente;
+            SqlDataReader dr = dB.ExecuteReader("GetDatosCliente", ref parameters);
 
-            DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
+            MiCuentaViewModel MiCuenta = new();
 
-            MiCuentaViewModel Cuenta = new()
+            while (dr.Read())
             {
-                Nombre = dt.Rows[0]["Nombre"].ToString(),
-                RFC = dt.Rows[0]["RFC"].ToString(),
-                Direccion = dt.Rows[0]["Direccion"].ToString(),
-                IdTipoDoc = Convert.ToInt16(dt.Rows[0]["IdDocumento"]),
-                TipoDocumentos = GetTipoDocumentos(cliente),
-                IdUsoCFDI = Convert.ToInt16(dt.Rows[0]["IdUsoCFDI"]),
-                UsoCFDI = GetUsoCFDIs(cliente),
-                IdTipoVenta = Convert.ToInt16(dt.Rows[0]["IdTipoVenta"]),
-                TiposVenta = GetTiposVenta(),
-                Entrega = Convert.ToInt16(dt.Rows[0]["IdDireccion"]),
-                Direccciones = GetDirecciones(cliente),
-                IdTransporte = Convert.ToInt16(dt.Rows[0]["IdTransporte"]),
-                Trasportes = GetTrasportes(cliente),
-                IdPorte = Convert.ToInt16(dt.Rows[0]["IdPorte"]),
-                Portes = GetPorte(cliente)
-            };
+                MiCuenta.Nombre = (string)dr["Nombre"];
+                MiCuenta.RFC = (string)dr["RFC"];
+                MiCuenta.Direccion = (string)dr["Direccion"];
+                MiCuenta.IdTipoDoc = (byte)dr["IdDocumento"];
+                MiCuenta.TipoDocumentos = GetTipoDocumentos(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.IdUsoCFDI = (byte)dr["IdUsoCFDI"];
+                MiCuenta.UsoCFDI = GetUsoCFDIs(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.IdTipoVenta = (byte)dr["IdTipoVenta"];
+                MiCuenta.TiposVenta = GetTiposVenta();
+                MiCuenta.Entrega = (int)dr["IdDireccion"];
+                MiCuenta.Direccciones = GetDirecciones(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.IdTransporte = (int)dr["IdTransporte"];
+                MiCuenta.Trasportes = GetTrasportes(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.IdPorte = (byte)dr["IdPorte"];
+                MiCuenta.Portes = GetPorte(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+            }
 
             var currentUser = await _userManager.GetUserAsync(User);
+
             if (!currentUser.EmailConfirmed)
             {
                 return RedirectToAction("Index", "MiCuenta");
             }
             else
             {
-                var userId = _userManager.GetUserId(User); // Obtiene el ID del usuario actualmente autenticado
-                var userAsync = await _userManager.FindByIdAsync(userId); // Encuentra el usuario por su ID
-                var roles = await _userManager.GetRolesAsync(userAsync);
+                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
-                string Rol = roles.FirstOrDefault();
-                using var dbExpo = new ApplicationDbContextExpo();
-                List<IsFechaExpo> usuario = dbExpo.Set<IsFechaExpo>()
-                    .FromSqlRaw("EXEC GetFechaExpo").ToList();
-                List<IsFechaExpoVIP> usuarioVIP = dbExpo.Set<IsFechaExpoVIP>()
-                    .FromSqlRaw("EXEC GetFechaExpoVIP").ToList();
-
-                bool isFechaExpo = usuario.Select(x => x.FechaExpo).FirstOrDefault();
-                bool isFechaExpoVIP = usuarioVIP.Select(x => x.FechaVip).FirstOrDefault();
-
-                if (Rol == "ClienteVIP")
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    if (isFechaExpoVIP)
+                    if (isFechaExpoVIP == true)
                     {
-                        return View(Cuenta);
+                        return View(MiCuenta);
                     }
                     else
                     {
@@ -157,53 +140,41 @@ namespace ExpoMR.Controllers
                 }
                 else
                 {
-                    if (isFechaExpoVIP)
+                    if (isFechaExpoVIP == true)
                     {
                         return RedirectToAction("Index", "MiCuenta");
                     }
                     else
                     {
-                        if (isFechaExpo)
-                        {
-                            return View(Cuenta);
-                        }
-                        else
-                        {
-                            return RedirectToAction("Index", "MiCuenta");
-                        }
+                        return View(MiCuenta);
                     }
                 }
-            }
-            
+            }            
         }
+
         [HttpPost]
         public JsonResult GetDatosFacturacion(int IdCliente)
         {
-            string query = "SELECT vPersonas.Nombre, vPersonas.RFC, mDocumentos.IdDocumento , ISNULL(mSatUsoCFDI.IdUsoCFDI,0) AS IdUsoCFDI,"
-                            + "Indigo.dbo.FormatAddress(vPersonas.CalleNum, vPersonas.Colonia, vPersonas.Ciudad, vPersonas.Estado, vPersonas.CP) AS Direccion"
-                            + " FROM ExpoMR.dbo.mClientes INNER JOIN"
-                            + " mDocumentos ON mClientes.IdDocumento = mDocumentos.IdDocumento INNER JOIN"
-                            + " mPerEmp ON mClientes.IdPersona = mPerEmp.IdPersona INNER JOIN"
-                            + " vPersonas ON mPerEmp.IdPersona = vPersonas.IdPersona INNER JOIN"
-                            + " dDirecciones ON mPerEmp.Persona = dDirecciones.Persona AND dDirecciones.Fiscal = 1 LEFT OUTER JOIN"
-                            + " mSatUsoCFDI ON mClientes.IdUsoCFDI = mSatUsoCFDI.IdUsoCFDI"
-                            + " WHERE mClientes.IdPersona = " + IdCliente;
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("IndigoCS", query);
+            SqlDataReader dr = dB.ExecuteReader("GetDatosCliente", ref parameters);
 
             var jsonData = new
             {
                 rows = (
-                       from c in dataTable.AsEnumerable()
+                       from c in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           Nombre = c[0],
-                           RFC = c[1],
-                           IdDocumento = c[2],
-                           IdUsoCFDI = c[3],
-                           Direccion = c[4]
+                           Nombre = c["Nombre"],
+                           RFC = c["RFC"],
+                           IdDocumento = c["IdDocumento"],
+                           IdUsoCFDI = c["IdUsoCFDI"],
+                           Direccion = c["Direccion"]
                        }).ToArray()
             };
+
             return Json(jsonData.rows);
         }
 
@@ -218,215 +189,197 @@ namespace ExpoMR.Controllers
 
         public List<TipoDocumentos> GetTipoDocumentos(int IdCliente)
         {
-            string query = "Select mDocumentos.IdDocumento, mDocumentos.Documento"
-                           + " From mDocumentos,"
-                           + "  mClientes inner join"
-                           + "  mPerEmp on mClientes.IdPersona = mPerEmp.IdPersona inner join"
-                           + "  mPersonas on mPerEmp.Persona = mPersonas.Persona"
-                           + "  Where mClientes.IdPersona = " + IdCliente
-                           + "  And((mDocumentos.IdDocumento = 1"
-                           + "  And(UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'"
-                           + "  Or UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'))"
-                           + "  Or mDocumentos.IdDocumento = 2"
-                           + "  Or(mDocumentos.IdDocumento = 4 And mClientes.Traslado = 1)"
-                           + "  )"
-                           + "  Order by mDocumentos.Documento";
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
-            List<TipoDocumentos> td = new();
+            SqlDataReader dr = dB.ExecuteReader("GetTiposDocsCliente", ref parameters);
 
-            foreach (DataRow dr in dt.Rows)
+            List<TipoDocumentos> TiposDocumentos = new();
+
+            while (dr.Read())
             {
-                TipoDocumentos tipoDocumentos = new()
-                {
-                    IdTipoDoc = Convert.ToByte(dr["IdDocumento"]),
-                    TipoDoc = dr["Documento"].ToString()
-                };
-                td.Add(tipoDocumentos);
+                TipoDocumentos TipoDocumento = new();
+
+                TipoDocumento.IdTipoDoc = (byte)dr["IdDocumento"];
+                TipoDocumento.TipoDoc = (string)dr["Documento"];
+
+                TiposDocumentos.Add(TipoDocumento);
             }
-            return td;
+
+            return TiposDocumentos;
         }
 
         public List<UsosCFDI> GetUsoCFDIs(int IdCliente)
         {
-            List<UsosCFDI> usoCFDIs = new();
-            string query = "SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI" +
-                " FROM GetUsoCFDI(" + IdCliente + ")";
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+            string SqlQuery = "SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI FROM GetUsoCFDI(@IdPersona)";
 
-            //string d = "SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI FROM GetUsoCFDI (@cliente)";
-            DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
-            if(dt.Rows.Count <= 1)
-                usoCFDIs.Add(new UsosCFDI { IdUsoCFDI = 23, UsoCFDI = "Sin efectos fiscales" });
-            foreach (DataRow dr in dt.Rows)
+            SqlDataReader dr = dB.ExecuteReader(SqlQuery, ref parameters, commandType: CommandType.Text, "IndigoCS");
+
+            List<UsosCFDI> UsosCFDI = new();
+
+            while (dr.Read())
             {
-                UsosCFDI CFDI = new()
-                {
-                    IdUsoCFDI = Convert.ToByte(dr["IdUsoCFDI"]),
-                    UsoCFDI = dr["UsoCFDI"].ToString()
-                };
-                usoCFDIs.Add(CFDI);
+                UsosCFDI UsoCFDI = new();
+
+                UsoCFDI.IdUsoCFDI = (byte)dr["IdUsoCFDI"];
+                UsoCFDI.UsoCFDI = (string)dr["UsoCFDI"];
+
+                UsosCFDI.Add(UsoCFDI);
+
             }
-            return usoCFDIs;
+
+            return UsosCFDI;
         }
 
         public List<TiposDeVenta> GetTiposVenta()
         {
-            List<TiposDeVenta> tipoventa = new()
-            {
-                new TiposDeVenta { IdTipoVenta = 0, TipoVenta = "Seleccione una opción... " }
-            };
-            string query = "Select mTipoVenta.IdTipoVenta, mTipoVenta.TipoVenta"
-                           + " From mTipoVenta"
-                           + "  Where mTipoVenta.IdTipoVenta != 5"
-                           + "  Order by mTipoVenta.TipoVenta";
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[0];
 
-            DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
-            foreach (DataRow dr in dt.Rows)
+            SqlDataReader dr = dB.ExecuteReader("GetTiposVentaCliente", ref parameters);
+
+            List<TiposDeVenta> TiposVenta = new();
+
+            while (dr.Read()) 
             {
-                TiposDeVenta tipo = new()
-                {
-                    IdTipoVenta = Convert.ToByte(dr["IdTipoVenta"]),
-                    TipoVenta = dr["TipoVenta"].ToString()
-                };
-                tipoventa.Add(tipo);
+                TiposDeVenta TipoVenta = new();
+
+                TipoVenta.IdTipoVenta = (int)dr["IdTipoVenta"];
+                TipoVenta.TipoVenta = (string)dr["TipoVenta"];
+
+                TiposVenta.Add(TipoVenta);
             }
-            return tipoventa;
+
+            return TiposVenta;
         }
 
         public List<Entregas> GetDirecciones(int IdCliente)
         {
-            List<Entregas> Entregas = new();
-            Entregas.Add(new Entregas { IdEntrega = 0, Entrega = "Seleccione una opción... " });
-            string query = "Select vDirecciones.IdDireccion AS Entrega, vDirecciones.Ciudad + ', ' + vDirecciones.Estado + ' - ' + vDirecciones.Direccion AS DireccionE"
-                          + " From vDirecciones inner join"
-                          + " mPerEmp ON vDirecciones.Persona = mPerEmp.Persona"
-                          + " Where mPerEmp.IdPersona =" +IdCliente
-                          + " Order by DireccionE"; 
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
-            foreach (DataRow dr in dt.Rows)
+            SqlDataReader dr = dB.ExecuteReader("GetDireccionesCliente", ref parameters);
+
+            List<Entregas> DireccionesEntrega = new();
+
+            while (dr.Read())
             {
-                Entregas Entrega = new()
-                {
-                    IdEntrega = Convert.ToInt16(dr["Entrega"]),
-                    Entrega = dr["DireccionE"].ToString()
-                };
-                Entregas.Add(Entrega);
+                Entregas DireccionEntrega = new();
+
+                DireccionEntrega.IdEntrega = (int)dr["Entrega"];
+                DireccionEntrega.Entrega = (string)dr["DireccionE"];
+
+                DireccionesEntrega.Add(DireccionEntrega);
             }
-            return Entregas;
+
+            return DireccionesEntrega;
         }
         
         public List<Trasportes> GetTrasportes(int IdCliente)
         {
-            List<Trasportes> Trasportes = new();
-            //Trasportes.Add(new Trasportes { IdTrasportes = 0, Transporte = "Seleccione una opción... " });
-            string query = "Select 0 AS IdPersona, 'Seleccione una opción... ' as Nombre"
-                            + " UNION"
-                            + " Select ISNULL(dTransCliente.IdTransporte,0)IdTransporte, vPersonas.Nombre"
-                            + " From dTransCliente INNER JOIN"
-                            + " vPersonas ON dTransCliente.IdTransporte = vPersonas.IdPersona"
-                            + " Where dTransCliente.IdPersona =" + IdCliente
-                            + " Order by Nombre";
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
-            foreach (DataRow dr in dt.Rows)
+            SqlDataReader dr = dB.ExecuteReader("GetTransportesCliente", ref parameters);
+
+            List<Trasportes> Transportes = new();
+
+            while (dr.Read())
             {
-                Trasportes Trasporte = new()
-                {
-                    IdTrasportes = Convert.ToInt16(dr["IdPersona"]),
-                    Transporte = dr["Nombre"].ToString()
-                };
-                Trasportes.Add(Trasporte);
+                Trasportes Transporte = new();
+
+                Transporte.IdTrasporte = (int)dr["IdTransporte"];
+                Transporte.Transporte = (string)dr["Nombre"];
+
+                Transportes.Add(Transporte);
             }
-            return Trasportes;
+
+            return Transportes;
         }
+
         public List<Portes> GetPorte(int IdCliente)
         {
-            List<Portes> Portes = new();
-            string query = "Select 0 as idporte, 'Seleccione una opción... ' as Porte"
-                           + " UNION"
-                           + "  Select dPorteCliente.IdPorte, mPortes.Porte"
-                           + "  From dPorteCliente inner join"
-                           + "  mPortes on dPorteCliente.IdPorte = mPortes.IdPorte"
-                           + "  Where dPorteCliente.IdPersona = " + IdCliente
-                           + " Order by Porte";
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
-            foreach (DataRow dr in dt.Rows)
+            SqlDataReader dr = dB.ExecuteReader("GetPortesCliente", ref parameters);
+
+            List<Portes> Portes = new();
+
+            while (dr.Read())
             {
-                Portes Porte = new()
-                {
-                    Idporte = Convert.ToInt16(dr["idporte"]),
-                    Porte = dr["Porte"].ToString()
-                };
+                Portes Porte = new();
+
+                Porte.Idporte = (int)dr["IdPorte"];
+                Porte.Porte = (string)dr["Porte"];
+
                 Portes.Add(Porte);
             }
+
             return Portes;
         }
 
-        public JsonResult SaveTipoDoc(int UsoCFDI, int TipoDoc) {
+        public JsonResult SaveTipoDoc(int UsoCFDI, int TipoDoc)
+        {
             var rm = new ResponseModel();
-            try {
-                var user = _userManager.GetUserAsync(User);
-                string username = user.Result.UserName.ToString();
-                int Usuario = GeneralesController.GetIdPersonas(username);
-                string cadena = _configuration["ConnectionStrings:IndigoCS"];
+       
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[7];
+                parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
+                parameters[1] = new SqlParameter("@TipoDoc", TipoDoc);
+                parameters[2] = new SqlParameter("@IdUsoCFDI", UsoCFDI);
+                parameters[3] = new SqlParameter("@IdTipoVenta", "");
+                parameters[4] = new SqlParameter("@IdDirEntrega", "");
+                parameters[5] = new SqlParameter("@IdTransporte", "");
+                parameters[6] = new SqlParameter("@IdPorte", "");
 
-                string insertQuery = "Update ExpoMR.dbo.mClientes " +
-                                    " Set IdDocumento = @iddocumento,"+
-                                    " IdUsoCFDI = CASE WHEN @iddocumento = 1 THEN @idusocfdi ELSE 23 END " +
-                                    " Where mClientes.IdPersona = "+ Usuario;
+                dB.ExecuteNonQuery("EditCliente", ref parameters);
 
-                using (SqlConnection connection = new(cadena))
-                {
-                    SqlCommand command =  new(insertQuery, connection);
-                    command.Parameters.AddWithValue("@iddocumento", TipoDoc);
-                    command.Parameters.AddWithValue("@idusocfdi", UsoCFDI);
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
                 rm.Response = true;
-                rm.Message = "Sus datos se guardaron correctamente";
+                rm.Message = "Sus datos se actualizaron correctamente";
 
             }
-            catch (Exception e) {
+            catch (Exception e) 
+            {
                 rm.Response = false;
                 rm.Message = e.Message;
             }
             return Json(rm);
         }
-        public JsonResult Entrega(int TipoVenta, int Entrega, int Transporte, int Porte) {
+
+        public JsonResult Entrega(int TipoVenta, int Entrega, int Transporte, int Porte) 
+        {
             var rm = new ResponseModel();
-            try {
-                var user = _userManager.GetUserAsync(User);
-                string username = user.Result.UserName.ToString();
-                int Usuario = GeneralesController.GetIdPersonas(username);
-                string cadena = _configuration["ConnectionStrings:ExpoMRCS"];
 
-                string insertQuery = "Update mClientes"+
-                                " Set IdTipoVenta = @idtipoventa,"+
-                                " Entrega = @entrega,"+
-                                " IdTransporte = @idtransporte,"+
-                                " IdPorte = @idporte"+
-                                " Where mClientes.IdPersona =" + Usuario;
+            try 
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[7];
+                parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
+                parameters[1] = new SqlParameter("@TipoDoc", "");
+                parameters[2] = new SqlParameter("@IdUsoCFDI", "");
+                parameters[3] = new SqlParameter("@IdTipoVenta", TipoVenta);
+                parameters[4] = new SqlParameter("@IdDirEntrega", Entrega);
+                parameters[5] = new SqlParameter("@IdTransporte", Transporte);
+                parameters[6] = new SqlParameter("@IdPorte", Porte);
 
-                using (SqlConnection connection = new(cadena))
-                {
-                    SqlCommand command =  new(insertQuery, connection);
-                    command.Parameters.AddWithValue("@idtipoventa", TipoVenta);
-                    command.Parameters.AddWithValue("@entrega", Entrega);
-                    command.Parameters.AddWithValue("@idtransporte", Transporte);
-                    command.Parameters.AddWithValue("@idporte", Porte);
+                dB.ExecuteNonQuery("EditCliente", ref parameters);
 
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
                 rm.Response = true;
-                rm.Message = "Sus datos se guardaron correctamente";
+                rm.Message = "Sus datos se actualizaron correctamente";
 
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 rm.Response = false;
                 rm.Message = e.Message;
             }

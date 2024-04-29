@@ -24,12 +24,14 @@ namespace ExpoMR.Models
         public string Direccion { get; set; }
 
         [Display(Name = "Tipo de Comprobante: ")]
+
         public int IdTipoDoc { get; set; }
 
         public List<TipoDocumentos> TipoDocumentos { get; set; }
 
         [Display(Name = "Uso del CFDI:")]
         public int IdUsoCFDI { get; set; }
+
         public List<UsosCFDI> UsoCFDI { get; set; }
 
         [Display(Name = "Tipo de Envío")]
@@ -39,19 +41,25 @@ namespace ExpoMR.Models
 
         [Display(Name = "Dirección de Entrega: ")]
         public int Entrega { get; set; }
+
         public List<Entregas> Direccciones { get; set; }
+
         [Display(Name = "Transportista: ")]
         public int IdTransporte { get; set; }
+
         public List<Trasportes> Trasportes { get; set; }
         
         [Display(Name ="Porte")]
         public int IdPorte { get; set; }
+
         public List<Portes> Portes { get; set; }
     }
 
     [Keyless]
-    public class TipoDocumentos { 
+    public class TipoDocumentos
+    { 
         public byte IdTipoDoc { get; set; }  
+
         public string TipoDoc { get; set; }
     }
 
@@ -59,12 +67,15 @@ namespace ExpoMR.Models
     public class UsosCFDI
     {
         public byte IdUsoCFDI { get; set; }
+
         public string UsoCFDI { get; set; }
     }
 
     [Keyless]
-    public class TiposDeVenta { 
-        public byte IdTipoVenta { get; set; }
+    public class TiposDeVenta
+    { 
+        public int IdTipoVenta { get; set; }
+
         public string TipoVenta { get; set; }
     }
 
@@ -72,18 +83,23 @@ namespace ExpoMR.Models
     public class Entregas
     {
         public int IdEntrega { get; set; }
+
         public string Entrega { get; set; }
     }
 
     [Keyless]
-    public class Trasportes{ 
-        public int IdTrasportes { get; set; }
+    public class Trasportes
+    { 
+        public int IdTrasporte { get; set; }
+
         public string Transporte { get; set; }
     }
 
     [Keyless]
-    public class Portes{ 
+    public class Portes
+    { 
         public int Idporte { get; set; }
+
         public string Porte { get; set; }
     }
 }
