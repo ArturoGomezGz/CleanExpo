@@ -12,7 +12,7 @@ using System.Net;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente,ClienteVIP,Proveedor")]
     public class MiCuentaController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;

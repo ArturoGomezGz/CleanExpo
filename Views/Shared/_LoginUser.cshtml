@@ -7,9 +7,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item dropdown">
-        <a class="usuario nav-link  dropbtn dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            @UserManager.GetUserName(User)
-        </a>
+        <label class="usuario">@UserManager.GetUserName(User)</label>
         @using (Html.BeginForm("Submit", "Home", FormMethod.Post))
         {
             List<Clientes> ClientesSeleccion = ExpoMR.Controllers.GeneralesController.GetClientesSeleccion(@UserManager.GetUserName(User));
@@ -27,7 +25,7 @@
             Menu
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            @if (User.IsInRole("Administrador") || User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
             {
                 <li>
                     <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="Index">Cambiar Contraseña</a>
@@ -68,6 +66,9 @@
             }
             @if (User.IsInRole("Proveedor"))
             {
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="Index">Cambiar Contraseña</a>
+                </li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>

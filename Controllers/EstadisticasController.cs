@@ -26,13 +26,6 @@ namespace ExpoMR.Controllers
             return View();
         }
 
-        private int GetProveedor()
-        {
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            return GeneralesController.GetIdProveedor(username);
-        }
-
         [HttpPost]
         public List<Graficas> GetDatosGraficaVisitas()
         {
