@@ -30,15 +30,22 @@
                 @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.Venta, "IdTipoVenta", "TipoVenta"), new { id = "txtTipoVenta",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
             </label>
             <br />
+            <strong>Trasportista: </strong>
+            <label>
+                @Html.DropDownListFor(model => model.IdTransporte, new SelectList(Model.transportistas, "IdTransporte", "Transportista"), new { id = "txtTransportista",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+            </label>
+            <br />
+            <strong>Porte: </strong>
+            <label>
+                @Html.DropDownListFor(model => model.IdPorte, new SelectList(Model.portes, "IdPorte", "Porte"), new { id = "txtPorte",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+            </label>
+            <br />
             <strong>Direccion de Entrega: </strong>
             <label>
                 @Html.DropDownListFor(model => model.Direccion, new SelectList(Model.Direcciones, "Entrega", "DirEntrega"), new { id = "txtDirEntrega",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
-            </label><br />
+            </label>
+            <br />
             <strong>Observaciones:</strong><lable><input type="text" id="txtObsv" value="@Model.Observaciones" class="form-control" disabled /></lable>
-            <br />
-            <br />
-            <strong>Transportista:</strong><label id="lblTransportista">@Model.Transportista</label><br />
-            <strong>Porte:</strong><lable id="lblPorte">@Model.Porte</lable><br />
         </div>
         <div id="divCotizacionTotal" class="col-4 d-none">
             <div class="carritoTotal">
@@ -256,15 +263,11 @@
 <script>
     function btnagregarProductos() {
         document.getElementById("txtBuscar").value = "";
-        $('#descripcionProducto').hide();
-        //$('#BuscarProducto').dataTable().fnDestroy();
-        
+        $('#descripcionProducto').hide();        
     }
 
     function cerrarCapturaProductos(){
-    
-        location.reload();
-    }
+        location.reload();    }
 
     function regresaProductos(){
         $('#descripcionProducto').hide();
@@ -275,14 +278,15 @@
         document.getElementById("txtDocumento").disabled = false;
         document.getElementById("txtUsoCFDI").disabled = false;
         document.getElementById("txtTipoVenta").disabled = false;
+        document.getElementById("txtTransportista").disabled = false;
+        document.getElementById("txtPorte").disabled = false;
         document.getElementById("txtDirEntrega").disabled = false;
         document.getElementById("txtObsv").disabled = false;
         $("#AgregarProductos").hide();
         $("#buscarCliente").hide();
         $("#btGuardarDatosCotizacion").show();
         $("#btCancelDatosCotizacion").show();
-        $("#btn-modificar").hide();
-        
+        $("#btn-modificar").hide();     
     }
 
     function GuardarDatosCotizacion(){
@@ -290,6 +294,8 @@
         let IdDocumento = document.getElementById("txtDocumento").value;
         let IdUsoCFDI = document.getElementById("txtUsoCFDI").value;
         let IdTipoVenta = document.getElementById("txtTipoVenta").value;
+        let IdTrasportista = document.getElementById("txtTransportista").value;
+        let IdPorte = document.getElementById("txtPorte").value;
         let IdEntrega = document.getElementById("txtDirEntrega").value;
         let Obsv = document.getElementById("txtObsv").value;
 
@@ -299,6 +305,8 @@
                 IdDocumento: IdDocumento,
                 IdUsoCFDI: IdUsoCFDI,
                 IdTipoVenta: IdTipoVenta,
+                IdTrasportista: IdTrasportista,
+                IdPorte: IdPorte,
                 IdEntrega: IdEntrega,
                 Obsv: Obsv
             },
@@ -320,6 +328,8 @@
         document.getElementById("txtUsoCFDI").disabled = true;
         document.getElementById("txtTipoVenta").disabled = true;
         document.getElementById("txtDirEntrega").disabled = true;
+        document.getElementById("txtTransportista").disabled = true;
+        document.getElementById("txtPorte").disabled = true;
     }
 
     function BuscarListaProducto() {
@@ -360,7 +370,6 @@
         $('#descripcionProducto').hide();
         document.getElementById("txtBuscar").value = "";
         $('#BuscarProducto').dataTable().fnDestroy();
-    
     }
 
 </script>
@@ -465,10 +474,8 @@
             var inputElement  = row.find('.text');
             inputElement.prop('disabled', false);
             $(this).hide();
-            //$("#btnBorrarProducto").hide();
         });
 
-        //Cancel event handler.
         $('#Productos').on('click', '.Cancel', function () {
             var row = $(this).closest("tr");
             $("td", row).each(function () {
@@ -484,7 +491,6 @@
             inputElement.prop('disabled', true);
         });
 
-        //Update event handler.
         $('#Productos').on('click', '.Update', function () {
             var row = $(this).closest("tr");
             var input, inputhidden;
@@ -500,7 +506,6 @@
 
             $.post(path + "Empleados/CotizacionEditarCantidadProducto",
                 {
-                    idcliente: IdCliente,
                     idproducto: inputhidden,
                     cantidad: input,
                     idcotizacion: IdCotizacion
@@ -512,36 +517,7 @@
                 }).error(function () {
                     ShowAlert("No fue posible cargar sus datos", false);
                 });
-        });
-        //if ($('#Productos').DataTable().rows.legth > 0)
-        //{
-        //    $("#divCotizacionTotal").show()
-        //}
-        //$.ajax({
-        //    type: "POST",
-        //    url: path + "Empleados/TotalCotizacion?IdCliente=" + @Model.IdCliente,
-        //    contentType: "application/json; charset=utf-8",
-        //    dataType: "json",
-        //    success: function (resultado) {
-        //        document.getElementById('lblcredito').innerHTML = " $" + resultado.credito;
-        //        document.getElementById('lblsubtotal').innerHTML = " $" + resultado.subtotal;
-        //        document.getElementById('lbliva').innerHTML = " $" + resultado.iva;
-        //        document.getElementById('lbltotal').innerHTML = " $" + resultado.total;
-        //        document.getElementById('lbltotalProductos').innerHTML = " " + resultado.productos;
-
-        //        //console.log(resultado.credito)
-        //        if (resultado.productos == 0) {
-        //            $("#divCotizacionTotal").hide();
-        //        } else {
-        //            $("#divCotizacionTotal").show();
-        //        }
-
-        //    },
-        //    error: function (xhr, status, error) {
-        //        console.log(error);
-        //    }
-        //});
-        
+        });        
     });
  
     function BorrarProducto(data)
@@ -587,8 +563,7 @@
                 document.getElementById('caja').innerHTML = " " + resultado.caja;
                 document.getElementById('codigo').innerHTML = " " + resultado.codigo;
                 document.getElementById('preciofinal').innerHTML = " " + resultado.preciofinal;
-                document.getElementById('getiva').innerHTML = " " + resultado.valoriva;            
-
+                document.getElementById('getiva').innerHTML = " " + resultado.valoriva;    
             },
             error: function (xhr, status, error) {
                 console.log(error);
@@ -640,7 +615,6 @@
     }
 
     function colocarOrden(){
-
         var IdDocumento = $("#txtDocumento").val();
         var IdUsoCFDI = $("#txtUsoCFDI").val();
 
@@ -681,7 +655,6 @@
     }
 
     function PedidoAgregar(){
-
         $.ajax({
             type: "POST",
             url: path + "Empleados/ExpoPedidoAgregar?IdCliente=" + @Model.IdCliente,
@@ -693,8 +666,7 @@
             error: function (xhr, status, error) {
                 console.log(error);
             }
-        });
-    
+        });    
     }
     
 </script>

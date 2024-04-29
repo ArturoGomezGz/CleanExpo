@@ -15,9 +15,6 @@ namespace ExpoMR.Datos
 
         }
 
-        //se agregan los Modelos necesarios
-        public DbSet<Cotizacion> Cotizacion { get; set; }
-
         public DbSet<Busqueda> Busqueda { get; set; }
 
     }

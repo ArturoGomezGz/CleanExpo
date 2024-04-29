@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using ExpoMR.Clases;
 
 namespace ExpoMR.Controllers
 {
@@ -36,85 +37,58 @@ namespace ExpoMR.Controllers
         }
         public IActionResult CotizacionDetail(int IdCliente)
         {
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int IdUsuario = GeneralesController.GetIdPersonas(username);
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
 
-            string cadena = _configuration["ConnectionStrings:ExpoMRCS"];
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@cliente", IdCliente);
+            parameters[1] = new SqlParameter("@usuario", IdUsuario);
 
-            SqlConnection cnn = new(cadena);
-            SqlCommand cmd = new();
-            DataTable dataTable = new();
-            SqlDataAdapter sqlDA;
-            cnn.Open();
-            cmd.CommandText = "DECLARE @idcotizacion INT " +
-                            " EXEC @idcotizacion = dbo.CotizarGetCotizacion " + IdCliente + "," + IdUsuario +
-                            " SELECT vCotizacionDatos.IdPersona AS IdCliente, vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, " +
-                            " vCotizacionDatos.IdDocumento, vCotizacionDatos.Documento, vCotizacionDatos.IdUsoCFDI, vCotizacionDatos.UsoCFDI, " +
-                            " vCotizacionDatos.Entrega as Direccion, vCotizacionDatos.DirEntrega, vCotizacionDatos.IdTipoVenta, vCotizacionDatos.TipoVenta, " +
-                            " vCotizacionDatos.IdTransporte, vCotizacionDatos.Transportista,vCotizacionDatos.Obsv, vCotizacionDatos.IdPorte, vCotizacionDatos.Porte " +
-                            " FROM vCotizacionDatos " +
-                            " WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            sqlDA = new SqlDataAdapter(cmd);
-            sqlDA.Fill(dataTable);
-            
+            dr = dB.ExecuteReader("CotizarDatosCliente", ref parameters);
             Cotizacion cotizacion = new();
-
-            var dr = cmd.ExecuteReader();
             while (dr.Read())
             {
-                cotizacion.IdCliente = Convert.ToInt32(dr["IdCliente"]);
-                cotizacion.Cliente = Convert.ToString(dr["Cliente"]);
-                cotizacion.IdCotizacion = Convert.ToInt32(dr["IdCotizacion"]);
-                cotizacion.RFC = Convert.ToString(dr["RFC"]);
-                cotizacion.IdDocumento = Convert.ToInt32(dr["IdDocumento"]);
-                cotizacion.Documento = Convert.ToString(dr["Documento"]);
-                cotizacion.IdUsoCFDI = Convert.ToInt32(dr["IdUsoCFDI"]);
-                cotizacion.UsoCFDI = Convert.ToString(dr["UsoCFDI"]);
-                cotizacion.IdTipoVenta = Convert.ToInt32(dr["IdTipoVenta"]);
-                cotizacion.TipoVenta = Convert.ToString(dr["TipoVenta"]);
-                cotizacion.Direccion = Convert.ToInt32(dr["Direccion"]);
-                cotizacion.DirEntrega = Convert.ToString(dr["DirEntrega"]);
-                cotizacion.Observaciones = Convert.ToString(dr["Obsv"]);
-                cotizacion.Transportista = Convert.ToString(dr["Transportista"]);
-                cotizacion.Porte = Convert.ToString(dr["Porte"]);
+                cotizacion.IdCliente = Convert.ToInt32(dr["IdCliente"] == DBNull.Value ? 0 : dr["IdCliente"]);
+                cotizacion.Cliente = Convert.ToString(dr["Cliente"] == DBNull.Value ? "" : dr["Cliente"]);
+                cotizacion.IdCotizacion = Convert.ToInt32(dr["IdCotizacion"] == DBNull.Value ? 0 : dr["IdCotizacion"]);
+                cotizacion.RFC = Convert.ToString(dr["RFC"] == DBNull.Value ? "" : dr["RFC"]);
+                cotizacion.IdDocumento = Convert.ToInt32(dr["IdDocumento"] == DBNull.Value ? 0 : dr["IdDocumento"]);
+                cotizacion.Documento = Convert.ToString(dr["Documento"] == DBNull.Value ? "" : dr["Documento"]);
+                cotizacion.IdUsoCFDI = Convert.ToInt32(dr["IdUsoCFDI"] == DBNull.Value ? 0 : dr["IdUsoCFDI"]);
+                cotizacion.UsoCFDI = Convert.ToString(dr["UsoCFDI"] == DBNull.Value ? "" : dr["UsoCFDI"]);
+                cotizacion.IdTipoVenta = Convert.ToInt32(dr["IdTipoVenta"] == DBNull.Value ? 0 : dr["IdTipoVenta"]);
+                cotizacion.TipoVenta = Convert.ToString(dr["TipoVenta"] == DBNull.Value ? "" : dr["TipoVenta"]);
+                cotizacion.Direccion = Convert.ToInt32(dr["Direccion"] == DBNull.Value ? 0 : dr["Direccion"]);
+                cotizacion.DirEntrega = Convert.ToString(dr["DirEntrega"] == DBNull.Value ? "" : dr["DirEntrega"]);
+                cotizacion.Observaciones = Convert.ToString(dr["Obsv"] == DBNull.Value ? "" : dr["Obsv"]);
+                cotizacion.IdTransporte = Convert.ToInt32(dr["IdTransporte"] == DBNull.Value ? 0 : dr["IdTransporte"]);
+                cotizacion.Transportista = Convert.ToString(dr["Transportista"] == DBNull.Value ? "" : dr["Transportista"]);
+                cotizacion.IdPorte = Convert.ToInt32(dr["IdPorte"] == DBNull.Value ? 0 : dr["IdPorte"]);
+                cotizacion.Porte = Convert.ToString(dr["Porte"] == DBNull.Value ? "" : dr["Porte"]);
                 cotizacion.TipoDocumentos = Documentos();
                 cotizacion.CFDI = UsosDelCFDI(IdCliente);
                 cotizacion.Venta = TipoVenta();
                 cotizacion.Direcciones = DirEntrega(IdCliente);
+                cotizacion.transportistas = Transportista(IdCliente);
+                cotizacion.portes = Porte(IdCliente);
             }
-            cnn.Close();
+
             return View(cotizacion);
         }
 
-        public JsonResult CotizacionEditarCantidadProducto( int IdCliente, int IdProducto, int Cantidad, int IdCotizacion)
+        public JsonResult CotizacionEditarCantidadProducto(int IdProducto, int Cantidad, int IdCotizacion)
         {
             ResponseModel rm = new();
             try
             {
-                var user = _userManager.GetUserAsync(User);
-                string username = user.Result.UserName.ToString();
-                int Usuario = GeneralesController.GetIdPersonas(username);
-                string cadena = _configuration["ConnectionStrings:ExpoMRCS"];
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("@IdCotizacion", IdCotizacion);
+                parameters[1] = new SqlParameter("@Cantidad", Cantidad);
+                parameters[2] = new SqlParameter("@IdProducto", IdProducto);
 
-                SqlConnection cnn = new(cadena);
-                SqlCommand cmd = new();
-                DataTable dataTable = new();
-                SqlDataAdapter sqlDA;
-                cnn.Open();
-                cmd.CommandText ="DECLARE @idcotizacion INT " +
-                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion " + IdCliente + "," + Usuario +
-                                "UPDATE dCotizaciones " +
-                                "SET Cantidad = CASE WHEN (" + Cantidad + " = 0 OR " + Cantidad + " IS NULL) THEN Cantidad ELSE " + Cantidad + " END " +
-                                "WHERE dCotizaciones.IdCotizacion = @idcotizacion " +
-                                "AND dCotizaciones.IdProducto = " + IdProducto;
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = cnn;
-                sqlDA = new SqlDataAdapter(cmd);
-                sqlDA.Fill(dataTable);
-                cnn.Close();
+                dB.ExecuteNonQuery("CotizarEditarCantidadProducto", ref parameters);
 
                 rm.Response = true;
                 rm.Message = "El producto se agrego al carrito";
@@ -129,44 +103,63 @@ namespace ExpoMR.Controllers
 
         public List<TipoDocumento> Documentos() 
         {
+
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[0];
             List<TipoDocumento> documentos = new();
+
             string query = "SELECT mDocumentos.IdDocumento, mDocumentos.Documento " +
                             "FROM mDocumentos " +
                             "WHERE mDocumentos.IdDocumento IN (1,2) --1 = Factura, 2 = Nota";
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("IndigoCS", query);
+            dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
 
-            foreach (DataRow row in dataTable.Rows)
+            while (dr.Read())
             {
-                TipoDocumento GetDocumento = new() { 
-                    IdDocumento = Convert.ToInt16(row.Field<byte>(0)),
-                    Documentos = row.Field<string>(1)
+                TipoDocumento GetDocumento = new()
+                {
+                    IdDocumento = Convert.ToInt16(dr["IdDocumento"] == DBNull.Value ? 0 : dr["IdDocumento"]),
+                    Documentos = dr["Documento"] == DBNull.Value ? "" : dr["Documento"].ToString()
                 };
-                documentos.Add(GetDocumento);
+
+                documentos.Add(GetDocumento);                
             }
             return documentos;
         }
 
         public List<GetUsoCFDI> UsosDelCFDI(int IdCliente) 
         {
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdCliente", IdCliente);
             List<GetUsoCFDI> UsosDelCFDI = new();
 
             string query = "SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI " +
-                            "FROM GetUsoCFDI (" + IdCliente + " ) ";
+                            "FROM GetUsoCFDI (@IdCliente) ";
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("IndigoCS", query);
-            foreach (DataRow row in dataTable.Rows)
+            dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
+
+            while (dr.Read())
             {
-                GetUsoCFDI GetCFDI = new() { 
-                    IdUsoCFDI = Convert.ToInt16(row.Field<byte>(0)),
-                    UsoCFDI = row.Field<string>(1)
+                GetUsoCFDI GetCFDI = new()
+                {
+                    IdUsoCFDI = Convert.ToInt16(dr["IdUsoCFDI"] == DBNull.Value ? 0 : dr["IdUsoCFDI"]),
+                    UsoCFDI = dr["UsoCFDI"] == DBNull.Value ? "" : dr["UsoCFDI"].ToString()
                 };
+
                 UsosDelCFDI.Add(GetCFDI);
             }
+
             return UsosDelCFDI;
         }
+
         public List<GetTipoVenta> TipoVenta()
         {
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[0];
             List<GetTipoVenta> TiposDeVenta = new();
 
             string query = "SELECT mTipoVenta.IdTipoVenta, mTipoVenta.TipoVenta " +
@@ -174,15 +167,16 @@ namespace ExpoMR.Controllers
                               "WHERE mTipoVenta.IdTipoVenta != 5 " +
                               "ORDER BY mTipoVenta.TipoVenta ";
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("IndigoCS", query);
+            dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
 
-            foreach (DataRow row in dataTable.Rows)
+            while (dr.Read())
             {
                 GetTipoVenta GetVenta = new()
                 {
-                    IdTipoVenta = Convert.ToInt16(row.Field<byte>(0)),
-                    TipoVenta = row.Field<string>(1)
+                    IdTipoVenta = Convert.ToInt16(dr["IdTipoVenta"] == DBNull.Value ? 0 : dr["IdTipoVenta"]),
+                    TipoVenta = dr["TipoVenta"] == DBNull.Value ? "" : dr["TipoVenta"].ToString()
                 };
+
                 TiposDeVenta.Add(GetVenta);
             }
 
@@ -191,116 +185,143 @@ namespace ExpoMR.Controllers
 
         public List<GetDireccionEntrega> DirEntrega( int Cliente) 
         {
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdCliente", Cliente);
             List<GetDireccionEntrega> Entrega = new();
 
-            string query = "SELECT Direcciones.IdDireccion AS Entrega, dbo.FormatAddress(Direcciones.CalleNum, Direcciones.Colonia, Direcciones.Ciudad, Direcciones.Estado, Direcciones.CP) AS DirEntrega " +
-                            "FROM Indigo.dbo.mPerEmp AS Personas INNER JOIN " +
-                            "Indigo.dbo.vDirecciones AS Direcciones ON Personas.Persona = Direcciones.Persona " +
-                            "WHERE Personas.IdPersona = " + Cliente +
-                            "--AND Direcciones.Status = 1 -- 1-= Activa " +
-                            "ORDER BY DirEntrega";
+            dr = dB.ExecuteReader("GetDirEntrega", ref parameters);
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("IndigoCS", query);
-            foreach (DataRow row in dataTable.Rows)
+            while (dr.Read())
             {
-                GetDireccionEntrega GetEntrega = new() { 
-                    Entrega = row.Field<Int32>(0),
-                    DirEntrega = row.Field<string>(1)
+                GetDireccionEntrega GetEntrega = new()
+                {
+                    Entrega = Convert.ToInt16(dr["Entrega"] == DBNull.Value ? 0 : dr["Entrega"]),
+                    DirEntrega = dr["DirEntrega"] == DBNull.Value ? "" : dr["DirEntrega"].ToString()
                 };
+
                 Entrega.Add(GetEntrega);
             }
             return Entrega;
         }
 
-        [HttpPost]
-        public JsonResult GetPedidos() {           
-            string query = "SELECT vRutasClientes.IdCliente, vRutasClientes.Cliente"
-                            + " FROM vRutasClientes"
-                            + " ORDER BY vRutasClientes.Cliente";
+        public List<GetTransportista> Transportista(int Cliente)
+        {
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@cliente", Cliente);
+            List<GetTransportista> transportistas = new();
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            string query = "SELECT NULL AS IdTransporte, '' AS Transportista" +
+                            " UNION" +
+                            " SELECT dTransCliente.IdTransporte, vPersonas.Nombre" +
+                            " FROM dTransCliente INNER JOIN" +
+                            " vPersonas ON dTransCliente.IdTransporte = vPersonas.IdPersona" +
+                            " WHERE dTransCliente.IdPersona = @cliente" +
+                            " ORDER BY Transportista";
 
-            var jsonData = new
+            dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
+
+            while (dr.Read())
             {
-                rows = (
-                       from col in dataTable.AsEnumerable()
-                       select new
-                       {
-                           acceder = col[0],
-                           cliente = col[1]
-                       }).ToArray()
-            };
+                GetTransportista transportista = new()
+                {
+                    IdTransporte = Convert.ToInt16(dr["IdTransporte"] == DBNull.Value ? 0 : dr["IdTransporte"]),
+                    Transportista = dr["Transportista"] == DBNull.Value ? "" : dr["Transportista"].ToString()
+                };
 
-            return Json(jsonData.rows);
+                transportistas.Add(transportista);
+            }
+
+            return transportistas;
         }
+
+        public List<GetPorte> Porte(int Cliente)
+        {
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@cliente", Cliente);
+            List<GetPorte> portes = new();
+
+            string query = "SELECT NULL AS IdPorte, '' AS Porte" +
+                            " UNION" +
+                            " SELECT dPorteCliente.IdPorte, mPortes.Porte" +
+                            " FROM dPorteCliente INNER JOIN" +
+                            " mPortes ON dPorteCliente.IdPorte = mPortes.IdPorte" +
+                            " WHERE dPorteCliente.IdPersona = @cliente" +
+                            " ORDER BY Porte";
+
+            dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
+
+            while (dr.Read())
+            {
+                GetPorte porte = new()
+                {
+                    IdPorte = Convert.ToInt16(dr["IdPorte"] == DBNull.Value ? 0 : dr["IdPorte"]),
+                    Porte = dr["Porte"] == DBNull.Value ? "" : dr["Porte"].ToString()
+                };
+
+                portes.Add(porte);
+            }
+
+            return portes;
+        }
+
         [HttpPost]
         public JsonResult GetClientes() {
 
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int IdPersona = GeneralesController.GetIdPersonas(username);
-            
-            string query = "IF EXISTS(SELECT vRutasClientes.IdRuta " +
-                "FROM vRutasClientes WHERE vRutasClientes.IdEmpleado = " + IdPersona + " ) " +
-                "BEGIN " +
-                "   SELECT vRutasClientes.IdCliente, vRutasClientes.Cliente" +
-                "   FROM vRutasClientes" +
-                "   WHERE vRutasClientes.IdEmpleado = " + IdPersona + " " +
-                "   ORDER BY vRutasClientes.Cliente " +
-                "END " +
-                "ELSE " +
-                "BEGIN" +
-                "   SELECT vClientesSucursales.IdCliente, vClientesSucursales.Cliente" +
-                "   FROM vClientesSucursales" +
-                "   ORDER BY vClientesSucursales.Cliente " +
-                "END";
+            int IdEmpleado = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdEmpleado", IdEmpleado);
+
+            dr = dB.ExecuteReader("GetClientes", ref parameters);
 
             var jsonData = new
             {
                 rows = (
-                       from col in dataTable.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           acceder = col[0],
-                           cliente = col[1]
+                           acceder = row["IdCliente"],
+                           cliente = row["Cliente"]
                        }).ToArray()
             };
 
             return Json(jsonData.rows);
         }
+
         [HttpPost]
         public JsonResult ProductosCapturados( int IdCliente)
         {
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int Usuario = GeneralesController.GetIdPersonas(username);
-            string query = "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, mLaboratorios.Laboratorio, " +
-                " vCotizaciones.Cantidad, vCotizaciones.PrecioFinal, vCotizaciones.Total, vCotizaciones.PorConfirmar " +
-                " FROM vCotizaciones INNER JOIN " +
-                " vProductos ON vCotizaciones.IdProducto = vProductos.IdProducto INNER JOIN " +
-                " mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio " +
-                " WHERE vCotizaciones.Cliente = " + IdCliente +
-                " AND vCotizaciones.Usuario = " + Usuario +
-                " AND vCotizaciones.Solicitado = 1 " +
-                " ORDER BY mLaboratorios.Laboratorio, vProductos.Nombre";
+            int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@cliente", IdCliente);
+            parameters[1] = new SqlParameter("@usuario", idUsuario);
+
+            dr = dB.ExecuteReader("CotizarDetalleProductos", ref parameters);
 
             var jsonData = new
             {
                 rows = (
-                       from col in dataTable.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           IdProducto = col[0],
-                           Nombre = col[1],
-                           Presentacion = col[2],
-                           Laboratorio = col[3],
-                           Cantidad = col[4],
-                           PrecioFinal = col[5],
-                           Total = col[6],
+                           IdProducto = row["IdProducto"],
+                           Nombre = row["Nombre"],
+                           Presentacion = row["Presentacion"],
+                           Laboratorio = row["Laboratorio"],
+                           Cantidad = row["Cantidad"],
+                           PrecioFinal = row["PrecioFinal"],
+                           Total = row["Total"],
                            Editar = true
                        }).ToArray()
             };
@@ -365,85 +386,61 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult DetalleProducto(int IdProducto, int Cliente)
         {
-            string cadena = _configuration["ConnectionStrings:IndigoCS"];
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@cliente", Cliente);
+            parameters[1] = new SqlParameter("@idproducto", IdProducto);
 
-            SqlConnection cnn = new(cadena);
-            SqlCommand cmd = new("ExpoCotizarVerProducto", cnn);
-            DataTable dataTable = new();
-            SqlDataAdapter sqlDA;
-            cnn.Open();
-            // 2. set the command object so it knows to execute a stored procedure
-            cmd.CommandType = CommandType.StoredProcedure;
-            //// 3. add parameter to command, which will be passed to the stored procedure
-            cmd.Parameters.Add(new SqlParameter("@cliente", Cliente));
-            cmd.Parameters.Add(new SqlParameter("@idproducto", IdProducto));
-            cmd.Connection = cnn;
-            sqlDA = new SqlDataAdapter(cmd);
-            sqlDA.Fill(dataTable);
-            cnn.Close();
+            dr = dB.ExecuteReader("ExpoCotizarVerProducto", ref parameters, CommandType.StoredProcedure, "IndigoCS");
 
             var jsonData = new
             {
-                row = (
-
-                from row in dataTable.AsEnumerable()
-                select new
-                {
-                    imgProducto = GeneralesController.GetFoto(IdProducto),
-                    idproducto = row[0],
-                    nombre = row[1],
-                    presentacion = row[2],
-                    unidades = row[3],
-                    publico = row[4],
-                    neto = row[5],
-                    iva = row[6],
-                    laboratorio = row[7],
-                    caja = row[8],
-                    codigo = row[9],
-                    restringido = row[10],
-                    cantidad = row[11],
-                    formula = row[12],
-                    controlado = row[13],
-                    preciomr = row[14],
-                    descuentoexpo = row[15],
-                    descuentocliente = row[16],
-                    valoriva = row[17],
-                    preciofinal = row[18]
+                rows = (
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                       select new
+                       {
+                            imgProducto = GeneralesController.GetFoto(IdProducto),
+                            idproducto = row["IdProducto"],
+                            nombre = row["Nombre"],
+                            presentacion = row["Presentacion"],
+                            unidades = row["Unidades"],
+                            publico = row["Publico"],
+                            neto = row["Neto"],
+                            iva = row["Iva"],
+                            laboratorio = row["Laboratorio"],
+                            caja = row["Caja"],
+                            codigo = row["Codigo"],
+                            restringido = row["Restringido"],
+                            cantidad = row["Cantidad"],
+                            formula = row["Formula"],
+                            controlado = row["Controlado"],
+                            preciomr = row["PrecioMR"],
+                            descuentoexpo = row["DescuentoExpo"],
+                            descuentocliente = row["DescuentoCliente"],
+                            valoriva = row["ValorIva"],
+                            preciofinal = row["PrecioFinal"]
                 }).ToArray()
             };
-            return Json(jsonData.row[0]);
+            return Json(jsonData.rows[0]);
         }
 
         [HttpPost]
         public JsonResult ProductoDelete(int IdProducto, int Cliente)
         {
+            int idUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@cliente", Cliente);
+            parameters[1] = new SqlParameter("@usuario", idUsuario);
+            parameters[2] = new SqlParameter("@IdProducto", IdProducto);
+
             ResponseModel rm = new();
 
             try
             {
-                var user = _userManager.GetUserAsync(User);
-                string username = user.Result.UserName.ToString();
-                int Usuario = GeneralesController.GetIdPersonas(username);
-
-                string cadena = _configuration["ConnectionStrings:ExpoMRCS"];
-
-                SqlConnection cnn = new(cadena);
-                SqlCommand cmd = new();
-                DataTable dataTable = new();
-                SqlDataAdapter sqlDA;
-                cnn.Open();
-                cmd.CommandText = "DECLARE @idcotizacion INT " +
-                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion " + Cliente + "," + Usuario +
-                                "UPDATE dCotizaciones " +
-                                "SET Solicitado = 0, " +
-                                "PorConfirmar = 0 " +
-                                "WHERE dCotizaciones.IdCotizacion = @idcotizacion " +
-                                "AND dCotizaciones.IdProducto = " + IdProducto;
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = cnn;
-                sqlDA = new SqlDataAdapter(cmd);
-                sqlDA.Fill(dataTable);
-                cnn.Close();
+                dB.ExecuteNonQuery("CotizarEliminarProducto", ref parameters);
 
                 rm.Response = true;
                 rm.Message = "producto eliminado";
@@ -455,20 +452,23 @@ namespace ExpoMR.Controllers
             return Json(rm);
         }
 
-        public JsonResult EditarClienteCotizacion(int IdCotizacion, int IdDocumento, int IdUsoCFDI, int IdTipoVenta, int IdEntrega, string Obsv )
+        public JsonResult EditarClienteCotizacion(int IdCotizacion, int IdDocumento, int IdUsoCFDI, int IdTipoVenta, int IdTransportista, int IdPorte, int IdEntrega,  string Obsv )
         {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[8];
+            parameters[0] = new SqlParameter("@IdCotizacion", IdCotizacion);
+            parameters[1] = new SqlParameter("@IdDocumento", IdDocumento);
+            parameters[2] = new SqlParameter("@IdUsoCFDI", IdUsoCFDI);
+            parameters[3] = new SqlParameter("@IdTipoVenta", IdTipoVenta);
+            parameters[4] = new SqlParameter("@IdTransporte", IdTransportista);
+            parameters[5] = new SqlParameter("@IdPorte", IdPorte);
+            parameters[6] = new SqlParameter("@IdEntrega", IdEntrega);
+            parameters[7] = new SqlParameter("@Obsv", Obsv == null ? "" : Obsv);
+
             ResponseModel rm = new();
             try
             {
-                string query = "UPDATE mCotizaciones " +
-                                "SET mCotizaciones.IdDocumento = " + IdDocumento + ", " +
-                                "mCotizaciones.IdUsoCFDI = CASE WHEN " + IdDocumento + " = 1 THEN " + IdUsoCFDI + " ELSE 23 END, " +
-                                "mCotizaciones.IdTipoVenta = " + IdTipoVenta + ", " +
-                                "mCotizaciones.Entrega = " + IdEntrega + ", " +
-                                "mCotizaciones.Obsv = '" + Obsv + "' " +
-                                " WHERE mCotizaciones.IdCotizacion = " + IdCotizacion;
-
-                DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+                dB.ExecuteNonQuery("CotizarEditarCliente", ref parameters);
 
                 rm.Response = true;
                 rm.Message = "Datos guardados con exito";
@@ -483,28 +483,20 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult AddCotizacion(int cliente, int idProducto, decimal unitario, int cantidad)
         {
+            int IdPersona = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[5];
+            parameters[0] = new SqlParameter("@cliente", cliente);
+            parameters[1] = new SqlParameter("@idproducto", idProducto);
+            parameters[2] = new SqlParameter("@unitario", unitario);
+            parameters[3] = new SqlParameter("@cantidad", cantidad);
+            parameters[4] = new SqlParameter("@usuario", IdPersona);
+
             ResponseModel rm = new();
             try
             {
-                var user = _userManager.GetUserAsync(User);
-                string username = user.Result.UserName.ToString();
-                int IdPersona = GeneralesController.GetIdPersonas(username);
-                string cadena = _configuration["ConnectionStrings:ExpoMRCS"];
-
-                SqlConnection cnn = new(cadena);
-                SqlCommand cmd = new("CotizarAgregar", cnn);
-                cnn.Open();
-                // 2. set the command object so it knows to execute a stored procedure
-                cmd.CommandType = CommandType.StoredProcedure;
-                //// 3. add parameter to command, which will be passed to the stored procedure
-                cmd.Parameters.Add(new SqlParameter("@cliente", cliente));
-                cmd.Parameters.Add(new SqlParameter("@idproducto", idProducto));
-                cmd.Parameters.Add(new SqlParameter("@unitario", unitario));
-                cmd.Parameters.Add(new SqlParameter("@cantidad", cantidad));
-                cmd.Parameters.Add(new SqlParameter("@usuario", IdPersona));
-                cmd.Connection = cnn;
-                SqlDataReader dr = cmd.ExecuteReader();
-                cnn.Close();
+                dB.ExecuteNonQuery("CotizarAgregar", ref parameters);
 
                 rm.Response = true;
                 rm.Message = "El producto se agrego al carrito";
@@ -519,21 +511,17 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult TotalCotizacion(int IdCliente) 
         {
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int Usuario = GeneralesController.GetIdPersonas(username);
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
 
-            string query = "SELECT vCotizacionPorConfirmar.Cliente, vCotizacionPorConfirmar.Productos, vCotizacionPorConfirmar.Subtotal, " +
-                " vCotizacionPorConfirmar.IvaMonto AS Iva, vCotizacionPorConfirmar.Total, " +
-                " dbo.GetCredit(" + IdCliente + ", 1) AS Credito " +
-                " FROM vCotizacionPorConfirmar LEFT OUTER JOIN " +
-                " vPedido ON vCotizacionPorConfirmar.Cliente = vPedido.Cliente " +
-                " WHERE vCotizacionPorConfirmar.Cliente = " + IdCliente +
-                " AND vCotizacionPorConfirmar.Usuario = " + Usuario;
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@cliente", IdCliente);
+            parameters[1] = new SqlParameter("@usuario", IdUsuario);
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            dr = dB.ExecuteReader("CotizarTotalCotizacion", ref parameters);
 
-            if (dataTable.Rows.Count == 0)
+            if (!dr.HasRows)
             {
                 var jsonData = new
                 {
@@ -551,15 +539,15 @@ namespace ExpoMR.Controllers
                 var jsonData = new
                 {
                     rows = (
-                       from col in dataTable.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           cliente = col[0],
-                           productos = col[1] == DBNull.Value ? 0 : col[1],
-                           subtotal = col[2] == DBNull.Value ? 0 : Convert.ToDecimal(col[2]),
-                           iva = col[3] == DBNull.Value ? 0 : Convert.ToDecimal(col[3]),
-                           total = col[4] == DBNull.Value ? 0 : Convert.ToDecimal(col[4]),
-                           credito = col[5] == DBNull.Value ? 0 : Convert.ToDecimal(col[5])
+                           cliente = row["Cliente"].ToString(),
+                           productos = row["Productos"] == DBNull.Value ? 0 : row["Productos"],
+                           subtotal = row["Subtotal"] == DBNull.Value ? 0 : row["Subtotal"],
+                           iva = row["Iva"] == DBNull.Value ? 0 : row["Iva"],
+                           total = row["Total"] == DBNull.Value ? 0 : row["Total"],
+                           credito = row["Credito"] == DBNull.Value ? 0 : row["Credito"]
                        }).ToArray()
                 };
                 return Json(jsonData.rows[0]);
@@ -569,29 +557,25 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetPedidosCliente(int idCliente)
         {
-            string query = "SELECT vPersonas.Nombre AS Cliente, mPedidos.IdPedido, mDocumentos.Documento, mPedidos.Fecha, COUNT(dPedidos.IdProducto) AS NumProd, Capturo.Nombre AS Capturo"
-                                + " FROM mPedidos INNER JOIN"
-                                + " dPedidos ON mPedidos.IdPedido = dPedidos.IdPedido INNER JOIN"
-                                + " vPersonas ON mPedidos.Cliente = vPersonas.IdPersona INNER JOIN"
-                                + " Indigo.dbo.mDocumentos ON mPedidos.IdDocumento = mDocumentos.IdDocumento INNER JOIN"
-                                + " vPersonas AS Capturo ON mPedidos.Usuario = Capturo.IdPersona"
-                                + " WHERE mPedidos.Cliente = " + idCliente
-                                + " GROUP BY vPersonas.Nombre, mPedidos.IdPedido, mDocumentos.Documento, mPedidos.Fecha, Capturo.Nombre"
-                                + " ORDER BY mPedidos.IdPedido";
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdCLiente", idCliente);
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            dr = dB.ExecuteReader("PedidosCliente", ref parameters);
+
             var jsonData = new
             {
                 rows = (
-                       from col in dataTable.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           cliente = col[0],
-                           idPedido = col[1],
-                           documento = col[2],
-                           fecha = col[3],
-                           numProds = col[4],
-                           capturo = col[5]
+                           cliente = row["Cliente"].ToString(),
+                           idPedido = row["IdPedido"] == DBNull.Value ? 0 : Convert.ToInt32(row["IdPedido"]),
+                           documento = row["Documento"] == DBNull.Value ? "" : row["Documento"].ToString(),
+                           fecha = row["Fecha"] == DBNull.Value ? "" : row["Fecha"].ToString(),
+                           numProds = row["NumProd"] == DBNull.Value ? 0 : Convert.ToInt32(row["NumProd"]),
+                           capturo = row["Capturo"] == DBNull.Value ? "" : row["Capturo"].ToString()
                        }).ToArray()
             };
             return Json(jsonData.rows);
@@ -605,32 +589,30 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult pedidoCliente(int idPedido)
         {
-            string query = "SELECT vPedidoDatos.IdPedido, vPedidoDatos.Cliente, vPedidoDatos.RFC, vPedidoDatos.Documento, vPedidoDatos.UsoCFDI,"
-                              + " vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Transportista, vPedidoDatos.Obsv, vPedidoDatos.Porte, Capturo.Nombre AS Capturo"
-                              + " FROM vPedidoDatos INNER JOIN"
-                              + " mPedidos ON vPedidoDatos.IdPedido = mPedidos.IdPedido INNER JOIN"
-                              + " vPersonas AS Capturo ON mPedidos.Usuario = Capturo.IdPersona"
-                              + " WHERE vPedidoDatos.IdPedido = " + idPedido;
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPedido", idPedido);
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            dr = dB.ExecuteReader("PedidoClienteDetalle", ref parameters);
 
             var jsonData = new
             {
                 rows = (
-                       from col in dataTable.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           IdPedido = col[0],
-                           Cliente = col[1],
-                           RFC = col[2],
-                           Documento = col[3],
-                           UsoCFDI = col[4],
-                           TipoVenta = col[5],
-                           DirEntrega = col[6],
-                           Transportista = col[7].ToString() ?? "",
-                           Obsv = col[8],
-                           Porte = col[9].ToString() ?? "",
-                           Capturo = col[10]
+                           IdPedido = row["IdPedido"] == DBNull.Value ? 0 : row["IdPedido"],
+                           Cliente = row["Cliente"] == DBNull.Value ? "" : row["Cliente"],
+                           RFC = row["RFC"] == DBNull.Value ? "" : row["RFC"],
+                           Documento = row["Documento"] == DBNull.Value ? "" : row["Documento"],
+                           UsoCFDI = row["UsoCFDI"] == DBNull.Value ? "" : row["UsoCFDI"],
+                           TipoVenta = row["TipoVenta"] == DBNull.Value ? "" : row["TipoVenta"],
+                           DirEntrega = row["DirEntrega"] == DBNull.Value ? "" : row["DirEntrega"],
+                           Transportista = row["Transportista"] == DBNull.Value ? "" : row["Transportista"],
+                           Obsv = row["Obsv"] == DBNull.Value ? "" : row["Obsv"],
+                           Porte = row["Porte"] == DBNull.Value ? "" : row["Porte"],
+                           Capturo = row["Capturo"] == DBNull.Value ? "" : row["Capturo"]
                        }).ToArray()
             };
             return Json(jsonData.rows[0]);
@@ -639,29 +621,27 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetProductosPedido(int idPedido)
         {
-            string query = "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, mLaboratorios.Laboratorio,"
-                               + " vPedidos.Cantidad, vPedidos.PorSurtir, vPedidos.PrecioFinal, vPedidos.Total"
-                               + " FROM vPedidos INNER JOIN"
-                               + " vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN"
-                               + " mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio"
-                               + " WHERE vPedidos.IdPedido = " + idPedido
-                               + " ORDER BY mLaboratorios.Laboratorio, vProductos.Nombre";
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPedido", idPedido);
 
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            dr = dB.ExecuteReader("PedidoDetalleProductos", ref parameters);
+
             var jsonData = new
             {
                 rows = (
-                       from col in dataTable.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           idProducto = col[0],
-                           nombre = col[1],
-                           presentacion = col[2],
-                           laboratorio = col[3],
-                           cantidad = col[4],
-                           porSurtir = col[5],
-                           precioFinal = col[6],
-                           total = col[7]
+                           idProducto = row["IdProducto"] == DBNull.Value ? 0 : row["IdProducto"],
+                           nombre = row["Nombre"] == DBNull.Value ? "" : row["Nombre"],
+                           presentacion = row["Presentacion"] == DBNull.Value ? "" : row["Presentacion"],
+                           laboratorio = row["Laboratorio"] == DBNull.Value ? "" : row["Laboratorio"],
+                           cantidad = row["Cantidad"] == DBNull.Value ? 0 : row["Cantidad"],
+                           porSurtir = row["PorSurtir"] == DBNull.Value ? 0 : row["PorSurtir"],
+                           precioFinal = row["PrecioFinal"] == DBNull.Value ? 0.0 : row["PrecioFinal"],
+                           total = row["Total"] == DBNull.Value ? 0.0 : row["Total"]
                        }).ToArray()
             };
 
@@ -671,28 +651,23 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetTotalPedido(int idPedido)
         {
-            string query = "SELECT mPedidos.Cliente,"
-                               + " COUNT(dPedidos.IdProducto) AS Productos,"
-                               + " CAST(SUM(dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento)) AS DECIMAL(18, 2)) AS Subtotal,"
-                               + " CAST(SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18, 2)) AS Iva,"
-                               + " CAST(SUM(dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento)) +"
-                               + " SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18, 2)) AS Total"
-                               + " FROM mPedidos INNER JOIN"
-                               + " dPedidos ON mPedidos.IdPedido = dPedidos.IdPedido INNER JOIN"
-                               + " mProductos ON dPedidos.IdProducto = mProductos.IdProducto"
-                               + " WHERE mPedidos.IdPedido =" + idPedido
-                               + " GROUP BY mPedidos.Cliente";
-            DataTable dataTable = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+            DB dB = new();
+            SqlDataReader dr;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPedido", idPedido);
+
+            dr = dB.ExecuteReader("PedidoTotalPedido", ref parameters);
+
             var jsonData = new
             {
                 rows = (
-                       from col in dataTable.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           prods = col[1],
-                           subtotal = col[2],
-                           iva = col[3],
-                           total = col[4]
+                           prods = row["Productos"] == DBNull.Value ? 0 : row["Productos"],
+                           subtotal = row["Subtotal"] == DBNull.Value ? 0.0 : row["Subtotal"],
+                           iva = row["Iva"] == DBNull.Value ? 0.0 : row["Iva"],
+                           total = row["Total"] == DBNull.Value ? 0.0 : row["Total"]
                        }).ToArray()
             };
             return Json(jsonData.rows[0]);
@@ -701,58 +676,37 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public void ActualizarProducto(int idPedido, int idProducto, int cantidad)
         {
-            SqlConnection cnn = new(_configuration["ConnectionStrings:ExpoMRCS"]);
-            SqlCommand cmd = new();
-            cnn.Open();
-            cmd.CommandText = "UPDATE dPedidos"
-                               + " SET Cantidad = Surtido + "+ cantidad
-                               + " WHERE dPedidos.IdPedido = " + idPedido
-                               + " AND dPedidos.IdProducto = " + idProducto;
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            cmd.ExecuteNonQuery();
-            cnn.Close();
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@IdPedido", idPedido);
+            parameters[1] = new SqlParameter("@Cantidad", cantidad);
+            parameters[2] = new SqlParameter("@IdProducto", idProducto);
+
+            dB.ExecuteNonQuery("PedidoEditarCantidadProducto", ref parameters);
         }
 
         [HttpPost]
         public void EliminaProducto(int idPedido, int idProducto)
         {
-            SqlConnection cnn = new(_configuration["ConnectionStrings:ExpoMRCS"]);
-            SqlCommand cmd = new();
-            cnn.Open();
-            cmd.CommandText = "DELETE dPedidos"
-                               + " WHERE dPedidos.IdPedido = " + idPedido
-                               + " AND dPedidos.IdProducto = " + idProducto
-                               + " AND dPedidos.Surtido = 0";
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            cmd.ExecuteNonQuery();
-            cnn.Close();
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdPedido", idPedido);
+            parameters[1] = new SqlParameter("@IdProducto", idProducto);
+
+            dB.ExecuteNonQuery("PedidoEliminarProducto", ref parameters);
         }
 
         [HttpPost]
         public int ColocarOrden(int IdCliente){
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
 
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int IdUsuario = GeneralesController.GetIdPersonas(username);
-
-            SqlConnection cnn = new(_configuration["ConnectionStrings:ExpoMRCS"]);
-            SqlCommand command = new("ExpoPedidoValidar", cnn);
+            DB dB = new();
             SqlDataReader dr;
-            command.Parameters.AddWithValue("@cliente", IdCliente);
-            command.Parameters.AddWithValue("@usuario", IdUsuario);
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@cliente", IdCliente);
+            parameters[1] = new SqlParameter("@usuario", IdUsuario);
 
-            command.CommandType = CommandType.StoredProcedure;
-            cnn.Open();
-
-            dr = command.ExecuteReader();
-            int success = 0;
-            while (dr.Read())
-            {
-                success = dr.GetInt32(0);
-            }
-            cnn.Close();
+            int success = dB.ExecuteReturnValue("ExpoPedidoValidar", ref parameters);
 
             return success;
         }
@@ -761,24 +715,20 @@ namespace ExpoMR.Controllers
 
         public void ExpoPedidoAgregar( int IdCliente)
         {
-            var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int IdUsuario = GeneralesController.GetIdPersonas(username);
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
 
-            SqlConnection cnn = new(_configuration["ConnectionStrings:ExpoMRCS"]);
-            SqlCommand command = new("ExpoPedidoAgregar", cnn);
-            command.Parameters.AddWithValue("@cliente", IdCliente);
-            command.Parameters.AddWithValue("@usuario", IdUsuario);
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@cliente", IdCliente);
+            parameters[1] = new SqlParameter("@usuario", IdUsuario);
+            parameters[2] = new()
+            {
+                ParameterName = "@Id_Inserted",
+                DbType = DbType.Int32,
+                Direction = ParameterDirection.Output
+            };
 
-            command.CommandType = CommandType.StoredProcedure;
-            cnn.Open();
-
-            SqlParameter returnParameter = command.Parameters.Add("@Id_Inserted", SqlDbType.Int);
-            returnParameter.Direction = ParameterDirection.Output;
-
-            command.ExecuteNonQuery();
-
-            cnn.Close();
+            dB.ExecuteNonQuery("ExpoPedidoAgregar", ref parameters);
         }
 
 
