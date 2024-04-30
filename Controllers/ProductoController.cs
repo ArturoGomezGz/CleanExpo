@@ -32,21 +32,20 @@ namespace ExpoMR.Controllers
             {
                 return RedirectToAction("Index", "MiCuenta");
             }
+            else
             {
-                int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-
                 //Se guarda el registro de vista del cliente al stand
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
                     || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    Log.SaveVisita(Cliente, Idproveedor, IdProducto);
+                    Log.SaveVisita(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")), Idproveedor, IdProducto);
                 }
 
                 CotizaProducto ProdCotizado = new CotizaProducto();
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@cliente", Cliente);
+                parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
                 parameters[1] = new SqlParameter("@idproducto", IdProducto);
 
                 SqlDataReader dr = dB.ExecuteReader("ExpoCotizarVerProducto", ref parameters, CommandType.StoredProcedure, "IndigoCS");
@@ -110,15 +109,13 @@ namespace ExpoMR.Controllers
             
             try 
             {
-                int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[5];
-                parameters[0] = new SqlParameter("@cliente", Cliente);
+                parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
                 parameters[1] = new SqlParameter("@idproducto", idProducto);
                 parameters[2] = new SqlParameter("@unitario", unitario);
                 parameters[3] = new SqlParameter("@cantidad", cantidad);
-                parameters[4] = new SqlParameter("@usuario", Cliente);
+                parameters[4] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 
                 dB.ExecuteNonQuery("CotizarAgregar", ref parameters);
 

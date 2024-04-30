@@ -117,13 +117,11 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-
                 //Se guarda el registro de vista del cliente al stand
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
                     || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {                    
-                    Log.SaveVisita(Cliente, idProveedor, 0);
+                    Log.SaveVisita(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")), idProveedor, 0);
                 }
 
                 StandVIewModel Stand = new StandVIewModel();
@@ -144,7 +142,7 @@ namespace ExpoMR.Controllers
                     Stand.Paleta = (byte)dr["Paleta"];
                     Stand.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
                     Stand.Background = (dr["Background"] != DBNull.Value ? (byte[])dr["Background"] : Array.Empty<byte>());
-                    Stand.IdUsuario = Cliente;
+                    Stand.IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
                     Stand.Activedhcp = null;
                     Stand.Activestatic = "active";
                 }
@@ -238,15 +236,6 @@ namespace ExpoMR.Controllers
             }
 
             return Json(productos);
-        }
-
-        public async Task<List<string>> GetRoles()
-        {
-            var userId = _userManager.GetUserId(User); // Obtiene el ID del usuario actualmente autenticado
-            var user = await _userManager.FindByIdAsync(userId); // Encuentra el usuario por su ID
-            var roles = await _userManager.GetRolesAsync(user); // Obtiene los roles del usuario
-
-            return roles.ToList();
         }
 
         [HttpPost]
@@ -558,13 +547,11 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult DetalleProducto(int IdProducto)
         {
-            int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-
             CotizaProducto ProdCotizado = new CotizaProducto();
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@cliente", Cliente);
+            parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
             parameters[1] = new SqlParameter("@idproducto", IdProducto);
             
             SqlDataReader dr = dB.ExecuteReader("ExpoCotizarVerProducto", ref parameters, CommandType.StoredProcedure, "IndigoCS");

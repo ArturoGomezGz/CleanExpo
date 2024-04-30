@@ -55,6 +55,14 @@ namespace ExpoMR.Clases
             return Convert.ToBase64String(Objeto);
         }
 
+        public static string FormatFecha(string fecha)
+        {
+            string[] split = fecha.Split(' ');
+            string[] splitFecha = split[0].Split('-');
+
+            return splitFecha[2] + "/" + splitFecha[1] + "/" + splitFecha[0] + " " + split[2];
+        }
+
         public enum TipoPromocion
         {
             Visita_Stand = 1,

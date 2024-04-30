@@ -15,7 +15,7 @@ namespace ExpoMR.Datos
 
         }
 
-        public DbSet<Busqueda> Busqueda { get; set; }
+        //public DbSet<Busqueda> Busqueda { get; set; }
 
     }
 
@@ -52,7 +52,7 @@ namespace ExpoMR.Datos
 
     public class ApplicationDbContextIndigo : DbContext
     {
-        public DbSet<Producto> Producto { get; set; }
+        //public DbSet<Producto> Producto { get; set; }
 
         public DbSet<CotizaProducto> CotizaProductos { get; set; }
 

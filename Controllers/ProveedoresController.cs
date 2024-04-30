@@ -479,8 +479,8 @@ namespace ExpoMR.Controllers
                 parameters[0] = new SqlParameter("@IdAnuncio", idAnuncio);
                 parameters[1] = new SqlParameter("@Proveedor", HttpContext.Session.GetString("ClienteSel"));
                 parameters[2] = new SqlParameter("@Anuncio", descripcion);
-                parameters[3] = new SqlParameter("@FeInicio", Convert.ToDateTime(convierteFecha(feInicio)));
-                parameters[4] = new SqlParameter("@FeTermino", Convert.ToDateTime(convierteFecha(feTermino)));
+                parameters[3] = new SqlParameter("@FeInicio", Convert.ToDateTime(WebSite.FormatFecha(feInicio)));
+                parameters[4] = new SqlParameter("@FeTermino", Convert.ToDateTime(WebSite.FormatFecha(feTermino)));
 
                 dB.ExecuteNonQuery("AddAnuncioProv", ref parameters);
 
@@ -556,14 +556,6 @@ namespace ExpoMR.Controllers
             parameters[1] = new SqlParameter("@NumFoto", NumFoto);
 
             dB.ExecuteNonQuery("EditOrdenFotoArticuloProv", ref parameters);
-        }
-
-        public string convierteFecha(string fecha)
-        {
-            string[] split = fecha.Split(' ');
-            string[] splitFecha = split[0].Split('-');
-
-            return splitFecha[2] + "/" + splitFecha[1] + "/" + splitFecha[0] + " " + split[2];
         }
 
         [HttpPost]
