@@ -2,7 +2,7 @@
 var inactivityTimeout = 5000000; // Tiempo de inactividad en milisegundos (1 minutos)
 var timer;
 
-function GetMonedas(IdPersona)
+function GetMonedas()
 {
     $.post(path + "Generales/GetMonedas",
         function (data)
@@ -123,7 +123,7 @@ function Getmonth(mes)
 function FormatoMoneda(number)
 {
     const currencyFormatter = number.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
-    //const formattedNumber = currencyFormatter.format(number);
+
     return currencyFormatter;
 }
 
@@ -151,7 +151,11 @@ function Getpath()
 {
     var rutaRelativaCompleta = window.location.href;
 
-    if (rutaRelativaCompleta.includes("ExpoMRDev"))
+    if (rutaRelativaCompleta.includes("expomr"))
+    {
+        return "../../expomr/";
+    }
+    else if (rutaRelativaCompleta.includes("ExpoMRDev"))
     {
         return "../../ExpoMRDev/";
     }
@@ -170,7 +174,6 @@ function resetTimer()
 function logout()
 {
     // Realizar acciones de cierre de sesión o redireccionamiento
-    //console.log(inactivityTimeout)
     $("#btn_logout").click();
     // Ejemplo: window.location.href = "/logout";
 }
