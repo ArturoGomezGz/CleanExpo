@@ -156,15 +156,22 @@
                                                 List<ArticulosProveedores> ArticulosProveedor = ExpoMR.Controllers.StandController.GetPromocionArticulo(Model.Proveedor);
                                                 if (ArticulosProveedor.Count == 0)
                                                 {
-                                                        <p>Este Stand no tiene Artículos Promocionales todavía...</p>
+                                                    <p>Este Stand no tiene Artículos Promocionales todavía...</p>
                                                 }
                                                 foreach (ExpoMR.Models.ArticulosProveedores model in ArticulosProveedor)
                                                 {
                                                     <div class=" col-md-6 col-lg-3 mt-4">
                                                         <div class="card card-inverse card-info" style="padding-top: 9px;">
                                                             <a href="#" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="margin: auto;">
-                                                                <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
-                                                                </a>
+                                                                @if (model.Foto.Length > 0)
+                                                                {
+                                                                    <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="~/Imagenes/noimage.png" alt="image" />
+                                                                }
+                                                            </a>
                                                             <div class="card-block" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="text-align: center;">
                                                                 <a href="#"><h6 class="card-title">@String.Format(model.Nombre)</h6></a>
                                                             </div>
@@ -180,79 +187,79 @@
                                                 List<Promocion> ModeloPromocion = ExpoMR.Controllers.StandController.GetPromociones(Model.Proveedor, Model.IdUsuario);
                                                 if (ModeloPromocion.Count == 0)
                                                 {
-                                                        <p>Este Stand no tiene Promociones todavía...</p>
+                                                                <p>Este Stand no tiene Promociones todavía...</p>
                                                 }
                                                 foreach (ExpoMR.Models.Promocion modelo in ModeloPromocion)
                                                 {
                                                     string Productostr = modelo.Producto == null ? "Productos de este proveedor" : modelo.Producto;
-                                                        <div class="col-md-6 col-lg-3 mt-4">
-                                                            <div class="card card-inverse card-info h-100" style="padding-top: 9px;">
-                                                                <div class="d-flex justify-content-center" style="min-height:130px;">
-                                                                    <div class="my-auto">
-                                                                        @switch (modelo.IdTipoPromocion)
+                                                                <div class="col-md-6 col-lg-3 mt-4">
+                                                                    <div class="card card-inverse card-info h-100" style="padding-top: 9px;">
+                                                                        <div class="d-flex justify-content-center" style="min-height:130px;">
+                                                                            <div class="my-auto">
+                                                                                @switch (modelo.IdTipoPromocion)
                                                                         {
                                                                             case 1:
-                                                                                    <p class="mh-30 text-center">Por haber visitado este Stand, llévate</p>
+                                                                                            <p class="mh-30 text-center">Por haber visitado este Stand, llévate</p>
                                                                             break;
                                                                             case 2:
-                                                                                    <p class="mh-30 text-center">
-                                                                                        Por cada
-                                                                                        @if (modelo.Monto == null)
+                                                                                            <p class="mh-30 text-center">
+                                                                                                Por cada
+                                                                                                @if (modelo.Monto == null)
                                                                                         {
-                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas</strong>
+                                                                                                    <strong> @String.Format(modelo.Piezas.ToString()) Piezas</strong>
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) monto</strong>
+                                                                                                    <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) monto</strong>
                                                                                         }
-                                                                                            de compra de @String.Format(Productostr)
-                                                                                            llévate
-                                                                                    </p>
+                                                                                                    de compra de @String.Format(Productostr)
+                                                                                                    llévate
+                                                                                            </p>
                                                                                 break;
                                                                             case 3:
-                                                                                    <p class="mh-30 text-center">
-                                                                                        En la compra de
-                                                                                        @if (modelo.Monto == null)
+                                                                                            <p class="mh-30 text-center">
+                                                                                                En la compra de
+                                                                                                @if (modelo.Monto == null)
                                                                                         {
-                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                                    <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                                    <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
                                                                                         }
-                                                                                            de @String.Format(Productostr)
-                                                                                            llévate
-                                                                                    </p>
+                                                                                                    de @String.Format(Productostr)
+                                                                                                    llévate
+                                                                                            </p>
                                                                             break;
                                                                             case 4:
-                                                                                    <p class="mh-30 text-center">
-                                                                                        Compra
-                                                                                        @if (modelo.Monto == null)
+                                                                                            <p class="mh-30 text-center">
+                                                                                                Compra
+                                                                                                @if (modelo.Monto == null)
                                                                                         {
-                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                                    <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                                    <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
                                                                                         }
-                                                                                        de @String.Format(Productostr)
-                                                                                        llévate
-                                                                                    </p>
+                                                                                                de @String.Format(Productostr)
+                                                                                                llévate
+                                                                                            </p>
                                                                             break;
                                                                             default:
-                                                                                    <p class="mh-30 text-center">Condición desconocida</p>
+                                                                                            <p class="mh-30 text-center">Condición desconocida</p>
                                                                             break;
                                                                         }
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card-block mt-1 mb-1 text-center">
+                                                                            <strong>@String.Format(modelo.Premios)</strong>
+                                                                        </div>
+                                                                        <a href="#" style="margin: auto;">
+                                                                            <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
+                                                                        </a>
                                                                     </div>
                                                                 </div>
-                                                                <div class="card-block mt-1 mb-1 text-center">
-                                                                    <strong>@String.Format(modelo.Premios)</strong>
-                                                                </div>
-                                                                <a href="#" style="margin: auto;">
-                                                                    <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
-                                                                </a>
-                                                            </div>
-                                                        </div>
                                                 }
                                             }
                                         </div>
@@ -263,79 +270,79 @@
                                                 List<Promocion> ModeloPromocionEscalonada = ExpoMR.Controllers.StandController.GetPromocionesEscalonadas(Model.Proveedor, Model.IdUsuario);
                                                 if (ModeloPromocionEscalonada.Count == 0)
                                                 {
-                                                    <p>Este Stand no tiene Promociones todavía...</p>
+                                                            <p>Este Stand no tiene Promociones todavía...</p>
                                                 }
                                                 foreach (ExpoMR.Models.Promocion modelo in ModeloPromocionEscalonada)
                                                 {
                                                     string Productostr = modelo.Producto == null ? "Productos de este proveedor" : modelo.Producto;
-                                                        <div class="col-md-6 col-lg-3 mt-4">
-                                                            <div class="card card-inverse card-info h-100" style="padding-top: 9px;">
-                                                                <div class="d-flex justify-content-center" style="min-height:130px;">
-                                                                    <div class="my-auto">
-                                                                        @switch (modelo.IdTipoPromocion)
+                                                                <div class="col-md-6 col-lg-3 mt-4">
+                                                                    <div class="card card-inverse card-info h-100" style="padding-top: 9px;">
+                                                                        <div class="d-flex justify-content-center" style="min-height:130px;">
+                                                                            <div class="my-auto">
+                                                                                @switch (modelo.IdTipoPromocion)
                                                                         {
                                                                             case 1:
-                                                                                    <p class="mh-30 text-center">Por haber visitado este Stand, llévate</p>
+                                                                                            <p class="mh-30 text-center">Por haber visitado este Stand, llévate</p>
                                                                             break;
                                                                             case 2:
-                                                                                    <p class="mh-30 text-center">
-                                                                                        Por cada
-                                                                                        @if (modelo.Monto == null)
+                                                                                            <p class="mh-30 text-center">
+                                                                                                Por cada
+                                                                                                @if (modelo.Monto == null)
                                                                                         {
-                                                                                            <strong> @String.Format(modelo.Piezas.ToString()) Piezas</strong>
+                                                                                                    <strong> @String.Format(modelo.Piezas.ToString()) Piezas</strong>
                                                                                         }
                                                                                         else
                                                                                         {
-                                                                                            <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) monto</strong>
+                                                                                                    <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) monto</strong>
                                                                                         }
-                                                                                            de compra de @String.Format(Productostr)
-                                                                                            y llévate
-                                                                                    </p>
+                                                                                                    de compra de @String.Format(Productostr)
+                                                                                                    y llévate
+                                                                                            </p>
                                                                             break;
                                                                             case 3:
-                                                                                    <p class="mh-30 text-center">
-                                                                                        En la compra de
-                                                                                    @if (modelo.Monto == null)
+                                                                                            <p class="mh-30 text-center">
+                                                                                                En la compra de
+                                                                                            @if (modelo.Monto == null)
                                                                                     {
-                                                                                        <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                                <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                                <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
                                                                                     }
-                                                                                        de @String.Format(Productostr)
-                                                                                        y llévate
-                                                                                    </p>
+                                                                                                de @String.Format(Productostr)
+                                                                                                y llévate
+                                                                                            </p>
                                                                             break;
                                                                             case 4:
-                                                                                    <p class="mh-30 text-center">
-                                                                                        Compra
-                                                                                    @if (modelo.Monto == null)
+                                                                                            <p class="mh-30 text-center">
+                                                                                                Compra
+                                                                                            @if (modelo.Monto == null)
                                                                                     {
-                                                                                        <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
+                                                                                                <strong> @String.Format(modelo.Piezas.ToString()) Piezas </strong>
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
+                                                                                                <strong>$ @String.Format(((decimal)modelo.Monto).ToString("0.00")) Pesos</strong>
                                                                                     }
-                                                                                        de @String.Format(Productostr)
-                                                                                        y llévate
-                                                                                </p>
+                                                                                                de @String.Format(Productostr)
+                                                                                                y llévate
+                                                                                        </p>
                                                                             break;
                                                                             default:
-                                                                                        <p class="mh-30 text-center">Condición desconocida</p>
+                                                                                                <p class="mh-30 text-center">Condición desconocida</p>
                                                                             break;
                                                                         }
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card-block mt-1 mb-1 text-center">
+                                                                            <strong>@String.Format(modelo.Premios)</strong>
+                                                                        </div>
+                                                                        <a href="#" style="margin: auto;">
+                                                                            <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
+                                                                        </a>
                                                                     </div>
                                                                 </div>
-                                                                <div class="card-block mt-1 mb-1 text-center">
-                                                                    <strong>@String.Format(modelo.Premios)</strong>
-                                                                </div>
-                                                                <a href="#" style="margin: auto;">
-                                                                    <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
-                                                                </a>
-                                                            </div>
-                                                        </div>
                                                 }
                                             }
                                         </div>
@@ -481,7 +488,6 @@
     {
         var elements = document.querySelectorAll('img[data-id]');
         var index = 0;
-        console.log(elements)
     }
 
     function searchStand()
@@ -582,9 +588,6 @@
 
                 $("#titulo_Promo").html(resultado[0])
                 $("#descripcion_Promo").html(resultado[1])
-
-                console.log(resultado[0])
-                console.log(resultado[1])
             },
             error: function (xhr, status, error)
             {
@@ -603,7 +606,10 @@
         },
         function (data)
         {
-            $("#imgModalOndemand").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />')
+            if (data.length > 0) 
+                $("#imgModalOndemand").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />')
+            else 
+                $("#imgModalOndemand").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="../Imagenes/noimage.png" alt="image" />')           
         }).error(function () 
         {
             CloseModal("ModalProducto")
@@ -676,8 +682,6 @@
                     "data": "precioMR", title: "Precio Final",
                     "render": function (data, type, row) 
                     {
-                        console.log(data);
-
                         return FormatoMoneda(data);
                     }
                 },

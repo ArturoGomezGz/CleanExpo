@@ -242,6 +242,7 @@ namespace ExpoMR.Controllers
         public async Task<JsonResult> GetProductosBusqueda(int IdProveedor, string Busqueda, int IdUsuario)
         {
             var currentUser = await _userManager.GetUserAsync(User);
+
             ResponseModel rm = new();
 
             try
@@ -290,22 +291,25 @@ namespace ExpoMR.Controllers
                                + " ExpoMR.dbo.dProductosDescuento ON vProductos.IdProducto = dProductosDescuento.IdProducto AND dProductosDescuento.Cliente =" + IdUsuario
                                + " ORDER BY vProductos.Nombre, vProductos.Presentacion";
 
-                DataTable dt = GeneralesController.SqlQueryDT("IndigoCS", query);
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[0];
+
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
 
                 var jsonData = new
                 {
                     rows = (
-                       from c in dt.AsEnumerable()
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           IdProducto = c[1],
-                           Nombre = c[2],
-                           Presentacion = c[3],
-                           Formula = c[4],
-                           Descuento = c[5],
-                           DescuentoCliente = c[6],
-                           PrecioFinal = c[7],
-                           imgProducto = GeneralesController.GetFoto(Convert.ToInt32(c[1]))
+                           IdProducto = row[1],
+                           Nombre = row[2],
+                           Presentacion = row[3],
+                           Formula = row[4],
+                           Descuento = row[5],
+                           DescuentoCliente = row[6],
+                           PrecioFinal = row[7],
+                           imgProducto = GeneralesController.GetFoto(Convert.ToInt32(row[1]))
                        }).ToArray()
                 };
 

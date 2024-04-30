@@ -1,4 +1,4 @@
-﻿let path = Getpath()
+﻿let path = Getpath();
 var inactivityTimeout = 5000000; // Tiempo de inactividad en milisegundos (1 minutos)
 var timer;
 
@@ -150,10 +150,13 @@ function ShowAlert(message, type = false, IdElement = "liveAlertPlaceholder") //
 function Getpath()
 {
     var rutaRelativaCompleta = window.location.href;
-    if (rutaRelativaCompleta.includes("ExpoMRDev")) {
+
+    if (rutaRelativaCompleta.includes("ExpoMRDev"))
+    {
         return "../../ExpoMRDev/";
-    } else {
-        //console.log("../")
+    }
+    else
+    {
         return "../";
     }
 }
@@ -193,9 +196,6 @@ function toggleCollapse()
     })
 }
 
-/**
- * Mandar Email
- */
 function SendMail(IdPedido)
 {
     $.post("/Notificaciones/SendOrder",

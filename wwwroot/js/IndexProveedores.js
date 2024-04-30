@@ -1,25 +1,35 @@
-﻿let path = Getpath()
+﻿let path = Getpath();
 var inactivityTimeout = 500000; // Tiempo de inactividad en milisegundos (1 minutos)
 var timer;
-function GetMonedas() {
+
+function GetMonedas()
+{
     $.post(path + "Generales/GetMonedas",
-        function (data) {
+        function (data)
+        {
             $("#cantidad_monedas").html(data)
-        }).error(function () {
+        }).error(function ()
+        {
             //alerta(false, "No fue posible cargar sus datos")
         }
-        );
+    );
 }
-function GetCarrito() {
+
+function GetCarrito()
+{
     $.post(path + "Generales/GetCarrito",
-        function (data) {
+        function (data)
+        {
             $("#cantidad_carrito").html(data)
-        }).error(function () {
+        }).error(function ()
+        {
             //alerta(false, "No fue posible cargar sus datos")
         }
-        );
+    );
 }
-function FormatoFecha() {
+
+function FormatoFecha()
+{
     var fechaActual = new Date();
     var diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     var diaSemanaActual = diasSemana[fechaActual.getDay()];
@@ -28,9 +38,13 @@ function FormatoFecha() {
 
     return diaSemanaActual + ", " + dia + " " + Getmonth(mes) + " ";
 }
-function Getmonth(mes) {
+
+function Getmonth(mes)
+{
     var cadenaMesActual = "";
-    switch (mes) {
+
+    switch (mes)
+    {
         case 1:
             cadenaMesActual = "ene";
             break;
@@ -71,19 +85,26 @@ function Getmonth(mes) {
 
     return cadenaMesActual;
 }
-function FormatoMoneda(number) {
+
+function FormatoMoneda(number)
+{
     const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
     const formattedNumber = currencyFormatter.format(number);
+
     return formattedNumber;
 }
-function ShowAlert(message, type = false, IdElement = "liveAlertPlaceholder") { //false = danger, true = success
 
+function ShowAlert(message, type = false, IdElement = "liveAlertPlaceholder")  //false = danger, true = success
+{
     let tipo = type ? "success" : "danger";
     const alertPlaceholder = document.getElementById(IdElement)
     alertPlaceholder.innerHTML = "";
-    const appendAlert = (message, type) => {
+
+    const appendAlert = (message, type) =>
+    {
         const wrapper = document.createElement('div')
-        wrapper.innerHTML = [
+        wrapper.innerHTML =
+        [
             `<div class="alert alert-${type} alert-dismissible" role="alert">`,
             `   <div>${message}</div>`,
             '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
@@ -95,22 +116,30 @@ function ShowAlert(message, type = false, IdElement = "liveAlertPlaceholder") { 
 
     appendAlert(message, tipo)
 }
-function Getpath() {
+
+function Getpath()
+{
     var rutaRelativaCompleta = window.location.href;
-    if (rutaRelativaCompleta.includes("expomr")) {
+
+    if (rutaRelativaCompleta.includes("expomr"))
+    {
         return "../../expomr/";
-    } else {
-        //console.log("../")
+    }
+    else
+    {
         return "../";
     }
 }
-function resetTimer() {    
+
+function resetTimer()
+{    
     clearTimeout(timer);
     timer = setTimeout(logout, inactivityTimeout);
 }
-function logout() {
+
+function logout()
+{
     // Realizar acciones de cierre de sesión o redireccionamiento
-    //console.log(inactivityTimeout)
     $("#btn_logout").click();
     // Ejemplo: window.location.href = "/logout";
 }
