@@ -14,8 +14,15 @@
     </ol>
 </div>
 <div class="row">
-    <div class="col-sm-12 col-md-6 pb-4">        
-        <GoogleRecaptcha:RecaptchaV2Control ID="gRecaptcha" SiteKey="6LdJMSEUAAAAAA64LidQn_V7QhRjA0tkjUsApIm4" SecretKey="6LdJMSEUAAAAADbALp3hhQ6NCkxTUA1Pc2CKHSEl" runat="server" />
+    <div class="col-sm-12 col-md-6 pb-4">  
+        @*localhost*@
+        <div ID="gRecaptcha" class="g-recaptcha" data-sitekey="6Ld2eHwpAAAAAACSnvGs-Rd9ZD4S_hs_JY1ZL-zv" data-callback="capturarRespuesta"></div>
+
+        @*https://expomr.com.mx/*@
+        @*<div ID="gRecaptcha" class="g-recaptcha" data-sitekey="6LcEQXcoAAAAAD2hS18_55O5kxu4hmGdvgya8hbM" data-callback="capturarRespuesta"></div>*@
+
+        @*https://expomr.online/*@
+        @*<div ID="gRecaptcha" class="g-recaptcha" data-sitekey="6LdOQncoAAAAAHW-6GTxm3woAWQ0bltGoFlk2dr5" data-callback="capturarRespuesta"></div>*@
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="mb-3">
@@ -42,7 +49,15 @@
     }
 </style>
 
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+
 <script>
+    var gRecaptchaResponse;
+
+    function capturarRespuesta(response) {
+        gRecaptchaResponse = response;
+    }
+
     function subirArchivo() {
         var chkBorrarCarrito = document.getElementById('chkBorrarCarrito');
         var input = document.getElementById('formFile');
@@ -53,6 +68,7 @@
                 var formData = new FormData();
                 formData.append('formFile', file);
                 formData.append('borrarCarrito', chkBorrarCarrito.checked);
+                formData.append('gRecaptchaResponse', gRecaptchaResponse);
 
                 // Realizar una solicitud AJAX para enviar el archivo al servidor
                 $.ajax({

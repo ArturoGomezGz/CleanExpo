@@ -363,19 +363,22 @@ namespace ExpoMR.Controllers
                                + " AND vProductos.IdProducto NOT IN (SELECT dCotizaciones.IdProducto FROM dCotizaciones WHERE dCotizaciones.IdCotizacion = " + IdCotizacion + " AND dCotizaciones.Solicitado = 1 AND dCotizaciones.PorConfirmar = 1) "
                                + " ORDER BY vProductos.Nombre ASC ";
 
-                DataTable dt = GeneralesController.SqlQueryDT("ExpoMRCS", query);
+                DB dB = new DB();
+                SqlParameter[] parameters = new SqlParameter[0];
+
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, CommandType.Text);
 
                 var jsonData = new
                 {
                     rows = (
-                        from col in dt.AsEnumerable()
-                        select new
-                        {
-                           idProducto = col[0],
-                           nombre = col[1],
-                           presentacion = col[2],
-                           formula = col[3] == DBNull.Value ? "" : col[3],
-                           laboratorio = col[4]
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                       select new
+                       {
+                           idProducto = row[0],
+                           nombre = row[1],
+                           presentacion = row[2],
+                           formula = row[3] == DBNull.Value ? "" : row[3],
+                           laboratorio = row[4]
                            
                         }).ToArray()
               };
