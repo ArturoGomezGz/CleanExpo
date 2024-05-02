@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Utilities;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ExpoMR.Controllers
 {
@@ -400,44 +402,65 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetSumary(int IdCliente, int IdUsuario, int IdTipoVenta, int IdTransporte, int IdPorte, int IdDireccion, string Obsv)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            try
+            Cotizacion UpdCot = new Cotizacion()
             {
-                dbExpo.Database.ExecuteSqlRaw("DECLARE @idcotizacion INT" +
-                    " EXEC @idcotizacion = dbo.CotizarGetCotizacion " + IdCliente + ", " + IdUsuario + " " +
-                    " UPDATE mCotizaciones" +
-                    " SET mCotizaciones.IdTipoVenta = " + IdTipoVenta + "," +
-                    " mCotizaciones.IdTransporte = CASE WHEN " + IdTransporte + " = 0 THEN NULL ELSE " + IdTransporte + " END," +
-                    " mCotizaciones.IdPorte = CASE WHEN " + IdPorte + " = 0 THEN NULL ELSE " + IdPorte + " END," +
-                    " mCotizaciones.Entrega = " + IdDireccion + "," +
-                    " mCotizaciones.Obsv = '" + Obsv + "'" +
-                    " WHERE mCotizaciones.IdCotizacion = @idcotizacion");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+                IdCliente = IdCliente,
+                IdDocumento = 0,
+                IdUsoCFDI = 0,
+                IdTipoVenta = IdTipoVenta,
+                IdTransporte = IdTransporte,
+                IdPorte = IdPorte,
+                Direccion = IdDireccion,
+                Observaciones = Obsv
+            };
+            ActualizaUsoCFDI(UpdCot, IdUsuario);
 
             ResponseModel rm = new();
             try
             {
-                List<ResumenPedido> resumen = dbExpo.Set<ResumenPedido>()
-                    .FromSqlRaw("DECLARE @idcotizacion INT EXEC @idcotizacion = dbo.CotizarGetCotizacion " + IdCliente + ", " + IdUsuario + " " +
-                    " SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, vCotizacionDatos.Documento," +
-                    " vCotizacionDatos.UsoCFDI, vCotizacionDatos.DirEntrega, vCotizacionDatos.TipoVenta, vCotizacionDatos.Transportista," +
-                    " vCotizacionDatos.Porte, vCotizacionDatos.Obsv " +
-                    " FROM vCotizacionDatos" +
-                    " WHERE vCotizacionDatos.IdCotizacion = @idcotizacion").ToList();
+                List<CotizacionDatos> Cotizaciones = new List<CotizacionDatos>();
 
-                if (resumen.Count > 0)
+                string query = "DECLARE @idcotizacion INT EXEC @idcotizacion = dbo.CotizarGetCotizacion @IdCliente, @IdUsuario " +
+                " SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, vCotizacionDatos.Documento," +
+                " vCotizacionDatos.UsoCFDI, vCotizacionDatos.DirEntrega, vCotizacionDatos.TipoVenta, vCotizacionDatos.Transportista," +
+                " vCotizacionDatos.Porte, vCotizacionDatos.Obsv " +
+                " FROM vCotizacionDatos " +
+                " WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+                parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+
+                while (dr.Read())
                 {
-                    rm.Result = resumen;
+                    CotizacionDatos Cotizacion = new CotizacionDatos() 
+                    { 
+                        IdCotizacion = Convert.ToInt32(dr["IdCotizacion"]),
+                        Cliente = dr["IdCotizacion"].ToString(),
+                        RFC = dr["RFC"].ToString(),
+                        Documento = dr["Documento"].ToString(),
+                        UsoCFDI = dr["UsoCFDI"].ToString(),
+                        DirEntrega = dr["DirEntrega"].ToString(),
+                        TipoVenta = dr["TipoVenta"].ToString(),
+                        Transportista = dr["Transportista"].ToString(),
+                        Porte = dr["Porte"].ToString(),
+                        Obsv = dr["Obsv"].ToString()
+                    };
+
+                    Cotizaciones.Add(Cotizacion);
+                }
+
+                if (Cotizaciones.Count > 0)
+                {
+                    rm.Result = Cotizaciones;
                     rm.Response = true;
                 }
                 else
                 {
                     rm.Response = false;
-                    rm.Message = "No hay Promociones Ganadas.";
+                    rm.Message = "No hay Cotización aun.";
                 }
             }
             catch (Exception e)
@@ -451,28 +474,27 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult ExpoPedidoAgregar()
         {
-            var dbExpo = new ApplicationDbContextExpo();
             var user = _userManager.GetUserAsync(User);
-            string username = user.Result.UserName.ToString();
-            int IdPersona = GeneralesController.GetIdPersonas(username);
-            int cliente = GeneralesController.GetClientes(username);
-            List<SqlParameter> parms = new List<SqlParameter>
-            {
-                new SqlParameter { ParameterName = "@cliente", Value = cliente },
-                new SqlParameter { ParameterName = "@usuario", Value = IdPersona },
-                new SqlParameter { ParameterName = "@Id_Inserted",  SqlDbType = SqlDbType.Int, Direction = ParameterDirection.Output }
-            };
+            int.TryParse(HttpContext.Session.GetString("ClienteSel").ToString(), out int IdPersona);
+            int cliente = GeneralesController.GetClientes(user.Result.UserName.ToString());
+
             ResponseModel rm = new();
             try
             {
                 string query = "EXEC ExpoPedidoAgregar @cliente = @cliente, @usuario = @usuario, @Id_Inserted = @Id_Inserted OUTPUT";
+                DB dB = new();
 
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("@cliente", cliente);
+                parameters[1] = new SqlParameter("@usuario", IdPersona);
+                parameters[2] = new SqlParameter() {ParameterName = "@Id_Inserted", Value = 0, Direction = ParameterDirection.Output };
+
+                dB.ExecuteNonQuery(query, ref parameters);
                 // Pasa los parámetros a través de la función ExecuteSqlRaw
-                dbExpo.Database.ExecuteSqlRaw(query, parms.ToArray());
 
                 rm.Response = true;
                 rm.Message = "El pedido ha sido colocado correctamente.";
-                rm.Result = parms[2].Value;
+                rm.Result = parameters[2].Value;
             }
             catch (Exception e)
             {
@@ -485,19 +507,38 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetPremios(int IdCliente)
         {
-            var dbExpo = new ApplicationDbContextExpo();
             ResponseModel rm = new();
             try
             {
-                List<Premios> premios = dbExpo.Set<Premios>().FromSqlRaw("SELECT CAST(dPromociones.IdArticulo AS INT) as IdArticulo, mProveedores.Nombre AS Proveedor, "
-                                + " SUM(dPromociones.Cantidad * dPromoCliente.Cantidad) As Cantidad, mArticulos.Nombre"
-                                + " FROM dPromoCliente INNER JOIN"
-                                + " dPromociones ON dPromoCliente.IdPromocion = dPromociones.IdPromocion INNER JOIN"
-                                + " mPromociones ON dPromoCliente.IdPromocion = mPromociones.IdPromocion INNER JOIN"
-                                + " mArticulos ON dPromociones.IdArticulo = mArticulos.IdArticulo INNER JOIN"
-                                + " mProveedores ON mArticulos.Proveedor = mProveedores.IdPersona"
-                                + " WHERE dPromoCliente.Cliente =" + IdCliente
-                                + " GROUP BY dPromociones.IdArticulo, mProveedores.Nombre,mArticulos.Nombre").ToList();
+                List<Premios> premios = new List<Premios>();
+                
+                string query = "SELECT CAST(dPromociones.IdArticulo AS INT) as IdArticulo, mProveedores.Nombre AS Proveedor, "
+                             + " SUM(dPromociones.Cantidad * dPromoCliente.Cantidad) As Cantidad, mArticulos.Nombre"
+                             + " FROM dPromoCliente INNER JOIN"
+                             + " dPromociones ON dPromoCliente.IdPromocion = dPromociones.IdPromocion INNER JOIN"
+                             + " mPromociones ON dPromoCliente.IdPromocion = mPromociones.IdPromocion INNER JOIN"
+                             + " mArticulos ON dPromociones.IdArticulo = mArticulos.IdArticulo INNER JOIN"
+                             + " mProveedores ON mArticulos.Proveedor = mProveedores.IdPersona"
+                             + " WHERE dPromoCliente.Cliente = @IdCliente"
+                             + " GROUP BY dPromociones.IdArticulo, mProveedores.Nombre,mArticulos.Nombre";
+
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+
+                while (dr.Read())
+                {
+                    Premios Premio = new Premios()
+                    {
+                        idArticulo = Convert.ToInt32(dr["IdArticulo"]),
+                        proveedor = dr["Proveedor"].ToString(),
+                        cantidad = Convert.ToInt32(dr["Cantidad"]),
+                        Nombre = dr["Nombre"].ToString()
+                    };
+
+                    premios.Add(Premio);
+                }
 
                 if (premios.Count > 0)
                 {
@@ -521,54 +562,19 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult Validarcolocar(int IdCliente, int IdUsuario)
         {
-            var dbExpo = new ApplicationDbContextExpo();
-            List<SqlParameter> parms = new List<SqlParameter>
-            {
-                new SqlParameter { ParameterName = "@cliente", Value = IdCliente },
-                new SqlParameter { ParameterName = "@usuario", Value = IdUsuario }
-            };
-            var resultadoParameter = new SqlParameter("@success", SqlDbType.Int)
-            {
-                Direction = ParameterDirection.Output
-            };
             ResponseModel rm = new();
             try
             {
-                dbExpo.Database.ExecuteSqlRaw($"EXEC @success = ExpoPedidoValidar @cliente = {parms[0].Value}, @usuario = {parms[1].Value}", resultadoParameter);
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("@cliente", IdCliente);
+                parameters[1] = new SqlParameter("@usuario", IdUsuario);
+                parameters[2] = new SqlParameter() { ParameterName = "@success", Value = 0, Direction = ParameterDirection.Output };
 
-                rm.Result = Convert.ToInt32(resultadoParameter.Value);
+                SqlDataReader dr = dB.ExecuteReader("EXEC @success = ExpoPedidoValidar @cliente, @usuario", ref parameters);
+
+                rm.Result = Convert.ToInt32(parameters[2].Value);
                 rm.Response = true;
-            }
-            catch (Exception e)
-            {
-                rm.Message = e.Message;
-                rm.Response = false;
-            }
-            return Json(rm);
-        }
-
-        [HttpPost]
-        public JsonResult GetDetailArticulo(int IdArticulo)
-        {
-            var dbExpo = new ApplicationDbContextExpo();
-            ResponseModel rm = new();
-            try
-            {
-                //List<dArticulos> articulos = dbExpo.dArticulos
-                //    .Include(articulo => articulo.mArticulos)
-                //    .Where(articulo => articulo.IdArticulo == IdArticulo)
-                //    .ToList();
-
-                //if (articulos.Count > 0)
-                //{
-                //    rm.Result = articulos;
-                //    rm.Response = true;
-                //}
-                //else
-                //{
-                //    rm.Response = false;
-                //    rm.Message = "No hay Promociones Ganadas.";
-                //}
             }
             catch (Exception e)
             {
@@ -612,118 +618,246 @@ namespace ExpoMR.Controllers
 
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {
-            var dbExpo = new ApplicationDbContextExpo();
+            List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>(); 
+            
+            try
+            {
+                string query = "SELECT 0 AS IdPedido, 'TODOS' AS Pedido " +
+                               "UNION " +
+                               "SELECT vPedidos.IdPedido, CAST(vPedidos.IdPedido AS NVARCHAR) AS Pedido " +
+                               "FROM vPedidos " +
+                               "WHERE vPedidos.Cliente = @IdCliente " +
+                               "AND vPedidos.Usuario = @IdCliente " +
+                               "GROUP BY vPedidos.IdPedido";
+				DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
 
-            List<ddlPedidosCliente> ddlPedidos = dbExpo.Set<ddlPedidosCliente>()
-                .FromSqlRaw("SELECT 0 AS IdPedido, 'TODOS' AS Pedido " +
-                "UNION " +
-                "SELECT vPedidos.IdPedido, CAST(vPedidos.IdPedido AS NVARCHAR) AS Pedido " +
-                "FROM vPedidos " +
-                "WHERE vPedidos.Cliente = " + IdCliente + " " +
-                "AND vPedidos.Usuario = " + IdCliente + " " +
-                "GROUP BY vPedidos.IdPedido").ToList();
+                while (dr.Read()) 
+                {
+					ddlPedidosCliente ddlPedidosCliente = new ddlPedidosCliente() 
+                    {
+                        IdPedido = Convert.ToInt32(dr["IdPedido"]),
+                        Pedido = dr["Pedido"].ToString()
+					};
+                    ddlPedidos.Add(ddlPedidosCliente);
+				}
+            }
+            catch (Exception e) 
+            { 
+                return new List<ddlPedidosCliente>();
+            }
 
             return ddlPedidos;
         }
 
         public static byte[] GetFotosArticulos(string Tipo, int Id)
         {
-            SqlConnection conexion = new(_configuration["ConnectionStrings:ExpoMRCS"]);
-            SqlCommand command = new("ExpoGetImage", conexion);
-            DataTable dataTable = new();
-            SqlDataAdapter sqlDA;
-            conexion.Open();
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.Add(new SqlParameter("@Type", Tipo));
-            command.Parameters.Add(new SqlParameter("@Id", Id));
-            command.Connection = conexion;
-            sqlDA = new SqlDataAdapter(command);
-            sqlDA.Fill(dataTable);
-            conexion.Close();
+			DB dB = new();
+            byte[] bytes = new byte[0];
 
-            byte[] fotos = new byte[dataTable.Rows.Count];
+			SqlParameter[] parameters = new SqlParameter[2];
+			parameters[0] = new SqlParameter("@Type", Tipo);
+			parameters[1] = new SqlParameter("@Id", Id);
 
-            foreach (DataRow row in dataTable.Rows)
+			SqlDataReader dr = dB.ExecuteReader("ExpoGetImage", ref parameters, CommandType.StoredProcedure);
+
+			if (dr.Read())
             {
-                fotos = row.Field<byte[]>(0);
-            }
-            return fotos;
+                object ObjImage = dr["Foto"];
+				bytes = (byte[])ObjImage;
+			}
+			
+            return bytes;
         }
 
         public List<TipoDocumentos> GetTipoDocumentos(int IdCliente)
         {
-            var dbIndigo = new ApplicationDbContextIndigo();
-            List<TipoDocumentos> tipos = dbIndigo.Set<TipoDocumentos>()
-                .FromSqlRaw("Select mDocumentos.IdDocumento AS IdTipoDoc, mDocumentos.Documento AS TipoDoc"
-                           + " From mDocumentos,"
-                           + "  mClientes inner join"
-                           + "  mPerEmp on mClientes.IdPersona = mPerEmp.IdPersona inner join"
-                           + "  mPersonas on mPerEmp.Persona = mPersonas.Persona"
-                           + "  Where mClientes.IdPersona = " + IdCliente
-                           + "  And((mDocumentos.IdDocumento = 1"
-                           + "  And(UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'"
-                           + "  Or UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'))"
-                           + "  Or mDocumentos.IdDocumento = 2"
-                           + "  Or(mDocumentos.IdDocumento = 4 And mClientes.Traslado = 1)"
-                           + "  )"
-                           + "  Order by mDocumentos.Documento").ToList();
+			List<TipoDocumentos> tipos = new List<TipoDocumentos>();  
 
-            tipos.Insert(0, new TipoDocumentos { IdTipoDoc = 0, TipoDoc = "Seleccione... " });
+			try
+			{
+				string query =   " SELECT 0 AS IdTipoDoc, 'Seleccione...' AS TipoDoc "
+							   + " UNION " 
+                               + " SELECT mDocumentos.IdDocumento AS IdTipoDoc, mDocumentos.Documento AS TipoDoc"
+							   + " FROM mDocumentos,"
+						       + " mClientes INNER JOIN"
+						       + " mPerEmp on mClientes.IdPersona = mPerEmp.IdPersona INNER JOIN"
+						       + " mPersonas on mPerEmp.Persona = mPersonas.Persona"
+						       + " Where mClientes.IdPersona = @IdCliente"
+						       + " AND ((mDocumentos.IdDocumento = 1"
+						       + " AND (UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'"
+						       + " OR UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'))"
+						       + " OR mDocumentos.IdDocumento = 2"
+						       + " OR (mDocumentos.IdDocumento = 4 AND mClientes.Traslado = 1)"
+						       + " )"
+						       + " ORDER BY mDocumentos.Documento";
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[1];
+				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+
+				while (dr.Read())
+				{
+					TipoDocumentos tipoDocumentos = new TipoDocumentos() 
+                    {
+						IdTipoDoc = Convert.ToInt16(dr["IdTipoDoc"].ToString()),
+                        TipoDoc = dr["TipoDoc"].ToString()
+					};
+
+                    tipos.Add(tipoDocumentos);
+				}
+			}
+			catch (Exception e)
+			{
+				return new List<TipoDocumentos>();
+			}
 
             return tipos;
         }
 
         public List<UsosCFDI> GetUsoCFDIs(int IdCliente)
         {
-            var dbIndigo = new ApplicationDbContextIndigo();
-            List<UsosCFDI> usoCFDIs = dbIndigo.Set<UsosCFDI>()
-                .FromSqlRaw("SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI" +
-                " FROM GetUsoCFDI(" + IdCliente + ")").ToList();
+			List<UsosCFDI> usoCFDIs = new List<UsosCFDI> ();
+
+			try
+			{
+				DB dB = new();
+				SqlParameter[] parameters = new SqlParameter[1];
+				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+				SqlDataReader dr = dB.ExecuteReader("SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI " +
+                                                    "FROM GetUsoCFDI( @IdCliente )", ref parameters);
+
+				while (dr.Read())
+				{
+                    UsosCFDI uso = new UsosCFDI()
+                    {
+                        IdUsoCFDI = Convert.ToInt16(dr["IdUsoCFDI"].ToString()),
+                        UsoCFDI = dr["UsoCFDI"].ToString()
+                    };
+
+                    usoCFDIs.Add(uso);
+				}
+			}
+			catch
+			{
+				usoCFDIs = new List<UsosCFDI>();
+			}
 
             return usoCFDIs;
         }
 
         public List<Entregas> GetDirecciones(int IdCliente)
         {
-            var dbIndigo = new ApplicationDbContextIndigo();
-            List<Entregas> entregas = dbIndigo.Set<Entregas>()
-                .FromSqlRaw("Select vDirecciones.IdDireccion AS IdEntrega, vDirecciones.Ciudad + ', ' + vDirecciones.Estado + ' - ' + vDirecciones.Direccion AS Entrega"
-                          + " From vDirecciones inner join"
-                          + " mPerEmp ON vDirecciones.Persona = mPerEmp.Persona"
-                          + " Where mPerEmp.IdPersona =" + IdCliente
-                          + " Order by Entrega").ToList();
+			List<Entregas> entregas = new List<Entregas>();
 
-            entregas.Insert(0, new Entregas { IdEntrega = 0, Entrega = "Seleccione una opción... " });
+			try
+			{
+				DB dB = new();
+                
+                string query = " SELECT 0 AS IdEntrega, 'Seleccione...' AS Entrega "
+							   + " UNION " 
+                               + " SELECT vDirecciones.IdDireccion AS IdEntrega, vDirecciones.Ciudad + ', ' + vDirecciones.Estado + ' - ' + vDirecciones.Direccion AS Entrega "
+						       + " FROM vDirecciones INNER JOIN "
+						       + " mPerEmp ON vDirecciones.Persona = mPerEmp.Persona "
+						       + " WHERE mPerEmp.IdPersona = @IdCliente "
+						       + " ORDER BY Entrega ";
+
+				SqlParameter[] parameters = new SqlParameter[1];
+				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+
+				while (dr.Read())
+				{
+					Entregas Entregaitem = new Entregas()
+					{
+						IdEntrega = Convert.ToInt16(dr["IdEntrega"].ToString()),
+						Entrega = dr["Entrega"].ToString()
+					};
+
+					entregas.Add(Entregaitem);
+				}
+			}
+			catch
+			{
+				entregas = new List<Entregas>();
+			}
 
             return entregas;
         }
 
         public List<Trasportes> GetTrasportes(int IdCliente)
         {
-            var dbIndigo = new ApplicationDbContextIndigo();
-            List<Trasportes> trasportes = dbIndigo.Set<Trasportes>()
-                .FromSqlRaw("Select 0 AS IdTrasportes, 'Seleccione una opción... ' as Transporte"
-                            + " UNION"
-                            + " Select ISNULL(dTransCliente.IdTransporte,0)IdTrasportes, vPersonas.Nombre AS Transporte"
-                            + " From dTransCliente INNER JOIN"
-                            + " vPersonas ON dTransCliente.IdTransporte = vPersonas.IdPersona"
-                            + " Where dTransCliente.IdPersona =" + IdCliente
-                            + " Order by Transporte").ToList();
+            List<Trasportes> trasportes = new List<Trasportes>();
 
+			try
+			{
+				DB dB = new();
+				string query =    " SELECT 0 AS IdTrasportes, 'Seleccione una opción... ' AS Transporte"
+							    + " UNION"
+							    + " SELECT ISNULL(dTransCliente.IdTransporte,0) AS IdTrasportes, vPersonas.Nombre AS Transporte"
+							    + " From dTransCliente INNER JOIN"
+							    + " vPersonas ON dTransCliente.IdTransporte = vPersonas.IdPersona"
+							    + " Where dTransCliente.IdPersona = @IdCliente"
+							    + " Order by Transporte";
+
+				SqlParameter[] parameters = new SqlParameter[1];
+				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+
+				while (dr.Read())
+				{
+					Trasportes Transp = new Trasportes()
+					{
+                        IdTrasportes = Convert.ToInt16(dr["IdTrasportes"].ToString()),
+						Transporte = dr["Transporte"].ToString()
+					};
+
+					trasportes.Add(Transp);
+				}
+			}
+			catch
+			{
+				trasportes = new List<Trasportes>();
+			}
+			
             return trasportes;
         }
 
         public List<TiposDeVenta> GetTiposVenta()
         {
-            var dbIndigo = new ApplicationDbContextIndigo();
-            List<TiposDeVenta> tipoventa = dbIndigo.Set<TiposDeVenta>()
-                .FromSqlRaw("Select mTipoVenta.IdTipoVenta, mTipoVenta.TipoVenta"
-                           + " From mTipoVenta"
-                           + "  Where mTipoVenta.IdTipoVenta != 5"
-                           + "  Order by mTipoVenta.TipoVenta").ToList();
+			List<TiposDeVenta> tipoventa = new List<TiposDeVenta>();    
 
-            tipoventa.Insert(0, new TiposDeVenta { IdTipoVenta = 0, TipoVenta = "Seleccione una opción... " });
+			try
+			{
+				DB dB = new();
+				string query =    " SELECT 0 AS IdTipoVenta, 'Seleccione una opción... ' AS TipoVenta"
+								+ " UNION" 
+                                + " SELECT mTipoVenta.IdTipoVenta, mTipoVenta.TipoVenta"
+						        + " FROM mTipoVenta"
+						        + " WHERE mTipoVenta.IdTipoVenta != 5"
+						        + " ORDER BY mTipoVenta.TipoVenta";
 
+				SqlParameter[] parameters = new SqlParameter[0];
+				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+
+				while (dr.Read())
+				{
+					TiposDeVenta tipo = new TiposDeVenta()
+					{
+                        IdTipoVenta = Convert.ToInt16(dr["IdTipoVenta"].ToString()),
+						TipoVenta = dr["TipoVenta"].ToString()
+					};
+
+					tipoventa.Add(tipo);
+				}
+			}
+			catch
+			{
+				tipoventa = new List<TiposDeVenta>();
+			}
+			
             return tipoventa;
         }
     }

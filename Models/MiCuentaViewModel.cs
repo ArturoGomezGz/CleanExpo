@@ -58,7 +58,7 @@ namespace ExpoMR.Models
     [Keyless]
     public class TipoDocumentos
     { 
-        public byte IdTipoDoc { get; set; }  
+        public Int16 IdTipoDoc { get; set; }  
 
         public string TipoDoc { get; set; }
     }
@@ -66,12 +66,13 @@ namespace ExpoMR.Models
     [Keyless]
     public class UsosCFDI
     {
-        public byte IdUsoCFDI { get; set; }
+        public Int16 IdUsoCFDI { get; set; }
 
         public string UsoCFDI { get; set; }
     }
 
     [Keyless]
+
     public class TiposDeVenta
     { 
         public int IdTipoVenta { get; set; }

@@ -3,7 +3,7 @@
 namespace ExpoMR.Models
 {
     [Keyless]
-    public class ResumenPedido
+    public class CotizacionDatos
     {
         public int IdCotizacion { get; set; }
         public string Cliente { get; set; }

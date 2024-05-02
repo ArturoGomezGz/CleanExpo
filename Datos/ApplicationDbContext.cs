@@ -31,7 +31,7 @@ namespace ExpoMR.Datos
 
         public DbSet<Transporte> Transporte { get; set; }
 
-        public DbSet<ResumenPedido> ResumenPedido { get; set; }
+        public DbSet<CotizacionDatos> ResumenPedido { get; set; }
 
         public DbSet<ddlPedidosCliente> ddlPedidosCliente { get; set; }
 
