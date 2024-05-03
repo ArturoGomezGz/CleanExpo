@@ -1,11 +1,11 @@
 ﻿@model Carrito
 <link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
-
-
 <script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
 <script>
-    function panel_active(active) {
-        if (active == 2) {
+    function panel_active(active) 
+    {
+        if (active == 2) 
+        {
             var element = document.getElementById("divCarrito");
             element.classList.remove("display_panel_active");
             element.classList.add('display_panel');
@@ -22,7 +22,9 @@
             element3.classList.remove("bf-ui-tab--selected");
             element3.classList.add('bf-ui-tab--unselected');
 
-        } else {
+        } 
+        else 
+        {
             var element = document.getElementById("divPedido");
             element.classList.remove("display_panel_active");
             element.classList.add('display_panel');
@@ -40,7 +42,9 @@
             element3.classList.add('bf-ui-tab--unselected');
         }
     }
-    function Edit(IdProducto){
+
+    function Edit(IdProducto)
+    {
         $(".decrement_" + IdProducto).removeClass("d-none")
         $(".increment_" + IdProducto).removeClass("d-none")
         $(".save_" + IdProducto).removeClass("d-none")
@@ -51,7 +55,9 @@
         var element = document.getElementById("number_" + IdProducto)
         element.removeAttribute("disabled");
     }
-    function cancel(IdProducto){        
+
+    function cancel(IdProducto)
+    {        
         $(".decrement_" + IdProducto).addClass("d-none")
         $(".increment_" + IdProducto).addClass("d-none")
         $(".save_" + IdProducto).addClass("d-none")
@@ -64,7 +70,9 @@
         element.setAttribute("disabled", "");
         element.value = hiddenInputValue
     }
-    function Delete(IdProducto) {        
+
+    function Delete(IdProducto)
+    {        
         let Cliente = @Model.IdCliente;
         var block = $('<div class="block-loading container" />');
         $("#divCarrito").prepend(block);
@@ -73,15 +81,19 @@
                 idproducto: IdProducto,
                 cliente: Cliente
             },
-            function (data) {
+            function (data) 
+            {
                 ShowAlert(data.message, data.response)
                 window.location.reload()
-        }).error(function () {
-                block.remove();
+            }).error(function () 
+        {
+            block.remove();
             ShowAlert("No fue posible cargar sus datos", false);
         });
     }
-    function save(IdProducto){
+
+    function save(IdProducto)
+    {
         let Cliente = @Model.IdCliente;
         let Cantidad = $("#number_"+IdProducto).val();
         let PrecioMR = $("#hdnPrecioFinal_"+IdProducto).val()
@@ -118,6 +130,7 @@
             ShowAlert("La Cantidad debe ser mayor a Cero", false);
         }
     }
+
     function decrement(IdProducto)
     {
         var value = $("#number_" + IdProducto).val();
@@ -125,6 +138,7 @@
         value--;       
         element.value = value;        
     }
+
     function increment(IdProducto) 
     {
         var value = $("#number_"+IdProducto).val();
@@ -132,12 +146,14 @@
         value++;
         element.value = value;
     }
-    function LoadDataTablePedidos(){
+
+    function LoadDataTablePedidos()
+    {
         let Idpedido = 0
         $.post(path + "Carrito/GetPedidosCarrito",
         {
                 IdCliente: @Model.IdCliente,
-                IdUsuario: $("#IdUsuario").val(),
+                IdUsuario: @Model.IdCliente,
                 IdPedido: $("#cmb-pedidos").val()
         },
         function (data) 
@@ -249,7 +265,9 @@
             ShowAlert("No fue posible cargar sus datos", false)
         });
     }
-    function mostrarModal(IdArticulo){
+
+    function mostrarModal(IdArticulo)
+    {
         $("#datail_modal_Articulo").html("")
         cadena = "";
         $.post(path + "Carrito/GetDetailArticulo",
@@ -273,7 +291,9 @@
            ShowAlert("No fue posible cargar sus datos", false);
         });
     }
+
     function onFinish() { alert('Finish Clicked'); }
+
     function onCancel() 
     { 
         $('#smartwizard').smartWizard("reset"); 
@@ -281,12 +301,13 @@
         $(".modal-content").prepend(block);
         window.location.reload()
     }
+
     function ColocarOrden()
     {
         $.post(path + "Carrito/Validarcolocar",
             {
                 IdCliente: @Model.IdCliente,
-                IdUsuario: $("#IdUsuario").val()
+                IdUsuario: @Model.IdCliente
             },
             function (data) 
             {
@@ -320,31 +341,37 @@
         $('#smartwizard').smartWizard("reset");
         OpenModal('swModal')
     }
-    function provideContent(idx, stepDirection, stepPosition, selStep, callback) {
-        //console.log(idx, stepDirection, stepPosition, selStep, callback)
+
+    function provideContent(idx, stepDirection, stepPosition, selStep, callback) 
+    {
         switch(idx)
         {
             case 1:
                 $.ajax({
                     method: "POST",
                     url: path + "Carrito/GetDatosTransporte",
-                    data: {
+                    data: 
+                    {
                         IdCliente: @Model.IdCliente,
-                        IdUsuario: $("#IdUsuario").val(),
+                        IdUsuario: @Model.IdCliente,
                         IdDocumento: $("#cmb-TipoDoc").val() ,
                         IdUsoCFDI: $("#cmb-UsosCFDI").val()
                     },
-                    beforeSend: function (xhr) {
+                    beforeSend: function (xhr) 
+                    {
                         $('#smartwizard').smartWizard("loader", "show");
                     }
-                }).done(function (res) {
-                    if (res.response) {
+                }).done(function (res) 
+                {
+                    if (res.response) 
+                    {
                         $("#cmb-Entrega").val(res.result[0].entrega)
                         $("#cmb-TipoVenta").val(res.result[0].idTipoVenta)
                     }
                     ChangeTipoVenta(res.result[0].idTipoVenta.toString())
                     $('#smartwizard').smartWizard("loader", "hide");
-                }).fail(function (err) {
+                }).fail(function (err) 
+                {
                     $('#smartwizard').smartWizard("loader", "hide");
                 });                
             break;
@@ -354,20 +381,24 @@
                  $.ajax({
                     method: "POST",
                     url: path + "Carrito/GetSumary",
-                    data: {
+                    data: 
+                    {
                         IdCliente: @Model.IdCliente,
-                        IdUsuario: $("#IdUsuario").val(),
+                        IdUsuario: @Model.IdCliente,
                         IdTipoVenta: $("#cmb-TipoVenta").val(),
                         IdTransporte: $("#colocar_Transportista").val(),
                         IdPorte: $("#colocar_Porte").val(),
                         IdDireccion: $("#cmb-Entrega").val(),
                         Obsv: $("#obsv").val()
                     },
-                    beforeSend: function (xhr) {
+                    beforeSend: function (xhr) 
+                    {
                         $('#smartwizard').smartWizard("loader", "show");
                     }
-                }).done(function (res) {                    
-                    if (res.response) {
+                }).done(function (res) 
+                {                    
+                    if (res.response)
+                    {
                         $("#confirmar_Cliente").html(res.result[0].cliente)
                         $("#confirmar_RFC").html(res.result[0].rfc)
                         $("#confirmar_TipoComprobante").html(res.result[0].documento)
@@ -379,7 +410,8 @@
                         $("#confirmar_Transtportista").html(res.result[0].porte)
                     } 
                     $('#smartwizard').smartWizard("loader", "hide");
-                }).fail(function (err) {
+                }).fail(function (err) 
+                {
                     $('#smartwizard').smartWizard("loader", "hide");
                 });  
             break;
@@ -388,13 +420,16 @@
                     method: "POST",
                     url: path + "Carrito/GetDatosFacturacion",
                     data:{
-                        IdCliente: $("#IdUsuario").val()
+                        IdCliente: @Model.IdCliente
                     },
-                    beforeSend: function (xhr) {                        
+                    beforeSend: function (xhr) 
+                    {                        
                         $('#smartwizard').smartWizard("loader", "show");
                     }
-                }).done(function (res) {          
-                    if(res.response){
+                }).done(function (res) 
+                {          
+                    if(res.response)
+                    {
                         $("#colocar_Cliente").html(res.result[0].cliente)
                         $("#colocar_RFC").html(res.result[0].rfc)
                         $("#cmb-TipoDoc").val(res.result[0].idDocumento)
@@ -403,7 +438,8 @@
                         ChangeTipoDocumento(res.result[0].idDocumento.toString())
                     }
                     $('#smartwizard').smartWizard("loader", "hide");
-                }).fail(function (err) {                    
+                }).fail(function (err) 
+                {                    
                     $('#smartwizard').smartWizard("loader", "hide");
                 });
             break;
@@ -412,6 +448,7 @@
         // The empty callback will not apply any dynamic contents to the steps
         callback();
     }
+
     function TerminarOrden()
     {
         $.post(path + "Carrito/ExpoPedidoAgregar",
@@ -431,10 +468,12 @@
             ShowAlert("No fue posible cargar sus datos", false);
         });
     }
+
     function Reload() 
     {
         window.location.reload();
     }
+
     function habilitarBoton(Documento, CFDI)
     {
         if(Documento === 1)
@@ -448,6 +487,7 @@
             }
         }
     }
+
     function ChangeTipoDocumento(tipoDocumento)
     {
         var NextBoton = document.getElementById("next-btn-modal")
@@ -471,6 +511,7 @@
             break;
         }
     }
+
     function ChangeTipoCFDI(usoCFDI)
     {
         var NextBoton = document.getElementById("next-btn-modal")
@@ -487,7 +528,9 @@
             break;
         }
     }
-    function ChangeTipoVenta(TipoVenta){
+
+    function ChangeTipoVenta(TipoVenta)
+    {
         var NextBoton = document.getElementById("next-btn-modal")
         var cmbEntrega = document.getElementById("cmb-Entrega")
         var transportista = document.getElementById("colocar_Transportista")
@@ -519,6 +562,7 @@
             break;
         }
     }
+
     $(document).ready(function()
     {
         $("#txt_Credito").html(FormatoMoneda(@Model.Credito))
@@ -547,7 +591,7 @@
 
         $.post(path + "Carrito/GetPremios",
             {
-                IdCliente: $("#IdUsuario").val()
+                IdCliente: @Model.IdCliente
             },
             function (data) {                
                 if (data.response) {
@@ -653,6 +697,7 @@
         });
     })
 </script>
+
  @if(Model.HasProduct == true)
  {
      <script>
@@ -684,7 +729,7 @@
         <div class="tab-content_productos col-md-8 col-sm-6">
             @{
                 int IdProveedor = 0;
-                List<ListaCarrito> ListCarrito = ExpoMR.Controllers.CarritoController.GetCarrito(Model.IdCliente, Model.IdUsuario);
+                List<ListaCarrito> ListCarrito = ExpoMR.Controllers.CarritoController.GetCarrito(Model.IdCliente, Model.IdCliente);
                 if (ListCarrito.Count() > 0)
                 {
                     foreach (ExpoMR.Models.ListaCarrito model in ListCarrito)
@@ -701,7 +746,7 @@
                                 @if (model.Proveedor != IdProveedor)
                                 {
                                     <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                        <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetFotosArticulos("logo",model.Proveedor)))" alt="image" class="imagenCarrito">
+                                        <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagenCarrito">
                                     </a>
                                     IdProveedor = model.Proveedor;
                                 }

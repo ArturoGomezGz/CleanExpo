@@ -27,24 +27,24 @@ namespace ExpoMR.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
+
             if (!currentUser.EmailConfirmed)
             {
                 return RedirectToAction("Index", "MiCuenta");
             }
 
-            string username = currentUser.UserName.ToString();
-            int IdPersona = GeneralesController.GetIdPersonas(username);
-            int.TryParse(HttpContext.Session.GetString("ClienteSel"), out int cliente);
-            bool isFechaExpoVIP = WebSite.ValidaExpoVIP();
-            bool isFechaExpo = WebSite.ValidaExpoVIP();
+            int IdCliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
             bool IsClienteVip = WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP");
-            Carrito carrito = GetCarritoUsuario(cliente, IdPersona);
+            bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+
+            Carrito carrito = GetCarritoUsuario(IdCliente, IdUsuario);
 
             if (carrito != null)
             {
-                carrito.CantidadCarrito = GetCantidadCarrito(IdPersona, cliente);
-                carrito.IdUsuario = IdPersona;
-                carrito.IdCliente = cliente;
+                carrito.CantidadCarrito = GetCantidadCarrito(IdUsuario, IdCliente);
+                carrito.IdUsuario = IdUsuario;
+                carrito.IdCliente = IdCliente;
                 carrito.HasProduct = true;
             }
             else
@@ -59,20 +59,20 @@ namespace ExpoMR.Controllers
             }
 
             carrito.IdPedido = 0;
-            carrito.PedidosCliente = GetddlClientes(cliente);
+            carrito.PedidosCliente = GetddlClientes(IdCliente);
             carrito.IdTipoDoc = 0;
-            carrito.TipoDocumentos = GetTipoDocumentos(cliente);
+            carrito.TipoDocumentos = WebSite.GetTiposDocumentos(IdCliente);
             carrito.IdUsoCFDI = 0;
-            carrito.UsoCFDI = GetUsoCFDIs(cliente);
+            carrito.UsoCFDI = WebSite.GetUsosCFDI(IdCliente);
             carrito.Entrega = 0;
-            carrito.Direccciones = GetDirecciones(cliente);
+            carrito.Direccciones = WebSite.GetDireccionesEntrega(IdCliente);
             carrito.IdTransporte = 0;
-            carrito.Trasportes = GetTrasportes(cliente);
+            carrito.Trasportes = WebSite.GetTransportes(IdCliente);
             carrito.IdTipoVenta = 0;
-            carrito.TiposVenta = GetTiposVenta();
+            carrito.TiposVenta = WebSite.GetTiposVenta();
 
-            if ((IsClienteVip == true && isFechaExpoVIP)
-                || (IsClienteVip == false && isFechaExpo))
+            if ((IsClienteVip == true && isFechaExpoVIP == true)
+                || (IsClienteVip == false && isFechaExpoVIP == false))
             {
                 return View(carrito);
             }
@@ -113,14 +113,15 @@ namespace ExpoMR.Controllers
             {
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@cliente", IdCliente);
-                parameters[1] = new SqlParameter("@IdPersona", IdUsuario);
+                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+                parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
 
-                SqlDataReader dr = dB.ExecuteReader("GetCarrito", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader("GetDetailCarrito", ref parameters);
 
                 while (dr.Read())
                 {
                     ListaCarrito lcarrito = new ListaCarrito();
+                    
                     lcarrito.Registro = Convert.ToInt32(dr["Registro"]);
                     lcarrito.Proveedor = Convert.ToInt32(dr["Proveedor"]);
                     lcarrito.Laboratorio = dr["Laboratorio"].ToString();
@@ -131,8 +132,8 @@ namespace ExpoMR.Controllers
                     lcarrito.PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]);
                     lcarrito.total = Convert.ToDecimal(dr["Total"]);
                     lcarrito.PorConfirmar = Convert.ToBoolean(dr["PorConfirmar"]);
-
                     lcarrito.imgProducto = GeneralesController.GetFoto(lcarrito.IdProducto);
+
                     listaCarrito.Add(lcarrito);
                 }
             }
@@ -147,6 +148,7 @@ namespace ExpoMR.Controllers
         public int GetCantidadCarrito(int IdPersona, int cliente)
         {
             int resultCantidad = 0;
+
             try
             {
                 DB dB = new();
@@ -178,12 +180,9 @@ namespace ExpoMR.Controllers
 			{
 				DB dB = new();
 				SqlParameter[] parameters = new SqlParameter[3];
-				var user = _userManager.GetUserAsync(User);
-				string username = user.Result.UserName.ToString();
-				int Usuario = GeneralesController.GetIdPersonas(username);
-				
+			
 				parameters[0] = new SqlParameter("@cliente", Cliente);
-				parameters[1] = new SqlParameter("@usuario", Usuario);
+				parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 				parameters[2] = new SqlParameter("@IdProducto", IdProducto);
 
 				dB.ExecuteNonQuery("ExpoPedidoQuitar", ref parameters);
@@ -208,9 +207,6 @@ namespace ExpoMR.Controllers
 			{
 				DB dB = new();
 				SqlParameter[] parameters = new SqlParameter[5];
-				var user = _userManager.GetUserAsync(User);
-				string username = user.Result.UserName.ToString();
-				int Usuario = GeneralesController.GetIdPersonas(username);
 
 				parameters[0] = new SqlParameter("@cliente", cliente);
 				parameters[1] = new SqlParameter("@idproducto", idProducto);
@@ -222,7 +218,7 @@ namespace ExpoMR.Controllers
 
 				rm.Response = true;
 				rm.Message = "El producto se agrego al carrito";
-				rm.Result = GetCantidadCarrito(Usuario, cliente);
+				rm.Result = GetCantidadCarrito(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")), cliente);
 			}
 			catch (Exception e)
 			{
@@ -242,9 +238,6 @@ namespace ExpoMR.Controllers
             {
 				DB dB = new();
 				SqlParameter[] parameters = new SqlParameter[3];
-				var user = _userManager.GetUserAsync(User);
-				string username = user.Result.UserName.ToString();
-				int Usuario = GeneralesController.GetIdPersonas(username);
 
 				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
 				parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
@@ -296,9 +289,6 @@ namespace ExpoMR.Controllers
 			{
 				DB dB = new();
 				SqlParameter[] parameters = new SqlParameter[1];
-				var user = _userManager.GetUserAsync(User);
-				string username = user.Result.UserName.ToString();
-				int Usuario = GeneralesController.GetIdPersonas(username);
 
 				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
 				SqlDataReader dr = dB.ExecuteReader("GetDatosFacturacion", ref parameters);
@@ -346,6 +336,7 @@ namespace ExpoMR.Controllers
                 Direccion = 0,
                 Observaciones = ""
             };
+
             ActualizaUsoCFDI(UpdCot, IdUsuario);
 
 			ResponseModel rm = new();
@@ -413,9 +404,11 @@ namespace ExpoMR.Controllers
                 Direccion = IdDireccion,
                 Observaciones = Obsv
             };
+
             ActualizaUsoCFDI(UpdCot, IdUsuario);
 
             ResponseModel rm = new();
+
             try
             {
                 List<CotizacionDatos> Cotizaciones = new List<CotizacionDatos>();
@@ -468,29 +461,26 @@ namespace ExpoMR.Controllers
                 rm.Message = e.Message;
                 rm.Response = false;
             }
+
             return Json(rm);
         }
 
         [HttpPost]
         public JsonResult ExpoPedidoAgregar()
         {
-            var user = _userManager.GetUserAsync(User);
-            int.TryParse(HttpContext.Session.GetString("ClienteSel").ToString(), out int IdPersona);
-            int cliente = GeneralesController.GetClientes(user.Result.UserName.ToString());
-
             ResponseModel rm = new();
+
             try
             {
                 string query = "EXEC ExpoPedidoAgregar @cliente = @cliente, @usuario = @usuario, @Id_Inserted = @Id_Inserted OUTPUT";
                 DB dB = new();
 
                 SqlParameter[] parameters = new SqlParameter[3];
-                parameters[0] = new SqlParameter("@cliente", cliente);
-                parameters[1] = new SqlParameter("@usuario", IdPersona);
+                parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
+                parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
                 parameters[2] = new SqlParameter() {ParameterName = "@Id_Inserted", Value = 0, Direction = ParameterDirection.Output };
 
                 dB.ExecuteNonQuery(query, ref parameters);
-                // Pasa los parámetros a través de la función ExecuteSqlRaw
 
                 rm.Response = true;
                 rm.Message = "El pedido ha sido colocado correctamente.";
@@ -501,6 +491,7 @@ namespace ExpoMR.Controllers
                 rm.Message = e.Message;
                 rm.Response = false;
             }
+
             return Json(rm);
         }
 
@@ -508,6 +499,7 @@ namespace ExpoMR.Controllers
         public JsonResult GetPremios(int IdCliente)
         {
             ResponseModel rm = new();
+
             try
             {
                 List<Premios> premios = new List<Premios>();
@@ -525,7 +517,7 @@ namespace ExpoMR.Controllers
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -556,6 +548,7 @@ namespace ExpoMR.Controllers
                 rm.Message = e.Message;
                 rm.Response = false;
             }
+
             return Json(rm);
         }
 
@@ -563,6 +556,7 @@ namespace ExpoMR.Controllers
         public JsonResult Validarcolocar(int IdCliente, int IdUsuario)
         {
             ResponseModel rm = new();
+
             try
             {
                 DB dB = new();
@@ -581,6 +575,7 @@ namespace ExpoMR.Controllers
                 rm.Message = e.Message;
                 rm.Response = false;
             }
+
             return Json(rm);
         }
 
@@ -618,10 +613,15 @@ namespace ExpoMR.Controllers
 
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {
-            List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>(); 
-            
+            List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>();
+
             try
             {
+
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+
                 string query = "SELECT 0 AS IdPedido, 'TODOS' AS Pedido " +
                                "UNION " +
                                "SELECT vPedidos.IdPedido, CAST(vPedidos.IdPedido AS NVARCHAR) AS Pedido " +
@@ -629,10 +629,8 @@ namespace ExpoMR.Controllers
                                "WHERE vPedidos.Cliente = @IdCliente " +
                                "AND vPedidos.Usuario = @IdCliente " +
                                "GROUP BY vPedidos.IdPedido";
-				DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read()) 
                 {
@@ -641,6 +639,7 @@ namespace ExpoMR.Controllers
                         IdPedido = Convert.ToInt32(dr["IdPedido"]),
                         Pedido = dr["Pedido"].ToString()
 					};
+
                     ddlPedidos.Add(ddlPedidosCliente);
 				}
             }
@@ -652,10 +651,10 @@ namespace ExpoMR.Controllers
             return ddlPedidos;
         }
 
-        public static byte[] GetFotosArticulos(string Tipo, int Id)
+        public static byte[] GetLogoProveedor(string Tipo, int Id)
         {
 			DB dB = new();
-            byte[] bytes = new byte[0];
+            byte[] logo = new byte[0];
 
 			SqlParameter[] parameters = new SqlParameter[2];
 			parameters[0] = new SqlParameter("@Type", Tipo);
@@ -665,200 +664,10 @@ namespace ExpoMR.Controllers
 
 			if (dr.Read())
             {
-                object ObjImage = dr["Foto"];
-				bytes = (byte[])ObjImage;
-			}
+                logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
+            }
 			
-            return bytes;
-        }
-
-        public List<TipoDocumentos> GetTipoDocumentos(int IdCliente)
-        {
-			List<TipoDocumentos> tipos = new List<TipoDocumentos>();  
-
-			try
-			{
-				string query =   " SELECT 0 AS IdTipoDoc, 'Seleccione...' AS TipoDoc "
-							   + " UNION " 
-                               + " SELECT mDocumentos.IdDocumento AS IdTipoDoc, mDocumentos.Documento AS TipoDoc"
-							   + " FROM mDocumentos,"
-						       + " mClientes INNER JOIN"
-						       + " mPerEmp on mClientes.IdPersona = mPerEmp.IdPersona INNER JOIN"
-						       + " mPersonas on mPerEmp.Persona = mPersonas.Persona"
-						       + " Where mClientes.IdPersona = @IdCliente"
-						       + " AND ((mDocumentos.IdDocumento = 1"
-						       + " AND (UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'"
-						       + " OR UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]'))"
-						       + " OR mDocumentos.IdDocumento = 2"
-						       + " OR (mDocumentos.IdDocumento = 4 AND mClientes.Traslado = 1)"
-						       + " )"
-						       + " ORDER BY mDocumentos.Documento";
-				DB dB = new();
-				SqlParameter[] parameters = new SqlParameter[1];
-				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
-
-				while (dr.Read())
-				{
-					TipoDocumentos tipoDocumentos = new TipoDocumentos() 
-                    {
-						IdTipoDoc = Convert.ToInt16(dr["IdTipoDoc"].ToString()),
-                        TipoDoc = dr["TipoDoc"].ToString()
-					};
-
-                    tipos.Add(tipoDocumentos);
-				}
-			}
-			catch (Exception e)
-			{
-				return new List<TipoDocumentos>();
-			}
-
-            return tipos;
-        }
-
-        public List<UsosCFDI> GetUsoCFDIs(int IdCliente)
-        {
-			List<UsosCFDI> usoCFDIs = new List<UsosCFDI> ();
-
-			try
-			{
-				DB dB = new();
-				SqlParameter[] parameters = new SqlParameter[1];
-				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-				SqlDataReader dr = dB.ExecuteReader("SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI " +
-                                                    "FROM GetUsoCFDI( @IdCliente )", ref parameters);
-
-				while (dr.Read())
-				{
-                    UsosCFDI uso = new UsosCFDI()
-                    {
-                        IdUsoCFDI = Convert.ToInt16(dr["IdUsoCFDI"].ToString()),
-                        UsoCFDI = dr["UsoCFDI"].ToString()
-                    };
-
-                    usoCFDIs.Add(uso);
-				}
-			}
-			catch
-			{
-				usoCFDIs = new List<UsosCFDI>();
-			}
-
-            return usoCFDIs;
-        }
-
-        public List<Entregas> GetDirecciones(int IdCliente)
-        {
-			List<Entregas> entregas = new List<Entregas>();
-
-			try
-			{
-				DB dB = new();
-                
-                string query = " SELECT 0 AS IdEntrega, 'Seleccione...' AS Entrega "
-							   + " UNION " 
-                               + " SELECT vDirecciones.IdDireccion AS IdEntrega, vDirecciones.Ciudad + ', ' + vDirecciones.Estado + ' - ' + vDirecciones.Direccion AS Entrega "
-						       + " FROM vDirecciones INNER JOIN "
-						       + " mPerEmp ON vDirecciones.Persona = mPerEmp.Persona "
-						       + " WHERE mPerEmp.IdPersona = @IdCliente "
-						       + " ORDER BY Entrega ";
-
-				SqlParameter[] parameters = new SqlParameter[1];
-				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
-
-				while (dr.Read())
-				{
-					Entregas Entregaitem = new Entregas()
-					{
-						IdEntrega = Convert.ToInt16(dr["IdEntrega"].ToString()),
-						Entrega = dr["Entrega"].ToString()
-					};
-
-					entregas.Add(Entregaitem);
-				}
-			}
-			catch
-			{
-				entregas = new List<Entregas>();
-			}
-
-            return entregas;
-        }
-
-        public List<Trasportes> GetTrasportes(int IdCliente)
-        {
-            List<Trasportes> trasportes = new List<Trasportes>();
-
-			try
-			{
-				DB dB = new();
-				string query =    " SELECT 0 AS IdTrasportes, 'Seleccione una opción... ' AS Transporte"
-							    + " UNION"
-							    + " SELECT ISNULL(dTransCliente.IdTransporte,0) AS IdTrasportes, vPersonas.Nombre AS Transporte"
-							    + " From dTransCliente INNER JOIN"
-							    + " vPersonas ON dTransCliente.IdTransporte = vPersonas.IdPersona"
-							    + " Where dTransCliente.IdPersona = @IdCliente"
-							    + " Order by Transporte";
-
-				SqlParameter[] parameters = new SqlParameter[1];
-				parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
-
-				while (dr.Read())
-				{
-					Trasportes Transp = new Trasportes()
-					{
-                        IdTrasportes = Convert.ToInt16(dr["IdTrasportes"].ToString()),
-						Transporte = dr["Transporte"].ToString()
-					};
-
-					trasportes.Add(Transp);
-				}
-			}
-			catch
-			{
-				trasportes = new List<Trasportes>();
-			}
-			
-            return trasportes;
-        }
-
-        public List<TiposDeVenta> GetTiposVenta()
-        {
-			List<TiposDeVenta> tipoventa = new List<TiposDeVenta>();    
-
-			try
-			{
-				DB dB = new();
-				string query =    " SELECT 0 AS IdTipoVenta, 'Seleccione una opción... ' AS TipoVenta"
-								+ " UNION" 
-                                + " SELECT mTipoVenta.IdTipoVenta, mTipoVenta.TipoVenta"
-						        + " FROM mTipoVenta"
-						        + " WHERE mTipoVenta.IdTipoVenta != 5"
-						        + " ORDER BY mTipoVenta.TipoVenta";
-
-				SqlParameter[] parameters = new SqlParameter[0];
-				SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
-
-				while (dr.Read())
-				{
-					TiposDeVenta tipo = new TiposDeVenta()
-					{
-                        IdTipoVenta = Convert.ToInt16(dr["IdTipoVenta"].ToString()),
-						TipoVenta = dr["TipoVenta"].ToString()
-					};
-
-					tipoventa.Add(tipo);
-				}
-			}
-			catch
-			{
-				tipoventa = new List<TiposDeVenta>();
-			}
-			
-            return tipoventa;
+            return logo;
         }
     }
 }

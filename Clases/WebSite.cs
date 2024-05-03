@@ -9,6 +9,8 @@ using ExpoMR.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Net.NetworkInformation;
+using System.Data;
 
 namespace ExpoMR.Clases
 {
@@ -63,6 +65,122 @@ namespace ExpoMR.Clases
             return splitFecha[2] + "/" + splitFecha[1] + "/" + splitFecha[0] + " " + split[2];
         }
 
+        public static List<TipoDocumentos> GetTiposDocumentos(int IdCliente) 
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+
+            SqlDataReader dr = dB.ExecuteReader("GetTiposDocsCliente", ref parameters);
+
+            List<TipoDocumentos> TiposDocumentos = new();
+
+            while (dr.Read())
+            {
+                TipoDocumentos TipoDocumento = new();
+
+                TipoDocumento.IdTipoDoc = (byte)dr["IdDocumento"];
+                TipoDocumento.TipoDoc = (string)dr["Documento"];
+
+                TiposDocumentos.Add(TipoDocumento);
+            }
+
+            return TiposDocumentos;
+        }
+
+        public static List<Entregas> GetDireccionesEntrega(int IdCliente)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+
+            SqlDataReader dr = dB.ExecuteReader("GetDireccionesCliente", ref parameters);
+
+            List<Entregas> DireccionesEntrega = new();
+
+            while (dr.Read())
+            {
+                Entregas DireccionEntrega = new();
+
+                DireccionEntrega.IdEntrega = (int)dr["Entrega"];
+                DireccionEntrega.Entrega = (string)dr["DireccionE"];
+
+                DireccionesEntrega.Add(DireccionEntrega);
+            }
+
+            return DireccionesEntrega;
+        }
+
+        public static List<UsosCFDI> GetUsosCFDI(int IdCliente)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+            string SqlQuery = "SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI FROM GetUsoCFDI(@IdPersona)";
+
+            SqlDataReader dr = dB.ExecuteReader(SqlQuery, ref parameters, commandType: CommandType.Text, "IndigoCS");
+
+            List<UsosCFDI> UsosCFDI = new();
+
+            while (dr.Read())
+            {
+                UsosCFDI UsoCFDI = new();
+
+                UsoCFDI.IdUsoCFDI = (byte)dr["IdUsoCFDI"];
+                UsoCFDI.UsoCFDI = (string)dr["UsoCFDI"];
+
+                UsosCFDI.Add(UsoCFDI);
+
+            }
+
+            return UsosCFDI;
+        }
+
+        public static List<Trasportes> GetTransportes(int IdCliente)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+
+            SqlDataReader dr = dB.ExecuteReader("GetTransportesCliente", ref parameters);
+
+            List<Trasportes> Transportes = new();
+
+            while (dr.Read())
+            {
+                Trasportes Transporte = new();
+
+                Transporte.IdTrasporte = (int)dr["IdTransporte"];
+                Transporte.Transporte = (string)dr["Nombre"];
+
+                Transportes.Add(Transporte);
+            }
+
+            return Transportes;
+        }
+
+        public static List<TiposDeVenta> GetTiposVenta()
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[0];
+
+            SqlDataReader dr = dB.ExecuteReader("GetTiposVentaCliente", ref parameters);
+
+            List<TiposDeVenta> TiposVenta = new();
+
+            while (dr.Read())
+            {
+                TiposDeVenta TipoVenta = new();
+
+                TipoVenta.IdTipoVenta = (int)dr["IdTipoVenta"];
+                TipoVenta.TipoVenta = (string)dr["TipoVenta"];
+
+                TiposVenta.Add(TipoVenta);
+            }
+
+            return TiposVenta;
+        }
+        
         public enum TipoPromocion
         {
             Visita_Stand = 1,

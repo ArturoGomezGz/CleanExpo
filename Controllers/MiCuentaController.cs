@@ -104,15 +104,15 @@ namespace ExpoMR.Controllers
                 MiCuenta.RFC = (string)dr["RFC"];
                 MiCuenta.Direccion = (string)dr["Direccion"];
                 MiCuenta.IdTipoDoc = (byte)dr["IdDocumento"];
-                MiCuenta.TipoDocumentos = GetTipoDocumentos(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.TipoDocumentos = WebSite.GetTiposDocumentos(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
                 MiCuenta.IdUsoCFDI = (byte)dr["IdUsoCFDI"];
-                MiCuenta.UsoCFDI = GetUsoCFDIs(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.UsoCFDI = WebSite.GetUsosCFDI(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
                 MiCuenta.IdTipoVenta = (byte)dr["IdTipoVenta"];
-                MiCuenta.TiposVenta = GetTiposVenta();
+                MiCuenta.TiposVenta = WebSite.GetTiposVenta();
                 MiCuenta.Entrega = (int)dr["IdDireccion"];
-                MiCuenta.Direccciones = GetDirecciones(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.Direccciones = WebSite.GetDireccionesEntrega(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
                 MiCuenta.IdTransporte = (int)dr["IdTransporte"];
-                MiCuenta.Trasportes = GetTrasportes(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
+                MiCuenta.Trasportes = WebSite.GetTransportes(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
                 MiCuenta.IdPorte = (byte)dr["IdPorte"];
                 MiCuenta.Portes = GetPorte(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
             }
@@ -186,123 +186,7 @@ namespace ExpoMR.Controllers
                 ModelState.AddModelError(String.Empty, error.Description);
             }
         }
-
-        public List<TipoDocumentos> GetTipoDocumentos(int IdCliente)
-        {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
-
-            SqlDataReader dr = dB.ExecuteReader("GetTiposDocsCliente", ref parameters);
-
-            List<TipoDocumentos> TiposDocumentos = new();
-
-            while (dr.Read())
-            {
-                TipoDocumentos TipoDocumento = new();
-
-                TipoDocumento.IdTipoDoc = (byte)dr["IdDocumento"];
-                TipoDocumento.TipoDoc = (string)dr["Documento"];
-
-                TiposDocumentos.Add(TipoDocumento);
-            }
-
-            return TiposDocumentos;
-        }
-
-        public List<UsosCFDI> GetUsoCFDIs(int IdCliente)
-        {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
-            string SqlQuery = "SELECT GetUsoCFDI.IdUsoCFDI, GetUsoCFDI.UsoCFDI FROM GetUsoCFDI(@IdPersona)";
-
-            SqlDataReader dr = dB.ExecuteReader(SqlQuery, ref parameters, commandType: CommandType.Text, "IndigoCS");
-
-            List<UsosCFDI> UsosCFDI = new();
-
-            while (dr.Read())
-            {
-                UsosCFDI UsoCFDI = new();
-
-                UsoCFDI.IdUsoCFDI = (byte)dr["IdUsoCFDI"];
-                UsoCFDI.UsoCFDI = (string)dr["UsoCFDI"];
-
-                UsosCFDI.Add(UsoCFDI);
-
-            }
-
-            return UsosCFDI;
-        }
-
-        public List<TiposDeVenta> GetTiposVenta()
-        {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[0];
-
-            SqlDataReader dr = dB.ExecuteReader("GetTiposVentaCliente", ref parameters);
-
-            List<TiposDeVenta> TiposVenta = new();
-
-            while (dr.Read()) 
-            {
-                TiposDeVenta TipoVenta = new();
-
-                TipoVenta.IdTipoVenta = (int)dr["IdTipoVenta"];
-                TipoVenta.TipoVenta = (string)dr["TipoVenta"];
-
-                TiposVenta.Add(TipoVenta);
-            }
-
-            return TiposVenta;
-        }
-
-        public List<Entregas> GetDirecciones(int IdCliente)
-        {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
-
-            SqlDataReader dr = dB.ExecuteReader("GetDireccionesCliente", ref parameters);
-
-            List<Entregas> DireccionesEntrega = new();
-
-            while (dr.Read())
-            {
-                Entregas DireccionEntrega = new();
-
-                DireccionEntrega.IdEntrega = (int)dr["Entrega"];
-                DireccionEntrega.Entrega = (string)dr["DireccionE"];
-
-                DireccionesEntrega.Add(DireccionEntrega);
-            }
-
-            return DireccionesEntrega;
-        }
-        
-        public List<Trasportes> GetTrasportes(int IdCliente)
-        {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
-
-            SqlDataReader dr = dB.ExecuteReader("GetTransportesCliente", ref parameters);
-
-            List<Trasportes> Transportes = new();
-
-            while (dr.Read())
-            {
-                Trasportes Transporte = new();
-
-                Transporte.IdTrasporte = (int)dr["IdTransporte"];
-                Transporte.Transporte = (string)dr["Nombre"];
-
-                Transportes.Add(Transporte);
-            }
-
-            return Transportes;
-        }
-
+      
         public List<Portes> GetPorte(int IdCliente)
         {
             DB dB = new();
