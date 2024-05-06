@@ -212,7 +212,7 @@ namespace ExpoMR.Controllers
 				parameters[1] = new SqlParameter("@idproducto", idProducto);
 				parameters[2] = new SqlParameter("@unitario", unitario);
 				parameters[3] = new SqlParameter("@cantidad", cantidad);
-				parameters[4] = new SqlParameter("@usuario", idProducto);
+				parameters[4] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 
 				dB.ExecuteNonQuery("CotizarAgregar", ref parameters);
 
@@ -424,7 +424,7 @@ namespace ExpoMR.Controllers
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
 
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -480,7 +480,7 @@ namespace ExpoMR.Controllers
                 parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
                 parameters[2] = new SqlParameter() {ParameterName = "@Id_Inserted", Value = 0, Direction = ParameterDirection.Output };
 
-                dB.ExecuteNonQuery(query, ref parameters);
+                dB.ExecuteNonQuery(query, ref parameters, commandType: CommandType.Text);
 
                 rm.Response = true;
                 rm.Message = "El pedido ha sido colocado correctamente.";
@@ -586,7 +586,7 @@ namespace ExpoMR.Controllers
 			try
 			{
 				DB dB = new();
-				SqlParameter[] parameters = new SqlParameter[4];
+				SqlParameter[] parameters = new SqlParameter[9];
 
 				parameters[0] = new SqlParameter("@IdCliente", cotizacion.IdCliente);
 				parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
@@ -599,7 +599,7 @@ namespace ExpoMR.Controllers
                 parameters[8] = new SqlParameter("@Obsv", cotizacion.Observaciones);
 
 
-				dB.ExecuteNonQuery("CotizarActualizarDatos", ref parameters);
+                dB.ExecuteNonQuery("CotizarActualizarDatos", ref parameters);
 
                 result = true;
 			}
@@ -668,6 +668,20 @@ namespace ExpoMR.Controllers
             }
 			
             return logo;
+        }
+
+        public void PorConfirmar(int IdProducto, int Cliente, int Confirmado)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[4];
+
+            parameters[0] = new SqlParameter("@IdProducto", IdProducto);
+            parameters[1] = new SqlParameter("@cliente", Cliente);
+            parameters[2] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[3] = new SqlParameter("@Confirmado", Confirmado);
+
+            dB.ExecuteNonQuery("ConfirmarProducto", ref parameters);
+
         }
     }
 }

@@ -563,27 +563,90 @@
         }
     }
 
+    function seleccionarTodos()   
+    {
+        var inputs = document.querySelectorAll('input[id^="chkSel"]');
+
+        for (i = 0; i < inputs.length; i++) 
+        {
+            $.post(path + "Carrito/PorConfirmar",
+                {                   
+                    IdProducto: inputs[i].value,
+                    Cliente: @Model.IdCliente,
+                    Confirmado: 1 //Confirma todos los productos
+                });
+
+            inputs.checked = true;
+        }
+
+        window.location.reload()
+    }
+
+    function deseleccionarTodos() 
+    {
+        var inputs = document.querySelectorAll('input[id^="chkSel"]');
+
+        for (i = 0; i < inputs.length; i++) {
+            $.post(path + "Carrito/PorConfirmar",
+                {
+                    IdProducto: inputs[i].value,
+                    Cliente: @Model.IdCliente,
+                    Confirmado: 2 //Desconfirma todos los productos
+                });
+
+            inputs.checked = false;
+        }
+
+        window.location.reload()
+    }
+
+    function Checked(IdProducto) 
+    {
+        let Cliente = @Model.IdCliente;
+
+        $.post(path + "Carrito/PorConfirmar",
+            {               
+                IdProducto: IdProducto,
+                Cliente: Cliente,
+                Confirmado: 3 //Confirma o Desconfirma un producto especifico
+            },
+            function () 
+            {
+                window.location.reload()
+            })
+            .error(function () 
+            {
+                block.remove();
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+    }
+
     $(document).ready(function()
     {
         $("#txt_Credito").html(FormatoMoneda(@Model.Credito))
         $("#txt_Subtotal").html(FormatoMoneda(@Model.Subtotal))
         $("#txt_IVA").html(FormatoMoneda(@Model.IVA))
         $("#txt_Total").html(FormatoMoneda(@Model.Total))
+        $("#txt_TotalProd").html(@Model.Productos)
 
         LoadDataTablePedidos()
+       
         $("#cmb-pedidos").change(function () 
         {
             $("#Show_Pedidos").html("")
             LoadDataTablePedidos()
         });
+
         $("#cmb-TipoDoc").change(function () 
         {            
             ChangeTipoDocumento(this.value)
         });
+
         $("#cmb-UsosCFDI").change(function () 
         {            
             ChangeTipoCFDI(this.value)
         });
+
         $("#cmb-TipoVenta").change(function()
         {
             ChangeTipoVenta(this.value)
@@ -593,14 +656,18 @@
             {
                 IdCliente: @Model.IdCliente
             },
-            function (data) {                
-                if (data.response) {
+            function (data) 
+            {                
+                if (data.response) 
+                {
                     $('#Premios_table').DataTable({
                         responsive: true,
-                        "language": {
+                        "language": 
+                        {
                             "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
                         },
-                        "columns": [
+                        "columns": 
+                        [
                             { "data": "proveedor", title: "Proveedor" },
                             { "data": "cantidad", title: "cantidad" },
                             { "data": "nombre", title: "Nombre" },
@@ -623,9 +690,11 @@
                     ShowAlert(data.message, data.false, "lista_premios")
                 }
                 
-            }).error(function () {
-                ShowAlert("No fue posible cargar sus datos", false)
-        });
+            }).error(function ()
+            {
+                ShowAlert("No fue posible cargar sus datos", false)        
+            }
+        );
 
         $("#smartwizard").on("showStep", function (e, anchorObject, stepIndex, stepDirection, stepPosition) 
         {
@@ -701,11 +770,13 @@
  @if(Model.HasProduct == true)
  {
      <script>
-         $(document).ready(function(){
+         $(document).ready(function()
+         {
             $("#txt_Credito_divPedido").html(FormatoMoneda(@Model.Credito))
             $("#txt_Subtotal_divPedido").html(FormatoMoneda(@Model.Subtotal))
             $("#txt_IVA_divPedido").html(FormatoMoneda(@Model.IVA))
             $("#txt_Total_divPedido").html(FormatoMoneda(@Model.Total))
+            $("#txt_TotalProd").html(@Model.Productos)
         })
      </script>
  }
@@ -723,13 +794,17 @@
             </li>
         </ul>
     </div>
-
     <div id="divCarrito" class="row display_panel_active">
         <p><a class="btn btn-index" asp-controller="CargarProducto" asp-action="Index">Carga Masiva</a></p>
+        <div>
+            <p><a class="btn btn-SelectAll" onclick="seleccionarTodos()">Marcar Todos</a></p>
+            <p><a class="btn btn-UnSelectAll" onclick="deseleccionarTodos()">DesMarcar Todo</a></p>
+        </div>
         <div class="tab-content_productos col-md-8 col-sm-6">
             @{
                 int IdProveedor = 0;
                 List<ListaCarrito> ListCarrito = ExpoMR.Controllers.CarritoController.GetCarrito(Model.IdCliente, Model.IdCliente);
+
                 if (ListCarrito.Count() > 0)
                 {
                     foreach (ExpoMR.Models.ListaCarrito model in ListCarrito)
@@ -740,7 +815,14 @@
                         }
                         <div class="row">
                             <div class="col-md-1">
-                                <input type="checkbox">
+                            @if (model.PorConfirmar == true)
+                            {
+                                <input type="checkbox" id="chkSel" checked="checked" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="chkSel" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
+                            }
                             </div>
                             <div class="col-md-2 col-sm-55">
                                 @if (model.Proveedor != IdProveedor)
@@ -748,7 +830,7 @@
                                     <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
                                         <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagenCarrito">
                                     </a>
-                                    IdProveedor = model.Proveedor;
+                                IdProveedor = model.Proveedor;
                                 }
                             </div>
                             <div class="col-md-2 col-sm-55">
@@ -811,6 +893,7 @@
                     <p><strong>Subtotal: </strong><text id="txt_Subtotal"></text></p>
                     <p><strong>IVA: </strong><text id="txt_IVA"></text></p>
                     <p><strong>Total: </strong><text id="txt_Total"></text></p>
+                    <p><strong>Total de Productos: </strong><text id="txt_TotalProd"></p>
                     <button type="button" class="btn btn-naranja mb-3 mt-3" onclick="ColocarOrden()">Coloca tu Orden <i class="fa fa-chevron-circle-right"></i> </button>
                 }
                 else
