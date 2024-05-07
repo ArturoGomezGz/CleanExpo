@@ -148,7 +148,7 @@
 
 	function InvitacionMasiva() {
 
-		const cb = document.querySelectorAll('input[type=checkbox]:checked[Id="chkSel"]'); //Se seleccionan todos los controles de tipo checkbox y su id= chkSel
+		const cb = document.querySelectorAll('input[type=checkbox]:checked[Id="chkSel"]'); //Se seleccionan todos los controles de tipo checkbox y su id= chkSel NO DEBE DE HABER ID´REPETIDOS POR ALGO SON ID
 
 		if (cb.length < 1) { //Se valida que debe existir al menos 1 checkbox seleccionado para el envio de invitacion
 			alert('Debes selecionar un email para enviar invitacion')
