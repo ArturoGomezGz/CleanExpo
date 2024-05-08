@@ -320,56 +320,41 @@ namespace ExpoMR.Controllers
             return Json(rm);
         }
 
-        [HttpPost]
-        public JsonResult GetPedidosCarrito(int IdCliente, int IdUsuario, int IdPedido = 0)
+        public static List<PedidosCarrito> GetPedidosCarrito(int IdCliente, int IdUsuario, int IdPedido = 0)
         {
-            ResponseModel rm = new();
             List<PedidosCarrito> pedidos = new List<PedidosCarrito>();
 
-            try
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+
+            parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+            parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+            parameters[2] = new SqlParameter("@IdPedido", IdPedido);
+
+            SqlDataReader dr = dB.ExecuteReader("GetPedidosCarrito", ref parameters);
+
+            while (dr.Read())
             {
-                DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[3];
-
-                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
-                parameters[2] = new SqlParameter("@IdPedido", IdPedido);
-
-                SqlDataReader dr = dB.ExecuteReader("GetPedidosCarrito", ref parameters);
-
-                while (dr.Read())
+                PedidosCarrito pedidoCarrito = new PedidosCarrito()
                 {
-                    PedidosCarrito pedidoCarrito = new PedidosCarrito()
-                    {
-                        RegistroProveedor = Convert.ToInt32(dr["RegistroProveedor"]),
-                        Proveedor = Convert.ToInt32(dr["Proveedor"]),
-                        RegistroPedido = Convert.ToInt32(dr["RegistroPedido"]),
-                        IdPedido = Convert.ToInt32(dr["IdPedido"]),
-                        IdProducto = Convert.ToInt32(dr["IdProducto"]),
-                        Nombre = dr["Nombre"].ToString(),
-                        Presentacion = dr["Presentacion"].ToString(),
-                        Cantidad = Convert.ToInt32(dr["Cantidad"]),
-                        PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
-                        Total = Convert.ToDecimal(dr["Total"]),
-                        Laboratorio = dr["Laboratorio"].ToString(),
-                        imgProducto = GeneralesController.GetFoto(Convert.ToInt32(dr["IdProducto"]))
+                    RegistroProveedor = Convert.ToInt32(dr["RegistroProveedor"]),
+                    Proveedor = Convert.ToInt32(dr["Proveedor"]),
+                    RegistroPedido = Convert.ToInt32(dr["RegistroPedido"]),
+                    IdPedido = Convert.ToInt32(dr["IdPedido"]),
+                    IdProducto = Convert.ToInt32(dr["IdProducto"]),
+                    Nombre = dr["Nombre"].ToString(),
+                    Presentacion = dr["Presentacion"].ToString(),
+                    Cantidad = Convert.ToInt32(dr["Cantidad"]),
+                    PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
+                    Total = Convert.ToDecimal(dr["Total"]),
+                    Laboratorio = dr["Laboratorio"].ToString(),
+                    imgProducto = GeneralesController.GetFoto(Convert.ToInt32(dr["IdProducto"]))
                 };
 
-                    pedidos.Add(pedidoCarrito);
-                }
-
-                rm.Result = pedidos;
-                rm.Response = pedidos.Count > 0;
-                rm.Message = pedidos.Count > 0 ? "" : "No Hay Pedidos por mostrar";
-
-            }
-            catch (Exception e)
-            {
-                rm.Message = e.Message;
-                rm.Response = false;
+                pedidos.Add(pedidoCarrito);
             }
 
-            return Json(rm);
+            return pedidos;
         }
 
         [HttpPost]
