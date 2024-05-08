@@ -33,9 +33,9 @@ function GetRuleta(IdPersona)
     );
 }
 
-function GetCarrito(IdPersona)
+function GetCarrito()
 {
-    $.post(path + "Generales/GetCarrito?IdPersona=" + IdPersona,
+    $.post(path + "Generales/GetCarrito",
         function (data)
         {
             $("#cantidad_carrito").html(data)
@@ -227,3 +227,4 @@ window.addEventListener("MSPointerMove", resetTimer);
 
 // Comenzar el temporizador inicial
 resetTimer();
+

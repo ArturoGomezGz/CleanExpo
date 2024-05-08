@@ -135,17 +135,15 @@
     function mostrarModal(IdArticulo) {
         $("#datail_modal_Articulo").html("")
         cadena = "";
-        $.post(path + "Carrito/GetDetailArticulo",
+        $.post(path + "Carrito/GetArticuloGanado",
             {
                 IdArticulo: IdArticulo
             },
             function (data) {
-                if (data.response) {
-                    cadena += '<img class="promocion_imagen mx-auto pb-3" style="max-width: 50%" alt="imagen" src="data:image/png;base64,' + data.result[0].foto + '">'
-                        + '<label class="promocion_label">'
-                        + data.result[0].mArticulos.nombre
-                        + '</label>'
-                }
+                cadena += '<img class="promocion_imagen mx-auto pb-3" style="max-width: 50%" alt="imagen" src="data:image/png;base64,' + data.foto + '">'
+                    + '<label class="promocion_label">'
+                    +  data.nombre
+                    + '</label>'
 
                 $("#datail_modal_Articulo").append(cadena)
             })
@@ -613,9 +611,9 @@
     </div>
     <div id="divCarrito" class="row display_panel_active">
         <p><a class="btn btn-index" asp-controller="CargarProducto" asp-action="Index">Carga Masiva</a></p>
-        <div>
-            <p><a class="btn btn-SelectAll" onclick="seleccionarTodos()">Marcar Todos</a></p>
-            <p><a class="btn btn-UnSelectAll" onclick="deseleccionarTodos()">DesMarcar Todo</a></p>
+        <div class="d-flex">
+            <p><a class="btn btn-SelectAll btn-outline-info mx-1" onclick="seleccionarTodos()">Marcar Todos</a></p>
+            <p><a class="btn btn-UnSelectAll btn-outline-info mx-1" onclick="deseleccionarTodos()">DesMarcar Todo</a></p>
         </div>
         <div class="tab-content_productos col-md-8 col-sm-6">
             @{
@@ -646,7 +644,7 @@
                                 @if (model.Proveedor != IdProveedor)
                                 {
                                     <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                        <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagenCarrito">
+                                        @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagenCarrito">*@
                                     </a>
                                     IdProveedor = model.Proveedor;
                                 }
@@ -655,7 +653,7 @@
                                 @if (model.imgProducto.Length > 0)
                                 {
                                     <a href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                        <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagenCarrito">
+                                        @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagenCarrito">*@
                                     </a>
                                 }
                                 else
@@ -757,12 +755,12 @@
                                         <div class="row">
                                             <div class="col-md-2 col-sm-55">
                                                 <a href="#" style=" margin: auto;">
-                                                    <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagen_pedido">
+                                                    @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagen_pedido">*@
                                                 </a>
                                             </div>
                                             <div class="col-md-2 col-sm-55">
                                                 <a href="#" style=" margin: auto;">
-                                                    <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">
+                                                    @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">*@
                                                 </a>
                                             </div>
                                             <div class="col-md-4 col-sm-55">
@@ -789,7 +787,7 @@
                                         </div>
                                         <div class="col-md-2 col-sm-55">
                                         <a href="#" style=" margin: auto;">
-                                            <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">
+                                            @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">*@
                                             </a>
                                         </div>
                                         <div class="col-md-4 col-sm-55">
@@ -817,12 +815,12 @@
                                     <div class="row">
                                       <div class="col-md-2 col-sm-55">
                                           <a href="#" style=" margin: auto;">
-                                            <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagen_pedido">
+                                            @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagen_pedido">*@
                                           </a>
                                       </div>
                                       <div class="col-md-2 col-sm-55">
                                         <p class="pb-0">  <a href="#" style=" margin: auto;">
-                                                <img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">
+                                                @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">*@
                                           </a></p>
                                       </div>
                                       <div class="col-md-4 col-sm-55">

@@ -210,6 +210,29 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetArticuloGanado(int IdArticulo)
+        {
+            ArticulosProveedores Articulo = new ArticulosProveedores();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+
+            SqlDataReader dr = dB.ExecuteReader("GetArticuloProv", ref parameters);
+
+            while (dr.Read())
+            {
+                Articulo.IdArticulo = (Int16)dr["IdArticulo"];
+                Articulo.Nombre = (string)dr["Nombre"];
+                Articulo.Descripcion = (string)dr["Descripcion"];
+                Articulo.IDdArticulos = (int)dr["IDdArticulos"];
+                Articulo.Foto = (byte[])dr["Foto"];
+            }
+
+            return Json(Articulo);
+        }
+
+        [HttpPost]
         public JsonResult GetDatosFacturacion(int IdCliente)
         {
             ResponseModel rm = new();
@@ -393,7 +416,6 @@ namespace ExpoMR.Controllers
 
                     premios.Add(Premio);
                 }
-
                 if (premios.Count > 0)
                 {
                     rm.Result = premios;
@@ -654,5 +676,7 @@ namespace ExpoMR.Controllers
 
             dB.ExecuteNonQuery("ConfirmarProducto", ref parameters);
         }
+
+
     }
 }

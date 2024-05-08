@@ -37,12 +37,12 @@ namespace ExpoMR.Controllers
             return WebSite.GetRuleta(IdPersona);
         }
 
-        public int GetCarrito(int IdPersona)
+        public int GetCarrito()
         {
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@cliente", IdPersona);
-            parameters[1] = new SqlParameter("@usuario", IdPersona);
+            parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 
             return (int)dB.ExecuteScalar("ExpoCountProducts", ref parameters);
         }
