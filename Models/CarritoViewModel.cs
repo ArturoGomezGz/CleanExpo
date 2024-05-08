@@ -16,19 +16,10 @@ namespace ExpoMR.Models
         [NotMapped]
         public int IdCliente { get; set; }
         
-        public int Productos { get; set; }
-        
-        [NotMapped]
-        public bool HasProduct { get; set; }
-        
-        public decimal Subtotal { get; set; }
-        
-        public decimal IVA { get; set; }
-        
-        public decimal Total { get; set; }
-        
-        public decimal? Credito { get; set; }
-        
+        public Totales TotalesCotizacion { get; set; }
+
+        public Totales TotalesPedidos { get; set; }
+
         [NotMapped]
         [Display(Name = "Seleccione un pedido: ")]
         
@@ -79,5 +70,20 @@ namespace ExpoMR.Models
         public int IdPedido { get; set; }
     
         public string Pedido { get; set; }
-    }    
+    }
+
+    public class Totales 
+    {
+        public decimal Subtotal { get; set; }
+
+        public decimal IVA { get; set; }
+
+        public decimal Total { get; set; }
+
+        public decimal Credito { get; set; }
+
+        public int Productos { get; set; }
+
+        public bool HasProduct { get; set; }
+    }
 }

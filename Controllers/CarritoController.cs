@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Nancy.Conventions;
 using Org.BouncyCastle.Utilities;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -38,26 +39,12 @@ namespace ExpoMR.Controllers
             bool IsClienteVip = WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP");
             bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
-            Carrito carrito = GetCarritoUsuario(IdCliente, IdUsuario);
-
-            if (carrito != null)
-            {
-                carrito.CantidadCarrito = GetCantidadCarrito(IdUsuario, IdCliente);
-                carrito.IdUsuario = IdUsuario;
-                carrito.IdCliente = IdCliente;
-                carrito.HasProduct = true;
-            }
-            else
-            {
-                carrito = new Carrito();
-                carrito.HasProduct = false;
-                carrito.Productos = 0;
-                carrito.Subtotal = 0;
-                carrito.IVA = 0;
-                carrito.Total = 0;
-                carrito.Credito = 0;
-            }
-
+            Carrito carrito = new Carrito(); 
+            carrito.CantidadCarrito = GetCantidadCarrito(IdUsuario, IdCliente);
+            carrito.IdUsuario = IdUsuario;
+            carrito.IdCliente = IdCliente;
+            carrito.TotalesCotizacion = GetTotales(IdCliente, IdUsuario, false); //se inicializan los totales de la cotizacion
+            carrito.TotalesPedidos = GetTotales(IdCliente, IdUsuario, true); //se inicializan los totales de los pedidos
             carrito.IdPedido = 0;
             carrito.PedidosCliente = GetddlClientes(IdCliente);
             carrito.IdTipoDoc = 0;
@@ -364,8 +351,9 @@ namespace ExpoMR.Controllers
                         Cantidad = Convert.ToInt32(dr["Cantidad"]),
                         PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
                         Total = Convert.ToDecimal(dr["Total"]),
-                        Laboratorio = dr["Laboratorio"].ToString()
-                    };
+                        Laboratorio = dr["Laboratorio"].ToString(),
+                        imgProducto = GeneralesController.GetFoto(Convert.ToInt32(dr["IdProducto"]))
+                };
 
                     pedidos.Add(pedidoCarrito);
                 }
@@ -599,27 +587,29 @@ namespace ExpoMR.Controllers
             return result;
         }
 
-        public static Carrito GetCarritoUsuario(int IdCliente, int IdUsuario)
+        public static Totales GetTotales(int IdCliente, int IdUsuario, bool Origen)
         {
-            Carrito carrito = new Carrito();
+            Totales totales = new Totales();
 
             DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[2];
+            SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
             parameters[1] = new SqlParameter("@IdPersona", IdUsuario);
+            parameters[2] = new SqlParameter("@Origen", Origen);
 
-            SqlDataReader dr = dB.ExecuteReader("GetCarrito", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader("GetTotales", ref parameters);
 
             if (dr.Read())
             {
-                carrito.Productos = Convert.ToInt32(dr["Productos"]);
-                carrito.Subtotal = Convert.ToDecimal(dr["Subtotal"]);
-                carrito.IVA = Convert.ToDecimal(dr["Iva"]);
-                carrito.Total = Convert.ToDecimal(dr["Total"]);
-                carrito.Credito = Convert.ToDecimal(dr["Credito"]);
+                totales.Productos = (dr["Productos"] != DBNull.Value ? (Int32)dr["Productos"] : 0);
+                totales.Subtotal = (dr["Subtotal"] != DBNull.Value ? (decimal)dr["Subtotal"] : 0);
+                totales.IVA = (dr["Iva"] != DBNull.Value ? (decimal)dr["Iva"] : 0);
+                totales.Total = (dr["Total"] != DBNull.Value ? (decimal)dr["Total"] : 0);
+                totales.Credito = (dr["Credito"] != DBNull.Value ? (decimal)dr["Credito"] : 0);
+                totales.HasProduct = (dr["Productos"] != DBNull.Value ? true : false);
             }
 
-            return carrito;
+            return totales;
         }
 
         public int GetCantidadCarrito(int IdPersona, int cliente)
