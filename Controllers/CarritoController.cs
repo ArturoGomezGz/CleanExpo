@@ -96,7 +96,6 @@ namespace ExpoMR.Controllers
                     lcarrito.PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]);
                     lcarrito.total = Convert.ToDecimal(dr["Total"]);
                     lcarrito.PorConfirmar = Convert.ToBoolean(dr["PorConfirmar"]);
-                    lcarrito.imgProducto = GeneralesController.GetFoto(lcarrito.IdProducto);
 
                     listaCarrito.Add(lcarrito);
                 }
@@ -370,8 +369,7 @@ namespace ExpoMR.Controllers
                     Cantidad = Convert.ToInt32(dr["Cantidad"]),
                     PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
                     Total = Convert.ToDecimal(dr["Total"]),
-                    Laboratorio = dr["Laboratorio"].ToString(),
-                    imgProducto = GeneralesController.GetFoto(Convert.ToInt32(dr["IdProducto"]))
+                    Laboratorio = dr["Laboratorio"].ToString()
                 };
 
                 pedidos.Add(pedidoCarrito);
@@ -676,7 +674,5 @@ namespace ExpoMR.Controllers
 
             dB.ExecuteNonQuery("ConfirmarProducto", ref parameters);
         }
-
-
     }
 }

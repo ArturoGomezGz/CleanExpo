@@ -25,8 +25,5 @@ namespace ExpoMR.Models
         public decimal total { get; set; }
 
         public bool PorConfirmar { get; set; }
-
-        [NotMapped]
-        public byte[] imgProducto { get; set; }
     }
 }

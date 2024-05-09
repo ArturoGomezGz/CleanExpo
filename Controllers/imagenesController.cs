@@ -11,6 +11,7 @@ using Nancy.Json;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 
@@ -36,11 +37,40 @@ namespace ExpoMR.Controllers
             }
 
             if (Logo == null)
-                return "Producto no encontrado";
+                return "Logo de proveedor no encontrado";
 
             try
             {
                 return WebSite.ConvertToBase64(Logo.Logo);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<string>> GetFotoProducto(int IdProducto)
+        {
+            byte[] fotos = Array.Empty<byte>();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProducto", IdProducto);
+
+            SqlDataReader dr = dB.ExecuteReader("GetFotoProd", ref parameters);
+
+            while (dr.Read())
+            {
+                fotos = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
+            }
+
+            if (fotos == null || fotos.Length == 0)
+                return "Foto de producto no encontrada";
+
+            try
+            {
+                return WebSite.ConvertToBase64(fotos);
             }
             catch (Exception)
             {

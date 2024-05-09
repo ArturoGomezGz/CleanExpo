@@ -28,7 +28,5 @@ namespace ExpoMR.Models
         public decimal Total { get; set; }
 
         public string Laboratorio { get; set; }
-
-        public byte[] imgProducto { get; set; }
     }
 }

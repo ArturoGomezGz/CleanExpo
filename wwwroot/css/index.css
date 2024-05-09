@@ -892,10 +892,11 @@ p, ol, h6{
     font-weight: bold;
 }
 
-.imagenCarrito {
+.LogoProvCotizacion, .FotoProdCotizacion, .FotoProdPedido, .LogoProvPedido {
     width: 80px;
     margin: auto;
 }
+
 .nav-link.link-item-titulo{
     color:var(--azul-oscuro)
 }

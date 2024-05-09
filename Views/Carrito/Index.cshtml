@@ -440,7 +440,8 @@
             });
     }
 
-    $(document).ready(function () {
+    $(document).ready(function () 
+    {
         $("#txt_Credito").html(FormatoMoneda(@Model.TotalesCotizacion.Credito))
         $("#txt_Subtotal").html(FormatoMoneda(@Model.TotalesCotizacion.Subtotal))
         $("#txt_IVA").html(FormatoMoneda(@Model.TotalesCotizacion.IVA))
@@ -564,6 +565,8 @@
             $('#smartwizard').smartWizard("next");
             return true;
         });
+
+        srcImg() //se cargaran las imagenes de logos de proveedores y fotos de productos en las secciones de Cotizacion y Pedidos
     })
 
     function FiltroPedido(NumPedido){
@@ -580,6 +583,190 @@
             }
         });
     }
+
+    function srcImg()
+    {
+        var logosProvCotizacion = document.querySelectorAll('img.LogoProvCotizacion');
+
+        console.log(logosProvCotizacion);
+       
+        for (var i = 0; i < logosProvCotizacion.length; i++)
+        {
+            var proveedorId = logosProvCotizacion[i].getAttribute("data-id");
+
+            GetImgAsyncLogoProvCotizacion(proveedorId) 
+        }
+        
+
+        var prodFotosCotizacion = document.querySelectorAll('img.FotoProdCotizacion');
+
+        console.log(prodFotosCotizacion);
+
+        for (var i = 0; i < prodFotosCotizacion.length; i++)
+        {
+            var productoId = prodFotosCotizacion[i].getAttribute("data-id");
+
+            GetImgAsyncProdCotizacion(productoId) 
+        }
+
+
+        var prodFotosPedido = document.querySelectorAll('img.FotoProdPedido');
+        
+        console.log(prodFotosPedido);
+
+        for (var i = 0; i < prodFotosPedido.length; i++)
+        {
+            var productoId = prodFotosPedido[i].getAttribute("data-id");
+
+            GetImgAsyncProdPedido(productoId) 
+        }
+
+        var logosProvPedido = document.querySelectorAll('img.LogoProvPedido');
+
+        console.log(logosProvPedido);
+
+        for (var i = 0; i < logosProvPedido.length; i++)
+        {
+            var proveedorId = logosProvPedido[i].getAttribute("data-id");
+
+            GetImgAsyncLogoProvPedido(proveedorId) 
+        }
+
+    }
+
+    async function GetImgAsyncLogoProvCotizacion(proveedorId)
+    {
+        try 
+        {
+            const response = await fetch(`/imagenes/GetLogoProveedor?IdProveedor=${proveedorId}`);
+            
+            if (!response.ok) 
+            {
+                throw new Error('Ocurrió un error al hacer la solicitud.');
+            }
+
+            const data = await response.text() // Suponiendo que el controlador devuelve texto
+
+
+            if (data.length > 0) 
+            {
+            document.getElementById("ProveedorCotizacion_" + proveedorId).src = "data:image/png;base64," + data;
+
+            }
+                
+            else
+            { 
+            document.getElementById("ProveedorCotizacion_" + proveedorId).src = "../Imagenes/noimage.png";
+
+            }
+                
+        } 
+        catch (error) 
+        {
+            document.getElementById("ProveedorCotizacion_" + proveedorId).src = "../Imagenes/noimage.png";
+
+        }
+    }
+
+    async function GetImgAsyncProdCotizacion(productoId)
+    {
+        try 
+        {
+            const response = await fetch(`/imagenes/GetFotoProducto?IdProducto=${productoId}`);
+            
+            if (!response.ok) 
+            {
+                throw new Error('Ocurrió un error al hacer la solicitud.');
+            }
+
+            const data = await response.text() // Suponiendo que el controlador devuelve texto
+
+
+            if (data.length > 0) 
+            {
+            document.getElementById("ProductoCotizacion_" + productoId).src = "data:image/png;base64," + data;
+
+            }
+                
+            else
+            { 
+            document.getElementById("ProductoCotizacion_" + productoId).src = "../Imagenes/noimage.png";
+
+            }
+                
+        } 
+        catch (error) 
+        {
+            document.getElementById("ProductoCotizacion_" + productoId).src = "../Imagenes/noimage.png";
+
+        }
+    }
+
+    async function GetImgAsyncProdPedido(productoId)
+    {
+        try 
+        {
+            const response = await fetch(`/imagenes/GetFotoProducto?IdProducto=${productoId}`);
+            
+            if (!response.ok) 
+            {
+                throw new Error('Ocurrió un error al hacer la solicitud.');
+            }
+
+            const data = await response.text() // Suponiendo que el controlador devuelve texto
+
+
+            if (data.length > 0) 
+            {
+            document.getElementById("ProductoPedido_" + productoId).src = "data:image/png;base64," + data;
+
+            }
+                
+            else
+            { 
+            document.getElementById("ProductoPedido_" + productoId).src = "../Imagenes/noimage.png";
+
+            }
+                
+        } 
+        catch (error) 
+        {
+            document.getElementById("ProductoPedido_" + productoId).src = "../Imagenes/noimage.png";
+
+        }
+    }
+
+    async function GetImgAsyncLogoProvPedido(proveedorId)
+    {
+        try 
+        {
+            const response = await fetch(`/imagenes/GetLogoProveedor?IdProveedor=${proveedorId}`);
+            
+            if (!response.ok) 
+            {
+                throw new Error('Ocurrió un error al hacer la solicitud.');
+            }
+
+            const data = await response.text() // Suponiendo que el controlador devuelve texto
+
+
+            if (data.length > 0) 
+            {
+            document.getElementById("ProveedorPedido_" + proveedorId).src = "data:image/png;base64," + data;
+            }
+                
+            else
+            { 
+            document.getElementById("ProveedorPedido_" + proveedorId).src = "../Imagenes/noimage.png";
+            }
+                
+        } 
+        catch (error) 
+        {
+            document.getElementById("ProveedorPedido_" + proveedorId).src = "../Imagenes/noimage.png";
+        }
+    }
+
 
 </script>
 
@@ -644,24 +831,15 @@
                                 @if (model.Proveedor != IdProveedor)
                                 {
                                     <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                        @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagenCarrito">*@
+                                        <img id="ProveedorCotizacion_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProvCotizacion" src="" alt="image">
                                     </a>
                                     IdProveedor = model.Proveedor;
                                 }
                             </div>
                             <div class="col-md-2 col-sm-55">
-                                @if (model.imgProducto.Length > 0)
-                                {
                                     <a href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                        @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagenCarrito">*@
+                                        <img id="ProductoCotizacion_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProdCotizacion" src="" alt="image">
                                     </a>
-                                }
-                                else
-                                {
-                                    <a href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())" style=" margin: auto;">
-                                        <img src="~/Imagenes/noimage.png" alt="image" class="imagenCarrito">
-                                    </a>
-                                }
                             </div>
                             <div class="col-md-5 col-sm-55 texto-carrito">
                                 <a class="nombreProductoCarrito" href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())">
@@ -734,105 +912,106 @@
         <div id="alert_Pedido" class="col-md-12"></div>
         <div id="Show_Pedidos" class="col-md-6">
             @{
-                int IdPedido = 0;
+                int ProveedorActual = 0;
+
                 List<PedidosCarrito> ListPedido = ExpoMR.Controllers.CarritoController.GetPedidosCarrito(Model.IdCliente, Model.IdCliente, Model.IdPedido);
+
                 if (ListPedido.Count() > 0)
                 {
-                    int PedidoEx = ListPedido[0].IdPedido;
+                    int PedidoActual = ListPedido[0].IdPedido;
 
                     foreach (ExpoMR.Models.PedidosCarrito model in ListPedido)
                     {
-                        if (PedidoEx == model.IdPedido)
+                        if (PedidoActual == model.IdPedido)
                         {
-                            if (IdPedido != model.Proveedor)
+                            if (ProveedorActual != model.Proveedor)
                             {
-                                IdPedido = model.Proveedor;
-                                <div id="Pedido_@string.Format(PedidoEx.ToString())">
-                                    <hr class='Separador_Carrito' />
+                                ProveedorActual = model.Proveedor;
 
-                                    <h6 class='lblPedido'>Pedido: @string.Format(PedidoEx.ToString()) </h6>
-                                    <input type="hidden" id="hdfPedido" value="@string.Format(PedidoEx.ToString())" >
-                                        <div class="row">
-                                            <div class="col-md-2 col-sm-55">
-                                                <a href="#" style=" margin: auto;">
-                                                    @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagen_pedido">*@
-                                                </a>
-                                            </div>
-                                            <div class="col-md-2 col-sm-55">
-                                                <a href="#" style=" margin: auto;">
-                                                    @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">*@
-                                                </a>
-                                            </div>
-                                            <div class="col-md-4 col-sm-55">
-                                                <p class="pb-0">
-                                                    <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
-                                                </p>
-                                                <p><label>@String.Format(model.Presentacion )</label></p>
-                                            </div>
-                                            <div class="col-md-4 col-sm-12">
-                                                <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                                <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                                <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
-                                            </div>
+                                <div id="Pedido_@string.Format(PedidoActual.ToString())">
+                                    <hr class='Separador_Carrito' />
+                                    <h6 class='lblPedido'>Pedido: @string.Format(PedidoActual.ToString()) </h6>
+                                    <div class="row">
+                                        <div class="col-md-2 col-sm-55">
+                                            <a href="#" style=" margin: auto;">
+                                                <img id="ProveedorPedido_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProvPedido" src="" alt="image">    
+                                            </a>
                                         </div>
+                                        <div class="col-md-2 col-sm-55">
+                                            <a href="#" style=" margin: auto;">
+                                                <img id="ProductoPedido_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProdPedido" src="" alt="image">
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4 col-sm-55">
+                                            <p class="pb-0">
+                                                <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
+                                            </p>
+                                            <p><label>@String.Format(model.Presentacion )</label></p>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                            <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
+                                            <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
+                                        </div>
+                                    </div>
                                     <hr />
                                 </div>
                             }
                             else 
                             {
-                                <div id="Pedido_@string.Format(PedidoEx.ToString())">
+                                <div id="Pedido_@string.Format(PedidoActual.ToString())">
                                 <div class="row">
                                     <div class="col-md-2 col-sm-55">
                                         <a href="#" style=" margin: auto;"></a>
-                                        </div>
-                                        <div class="col-md-2 col-sm-55">
+                                    </div>
+                                    <div class="col-md-2 col-sm-55">
                                         <a href="#" style=" margin: auto;">
-                                            @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">*@
-                                            </a>
-                                        </div>
-                                        <div class="col-md-4 col-sm-55">
-                                            <p class="pb-0">
-                                            <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
-                                            </p>
-                                            <p><label>@String.Format(model.Presentacion)</label></p>
-                                        </div>
-                                        <div class="col-md-4 col-sm-12">
-                                        <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                        <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                        <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
-                                        </div>
-                                        <hr />
+                                            <img id="ProductoPedido_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProdPedido" src="" alt="image">
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4 col-sm-55">
+                                        <p class="pb-0"><a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a></p>
+                                        <p><label>@String.Format(model.Presentacion)</label></p>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                    <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
+                                    <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
+                                    </div>
+                                    <hr />
                                     </div>
                                 </div>
                             }
                         }
                         else 
                         {
-                            PedidoEx = model.IdPedido;
-                            <div id="Pedido_@string.Format(PedidoEx.ToString())">
-                                <hr class="Separador_Carrito"/><h6 class="lblPedido">Pedido:@string.Format(PedidoEx.ToString()) </h6>
-                                  <input type="hidden" id="hdfPedido" value="@string.Format(PedidoEx.ToString())" >
-                                    <div class="row">
-                                      <div class="col-md-2 col-sm-55">
-                                          <a href="#" style=" margin: auto;">
-                                            @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(ExpoMR.Controllers.CarritoController.GetLogoProveedor("logo",model.Proveedor)))" alt="image" class="imagen_pedido">*@
-                                          </a>
-                                      </div>
-                                      <div class="col-md-2 col-sm-55">
-                                        <p class="pb-0">  <a href="#" style=" margin: auto;">
-                                                @*<img src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.imgProducto))" alt="image" class="imagen_pedido">*@
-                                          </a></p>
-                                      </div>
-                                      <div class="col-md-4 col-sm-55">
-                                          <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
-                                          <p><label>@String.Format(model.Presentacion) </label></p>
-                                      </div>
-                                      <div class="col-md-4 col-sm-12">
-                                          <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                          <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                          <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
-                                      </div>
+                            PedidoActual = model.IdPedido;
+                            ProveedorActual = model.Proveedor;
+
+                            <div id="Pedido_@string.Format(PedidoActual.ToString())">
+                                <hr class="Separador_Carrito"/>
+                                <h6 class="lblPedido">Pedido:@string.Format(PedidoActual.ToString()) </h6>
+                                <div class="row">
+                                    <div class="col-md-2 col-sm-55">
+                                        <a href="#" style=" margin: auto;">
+                                            <img id="ProveedorPedido_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProvPedido" src="" alt="image">
+                                        </a>
                                     </div>
+                                    <div class="col-md-2 col-sm-55">
+                                    <p class="pb-0">  <a href="#" style=" margin: auto;">
+                                    <img id="ProductoPedido_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProdPedido" src="" alt="image">
+                                        </a></p>
+                                    </div>
+                                    <div class="col-md-4 col-sm-55">
+                                        <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
+                                        <p><label>@String.Format(model.Presentacion) </label></p>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                        <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
+                                        <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
+                                    </div>
+                                </div>
                                 <hr />
                             </diV>
                         }
