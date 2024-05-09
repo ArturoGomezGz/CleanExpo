@@ -60,11 +60,13 @@ namespace ExpoMR.Controllers
 
                 StandVIewModel Stand = new StandVIewModel();
 
+                string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background FROM GetStandProv(@IdProveedor) AS Stand";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
 
-                SqlDataReader dr = dB.ExecuteReader("GetStandProv", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -126,11 +128,13 @@ namespace ExpoMR.Controllers
 
                 StandVIewModel Stand = new StandVIewModel();
 
+                string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background FROM GetStandProv(@IdProveedor) AS Stand";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
 
-                SqlDataReader dr = dB.ExecuteReader("GetStandProv", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {                   
@@ -147,13 +151,15 @@ namespace ExpoMR.Controllers
                     Stand.Activestatic = "active";
                 }
 
+                string query = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado FROM GetSales(@IdSal, @letra, @sal) AS Sal";
+
                 DB dB2 = new();
                 SqlParameter[] parameters2 = new SqlParameter[3];
                 parameters2[0] = new SqlParameter("@IdSal", IdSal);
                 parameters2[1] = new SqlParameter("@letra", "");
                 parameters2[2] = new SqlParameter("@sal", "");
 
-                SqlDataReader dr2 = dB2.ExecuteReader("GetSales", ref parameters2);
+                SqlDataReader dr2 = dB2.ExecuteReader(query, ref parameters2, commandType: CommandType.Text);
 
                 while (dr2.Read())
                 { 
@@ -192,11 +198,13 @@ namespace ExpoMR.Controllers
         {
             FotosViewModel FotoProducto = new FotosViewModel();
 
+            string query = "SELECT Foto.IdFoto, Foto.IdProducto, Foto.Foto FROM GetFotoProd(@IdProducto) AS Foto";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@idproducto", idProducto);
+            parameters[0] = new SqlParameter("@IdProducto", idProducto);
 
-            SqlDataReader dr = dB.ExecuteReader("GetFotoProd", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {

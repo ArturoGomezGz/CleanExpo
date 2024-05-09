@@ -79,10 +79,12 @@ namespace ExpoMR.Controllers
         {
             List<StandVIewModel>LogosProveedores = new();
 
+            string query = "SELECT Proveedor.Proveedor, Proveedor.Nombre, Proveedor.Logo FROM GetLogoProv(@IdProveedor) AS Proveedor";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", "0");
-            SqlDataReader dr = dB.ExecuteReader("GetLogoProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {

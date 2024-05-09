@@ -31,11 +31,13 @@ namespace ExpoMR.Controllers
         {
             ConfiguracionViewModel ConfiguracionStand = new();
 
+            string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background FROM GetStandProv(@IdProveedor) AS Stand";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetStandProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -71,10 +73,16 @@ namespace ExpoMR.Controllers
         {
             List<Fechas> Fechas = new();
 
+            string query = "SELECT CONVERT(VARCHAR(20), mCalendario.Fecha, 111) AS Fecha, " +
+                             "CASE WHEN VIP = 1 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(MonedasVIP AS NVARCHAR(MAX)) + ',1' FROM mMotivos WHERE IdMotivo = 7) " +
+                             "	  WHEN VIP = 0 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(MonedasExpo AS NVARCHAR(MAX)) + ',0' FROM mMotivos WHERE IdMotivo = 7) " +
+                             "END AS Monedas " +
+                             "FROM mCalendario";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[0];
 
-            SqlDataReader dr = dB.ExecuteReader("GetFechasMonedas", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -90,11 +98,30 @@ namespace ExpoMR.Controllers
 
         public JsonResult GetfechasMoneda()
         {
+            string query = "DECLARE @factor INT, @factorvip INT " +
+                            "SELECT @factor = MonedasExpo " +
+                            "FROM mMotivos " +
+                            "WHERE IdMotivo = 7 " +
+                            "SELECT @factorvip = MonedasVIP " +
+                            "FROM mMotivos " +
+                            "WHERE IdMotivo = 7 --Monedas por visita " +
+                            "SELECT @IdProveedor AS Proveedor, " +
+                            "ISNULL(CASE WHEN mCalendario.VIP = 1 " +
+                            "       THEN dStandsMax.Maximo /@factorvip " +
+                            "       ELSE dStandsMax.Maximo /@factor " +
+                            "	   END, 0) AS Visitas, " +
+                            "ISNULL(dStandsMax.Maximo, 0) AS Maximo, " +
+                            "mCalendario.Fecha, mCalendario.VIP " +
+                            "FROM dStandsMax RIGHT OUTER JOIN " +
+                            "mCalendario ON dStandsMax.Fecha = mCalendario.Fecha " +
+                            "WHERE Proveedor = @IdProveedor " +
+                            "OR Proveedor IS NULL";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetDetalleFechasProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -125,11 +152,22 @@ namespace ExpoMR.Controllers
 
         public JsonResult GetProductosMax()
         {
+            string query = "SELECT dProductosMax.IdProducto, dProductosMax.Fecha, vProductos.Nombre + ' ' + vProductos.Presentacion as Nombre, " +
+                            "CASE WHEN mCalendario.VIP = 0 THEN dProductosMax.Maximo / (SELECT MonedasExpo FROM mMotivos WHERE IdMotivo = 8) " +
+                            "WHEN mCalendario.VIP = 1 THEN dProductosMax.Maximo / (SELECT MonedasVIP FROM mMotivos WHERE IdMotivo = 8) END AS Visitas, " +
+                            "dProductosMax.Maximo " +
+                            "FROM mLaboratorios INNER JOIN " +
+                            "vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN " +
+                            "dProductosMax ON vProductos.IdProducto = dProductosMax.IdProducto INNER JOIN " +
+                            "mCalendario ON dProductosMax.Fecha = mCalendario.Fecha " +
+                            "WHERE mLaboratorios.Proveedor = @IdProveedor " +
+                            "ORDER BY Fecha ASC";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetDetalleFechasProdProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {

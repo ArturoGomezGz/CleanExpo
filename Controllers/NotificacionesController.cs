@@ -132,12 +132,22 @@ namespace ExpoMR.Controllers
 
             string email = "";
             string body = string.Empty;
+            string query = "SELECT dPromoCliente.IdPromocion, vPersonas.Nombre AS Cliente, " +
+                            "CAST(dPromoCliente.Cantidad AS NVARCHAR(12)) + ' ' + mArticulos.Nombre AS Articulo, " +
+                            "mArticulos.Descripcion, LOWER(mEmails.Email) AS Email " +
+                            "FROM dPromoCliente INNER JOIN " +
+                            "dPromociones ON dPromociones.IdPromocion = dPromoCliente.IdPromocion INNER JOIN " +
+                            "mArticulos ON mArticulos.IdArticulo = dPromociones.IdArticulo INNER JOIN " +
+                            "vPersonas ON vPersonas.IdPersona = dPromoCliente.Cliente INNER JOIN  " +
+                            "mUsuarios ON vPersonas.IdPersona = mUsuarios.IdPersona INNER JOIN " +
+                            "Indigo.dbo.mEmails ON mUsuarios.IdEmail = mEmails.IdEmail " +
+                            "WHERE dPromoCliente.Cliente = @IdPersona";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetDetailNotificacion", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -194,13 +204,25 @@ namespace ExpoMR.Controllers
             string email = "";
             string obsv = "";
             string body = string.Empty;
+            string query = "SELECT vPedidoDatos.IdPedido, vPedidoDatos.Cliente, vPedidoDatos.RFC, vPedidoDatos.Documento, " +
+                            "vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Porte, vPedidoDatos.Transportista, " +
+                            "vProductos.IdProducto, vProductos.Codigo, vProductos.Producto, vPedidos.Unitario, vPedidos.Descuento, vPedidos.Cantidad, " +
+                            "(vPedidos.PrecioIva * vPedidos.Cantidad) AS Total, vPedidos.PrecioIva, CASE WHEN vProductos.Iva = 1 THEN  Indigo.dbo.GetIva(0) * 100 ELSE 0 END AS Iva, mEmails.Email, " +
+                            "vPedidoDatos.Obsv " +
+                            "FROM vPedidoDatos INNER JOIN " +
+                            "mUsuarios ON vPedidoDatos.IdPersona = mUsuarios.IdPersona INNER JOIN " +
+                            "Indigo.dbo.mEmails ON mUsuarios.IdEmail = mEmails.IdEmail INNER JOIN " +
+                            "vPedidos ON vPedidoDatos.IdPedido = vPedidos.IdPedido INNER JOIN " +
+                            "vProductos ON vProductos.IdProducto = vPedidos.IdProducto " +
+                            "WHERE vPedidoDatos.IdPersona = @IdPersona " +
+                            "AND vPedidos.IdPedido =  @IdPedido";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
             parameters[1] = new SqlParameter("@IdPedido", IdPedido);
 
-            SqlDataReader dr = dB.ExecuteReader("GetDetailOrder", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {

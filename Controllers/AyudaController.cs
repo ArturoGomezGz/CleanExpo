@@ -47,13 +47,15 @@ namespace ExpoMR.Controllers
         {
             List<mSales> Sales = new();
 
+            string query = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado FROM GetSales(@IdSal, @letra, @sal) AS Sal";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("@IdSal", "0");
             parameters[1] = new SqlParameter("@letra", letra != null ? letra : "");
             parameters[2] = new SqlParameter("@sal", palabra != null ? palabra : "");
 
-            SqlDataReader dr = dB.ExecuteReader("GetSales", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -74,11 +76,22 @@ namespace ExpoMR.Controllers
         {
             List<StandVIewModel> Proveedores = new();
 
+            string query = "SELECT mProveedores.IdPersona AS Proveedor, mProveedores.Nombre, mStands.Logo " +
+                            "FROM mProveedores INNER JOIN " +
+                            "mLaboratorios ON mProveedores.IdPersona = mLaboratorios.Proveedor INNER JOIN " +
+                            "mProductos ON mLaboratorios.IdLaboratorio = mProductos.IdLaboratorio INNER JOIN " +
+                            "mStands ON mStands.Proveedor = mProveedores.IdPersona INNER JOIN " +
+                            "Indigo.dbo.dProdsal ON mProductos.IdProducto = dProdSal.IdProducto INNER JOIN " +
+                            "Indigo.dbo.mSales ON dProdSal.IdSal = mSales.IdSal " +
+                            "WHERE mSales.IdSal =  @IdSal " +
+                            "GROUP BY mProveedores.IdPersona, mProveedores.Nombre, mStands.Logo " +
+                            "ORDER BY mProveedores.Nombre";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdSal", Sal);
 
-            SqlDataReader dr = dB.ExecuteReader("GetLaboratoriobySal", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {

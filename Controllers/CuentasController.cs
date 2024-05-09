@@ -420,11 +420,13 @@ namespace ExpoMR.Controllers
 
         public void GetClientes(string UserName)
         {
+            string query = "SELECT Persona.IdPersona, Persona.Nombre FROM GetPersonasByEmail(@UserName) AS Persona";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@UserName", UserName);
 
-            SqlDataReader dr = dB.ExecuteReader("GetPersonasByEmail", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: System.Data.CommandType.Text);
 
             while (dr.Read())
             {

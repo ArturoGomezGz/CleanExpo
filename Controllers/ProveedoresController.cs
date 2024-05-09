@@ -424,12 +424,23 @@ namespace ExpoMR.Controllers
         {
             MonedasActuales MonedasActuales = new MonedasActuales();
 
+            string query = "SELECT SUM(MonedasGanadas) AS MonedasContacto, SUM(Monedas) AS Monedas " +
+                            "FROM ( " +
+                            "		SELECT mTransacciones.Monedas AS MonedasGanadas, 0 AS Monedas " +
+                            "		FROM mTransacciones " +
+                            "		WHERE mTransacciones.Origen =  @IdProveedor " +
+                            "		AND mTransacciones.Destino =  @Cliente " +
+                            "		AND mTransacciones.IdMotivo = 6 " +
+                            "		UNION " +
+                            "		SELECT 0 AS MonedasGanadas, dbo.GetMonedas(@IdProveedor, @Cliente, 6, GETDATE(), NULL) AS Monedas " +
+                            "	 ) AS T1";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
             parameters[1] = new SqlParameter("@Cliente", idCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetMonedasContacto", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -542,12 +553,22 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult OrdenFoto(int IdArticulo)
         {
+            string query = "SELECT Ordenes.OrdenFoto " +
+                            "FROM ( " +
+                            "		SELECT 1 OrdenFoto " +
+                            "		UNION " +
+                            "		SELECT 2 OrdenFoto " +
+                            "		UNION " +
+                            "		SELECT 3 OrdenFoto " +
+                            "	 ) AS Ordenes " +
+                            "WHERE Ordenes.OrdenFoto NOT IN (SELECT dArticulos.NumFoto FROM dArticulos WHERE dArticulos.IdArticulo = @IdArticulo)";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
 
-            dr = dB.ExecuteReader("GetOrdenFotoArticuloProv", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {

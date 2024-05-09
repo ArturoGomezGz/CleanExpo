@@ -24,10 +24,12 @@ namespace ExpoMR.Controllers
         {
             StandVIewModel Logo = new StandVIewModel();
 
+            string query = "SELECT Proveedor.Proveedor, Proveedor.Nombre, Proveedor.Logo FROM GetLogoProv(@IdProveedor) AS Proveedor";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", IdProveedor);
-            SqlDataReader dr = dB.ExecuteReader("GetLogoProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {               
@@ -54,11 +56,13 @@ namespace ExpoMR.Controllers
         {
             byte[] fotos = Array.Empty<byte>();
 
+            string query = "SELECT Foto.IdFoto, Foto.IdProducto, Foto.Foto FROM GetFotoProd(@IdProducto) AS Foto";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProducto", IdProducto);
 
-            SqlDataReader dr = dB.ExecuteReader("GetFotoProd", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {

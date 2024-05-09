@@ -103,10 +103,19 @@ namespace ExpoMR.Controllers
             {
                 List<RutasList> RutasVenta = new();
 
+                string query = "SELECT Rutas.IdRuta, Rutas.Descripcion " +
+                                "FROM ( " +
+                                "		SELECT 0 AS IdRuta, ' GENERAL' AS Descripcion " +
+                                "		UNION " +
+                                "		SELECT mRutas.IdRuta, mRutas.Descripcion " +
+                                "		FROM Indigo.dbo.mRutas " +
+                                "	) AS Rutas " +
+                                "ORDER BY Rutas.Descripcion";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[0];
 
-                SqlDataReader dr = dB.ExecuteReader("GetRutasVenta", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -523,11 +532,18 @@ namespace ExpoMR.Controllers
 		    {
                 EditarProveedorViewModel Proveedor = new EditarProveedorViewModel();
 
+                string query = "SELECT mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, ISNULL(mMonedero.Saldo,0) AS Saldo, COUNT(mLaboratorios.IdLaboratorio) AS NumLabAsignados " +
+                                "FROM mProveedores LEFT OUTER JOIN " +
+                                "mMonedero ON mProveedores.IdPersona = mMonedero.IdPersona LEFT OUTER JOIN " +
+                                "mLaboratorios ON mProveedores.IdPersona = mLaboratorios.Proveedor " +
+                                "WHERE mProveedores.IdPersona = @IdProveedor " +
+                                "GROUP BY mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, mMonedero.Saldo";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdProveedor", IdProveedor);
 
-                SqlDataReader dr = dB.ExecuteReader("GetProveedor", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -674,13 +690,15 @@ namespace ExpoMR.Controllers
             public JsonResult GetAddLabs()
             {
                 List<mLaboratorio> laboratorios = new();
+                
+                string query = "SELECT Lab.IdLaboratorio, Lab.Laboratorio FROM GetLaboratoriosProv(@IdLaboratorio, @Asignados) AS Lab";
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdProveedor", "0");
                 parameters[1] = new SqlParameter("@Asignados", false);
 
-                SqlDataReader dr = dB.ExecuteReader("GetLaboratoriosProv", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -700,12 +718,14 @@ namespace ExpoMR.Controllers
             {
                 List<mLaboratorio> laboratorios = new();
 
+                string query = "SELECT Lab.IdLaboratorio, Lab.Laboratorio FROM GetLaboratoriosProv(@IdLaboratorio, @Asignados) AS Lab";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdProveedor", IdPersona);
                 parameters[1] = new SqlParameter("@Asignados", 1);
 
-                SqlDataReader dr = dB.ExecuteReader("GetLaboratoriosProv", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -725,11 +745,26 @@ namespace ExpoMR.Controllers
             {
                 List<mProveedores> Proveedores = new();
 
-                DB dB = new();
+                string query = "SELECT Proveedores.IdPersona, UPPER(Proveedores.Nombre) AS Nombre, UPPER(Proveedores.Descripcion) AS Descripcion, Proveedores.Alta " +
+                                "FROM ( " +
+                                "		SELECT mPerEmp.IdPersona, LTRIM(mPersonas.Paterno + ' ' + mPersonas.Materno + ' ' + mPersonas.Nombre) AS Nombre, ISNULL(mPersonas.Descripcion, '') AS Descripcion, CAST(0 AS BIT) AS Alta " +
+                                "		FROM Indigo.dbo.mPersonas AS mPersonas INNER JOIN " +
+                                "		Indigo.dbo.mPerEmp AS mPerEmp on mPersonas.Persona = mPerEmp.Persona INNER JOIN " +
+                                "		Indigo.dbo.vRoles AS vRoles on mPerEmp.IdPersona = vRoles.IdPersona " +
+                                "		WHERE mPerEmp.IdEmpresa = @IdEmpresa " +
+                                "		AND vRoles.Proveedor = 1 --1 = Proveedor " +
+                                "		AND mPerEmp.IdPersona NOT IN (SELECT mProveedores.IdPersona FROM mProveedores) " +
+                                "		UNION " +
+                                "		SELECT mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, CAST(1 AS BIT) AS Alta " +
+                                "		FROM ExpoMR.dbo.mProveedores " +
+                                "	)Proveedores " +
+                                "ORDER BY Proveedores.Alta DESC, Proveedores.Nombre";
+
+            DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdEmpresa", 1);
 
-                SqlDataReader dr = dB.ExecuteReader("GetProveedores", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -826,10 +861,17 @@ namespace ExpoMR.Controllers
             {
                 List<Roles> Roles = new();
 
-                DB dB = new();
+                string query = "SELECT '' AS IdRol, '' AS Role " +
+                                "UNION " +
+                                "SELECT AspNetRoles.Id AS IdRol, AspNetRoles.Name AS Role " +
+                                "FROM AspNetRoles " +
+                                "WHERE AspNetRoles.Name IN ('Administrador','Capturista','Vendedor')  " +
+                                "ORDER BY Role";
+
+            DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[0];
 
-                SqlDataReader dr = dB.ExecuteReader("GetAspNetRoles", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -878,11 +920,13 @@ namespace ExpoMR.Controllers
             {
                 Empleados Empleado = new Empleados();
 
+                string query = "SELECT Empleado.IdPersona, Empleado.Nombre, Empleado.Email, Empleado.IdRol, Empleado.Rol FROM GetEmpleado(@IdPersona) AS Empleado";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdPersona", IdPersona);
 
-                SqlDataReader dr = dB.ExecuteReader("GetEmpleado", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -903,10 +947,13 @@ namespace ExpoMR.Controllers
             {
                 List<Empleados> Empleados = new();
 
-                DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[0];
+                string query = "SELECT Empleado.IdPersona, Empleado.Nombre, Empleado.Email, Empleado.IdRol, Empleado.Rol FROM GetEmpleado(@IdPersona) AS Empleado";
 
-                SqlDataReader dr = dB.ExecuteReader("GetEmpleados", ref parameters);
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdPersona", "0");
+
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -938,10 +985,19 @@ namespace ExpoMR.Controllers
             {
                 List<UsuariosNotificacion> Notificaciones = new();
 
-                DB dB = new();
+                string query = "SELECT mClientes.IdPersona, mClientes.Nombre, ISNULL(lNotificaciones.IdTipoNotificacion, 0) AS Notificado, LOWER(mEmails.Email) AS Email " +
+                                "FROM mClientes INNER JOIN " +
+                                "mUsuarios ON mClientes.IdPersona = mUsuarios.IdPersona INNER JOIN " +
+                                "Indigo.dbo.mEmails ON mUsuarios.IdEmail = mEmails.IdEmail INNER JOIN " +
+                                "dPromoCliente ON mClientes.IdPersona = dPromoCliente.Cliente LEFT OUTER JOIN " +
+                                "lNotificaciones ON mClientes.IdPersona = lNotificaciones.IdPersona AND IdTipoNotificacion = 1 " +
+                                "GROUP BY mClientes.IdPersona, mClientes.Nombre, mEmails.Email, Lnotificaciones.IdTipoNotificacion " +
+                                "ORDER BY Lnotificaciones.IdTipoNotificacion ASC, mClientes.Nombre";
+
+            DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[0];
 
-                SqlDataReader dr = dB.ExecuteReader("GetClientesNotificar", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {

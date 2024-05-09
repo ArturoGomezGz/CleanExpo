@@ -65,12 +65,24 @@ namespace ExpoMR.Controllers
         {
             List<Promociones> promociones = new List<Promociones>();
 
+            string query = "SELECT mPromociones.IdPromocion, CONVERT(FLOAT, ISNULL(dPromoCondicion.Monto,0)) AS Monto, ISNULL(dPromoCondicion.Piezas,0) AS Piezas, " +
+                            "ISNULL(vProductos.IdProducto,0) AS IdProducto, ISNULL(vProductos.Nombre, '') AS Producto, " +
+                            "ISNULL(vPersonas.IdPersona,0) AS IdCliente, ISNULL(vPersonas.Nombre, '') AS Cliente, " +
+                            "mPromociones.Activa, mPromociones.IdTipoPromocion AS TipoPromo " +
+                            "FROM mPromociones INNER JOIN " +
+                            "dPromoCondicion ON mPromociones.IdPromocion = dPromoCondicion.IdPromocion LEFT OUTER JOIN " +
+                            "vProductos ON dPromoCondicion.IdProducto = vProductos.IdProducto LEFT OUTER JOIN " +
+                            "vPersonas ON mPromociones.Cliente = vPersonas.IdPersona " +
+                            "WHERE mPromociones.Proveedor = @IdProveedor " +
+                            "AND mPromociones.IdTipoPromocion = @IdTipoPromocion " +
+                            "ORDER BY dPromoCondicion.Monto ASC, dPromoCondicion.Piezas, mPromociones.Cliente";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
             parameters[1] = new SqlParameter("@IdTipoPromocion", tipoPromo);
 
-            SqlDataReader dr = dB.ExecuteReader("GetPromocionesProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -98,11 +110,21 @@ namespace ExpoMR.Controllers
         {
             Promociones promocion = new Promociones();
 
+            string query = "SELECT mPromociones.IdPromocion, CONVERT(FLOAT, ISNULL(dPromoCondicion.Monto,0)) AS Monto, ISNULL(dPromoCondicion.Piezas,0) AS Piezas, " +
+                            "ISNULL(vProductos.IdProducto,0) AS IdProducto, ISNULL(vProductos.Nombre, '') AS Producto, " +
+                            "ISNULL(vPersonas.IdPersona,0) AS IdCliente, ISNULL(vPersonas.Nombre, '') AS Cliente, " +
+                            "mPromociones.Activa, mPromociones.IdTipoPromocion AS TipoPromo " +
+                            "FROM mPromociones INNER JOIN " +
+                            "dPromoCondicion ON mPromociones.IdPromocion = dPromoCondicion.IdPromocion LEFT OUTER JOIN " +
+                            "vProductos ON dPromoCondicion.IdProducto = vProductos.IdProducto LEFT OUTER JOIN " +
+                            "vPersonas ON mPromociones.Cliente = vPersonas.IdPersona " +
+                            "WHERE mPromociones.IdPromocion = @IdPromocion";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPromocion", idPromocion);
 
-            SqlDataReader dr = dB.ExecuteReader("GetPromocionProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -230,11 +252,19 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetProdcutos()
         {
+            string query = "SELECT vProductos.IdProducto, vProductos.Codigo, vProductos.Nombre + ' ' + vProductos.Presentacion + ' ' + vProductos.Unidades AS Producto " +
+                            "FROM mProveedores INNER JOIN " +
+                            "mLaboratorios ON mProveedores.IdPersona = mLaboratorios.Proveedor INNER JOIN " +
+                            "Indigo.dbo.vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN " +
+                            "mProductos ON vProductos.IdProducto = mProductos.IdProducto " +
+                            "WHERE mProveedores.IdPersona = @IdProveedor " +
+                            "AND vProductos.Status IN (0, 3, 4) -- status 0 = activo, 3 = nuevo, 4 = liquidacion";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetProductosPromocionesProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {

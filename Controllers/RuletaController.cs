@@ -145,11 +145,13 @@ namespace ExpoMR.Controllers
         {
             List<PremioRuleta> PremiosRuleta = new();
 
+            string query = "SELECT Ruleta.IdPremio, Ruleta.Premio, Ruleta.Descripcion, Ruleta.IdRuleta, Ruleta.Seccion, Ruleta.Foto, Ruleta.Cantidad FROM GetPremiosRuleta(@IdRuleta) AS Ruleta";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdRuleta", idRuleta);
 
-            SqlDataReader dr = dB.ExecuteReader("GetPremiosRuleta", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -173,11 +175,13 @@ namespace ExpoMR.Controllers
         {
             List<PremioRuleta> PremiosRuleta = new();
 
+            string query = "SELECT Ruleta.IdPremio, Ruleta.Premio, Ruleta.Descripcion, Ruleta.IdRuleta, Ruleta.Seccion, Ruleta.Foto, Ruleta.Cantidad FROM GetPremiosRuleta(@IdRuleta) AS Ruleta";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdRuleta", idRuleta);
 
-            SqlDataReader dr = dB.ExecuteReader("GetPremiosRuleta", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -239,12 +243,15 @@ namespace ExpoMR.Controllers
                 if (ruletaGiro != null && ruletaGiro.Count() > 0)
                 {
                     string foto = "";
+                    string query = "SELECT mPremios.IdPremio, mPremios.IdRuleta, mPremios.Seccion, mPremios.Foto " +
+                                    "FROM mPremios " +
+                                    "WHERE mPremios.IdPremio = @IdPremio";
 
                     DB dB3 = new();
                     SqlParameter[] parameters3 = new SqlParameter[1];
                     parameters3[0] = new SqlParameter("@IdPremio", ruletaGiro[0].IdPremio);
 
-                    SqlDataReader dr2 = dB3.ExecuteReader("GetPremio", ref parameters3);
+                    SqlDataReader dr2 = dB3.ExecuteReader(query, ref parameters3, commandType: CommandType.Text);
 
                     while (dr2.Read())
                     {
