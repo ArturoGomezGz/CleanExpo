@@ -39,11 +39,13 @@ namespace ExpoMR.Controllers
         {
             List<Articulos> articulos = new List<Articulos>();
 
+            string query = "SELECT Promocion.IdArticulo, Promocion.Articulo, Promocion.Foto, Promocion.Cantidad FROM GetArticulosPromocionProv (@IdPromocion) AS Promocion";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPromocion", idPromocion);
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticulosPromocionProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -122,11 +124,13 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetArticulosPromo(int idPromocion)
         {
+            string query = "SELECT Promocion.IdArticulo, Promocion.Articulo, Promocion.Foto, Promocion.Cantidad FROM GetArticulosPromocionProv (@IdPromocion) AS Promocion";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPromocion", idPromocion);
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticulosPromocionProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -147,11 +151,13 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetArticulosProveedor()
         {
+            string query = "SELECT Articulos.IdArticulo, Articulos.Nombre, Articulos.Descripcion, Articulos.IDdArticulos, Articulos.Foto, Articulos.NumFoto FROM GetArticulosProv (@IdProveedor) AS Articulos";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticulosProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -171,11 +177,16 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetArticulosRestantes()
         {
+            string query = "SELECT vArticulos.IdArticulo, vArticulos.Nombre AS Articulo, vArticulos.Descripcion, vArticulos.CantidadDisponible AS CantidadRestante " +
+                            "FROM vArticulos " +
+                            "WHERE vArticulos.Proveedor = @IdProveedor " +
+                            "ORDER BY vArticulos.Nombre";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticulosPromocionRestantesProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {

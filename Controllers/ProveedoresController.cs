@@ -198,11 +198,13 @@ namespace ExpoMR.Controllers
         {
             ArticulosProveedores DetalleArticulo = new ArticulosProveedores();
 
+            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto FROM GetArticuloProv(@IdArticulo) AS Articulo";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticuloProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -285,11 +287,15 @@ namespace ExpoMR.Controllers
         {
             mAnuncios anuncio = new mAnuncios();
 
+            string query = "SELECT mAnuncios.IdAnuncio, mAnuncios.Proveedor, mAnuncios.Anuncio, mAnuncios.FeInicio, mAnuncios.FeTermino, mAnuncios.Rank " +
+                           "FROM mAnuncios " +
+                           "WHERE mAnuncios.IdAnuncio = @IdAnuncio";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdAnuncio", idAnuncio);
 
-            SqlDataReader dr = dB.ExecuteReader("GetAnuncioProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -309,11 +315,16 @@ namespace ExpoMR.Controllers
         {
             List<mAnuncios> Anuncios = new();
 
+            string query = "SELECT mAnuncios.IdAnuncio, mAnuncios.Proveedor, mAnuncios.Anuncio, mAnuncios.FeInicio, mAnuncios.FeTermino, mAnuncios.Rank " +
+                           "FROM mAnuncios " +
+                           "WHERE mAnuncios.Proveedor = @IdProveedor " +
+                           "ORDER BY IdAnuncio DESC";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetAnunciosProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -337,11 +348,13 @@ namespace ExpoMR.Controllers
         {
             List<ArticulosProveedores> Articulos = new();
 
+            string query = "SELECT Articulos.IdArticulo, Articulos.Nombre, Articulos.Descripcion, Articulos.IDdArticulos, Articulos.Foto, Articulos.NumFoto FROM GetArticulosProv (@IdProveedor) AS Articulos";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticulosProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -501,11 +514,13 @@ namespace ExpoMR.Controllers
         {
             List<ArticulosProveedores> Articulo = new();
 
+            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto FROM GetArticuloProv(@IdArticulo) AS Articulo";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticuloProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType:CommandType.Text);
 
             while (dr.Read())
             {

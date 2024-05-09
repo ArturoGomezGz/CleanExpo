@@ -329,13 +329,15 @@ namespace ExpoMR.Controllers
 
         public static List<ArticulosProveedores> GetPromocionArticulo(int idProveedor)
         {
-            List<ArticulosProveedores> ArticulosProveedor = new();          
+            List<ArticulosProveedores> ArticulosProveedor = new();
+
+            string query = "SELECT Articulos.IdArticulo, Articulos.Nombre, Articulos.Descripcion, Articulos.IDdArticulos, Articulos.Foto, Articulos.NumFoto FROM GetArticulosProv (@IdProveedor) AS Articulos";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticulosProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -526,11 +528,13 @@ namespace ExpoMR.Controllers
         {
             List<ArticulosProveedores> Articulos = new();
 
+            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto FROM GetArticuloProv(@IdArticulo) AS Articulo";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
 
-            SqlDataReader dr = dB.ExecuteReader("GetArticuloProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
