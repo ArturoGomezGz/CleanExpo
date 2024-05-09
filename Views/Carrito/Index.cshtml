@@ -586,25 +586,24 @@
 
     function srcImg()
     {
-        var logosProv = document.querySelectorAll('img.LogoProv');
-      
+        var logosProv = document.querySelectorAll('img.LogoProv');  //Se obtienen todos los controles que muestran el logo de proveedor mendiante la Clase
+        logosProv = removeDuplicatesIds(logosProv);
+
         for (var i = 0; i < logosProv.length; i++)
         {
             var proveedorId = logosProv[i].getAttribute("data-id");
-
             GetAsyncLogoProv(proveedorId) 
         }
         
 
-        var fotosProd = document.querySelectorAll('img.FotoProd');
+        var fotosProd = document.querySelectorAll('img.FotoProd'); //Se obtienen todos los controles que muestran la foto de producto mendiante la Clase
+        fotosProd = removeDuplicatesIds(fotosProd);
 
         for (var i = 0; i < fotosProd.length; i++)
         {
             var productoId = fotosProd[i].getAttribute("data-id");
-
             GetAsyncFotoProd(productoId) 
         }
-
     }
 
     async function GetAsyncLogoProv(proveedorId)
@@ -620,7 +619,7 @@
 
             const data = await response.text() // Suponiendo que el controlador devuelve texto
 
-            var logosproveedor = document.querySelectorAll('#LogoProv_' + proveedorId);
+            var logosproveedor = document.querySelectorAll('#LogoProv_' + proveedorId);  //Se obtienen todos los controles que muestran el logo de proveedor mendiante su Id
 
             if (data.length > 0) 
             {
@@ -657,7 +656,7 @@
 
             const data = await response.text() // Suponiendo que el controlador devuelve texto
 
-            var fotosProd = document.querySelectorAll('#FotoProd_' + productoId);
+            var fotosProd = document.querySelectorAll('#FotoProd_' + productoId);  //Se obtienen todos los controles que muestran la foto de producto mendiante su Id
 
             if (data.length > 0) 
             {
@@ -678,6 +677,28 @@
                 values.src = "../Imagenes/noimage.png";
             });
         }
+    }
+
+    function removeDuplicatesIds(array) 
+    {
+        // Crear un objeto para realizar un seguimiento de los IDs que ya han sido encontrados
+        const idsEncontrados = {};
+
+        // Convertir la NodeList a un array para facilitar el manejo
+        const arrayDeElementos = Array.from(array);
+
+        // Filtrar el array para eliminar elementos con IDs duplicados
+        const elementosSinDuplicados = arrayDeElementos.filter(array => {
+            const id = array.id;
+            if (!idsEncontrados[id]) {
+                // Si el ID no ha sido encontrado aún, lo marcamos como encontrado
+                idsEncontrados[id] = true;
+                return true; // Mantener este elemento en el array resultante
+            }
+            return false; // Descartar este elemento del array resultante
+        });
+
+        return elementosSinDuplicados;
     }
 
 </script>
@@ -724,70 +745,70 @@
                 {
                     foreach (ExpoMR.Models.ListaCarrito model in ListCarrito)
                     {
-                                @if (model.Proveedor != IdProveedor)
+                        @if (model.Proveedor != IdProveedor)
                         {
-                                    <hr class="Separador_Carrito" />
+                            <hr class="Separador_Carrito" />
                         }
-                                <div class="row">
-                                    <div class="col-md-1">
-                                        @if (model.PorConfirmar == true)
+                        <div class="row">
+                            <div class="col-md-1">
+                                @if (model.PorConfirmar == true)
                                 {
-                                            <input type="checkbox" id="chkSel" checked="checked" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
+                                    <input type="checkbox" id="chkSel" checked="checked" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
                                 }
                                 else
                                 {
-                                            <input type="checkbox" id="chkSel" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
+                                   <input type="checkbox" id="chkSel" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
                                 }
-                                    </div>
-                                    <div class="col-md-2 col-sm-55">
-                                        @if (model.Proveedor != IdProveedor)
+                            </div>
+                            <div class="col-md-2 col-sm-55">
+                                @if (model.Proveedor != IdProveedor)
                                 {
-                                            <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                                <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
-                                            </a>
+                                    <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                        <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
+                                    </a>
                                     IdProveedor = model.Proveedor;
                                 }
+                            </div>
+                            <div class="col-md-2 col-sm-55">
+                                    <a href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                        <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
+                                    </a>
+                            </div>
+                            <div class="col-md-5 col-sm-55 texto-carrito">
+                                <a class="nombreProductoCarrito" href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())">
+                                    @String.Format(model.Nombre)
+                                </a>
+                                <p class="mb-0"><label>@string.Format(model.Presentacion.ToString())</label></p>
+                                <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.cantidad.ToString())</p>
+                                <input id="hdnPrecioFinal_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.PrecioFinal.ToString())">
+                                <p class="mb-0"><strong>Precio Expo: </strong>$ @string.Format(model.PrecioFinal.ToString())</p>
+                                <p class="mb-0"><strong>Total: </strong>$ @string.Format(model.total.ToString())</p>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <div class="row" style="">
+                                    <div class="col-md-12 col-sm-55">
+                                        <input id="hdn_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.cantidad.ToString())">
+                                        <input id="number_@string.Format(model.IdProducto.ToString())" class="input-number" type="number" value="@string.Format(model.cantidad.ToString())" min="1" placeholder="0" disabled>
                                     </div>
-                                    <div class="col-md-2 col-sm-55">
-                                            <a href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                                <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
-                                            </a>
-                                    </div>
-                                    <div class="col-md-5 col-sm-55 texto-carrito">
-                                        <a class="nombreProductoCarrito" href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())">
-                                            @String.Format(model.Nombre)
-                                        </a>
-                                        <p class="mb-0"><label>@string.Format(model.Presentacion.ToString())</label></p>
-                                        <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.cantidad.ToString())</p>
-                                        <input id="hdnPrecioFinal_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.PrecioFinal.ToString())">
-                                        <p class="mb-0"><strong>Precio Expo: </strong>$ @string.Format(model.PrecioFinal.ToString())</p>
-                                        <p class="mb-0"><strong>Total: </strong>$ @string.Format(model.total.ToString())</p>
-                                    </div>
-                                    <div class="col-md-2 col-sm-12">
-                                        <div class="row" style="">
-                                            <div class="col-md-12 col-sm-55">
-                                                <input id="hdn_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.cantidad.ToString())">
-                                                <input id="number_@string.Format(model.IdProducto.ToString())" class="input-number" type="number" value="@string.Format(model.cantidad.ToString())" min="1" placeholder="0" disabled>
-                                            </div>
-                                            <div class="col-md-12 col-sm-55 m-auto">
-                                                <button class="btn btn-naranja-ch edit_@string.Format(model.IdProducto.ToString())" onclick="Edit(@string.Format(model.IdProducto.ToString()))" title="editar" type="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                                <button class="btn btn-rojo-ch delete_@string.Format(model.IdProducto.ToString())" onclick="Delete(@string.Format(model.IdProducto.ToString()))" title="eliminar" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                                <button type="button" class="btn btn-outline-success save_@string.Format(model.IdProducto.ToString()) d-none" onclick="save(@string.Format(model.IdProducto.ToString()))" title="btn-save">
-                                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-danger cancel_@string.Format(model.IdProducto.ToString()) d-none" onclick="cancel(@string.Format(model.IdProducto.ToString()))" title="btn-cancel">
-                                                    <i class="fa fa-ban" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-12 col-sm-55 m-auto">
+                                        <button class="btn btn-naranja-ch edit_@string.Format(model.IdProducto.ToString())" onclick="Edit(@string.Format(model.IdProducto.ToString()))" title="editar" type="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                        <button class="btn btn-rojo-ch delete_@string.Format(model.IdProducto.ToString())" onclick="Delete(@string.Format(model.IdProducto.ToString()))" title="eliminar" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                        <button type="button" class="btn btn-outline-success save_@string.Format(model.IdProducto.ToString()) d-none" onclick="save(@string.Format(model.IdProducto.ToString()))" title="btn-save">
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger cancel_@string.Format(model.IdProducto.ToString()) d-none" onclick="cancel(@string.Format(model.IdProducto.ToString()))" title="btn-cancel">
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <hr />
+                            </div>
+                        </div>
+                        <hr />
                     }
                 }
                 else
                 {
-                            <h5> No Hay Productos en tu carrito</h5>
+                    <h5> No Hay Productos en tu carrito</h5>
                 }
             }
         </div>
@@ -840,59 +861,59 @@
                             {
                                 ProveedorActual = model.Proveedor;
 
-                                        <div id="Pedido_@string.Format(PedidoActual.ToString())">
-                                            <hr class='Separador_Carrito' />
-                                            <h6 class='lblPedido'>Pedido: @string.Format(PedidoActual.ToString()) </h6>
-                                            <div class="row">
-                                                <div class="col-md-2 col-sm-55">
-                                                    <a href="#" style=" margin: auto;">
-                                                        <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">    
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-2 col-sm-55">
-                                                    <a href="#" style=" margin: auto;">
-                                                        <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-4 col-sm-55">
-                                                    <p class="pb-0">
-                                                        <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
-                                                    </p>
-                                                    <p><label>@String.Format(model.Presentacion )</label></p>
-                                                </div>
-                                                <div class="col-md-4 col-sm-12">
-                                                    <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                                    <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                                    <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
-                                                </div>
-                                            </div>
-                                            <hr />
+                                <div id="Pedido_@string.Format(PedidoActual.ToString())">
+                                    <hr class='Separador_Carrito' />
+                                    <h6 class='lblPedido'>Pedido: @string.Format(PedidoActual.ToString()) </h6>
+                                    <div class="row">
+                                        <div class="col-md-2 col-sm-55">
+                                            <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                                <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">    
+                                            </a>
                                         </div>
-                            }
-                            else 
-                            {
-                                        <div id="Pedido_@string.Format(PedidoActual.ToString())">
-                                        <div class="row">
-                                            <div class="col-md-2 col-sm-55">
-                                                <a href="#" style=" margin: auto;"></a>
-                                            </div>
-                                            <div class="col-md-2 col-sm-55">
-                                                <a href="#" style=" margin: auto;">
-                                                    <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
-                                                </a>
-                                            </div>
-                                            <div class="col-md-4 col-sm-55">
-                                                <p class="pb-0"><a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a></p>
-                                                <p><label>@String.Format(model.Presentacion)</label></p>
-                                            </div>
-                                            <div class="col-md-4 col-sm-12">
+                                        <div class="col-md-2 col-sm-55">
+                                            <a href="#" style=" margin: auto;">
+                                                <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4 col-sm-55">
+                                            <p class="pb-0">
+                                                <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
+                                            </p>
+                                            <p><label>@String.Format(model.Presentacion )</label></p>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
                                             <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
                                             <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
                                             <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
-                                            </div>
-                                            <hr />
-                                            </div>
                                         </div>
+                                    </div>
+                                    <hr />
+                                </div>
+                            }
+                            else 
+                            {
+                                <div id="Pedido_@string.Format(PedidoActual.ToString())">
+                                <div class="row">
+                                    <div class="col-md-2 col-sm-55">
+                                        <a href="#" style=" margin: auto;"></a>
+                                    </div>
+                                    <div class="col-md-2 col-sm-55">
+                                        <a href="#" style=" margin: auto;">
+                                            <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4 col-sm-55">
+                                        <p class="pb-0"><a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a></p>
+                                        <p><label>@String.Format(model.Presentacion)</label></p>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                    <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
+                                    <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
+                                    </div>
+                                    <hr />
+                                    </div>
+                                </div>
                             }
                         }
                         else 
@@ -900,38 +921,38 @@
                             PedidoActual = model.IdPedido;
                             ProveedorActual = model.Proveedor;
 
-                                    <div id="Pedido_@string.Format(PedidoActual.ToString())">
-                                        <hr class="Separador_Carrito"/>
-                                        <h6 class="lblPedido">Pedido:@string.Format(PedidoActual.ToString()) </h6>
-                                        <div class="row">
-                                            <div class="col-md-2 col-sm-55">
-                                                <a href="#" style=" margin: auto;">
-                                                    <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
-                                                </a>
-                                            </div>
-                                            <div class="col-md-2 col-sm-55">
-                                            <p class="pb-0">  <a href="#" style=" margin: auto;">
-                                            <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
-                                                </a></p>
-                                            </div>
-                                            <div class="col-md-4 col-sm-55">
-                                                <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
-                                                <p><label>@String.Format(model.Presentacion) </label></p>
-                                            </div>
-                                            <div class="col-md-4 col-sm-12">
-                                                <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                                <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                                <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
-                                            </div>
-                                        </div>
-                                        <hr />
-                                    </diV>
+                            <div id="Pedido_@string.Format(PedidoActual.ToString())">
+                                <hr class="Separador_Carrito"/>
+                                <h6 class="lblPedido">Pedido:@string.Format(PedidoActual.ToString()) </h6>
+                                <div class="row">
+                                    <div class="col-md-2 col-sm-55">
+                                        <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                            <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2 col-sm-55">
+                                    <p class="pb-0">  <a href="#" style=" margin: auto;">
+                                    <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
+                                        </a></p>
+                                    </div>
+                                    <div class="col-md-4 col-sm-55">
+                                        <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
+                                        <p><label>@String.Format(model.Presentacion) </label></p>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <p class="mb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                        <p class="mb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
+                                        <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
+                                    </div>
+                                </div>
+                                <hr />
+                            </diV>
                         }
                     }
                 }
                 else
                 {
-                            <h5> No hay pedidos colocados.</h5>
+                    <h5> No hay pedidos colocados.</h5>
                 }
             }
         </div>
