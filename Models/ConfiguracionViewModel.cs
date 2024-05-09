@@ -36,7 +36,6 @@ namespace ExpoMR.Models
 
     public class Fechas 
     {
-        [Key]
         public string Fecha { get; set; }
 
         public string Monedas { get; set; }

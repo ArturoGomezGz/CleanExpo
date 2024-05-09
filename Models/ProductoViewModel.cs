@@ -6,7 +6,6 @@ namespace ExpoMR.Models
 {
     public class Producto
     {
-        [Key]
         public decimal PrecioMR { get; set; }
 
         public Int16 IdProducto { get; set; }
@@ -23,14 +22,11 @@ namespace ExpoMR.Models
         
         public decimal PrecioFinal { get; set; }
         
-        [NotMapped]
         public Int16 imgProducto { get; set; }
         
-        [NotMapped]
         public byte[] imgProductos { get; set; }
     }
 
-    [Keyless]
     public class CotizaProducto
     {
         public Int16 IdProducto { get; set; }
@@ -71,10 +67,8 @@ namespace ExpoMR.Models
 
         public decimal PrecioFinal { get; set; }
         
-        [NotMapped]
         public int IdProveedor { get; set; }
 
-        [NotMapped]
         public byte[] imgProductos { get; set; }
     }
 }

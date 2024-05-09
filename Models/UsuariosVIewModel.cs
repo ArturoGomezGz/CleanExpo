@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
     public class UsuarioExpo
     {
         public int IdEmail { get; set; }
@@ -31,7 +30,6 @@ namespace ExpoMR.Models
 
     public class UsuariosNotificacion
     {
-        [Key]
         public int IdPersona { get; set; }
 
         public string Nombre { get; set; }

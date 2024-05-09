@@ -5,7 +5,6 @@ using System.Xml.Linq;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
     public class EditarUsuarioViewModel
     {
         public int IdPersona { get; set; }
@@ -18,18 +17,15 @@ namespace ExpoMR.Models
 		[Display(Name = "Email: ")]
         public string Email { get; set; }
         
-        [NotMapped]
         [Display(Name ="Estado: ")]
         public string Estado { get; set; }
         
         public bool VIP { get; set; }
         
-        [NotMapped]
         public bool VIPvalue { get; set; }
 
         public bool Lock { get; set; }
 
-        [NotMapped]
         public string isLock { get; set; }
 
         [Display(Name ="Tipo")]
@@ -48,14 +44,13 @@ namespace ExpoMR.Models
         [Display(Name ="Invitación: ")]
         public string Invitacion { get; set; }
 
-        [NotMapped]
+
         [Required(ErrorMessage = "La Contraseña es obligatoria")]
         [DataType(DataType.Password)]
         [Display(Name = "Nueva Contraseña")]
 
         public string Password { get; set; }
 
-        [NotMapped]
         [Required(ErrorMessage = "La confirmación de Contraseña es obligatoria")]
         [Compare("Password", ErrorMessage = "La Contraseña y confirmación no coinciden")]
         [DataType(DataType.Password)]
@@ -72,10 +67,8 @@ namespace ExpoMR.Models
         public string Sucursal { get; set; }
     }
 
-    [Table("mTipoUsuario")]
     public class mTipoUsuario
     {
-        [Key]
         public byte IdTipoUsuario { get; set; }
 
         public string TipoUsuario { get; set; }

@@ -5,7 +5,6 @@ namespace ExpoMR.Models
 {
     public class FotosViewModel
     {
-        [Key]
         public int IdFoto { get; set; }
 
         public int IdProducto { get; set; }

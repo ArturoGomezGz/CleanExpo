@@ -6,7 +6,6 @@ namespace ExpoMR.Models
 {
     public class mProveedores
     {
-        [Key]
         public int IdPersona { get; set; }
 
         public string Nombre { get; set; }

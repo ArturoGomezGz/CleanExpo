@@ -5,7 +5,6 @@ namespace ExpoMR.Models
 {
     public class Promocion
     {
-        [Key]
         public Int16 IdPromocion { get; set; }
 
         public float? Monto { get; set; }
@@ -22,7 +21,6 @@ namespace ExpoMR.Models
         
         public string Premios { get; set; }
         
-        [NotMapped]
         public string ImgDisponibilidad { get; set;}
     }
 }

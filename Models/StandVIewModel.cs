@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
     public class StandVIewModel
     {
         public int Proveedor { get; set; }
@@ -13,7 +12,6 @@ namespace ExpoMR.Models
 
         public string Descripcion { get; set; }
 
-        [NotMapped]
         public string Template { get; set; }
 
         public byte Rank { get; set; }
@@ -26,17 +24,12 @@ namespace ExpoMR.Models
 
         public byte[] Background { get; set; }
 
-
-        [NotMapped]
         public string Activedhcp { get; set; }
 
-        [NotMapped]
         public string Activestatic { get; set; }
 
-        [NotMapped]
         public int IdUsuario { get; set; }
 
-        [NotMapped]
         public string Sal { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
     public class PedidosCarrito
     {
         public Int64 RegistroProveedor { get; set; }

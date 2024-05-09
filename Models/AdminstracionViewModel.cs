@@ -22,10 +22,8 @@ namespace ExpoMR.Models
 		public List<SucursalUsuario> Sucursales { get; set; }
 	}
 
-    [Table("mRutas")]
     public class RutasList
 	{
-		[Key]
 		public Int32 IdRuta { get; set; }
 
 		public string Descripcion { get; set; }

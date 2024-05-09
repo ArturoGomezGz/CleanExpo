@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
     public class InfoRuletas
     {
         public byte IdRuleta { get; set; }
@@ -14,7 +13,6 @@ namespace ExpoMR.Models
 
         public int Activa { get; set; }
 
-        [NotMapped]
         public string RuletaNormalized { get; set; }
     }
 }

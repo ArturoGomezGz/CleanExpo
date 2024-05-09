@@ -9,7 +9,6 @@ namespace ExpoMR.Models
         public string nombre { get; set; }
     }
 
-    [Keyless]
     public class MonedasActuales
     {
         public int monedas { get; set; }

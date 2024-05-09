@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
     public class ListaCarrito
     {
         public int Registro { get; set; }

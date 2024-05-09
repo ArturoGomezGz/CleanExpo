@@ -6,7 +6,6 @@ namespace ExpoMR.Models
 {
     public class mAnuncios
     {
-        [Key]
         public int IdAnuncio { get; set; }
 
         public int Proveedor { get; set; }
@@ -20,7 +19,6 @@ namespace ExpoMR.Models
         public byte Rank { get; set; }
     }
 
-    [Keyless]
     public class Anuncios
     {
         public string Anuncio { get; set; }

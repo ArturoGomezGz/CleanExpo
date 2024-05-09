@@ -55,7 +55,6 @@ namespace ExpoMR.Models
         public List<Portes> Portes { get; set; }
     }
 
-    [Keyless]
     public class TipoDocumentos
     { 
         public Int16 IdTipoDoc { get; set; }  
@@ -63,15 +62,12 @@ namespace ExpoMR.Models
         public string TipoDoc { get; set; }
     }
 
-    [Keyless]
     public class UsosCFDI
     {
         public Int16 IdUsoCFDI { get; set; }
 
         public string UsoCFDI { get; set; }
     }
-
-    [Keyless]
 
     public class TiposDeVenta
     { 
@@ -80,7 +76,6 @@ namespace ExpoMR.Models
         public string TipoVenta { get; set; }
     }
 
-    [Keyless]
     public class Entregas
     {
         public int IdEntrega { get; set; }
@@ -88,7 +83,6 @@ namespace ExpoMR.Models
         public string Entrega { get; set; }
     }
 
-    [Keyless]
     public class Trasportes
     { 
         public int IdTrasporte { get; set; }
@@ -96,7 +90,6 @@ namespace ExpoMR.Models
         public string Transporte { get; set; }
     }
 
-    [Keyless]
     public class Portes
     { 
         public int Idporte { get; set; }

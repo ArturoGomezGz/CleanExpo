@@ -5,7 +5,6 @@ using System.Xml.Linq;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
     public class EditarProveedorViewModel
     {
         public int IdPersona { get; set; }
@@ -19,11 +18,9 @@ namespace ExpoMR.Models
 
         public int Saldo { get; set; }
 
-        [NotMapped]
         [Display(Name ="Asignar Monedas")]
         public int AsignarMonedas { get; set; }
 
         public int NumLabAsignados { get; set; }
-
     }
 }

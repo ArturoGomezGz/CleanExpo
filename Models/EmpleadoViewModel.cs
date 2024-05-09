@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpoMR.Models
 {
-    [Keyless]
 	public class Empleados
 	{
 		public int IdPersona { get; set; }
@@ -20,15 +19,13 @@ namespace ExpoMR.Models
 		[Display(Name = "Rol Empleado: ")]
         public string Rol { get; set; }
 
-		[NotMapped]
 		public List<Roles> Roles { get; set; }
 
-        [NotMapped]
         public bool IsUser { get; set; }
     }
 
-    [Keyless]
-    public class Roles { 
+    public class Roles
+    { 
 		public string IdRol { get; set; }
 
 		public string Role { get; set; }

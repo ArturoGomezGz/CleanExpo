@@ -15,13 +15,10 @@ namespace ExpoMR.Models
 
         public byte[] Foto { get; set; }
 
-        [NotMapped]
         public int Proveedor { get; set; }
 
-        [NotMapped]
         public Int16 Cantidad { get; set; }
 
-        [NotMapped]
         public byte NumFoto { get; set; }
     }
 }
