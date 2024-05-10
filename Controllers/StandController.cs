@@ -151,7 +151,7 @@ namespace ExpoMR.Controllers
                     Stand.Activestatic = "active";
                 }
 
-                string query = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado FROM GetSales(@IdSal, @letra, @sal) AS Sal";
+                string query2 = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado FROM GetSales(@IdSal, @letra, @sal) AS Sal";
 
                 DB dB2 = new();
                 SqlParameter[] parameters2 = new SqlParameter[3];
@@ -159,7 +159,7 @@ namespace ExpoMR.Controllers
                 parameters2[1] = new SqlParameter("@letra", "");
                 parameters2[2] = new SqlParameter("@sal", "");
 
-                SqlDataReader dr2 = dB2.ExecuteReader(query, ref parameters2, commandType: CommandType.Text);
+                SqlDataReader dr2 = dB2.ExecuteReader(query2, ref parameters2, commandType: CommandType.Text);
 
                 while (dr2.Read())
                 { 

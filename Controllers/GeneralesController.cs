@@ -47,42 +47,6 @@ namespace ExpoMR.Controllers
             return (int)dB.ExecuteScalar("ExpoCountProducts", ref parameters);
         }
 
-        public static int GetIdPersonas(string UserName)
-        {
-            string query = "Select IdPersona" +
-                " from mUsuarios" +
-                " where UserName ='"+UserName+"'";
-            DataTable dataTable = SqlQueryDT("ExpoMRCS", query);
-
-            int IdPersona = dataTable.Rows[0].Field<int>(0);
-
-            return IdPersona;
-        }
-
-        public static int GetIdProveedor(string UserName)
-        {
-            string query = "Select Referencia" +
-                " from mUsuarios" +
-                " where UserName ='" + UserName + "'";
-            DataTable dataTable = SqlQueryDT("ExpoMRCS", query);
-
-            int IdPersona = dataTable.Rows[0].Field<int>(0);
-
-            return IdPersona;
-        }
-
-        public static int GetClientes(string UserName)
-        {
-            string query = "Select Referencia" +
-                " from mUsuarios" +
-                " where UserName ='" + UserName+"'";
-            DataTable dataTable = SqlQueryDT("ExpoMRCS", query);
-
-            int IdPersona = dataTable.Rows[0].Field<int>(0);
-
-            return IdPersona;
-        }
-
         [HttpPost]
         public JsonResult GetRegistroMonedas()
         {
@@ -112,52 +76,6 @@ namespace ExpoMR.Controllers
             };
 
             return Json(jsonData.rows);
-        }
-
-        public static DataTable SqlQueryDT(string dataBase, string query)
-        {
-            string ConectionSql="";
-
-            #if (TESTMODE)
-                switch (dataBase)
-                {
-                    case "ExpoMRCS":
-                        ConectionSql = "Server=localhost; Database=ExpoMR; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true";
-                        break;
-                    case "IndigoCS":
-                        ConectionSql = "Server=localhost; Database=Indigo; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true";
-                        break;
-                    case "FotosCS":
-                        ConectionSql = "Server=localhost; Database=Fotos; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true";
-                        break;
-                }
-            #else
-                switch (dataBase)
-                {
-                    case "ExpoMRCS":
-                        ConectionSql = "Server=192.168.100.10; Database=ExpoMR; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true";
-                        break;
-                    case "IndigoCS":
-                        ConectionSql = "Server=192.168.100.10; Database=Indigo; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true";
-                        break;
-                    case "FotosCS":
-                        ConectionSql = "Server=192.168.100.10; Database=Fotos; User ID=usrapp;Password=tangeri;Trusted_Connection=false;MultipleActiveResultSets=true";
-                        break;
-                }            
-            #endif
-
-            DataTable dt = new();
-            SqlConnection cnn = new(ConectionSql);
-            SqlCommand cmd = new();
-            SqlDataAdapter sqlDA; cnn.Open();
-            cmd.CommandText = query;
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = cnn;
-            sqlDA = new SqlDataAdapter(cmd);
-            sqlDA.Fill(dt);
-            cnn.Close();
-
-            return dt;
         }
 
         public static byte[] GetFoto(int idProducto)
