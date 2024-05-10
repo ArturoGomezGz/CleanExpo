@@ -229,11 +229,14 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetClientes()
         {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
 
-            SqlDataReader dr = dB.ExecuteReader("GetVisitasStandProv", ref parameters);
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@Cliente", "0");
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {

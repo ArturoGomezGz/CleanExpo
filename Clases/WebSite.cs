@@ -67,11 +67,34 @@ namespace ExpoMR.Clases
 
         public static List<TipoDocumentos> GetTiposDocumentos(int IdCliente) 
         {
+            string query = "SELECT mDocumentos.IdDocumento, mDocumentos.Documento " +
+                            "FROM Indigo.dbo.mDocumentos, Indigo.dbo.mClientes INNER JOIN " +
+                            "Indigo.dbo.mPerEmp ON mClientes.IdPersona = mPerEmp.IdPersona INNER JOIN " +
+                            "Indigo.dbo.mPersonas ON mPerEmp.Persona = mPersonas.Persona " +
+                            "WHERE mClientes.IdPersona =  @IdPersona " +
+                            "AND( " +
+                            "	( " +
+                            "	  mDocumentos.IdDocumento = 1 " +
+                            "	  AND( " +
+                            "			UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]' " +
+                            "			OR " +
+                            "			UPPER(mPersonas.RFC) like '[A-Z][A-Z][A-Z][0-9][0-9][0-9][0-9][0-9][0-9][0-9,A-Z][0-9,A-Z][0-9,A-Z]' " +
+                            "		 ) " +
+                            "   ) " +
+                            "OR mDocumentos.IdDocumento = 2 " +
+                            "OR ( " +
+                            "		mDocumentos.IdDocumento = 4  " +
+                            "		And  " +
+                            "		mClientes.Traslado = 1 " +
+                            "   ) " +
+                            "  ) " +
+                            "ORDER BY mDocumentos.Documento";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetTiposDocsCliente", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             List<TipoDocumentos> TiposDocumentos = new();
 
@@ -90,11 +113,19 @@ namespace ExpoMR.Clases
 
         public static List<Entregas> GetDireccionesEntrega(int IdCliente)
         {
+            string query = "SELECT 0 AS Entrega, '...' AS DireccionE " +
+                            "UNION " +
+                            "SELECT vDirecciones.IdDireccion AS Entrega, vDirecciones.Ciudad + ', ' + vDirecciones.Estado + ' - ' + vDirecciones.Direccion AS DireccionE " +
+                            "FROM Indigo.dbo.vDirecciones INNER JOIN " +
+                            "Indigo.dbo.mPerEmp ON vDirecciones.Persona = mPerEmp.Persona " +
+                            "WHERE mPerEmp.IdPersona = @IdPersona " +
+                            "ORDER BY DireccionE";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetDireccionesCliente", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             List<Entregas> DireccionesEntrega = new();
 
@@ -138,11 +169,19 @@ namespace ExpoMR.Clases
 
         public static List<Trasportes> GetTransportes(int IdCliente)
         {
+            string query = "SELECT 0 AS IdTransporte, '...' AS Nombre " +
+                            "UNION " +
+                            "SELECT ISNULL(dTransCliente.IdTransporte,0) AS IdTransporte, vPersonas.Nombre " +
+                            "FROM Indigo.dbo.dTransCliente INNER JOIN " +
+                            "Indigo.dbo.vPersonas ON dTransCliente.IdTransporte = vPersonas.IdPersona " +
+                            "WHERE dTransCliente.IdPersona = @IdPersona " +
+                            "ORDER BY Nombre";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetTransportesCliente", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             List<Trasportes> Transportes = new();
 
@@ -161,10 +200,17 @@ namespace ExpoMR.Clases
 
         public static List<TiposDeVenta> GetTiposVenta()
         {
+            string query = "SELECT 0 AS IdTipoVenta, '...' AS TipoVenta " +
+                            "UNION " +
+                            "SELECT mTipoVenta.IdTipoVenta, mTipoVenta.TipoVenta " +
+                            "FROM Indigo.dbo.mTipoVenta " +
+                            "WHERE mTipoVenta.IdTipoVenta != 5 --5 = Mostrador " +
+                            "ORDER BY TipoVenta";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[0];
 
-            SqlDataReader dr = dB.ExecuteReader("GetTiposVentaCliente", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             List<TiposDeVenta> TiposVenta = new();
 

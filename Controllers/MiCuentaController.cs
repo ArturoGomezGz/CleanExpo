@@ -90,11 +90,13 @@ namespace ExpoMR.Controllers
 
         public async Task<IActionResult> MiCuenta()
         {
+            string query = "SELECT Datos.Nombre, Datos.RFC, Datos.IdDocumento, Datos.IdUsoCFDI, Datos.IdTipoVenta, Datos.IdDireccion, Datos.Direccion, Datos.IdTransporte, Datos.IdPorte FROM GetDatosCliente(@IdPersona) AS Datos";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetDatosCliente", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             MiCuentaViewModel MiCuenta = new();
 
@@ -155,11 +157,13 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetDatosFacturacion(int IdCliente)
         {
+            string query = "SELECT Datos.Nombre, Datos.RFC, Datos.IdDocumento, Datos.IdUsoCFDI, Datos.IdTipoVenta, Datos.IdDireccion, Datos.Direccion, Datos.IdTransporte, Datos.IdPorte FROM GetDatosCliente(@IdPersona) AS Datos";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetDatosCliente", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -189,11 +193,19 @@ namespace ExpoMR.Controllers
       
         public List<Portes> GetPorte(int IdCliente)
         {
+            string query = "SELECT 0 AS IdPorte, '...' AS Porte " +
+                            "UNION " +
+                            "SELECT dPorteCliente.IdPorte, mPortes.Porte " +
+                            "FROM Indigo.dbo.dPorteCliente INNER JOIN " +
+                            "Indigo.dbo.mPortes ON dPorteCliente.IdPorte = mPortes.IdPorte " +
+                            "WHERE dPorteCliente.IdPersona =  @IdPersona " +
+                            "ORDER BY Porte";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPersona", IdCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetPortesCliente", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             List<Portes> Portes = new();
 

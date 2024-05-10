@@ -76,12 +76,24 @@ namespace ExpoMR.Controllers
 
             try
             {
+                string query = "SELECT CAST(ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS int)AS Registro, " +
+                                "mLaboratorios.Proveedor, mLaboratorios.Laboratorio, vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, " +
+                                "vCotizaciones.Cantidad, vCotizaciones.PrecioFinal, vCotizaciones.Total, vCotizaciones.PorConfirmar " +
+                                "FROM vCotizaciones INNER JOIN  " +
+                                "vProductos ON vCotizaciones.IdProducto = vProductos.IdProducto INNER JOIN  " +
+                                "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN  " +
+                                "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona  " +
+                                "WHERE vCotizaciones.Cliente =  @IdCliente " +
+                                "AND vCotizaciones.Usuario =  @IdUsuario " +
+                                "AND vCotizaciones.Solicitado = 1 " +
+                                "ORDER BY mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
 
-                SqlDataReader dr = dB.ExecuteReader("GetDetailCarrito", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -242,11 +254,19 @@ namespace ExpoMR.Controllers
 
             try
             {
+                string query = "DECLARE @idcotizacion INT " +
+                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion  @IdCliente,  @IdCliente " +
+                                "SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, " +
+                                "vCotizacionDatos.IdDocumento, vCotizacionDatos.Documento, " +
+                                "ISNULL(vCotizacionDatos.IdUsoCFDI, 0) AS IdUsoCFDI, vCotizacionDatos.UsoCFDI " +
+                                "FROM vCotizacionDatos " +
+                                "WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
 
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                SqlDataReader dr = dB.ExecuteReader("GetDatosFacturacion", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -299,12 +319,20 @@ namespace ExpoMR.Controllers
 
             try
             {
+                string query = "DECLARE @idcotizacion INT " +
+                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion  @IdCliente,  @IdUsuario " +
+                                "SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.IdTipoVenta, vCotizacionDatos.TipoVenta, " +
+                                "vCotizacionDatos.Entrega, vCotizacionDatos.DirEntrega, ISNULL(vCotizacionDatos.IdTransporte,0) AS IdTransporte, ISNULL(vCotizacionDatos.Transportista,0) AS Transportista, " +
+                                "ISNULL(vCotizacionDatos.IdPorte,0) AS IdPorte, ISNULL(vCotizacionDatos.Porte,0) AS Porte, ISNULL(vCotizacionDatos.Obsv,'') AS Obsv " +
+                                "FROM vCotizacionDatos " +
+                                "WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
 
-                SqlDataReader dr = dB.ExecuteReader("GetDatosTransporte", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -349,6 +377,20 @@ namespace ExpoMR.Controllers
         {
             List<PedidosCarrito> pedidos = new List<PedidosCarrito>();
 
+            string query = "SELECT ROW_NUMBER() OVER(PARTITION BY vPedidos.IdPedido,vProductos.IdLaboratorio " +
+                            "ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS RegistroProveedor, mLaboratorios.Proveedor, " +
+                            "ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio, vPedidos.IdPedido ORDER BY mProveedores.Nombre, " +
+                            "vProductos.Nombre ASC) AS RegistroPedido, vPedidos.IdPedido, vProductos.IdProducto, vProductos.Nombre, " +
+                            "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio " +
+                            "FROM vPedidos INNER JOIN " +
+                            "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
+                            "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
+                            "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
+                            "WHERE vPedidos.Cliente = @IdCliente " +
+                            "AND   vPedidos.Usuario = @IdUsuario " +
+                            "AND ( vPedidos.IdPedido =  @IdPedido OR @IdPedido = 0) " +
+                            "ORDER BY vPedidos.IdPedido, mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[3];
 
@@ -356,7 +398,7 @@ namespace ExpoMR.Controllers
             parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
             parameters[2] = new SqlParameter("@IdPedido", IdPedido);
 
-            SqlDataReader dr = dB.ExecuteReader("GetPedidosCarrito", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {

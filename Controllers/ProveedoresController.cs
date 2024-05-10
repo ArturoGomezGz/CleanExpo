@@ -239,11 +239,14 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult ddlLisCliente()
         {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
 
-            SqlDataReader dr = dB.ExecuteReader("GetVisitasStandProv", ref parameters);
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@Cliente", "0");
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -378,12 +381,14 @@ namespace ExpoMR.Controllers
         {
             Clientes Visita = new Clientes();
 
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
+
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
             parameters[1] = new SqlParameter("@Cliente", idCliente);
 
-            SqlDataReader dr = dB.ExecuteReader("GetVisitasStandProv", ref parameters);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {
@@ -398,12 +403,15 @@ namespace ExpoMR.Controllers
         public JsonResult GetClientes()
         {
             List<Clientes> Visitas = new();
-  
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
 
-            SqlDataReader dr = dB.ExecuteReader("GetVisitasStandProv", ref parameters);
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@Cliente", "0");
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             while (dr.Read())
             {

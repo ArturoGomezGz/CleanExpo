@@ -39,13 +39,22 @@ namespace ExpoMR.Controllers
 
         public IActionResult CotizacionDetail(int IdCliente)
         {
+            string query = "DECLARE @idcotizacion INT " +
+                            "EXECUTE @idcotizacion = CotizarGetCotizacion @cliente, @usuario " +
+                            "SELECT vCotizacionDatos.IdPersona AS IdCliente, vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, " +
+                            "vCotizacionDatos.IdDocumento, vCotizacionDatos.Documento, vCotizacionDatos.IdUsoCFDI, vCotizacionDatos.UsoCFDI, " +
+                            "vCotizacionDatos.Entrega AS Direccion, vCotizacionDatos.DirEntrega, vCotizacionDatos.IdTipoVenta, vCotizacionDatos.TipoVenta, " +
+                            "vCotizacionDatos.IdTransporte, vCotizacionDatos.Transportista,vCotizacionDatos.Obsv, vCotizacionDatos.IdPorte, vCotizacionDatos.Porte " +
+                            "FROM vCotizacionDatos " +
+                            "WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
             parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 
-            dr = dB.ExecuteReader("CotizarDatosCliente", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
             Cotizacion cotizacion = new();
 
             while (dr.Read())
@@ -190,12 +199,19 @@ namespace ExpoMR.Controllers
 
         public List<GetDireccionEntrega> DirEntrega( int Cliente) 
         {
+            string query = "SELECT Direcciones.IdDireccion AS Entrega, dbo.FormatAddress(Direcciones.CalleNum, Direcciones.Colonia, Direcciones.Ciudad, Direcciones.Estado, Direcciones.CP) AS DirEntrega " +
+                            "FROM Indigo.dbo.mPerEmp AS Personas INNER JOIN " +
+                            "Indigo.dbo.vDirecciones AS Direcciones ON Personas.Persona = Direcciones.Persona " +
+                            "WHERE Personas.IdPersona = @IdCliente " +
+                            "--AND Direcciones.Status = 1 -- 1-= Activa " +
+                            "ORDER BY DirEntrega";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdCliente", Cliente);
 
-            dr = dB.ExecuteReader("GetDirEntrega", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             List<GetDireccionEntrega> Entrega = new();
 
@@ -282,12 +298,28 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetClientes() 
         {
+            string query = "IF EXISTS(SELECT vRutasClientes.IdRuta " +
+                            "	  FROM vRutasClientes " +
+                            "	  WHERE vRutasClientes.IdEmpleado = @IdEmpleado) " +
+                            "BEGIN " +
+                            "	SELECT vRutasClientes.IdCliente, vRutasClientes.Cliente " +
+                            "	FROM vRutasClientes " +
+                            "	WHERE vRutasClientes.IdEmpleado = @IdEmpleado " +
+                            "	ORDER BY vRutasClientes.Cliente " +
+                            "END " +
+                            "ELSE " +
+                            "BEGIN " +
+                            "	SELECT vClientesSucursales.IdCliente, vClientesSucursales.Cliente " +
+                            "	FROM vClientesSucursales " +
+                            "	ORDER BY vClientesSucursales.Cliente " +
+                            "END";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdEmpleado", HttpContext.Session.GetString("ClienteSel"));
 
-            dr = dB.ExecuteReader("GetClientes", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -306,13 +338,23 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult ProductosCapturados( int IdCliente)
         {
+            string query = "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, mLaboratorios.Laboratorio, " +
+                            "vCotizaciones.Cantidad, vCotizaciones.PrecioFinal, vCotizaciones.Total, vCotizaciones.PorConfirmar " +
+                            "FROM vCotizaciones INNER JOIN " +
+                            "vProductos ON vCotizaciones.IdProducto = vProductos.IdProducto INNER JOIN " +
+                            "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio " +
+                            "WHERE vCotizaciones.Cliente = @cliente " +
+                            "AND vCotizaciones.Usuario = @usuario " +
+                            "AND vCotizaciones.Solicitado = 1 " +
+                            "ORDER BY mLaboratorios.Laboratorio, vProductos.Nombre";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
             parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 
-            dr = dB.ExecuteReader("CotizarDetalleProductos", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -523,13 +565,22 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult TotalCotizacion(int IdCliente) 
         {
+            string query = "DECLARE @idcotizacion INT " +
+                            "SELECT vCotizacionPorConfirmar.Cliente, vCotizacionPorConfirmar.Productos, vCotizacionPorConfirmar.Subtotal, " +
+                            "vCotizacionPorConfirmar.IvaMonto AS Iva, vCotizacionPorConfirmar.Total, " +
+                            "dbo.GetCredit(@cliente, 1) AS Credito " +
+                            "FROM vCotizacionPorConfirmar LEFT OUTER JOIN " +
+                            "vPedido ON vCotizacionPorConfirmar.Cliente = vPedido.Cliente " +
+                            "WHERE vCotizacionPorConfirmar.Cliente = @cliente " +
+                            "AND vCotizacionPorConfirmar.Usuario = @usuario";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
             parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 
-            dr = dB.ExecuteReader("CotizarTotalCotizacion", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             if (!dr.HasRows)
             {
@@ -569,12 +620,22 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetPedidosCliente(int idCliente)
         {
+            string query = "SELECT vPersonas.Nombre AS Cliente, mPedidos.IdPedido, mDocumentos.Documento, mPedidos.Fecha, COUNT(dPedidos.IdProducto) AS NumProd, Capturo.Nombre AS Capturo " +
+                            "FROM mPedidos INNER JOIN " +
+                            "dPedidos ON mPedidos.IdPedido = dPedidos.IdPedido INNER JOIN " +
+                            "Indigo.dbo.vPersonas ON mPedidos.Cliente = vPersonas.IdPersona INNER JOIN " +
+                            "Indigo.dbo.mDocumentos ON mPedidos.IdDocumento = mDocumentos.IdDocumento INNER JOIN " +
+                            "vPersonas AS Capturo ON mPedidos.Usuario = Capturo.IdPersona " +
+                            "WHERE mPedidos.Cliente = @IdCliente " +
+                            "GROUP BY vPersonas.Nombre, mPedidos.IdPedido, mDocumentos.Documento, mPedidos.Fecha, Capturo.Nombre " +
+                            "ORDER BY mPedidos.IdPedido";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdCLiente", idCliente);
 
-            dr = dB.ExecuteReader("PedidosCliente", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -602,12 +663,19 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult pedidoCliente(int idPedido)
         {
+            string query = "SELECT vPedidoDatos.IdPedido, vPedidoDatos.Cliente, vPedidoDatos.RFC, vPedidoDatos.Documento, vPedidoDatos.UsoCFDI, " +
+                            "vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Transportista, vPedidoDatos.Obsv, vPedidoDatos.Porte, Capturo.Nombre AS Capturo " +
+                            "FROM vPedidoDatos INNER JOIN " +
+                            "mPedidos ON vPedidoDatos.IdPedido = mPedidos.IdPedido INNER JOIN " +
+                            "vPersonas AS Capturo ON mPedidos.Usuario = Capturo.IdPersona " +
+                            "WHERE vPedidoDatos.IdPedido = @IdPedido";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPedido", idPedido);
 
-            dr = dB.ExecuteReader("PedidoClienteDetalle", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -635,12 +703,20 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetProductosPedido(int idPedido)
         {
+            string query = "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, mLaboratorios.Laboratorio, " +
+                            "vPedidos.Cantidad, vPedidos.PorSurtir, vPedidos.PrecioFinal, vPedidos.Total " +
+                            "FROM vPedidos INNER JOIN " +
+                            "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
+                            "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio " +
+                            "WHERE vPedidos.IdPedido = @IdPedido " +
+                            "ORDER BY mLaboratorios.Laboratorio, vProductos.Nombre";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPedido", idPedido);
 
-            dr = dB.ExecuteReader("PedidoDetalleProductos", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {
@@ -665,12 +741,24 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetTotalPedido(int idPedido)
         {
+            string query = "SELECT mPedidos.Cliente,  " +
+                            "COUNT(dPedidos.IdProducto) AS Productos, " +
+                            "CAST(SUM(dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento)) AS DECIMAL(18,2)) AS Subtotal,  " +
+                            "CAST(SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18,2)) AS Iva, " +
+                            "CAST(SUM(dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento)) + " +
+                            "	SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18,2)) AS Total " +
+                            "FROM mPedidos INNER JOIN " +
+                            "dPedidos ON mPedidos.IdPedido = dPedidos.IdPedido INNER JOIN " +
+                            "mProductos ON dPedidos.IdProducto = mProductos.IdProducto " +
+                            "WHERE mPedidos.IdPedido = @IdPedido " +
+                            "GROUP BY mPedidos.Cliente";
+
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("@IdPedido", idPedido);
 
-            dr = dB.ExecuteReader("PedidoTotalPedido", ref parameters);
+            dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
             var jsonData = new
             {

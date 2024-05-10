@@ -59,11 +59,27 @@ namespace ExpoMR.Controllers
             {
                 EditarUsuarioViewModel Usuario = new EditarUsuarioViewModel();
 
+                string query = "SELECT vPersonas.IdPersona, vPersonas.Nombre, vPersonas.IdEmail, vPersonas.Email, vPersonas.IdTipoUsuario, " +
+                                "(SELECT mTipoUsuario.TipoUsuario FROM mTipoUsuario WHERE mTipoUsuario.IdTipoUsuario = vPersonas.IdTipoUsuario) AS TipoUsuario, " +
+                                "vPersonas.VIP, CAST(vPersonas.Usuario AS BIT) AS Usuario, CAST(vPersonas.Lock AS BIT) AS Lock, " +
+                                "CASE WHEN vPersonas.Sucursal = 0 THEN '' " +
+                                "	 ELSE CASE WHEN vPersonas.Sucursal = 1 THEN 'GUADALAJARA' " +
+                                "			   ELSE CASE WHEN vPersonas.Sucursal = 2  THEN 'QUERETARO' " +
+                                "						 ELSE 'MEXICO' " +
+                                "					END " +
+                                "		  END " +
+                                "END AS Sucursal, " +
+                                "vPersonas.Sucursal AS IdSucursal, " +
+                                "CAST((SELECT TOP 1 lInvitaciones.Fecha FROM lInvitaciones WHERE lInvitaciones.IdEmail = @IdEmail ORDER BY Fecha DESC) AS VARCHAR) AS Invitacion " +
+                                "FROM vPersonas LEFT OUTER JOIN " +
+                                "lInvitaciones ON vPersonas.IdEmail = lInvitaciones.IdEmail " +
+                                "WHERE vPersonas.IdEmail = @IdEmail";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdEmail", IdEmail);
 
-                SqlDataReader dr = dB.ExecuteReader("GetUsuario", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -134,10 +150,18 @@ namespace ExpoMR.Controllers
             {
                 List<SucursalUsuario> Sucursales = new();
 
+                string query = "SELECT 0 AS IdSucursal, '...' AS Sucursal " +
+                                "UNION " +
+                                "SELECT 1 AS IdSucursal, 'Guadalajara' AS Sucursal " +
+                                "UNION " +
+                                "SELECT 2 AS IdSucursal, 'Querétaro' AS Sucursal " +
+                                "UNION " +
+                                "SELECT 3 AS IdSucursal, 'México' AS Sucursal";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[0];
 
-                SqlDataReader dr = dB.ExecuteReader("GetSucursales", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
@@ -156,10 +180,15 @@ namespace ExpoMR.Controllers
             {
                 List<mTipoUsuario> TiposUsuarios = new();
 
+                string query = "SELECT mTipoUsuario.IdTipoUsuario, mTipoUsuario.TipoUsuario " +
+                                "FROM mTipoUsuario " +
+                                "WHERE mTipoUsuario.IdTipoUsuario <> 3 --3 Administrador " +
+                                "ORDER BY mTipoUsuario.TipoUsuario";
+
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[0];
 
-                SqlDataReader dr = dB.ExecuteReader("GetTiposUsuario", ref parameters);
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
