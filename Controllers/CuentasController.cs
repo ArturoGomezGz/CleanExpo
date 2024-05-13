@@ -148,7 +148,7 @@ namespace ExpoMR.Controllers
                     var urlRetorno = Url.Action("ConfirmarEmail", "Cuentas", new { userId = usuario.Id, code }, protocol: HttpContext.Request.Scheme);
 
                 #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Confirmar su cuenta - ExpoMR",
+                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Confirmar su cuenta - ExpoMR",
                                             "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
                 #else                   
                     await _emailSender.SendEmailAsync(rgViewModel.Email, "Confirmar su cuenta - ExpoMR",
@@ -242,7 +242,7 @@ namespace ExpoMR.Controllers
                     var urlRetorno = Url.Action("ConfirmarEmail", "Cuentas", new { userId = usuario.Id, code }, protocol: HttpContext.Request.Scheme);
 
                 #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Confirmar su cuenta - ExpoMR",
+                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Confirmar su cuenta - ExpoMR",
                                             "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
                     await _signInManager.SignInAsync(usuario, isPersistent: false);
                 #else

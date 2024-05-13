@@ -57,7 +57,7 @@ namespace ExpoMR.Controllers
                         + avisoConfidencialidad;
                
             #if (TESTMODE)
-                await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR", body);
+                await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR", body);
             #else                    
                 await _emailSender.SendEmailAsync(opViewModel.Email, "Recuperar Contraseña ExpoMR", body);
             #endif
@@ -98,7 +98,7 @@ namespace ExpoMR.Controllers
                                 + avisoConfidencialidad;
 
                         #if (TESTMODE)
-                            await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Bienvenido a Expo Virtual Medicinas Rosario", body);
+                            await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Bienvenido a Expo Virtual Medicinas Rosario", body);
                         #else
                             await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
                         #endif
@@ -177,7 +177,7 @@ namespace ExpoMR.Controllers
             try
             {
                 #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Promociones Obtenidas", body);
+                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Promociones Obtenidas", body);
                 #else
                     await _emailSender.SendEmailAsync(email, "Promociones Obtenidas", body);
                 #endif
@@ -299,7 +299,7 @@ namespace ExpoMR.Controllers
             try
             {
                 #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("carlos.rivera@medicinasrosario.com.mx", "Pedido en firme", body);
+                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Pedido en firme", body);
                 #else                   
                     await _emailSender.SendEmailAsync(email, "Pedido en firme", body);
                 #endif
