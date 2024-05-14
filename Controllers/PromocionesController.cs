@@ -261,7 +261,7 @@ namespace ExpoMR.Controllers
                             "Indigo.dbo.vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN " +
                             "mProductos ON vProductos.IdProducto = mProductos.IdProducto " +
                             "WHERE mProveedores.IdPersona = @IdProveedor " +
-                            "AND vProductos.Status IN (0, 3, 4) -- status 0 = activo, 3 = nuevo, 4 = liquidacion";
+                            "AND vProductos.Status IN (0, 3, 4)";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];

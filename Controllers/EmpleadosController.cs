@@ -120,7 +120,7 @@ namespace ExpoMR.Controllers
 
             string query = "SELECT mDocumentos.IdDocumento, mDocumentos.Documento " +
                             "FROM mDocumentos " +
-                            "WHERE mDocumentos.IdDocumento IN (1,2) --1 = Factura, 2 = Nota";
+                            "WHERE mDocumentos.IdDocumento IN (1,2)";
 
             dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
 
@@ -203,7 +203,7 @@ namespace ExpoMR.Controllers
                             "FROM Indigo.dbo.mPerEmp AS Personas INNER JOIN " +
                             "Indigo.dbo.vDirecciones AS Direcciones ON Personas.Persona = Direcciones.Persona " +
                             "WHERE Personas.IdPersona = @IdCliente " +
-                            "--AND Direcciones.Status = 1 -- 1-= Activa " +
+                            "--AND Direcciones.Status = 1 " +
                             "ORDER BY DirEntrega";
 
             DB dB = new();

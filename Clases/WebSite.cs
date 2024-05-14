@@ -204,7 +204,7 @@ namespace ExpoMR.Clases
                             "UNION " +
                             "SELECT mTipoVenta.IdTipoVenta, mTipoVenta.TipoVenta " +
                             "FROM Indigo.dbo.mTipoVenta " +
-                            "WHERE mTipoVenta.IdTipoVenta != 5 --5 = Mostrador " +
+                            "WHERE mTipoVenta.IdTipoVenta != 5 " +
                             "ORDER BY TipoVenta";
 
             DB dB = new();

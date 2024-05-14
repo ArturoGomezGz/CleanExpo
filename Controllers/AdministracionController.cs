@@ -182,7 +182,7 @@ namespace ExpoMR.Controllers
 
                 string query = "SELECT mTipoUsuario.IdTipoUsuario, mTipoUsuario.TipoUsuario " +
                                 "FROM mTipoUsuario " +
-                                "WHERE mTipoUsuario.IdTipoUsuario <> 3 --3 Administrador " +
+                                "WHERE mTipoUsuario.IdTipoUsuario <> 3 " +
                                 "ORDER BY mTipoUsuario.TipoUsuario";
 
                 DB dB = new();
@@ -781,7 +781,7 @@ namespace ExpoMR.Controllers
                                 "		Indigo.dbo.mPerEmp AS mPerEmp on mPersonas.Persona = mPerEmp.Persona INNER JOIN " +
                                 "		Indigo.dbo.vRoles AS vRoles on mPerEmp.IdPersona = vRoles.IdPersona " +
                                 "		WHERE mPerEmp.IdEmpresa = @IdEmpresa " +
-                                "		AND vRoles.Proveedor = 1 --1 = Proveedor " +
+                                "		AND vRoles.Proveedor = 1 " +
                                 "		AND mPerEmp.IdPersona NOT IN (SELECT mProveedores.IdPersona FROM mProveedores) " +
                                 "		UNION " +
                                 "		SELECT mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, CAST(1 AS BIT) AS Alta " +

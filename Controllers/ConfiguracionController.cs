@@ -104,7 +104,7 @@ namespace ExpoMR.Controllers
                             "WHERE IdMotivo = 7 " +
                             "SELECT @factorvip = MonedasVIP " +
                             "FROM mMotivos " +
-                            "WHERE IdMotivo = 7 --Monedas por visita " +
+                            "WHERE IdMotivo = 7 " +
                             "SELECT @IdProveedor AS Proveedor, " +
                             "ISNULL(CASE WHEN mCalendario.VIP = 1 " +
                             "       THEN dStandsMax.Maximo /@factorvip " +
