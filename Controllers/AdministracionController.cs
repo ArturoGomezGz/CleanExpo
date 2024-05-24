@@ -724,7 +724,7 @@ namespace ExpoMR.Controllers
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@IdProveedor", "0");
+                parameters[0] = new SqlParameter("@IdLaboratorio", "0");
                 parameters[1] = new SqlParameter("@Asignados", false);
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
@@ -751,8 +751,8 @@ namespace ExpoMR.Controllers
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@IdProveedor", IdPersona);
-                parameters[1] = new SqlParameter("@Asignados", 1);
+                parameters[0] = new SqlParameter("@IdLaboratorio", IdPersona);
+                parameters[1] = new SqlParameter("@Asignados", true);
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
