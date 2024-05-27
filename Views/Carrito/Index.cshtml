@@ -472,12 +472,9 @@
                 if (data.response) {
                     $('#Premios_table').DataTable({
                         responsive: true,
-                        "language":
-                        {
-                            "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-                        },
-                        "columns":
-                            [
+                        "info":false,
+                        "language":{"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+                        "columns":[
                                 { "data": "proveedor", title: "Proveedor" },
                                 { "data": "cantidad", title: "cantidad" },
                                 { "data": "nombre", title: "Nombre" },
@@ -490,7 +487,7 @@
                                         return data;
                                     },
                                 }
-                            ],
+                        ],
                         data: data.result
                     });
                 }

@@ -663,18 +663,15 @@
 
         const table = $('#ProductoStand').DataTable({
             responsive: true,
-            "language":
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":
             {
                 url: path + "Stand/GetImageProductByLab?idProveedor=" + @Model.Proveedor+"&IdUsuario="+@Model.IdUsuario,
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns": 
-            [                                
+            "columns": [                                
                 { "data": "nombre", title: "Nombre" },
                 { "data": "presentacion", title: "Presentación" },
                 { "data": "formula", title: "Fórmula" },

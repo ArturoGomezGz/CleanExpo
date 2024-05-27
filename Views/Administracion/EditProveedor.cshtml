@@ -21,12 +21,9 @@
             </div>
             <div class="col-sm-12 col-md-6 p-4">
                 <div id="hiddenBTN" class="d-none col-md-55 text-center">
-                    <button type="button" class="btn btn-outline-success" onclick="save()" title="btn-save">
-                        <i class="fa fa-check" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn  btn-outline-danger" onclick="cancel()" title="btn-cancel">
-                        <i class="fa fa-ban" aria-hidden="true"></i>
-                    </button>
+                    <button type="button" class="btn btn-verde" onclick="save()"> Aceptar </button>
+                    <br />
+                    <button type="button" class="btn btn-rojo" onclick="cancel()"> Cancelar </button>
                 </div>
             </div>            
         </div>
@@ -43,12 +40,9 @@
             </div>
             <div class="col-sm-12 col-md-6 p-4">
                 <div id="hiddenBTNMonedas" class="d-none col-md-55 text-center">
-                    <button type="button" class="btn btn-outline-success" onclick="saveMonedas()" title="btn-save">
-                        <i class="fa fa-check" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn  btn-outline-danger" onclick="cancelMonedas()" title="btn-cancel">
-                        <i class="fa fa-ban" aria-hidden="true"></i>
-                    </button>
+                    <button type="button" class="btn btn-verde" onclick="saveMonedas()"> Aceptar </button>
+                    <br />
+                    <button type="button" class="btn btn-rojo" onclick="cancelMonedas()"> Cancelar </button>
                 </div>
             </div>
         </div>
@@ -73,12 +67,27 @@
         </table>
     </div>
 </div>
-<div class="d-grid gap-2 d-md-block">
-    <button id="btn-modificar" type="button" class="btn btn-naranja w-20" style="display: inline-table; padding: 10px 45px;"> Editar </button>
-    <button id="btn-eliminar" type="button" class="btn btn-rojo" data-bs-toggle="modal" data-bs-target="#eliminarModal" style="display: inline-table; padding: 10px 45px;"> Eliminar </button>
-    <button id="btn-AddMonedas" type="button" class="btn btn-azul" style="display: inline-table;"> Asignar Monedas </button>
-    <button id="btn-Agregar" type="button" class="btn btn-azul" data-bs-toggle="modal" data-bs-target="#ListaLaboratoriosModal" style="display: inline-table;"> Agregar </button>
-    <a asp-controller="Administracion" asp-action="Proveedor" class="btn btn-azul" style="display: inline-table;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Ir a Proveedores </a>
+<div class="row">
+    <div class="col-md-2">
+        <button id="btn-modificar" type="button" class="btn btn-naranja w-20" style="display: inline-table; padding: 10px 45px;"> Editar </button>
+    </div>
+    <div class="col-md-2">
+        <button id="btn-eliminar" type="button" class="btn btn-rojo" data-bs-toggle="modal" data-bs-target="#eliminarModal" style="display: inline-table; padding: 10px 45px;"> Eliminar </button>
+    </div>
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-3">
+        <button id="btn-Agregar" type="button" class="btn btn-azul" data-bs-toggle="modal" data-bs-target="#ListaLaboratoriosModal" style="display: inline-table;"> Agregar </button>
+    </div>
+    <div class="col-md-3">
+        <button id="btn-AddMonedas" type="button" class="btn btn-azul" style="display: inline-table;"> Asignar Monedas </button>
+    </div>    
+</div>
+<div class="row">
+    <div class="col-md">
+        <br />
+        <a asp-controller="Administracion" asp-action="Proveedor" class="btn btn-azul" style="display: inline-table;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Ir a Proveedores </a>
+    </div>
 </div>
 
 <script>
@@ -99,15 +108,14 @@
         })
         
         $('#Laboratorios').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Administracion/GetLaboratorios?IdPersona=" + $("#IdPersona").val(),
                 type: 'POST',
                 dataSrc: ""
             },
-            responsive: true,
             "columns": [
                 {
                     "data": "idLaboratorio",
@@ -125,16 +133,15 @@
         });
         
         $('#AddLaboratorios').DataTable({
+            responsive: true,
+            "info": false,
             pageLength: 5,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Administracion/GetAddLabs",
                 type: 'POST',
                 dataSrc: ""
             },
-            responsive: true,
             "columns": [
                 {
                     "data": "idLaboratorio",
@@ -346,9 +353,9 @@
                 <label>@Model.Nombre</label>
                 <h3>¿Estas seguro?</h3>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal"> Cancelar </button>
+            <div class="modal-footer">              
                 <button type="button" onclick="deleteProveedor()" class="btn btn-verde"> Aceptar </button>
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal"> Cancelar </button>
             </div>
         </div>
     </div>

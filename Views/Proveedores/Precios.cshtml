@@ -84,20 +84,17 @@
     {
         let cliente = $('#ddlLisClientes').val()
 
-        $('#PrecioClientes').DataTable(
-        {
-            "language": 
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+        $('#PrecioClientes').DataTable({
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": 
             {
                 url: path + "Proveedores/getPreciosCliente?cliente=" + $('#ddlLisClientes').val(),
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns":
-            [
+            "columns": [
                 { "data": "codigo" },
                 { "data": "producto" },
                 {

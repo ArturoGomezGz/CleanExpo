@@ -760,7 +760,7 @@ namespace ExpoMR.Controllers
                 {
                     mLaboratorio laboratorio = new mLaboratorio();
 
-                    laboratorio.IdLaboratorio = (int)dr["IdLaboratorio"];
+                    laboratorio.IdLaboratorio = (Int16)dr["IdLaboratorio"];
                     laboratorio.Laboratorio = (string)dr["Laboratorio"];
 
                     laboratorios.Add(laboratorio);

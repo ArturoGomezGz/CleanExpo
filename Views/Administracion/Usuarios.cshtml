@@ -56,93 +56,92 @@
 
 		$('#Usuarios').DataTable({
 			responsive: true,
-			pageLength: 7,
-			"language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+			"info":false,
 			"bDestroy": true,
+			"language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
 			"ajax": {
 				url: path + "Administracion/GetUsuarios?IdTipoUsuario=" + idTipoUsuario + "&IdRuta=" + idRuta,
 				type: 'POST',
 				dataSrc: ""
 			},
-			"columns":
-				[
-					{
-						"data": "idEmail",
-						orderable: false,
-						render: function (data, type, row) {
-							if (row.idEmail != 0 && row.usuario == true && type === 'display') {
-								return '<a href="' + path + 'Administracion/EditarUsuario?IdEmail=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
-							}
-
-							return '';
-						},
-					},
-					{
-						"data": null,
-						targets: 0,
-						orderable: false,
-						render: function (data, type, row, meta) {
-							if (row.idEmail != 0 && row.usuario == true && type === 'display') {
-								return data = '<div class="checkbox"><input type="checkbox" id="chkSel" class="dt-checkboxes" value="' + row.idEmail + '"></div>';
-							}
-
-							return '';
-						},
-						checkboxes: {
-							'selectRow': true
-						},
-					},
-					{ "data": "nombre", title: "Nombre" },
-					{ "data": "email", title: "Email" },
-					{ "data": "tipoPersona", title: "Tipo" },
-					{ "data": "sucursal", title: "Sucursal" },
-					{ "data": "invitacion", title: "Invitacion" },
-					{
-						"data": "vip",
-						title: "VIP",
-						render: function (data, type) {
-							if (!data) {
-								
-								return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-square-o" aria-hidden="true"></i>';
-							}
-							
-							return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-check-square-o" aria-hidden="true"></i>';
-						},
-					},
-					{
-						"data": "usuario",
-						title: "Usuario",
-						render: function (data, type) {
-							if (!data) {
-								return '<i class="fa fa-square-o" aria-hidden="true"></i>';
-							}
-
-							return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
-						},
-					},
-					{
-						"data": "lock",
-						title: "Bloqueado",
-						render: function (data, type) {
-							if (!data) {
-								return '<i class="fa fa-square-o" aria-hidden="true"></i>';
-							}
-
-							return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
-						},
-					},
-					{
-						"data": "invitacion",
-						orderable: false,
-						render: function (data, type, row) {
-							if (!row.invitacion && row.usuario == false ) {
-								return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" class="btn btn-verde circle__button"><i class="fa fa-plus" aria-hidden="true"></i></button>'
-							}
-
-							return ''
+			"columns":[
+				{
+					"data": "idEmail",
+					orderable: false,
+					render: function (data, type, row) {
+						if (row.idEmail != 0 && row.usuario == true && type === 'display') {
+							return '<a href="' + path + 'Administracion/EditarUsuario?IdEmail=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
 						}
+
+						return '';
+					},
+				},
+				{
+					"data": null,
+					targets: 0,
+					orderable: false,
+					render: function (data, type, row, meta) {
+						if (row.idEmail != 0 && row.usuario == true && type === 'display') {
+							return data = '<div class="checkbox"><input type="checkbox" id="chkSel" class="dt-checkboxes" value="' + row.idEmail + '"></div>';
+						}
+
+						return '';
+					},
+					checkboxes: {
+						'selectRow': true
+					},
+				},
+				{ "data": "nombre", title: "Nombre" },
+				{ "data": "email", title: "Email" },
+				{ "data": "tipoPersona", title: "Tipo" },
+				{ "data": "sucursal", title: "Sucursal" },
+				{ "data": "invitacion", title: "Invitación" },
+				{
+					"data": "vip",
+					title: "VIP",
+					render: function (data, type) {
+						if (!data) {
+								
+							return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-square-o" aria-hidden="true"></i>';
+						}
+							
+						return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-check-square-o" aria-hidden="true"></i>';
+					},
+				},
+				{
+					"data": "usuario",
+					title: "Usuario",
+					render: function (data, type) {
+						if (!data) {
+							return '<i class="fa fa-square-o" aria-hidden="true"></i>';
+						}
+
+						return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+					},
+				},
+				{
+					"data": "lock",
+					title: "Bloqueado",
+					render: function (data, type) {
+						if (!data) {
+							return '<i class="fa fa-square-o" aria-hidden="true"></i>';
+						}
+
+						return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+					},
+				},
+				{
+					"data": "invitacion",
+					orderable: false,
+					render: function (data, type, row) {
+						if (!row.invitacion && row.usuario == false ) {
+							return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" style="width: 30px; height: 30px;	padding: 0;" class="btn btn-verde circle__button"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+						}
+
+						return ''
 					}
-				]
+				}
+			]
 		});
 	}
 

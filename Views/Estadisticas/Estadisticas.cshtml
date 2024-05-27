@@ -346,9 +346,8 @@
 
         $('#Ultimas__visitas').DataTable({
             responsive: true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path+ "Estadisticas/GetRegistroVisitas",
                 type: 'POST',
@@ -372,9 +371,8 @@
     
         $('#productos__visitados').DataTable({
             responsive: true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path+ "Estadisticas/GetProductosVisitados",
                 type: 'POST',
@@ -398,9 +396,8 @@
 
         $('#productos__info').DataTable({
             responsive: true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Estadisticas/GetProductosInfo",
                 type: 'POST',
@@ -427,9 +424,8 @@
 
         $('#monedas__asignadas').DataTable({
             responsive: true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Estadisticas/GetMonedasAsignadas",
                 type: 'POST',
@@ -487,9 +483,8 @@
     function GridDetalleProducto(idProducto) {
         $('#detalle__Producto').DataTable({
             responsive: true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Estadisticas/GetDetalleProducto?IdProducto=" + idProducto,
                 type: 'POST',

@@ -186,12 +186,11 @@
     function tableUsuarios()
     {
         $('#productos__info').DataTable({
+            responsive: true,
             pageLength: 7,
-            "language": 
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
             "bDestroy": true,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":
             {
                 url: path + "Configuracion/GetfechasMoneda",
@@ -301,20 +300,18 @@
     function ProductosMax() 
     {
         $('#ProductosMax').DataTable({
+            responsive: true,
+            "info": false,
             pageLength: 7,
-            "language": 
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
             "bDestroy": true,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":
             {
                 url: path + "Configuracion/GetProductosMax",
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns": 
-            [
+            "columns": [
                 {
                     render: function (data, type, row) 
                     {
@@ -337,10 +334,9 @@
 
         tblProductos.destroy();
         tblProductos = $('#tblProductos').DataTable({
-            "language": 
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":
             {
                 url: path + "Promociones/GetProdcutos",

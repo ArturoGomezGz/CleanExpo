@@ -1123,3 +1123,23 @@ p, ol, h6{
 .row_retringido {
     display: none;
 }
+
+/*Controldes de filtrado en tablas con datatables.net*/
+
+
+/*Alineacion del control textbox buscar*/
+div.dataTables_wrapper div.dataTables_filter {
+    padding-top: 0.8em;
+    float: left;
+}
+
+/*Tamaño del control textbox buscar*/
+div.dataTables_filter input {
+    width: 350px;
+}
+
+/*Alineacion del control Dropdown Mostrar # registros */
+div.dataTables_wrapper div.dataTables_length {
+    padding-top: 0.8em;
+    float: right;
+}

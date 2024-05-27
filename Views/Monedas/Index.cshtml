@@ -13,18 +13,15 @@
     {
         $('#Monedas').DataTable({
             responsive: true,
-            "language": 
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": 
             {
                 url: path + "Generales/GetRegistroMonedas",
                 type: 'POST',
                 dataSrc:""
             },
-            "columns": 
-            [
+            "columns": [
                 {"data": "fecha", title: "Fecha",
                     "render": function (data, type, row)
                     {

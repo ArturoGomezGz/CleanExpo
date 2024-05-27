@@ -22,34 +22,35 @@
     function LoadTable() 
     {
         tableClientes = $('#clientes').DataTable({
-                            responsive: true,
-                            "ajax":
-                            {
-                                url: path + "Administracion/GetUsusariosNotificacion",
-                                type: 'POST',
-                                dataSrc: ""
-                            },
-                            'columnDefs':
-                            [
-                                {
-                                    'targets': 0,
-                                    'checkboxes':
-                                    {
-                                        'selectRow': true
-                                    }
-                                }
-                            ],
-                            'select':
-                            {
-                                'style': 'multi'
-                            },
-                             "columns":
-                             [
-                                { "data": "idPersona"},
-                                { "data": "nombre", title: "Nombre" },
-                                { "data": "email", title: "Email" },
-                                { "data": "notificado", title: "Promociones" }
-                             ]
+            responsive: true,
+            "info": false,
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+            "ajax":
+            {
+                url: path + "Administracion/GetUsusariosNotificacion",
+                type: 'POST',
+                dataSrc: ""
+            },
+            'columnDefs':
+            [
+                {
+                    'targets': 0,
+                    'checkboxes':
+                    {
+                        'selectRow': true
+                    }
+                }
+            ],
+            'select':
+            {
+                'style': 'multi'
+            },
+            "columns":[
+                { "data": "idPersona"},
+                { "data": "nombre", title: "Nombre" },
+                { "data": "email", title: "Email" },
+                { "data": "notificado", title: "Promociones" }
+            ]
         });    
     }
 

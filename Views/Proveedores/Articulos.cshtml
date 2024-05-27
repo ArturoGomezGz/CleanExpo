@@ -60,11 +60,11 @@
     $(document).ready(function () 
     {
         $('#Articulos').DataTable({
+            responsive: true,
+            "info": false,
             pageLength: 5,
             lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'Todos']],
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Proveedores/GetArticulos",
                 type: 'POST',

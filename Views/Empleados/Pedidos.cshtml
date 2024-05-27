@@ -68,9 +68,9 @@
         $('#divPedidosCliente').hide();
         $('#divPedido').hide();
         $('#Clientes').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Empleados/GetClientes",
                 type: 'POST',
@@ -92,9 +92,9 @@
         tblPedidosCliente.destroy();
         $('#divPedidosCliente').show();
         $('#PedidosCliente').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Empleados/GetPedidosCliente?idCliente=" + idCliente,
                 type: 'POST',

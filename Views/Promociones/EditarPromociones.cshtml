@@ -361,18 +361,16 @@
 
         tblClientes.destroy();
         tblClientes = $('#tblClientes').DataTable({
-            "language":
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": 
             {
                 url: path + "Promociones/GetClientes",
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns":
-            [
+            "columns": [
                 {
                     render: function (data, type, row)
                     {
@@ -390,18 +388,16 @@
 
         tblProductos.destroy();
         tblProductos = $('#tblProductos').DataTable({
-            "language":
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language":{"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":
             {
                 url: path + "Promociones/GetProdcutos",
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns":
-            [
+            "columns": [
                 {
                     render: function (data, type, row)
                     {
@@ -558,18 +554,16 @@
         tblArticulos.destroy();
 
         tblArticulos = $('#tblArticulos').DataTable({
-            "language":
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":
             {
                 url: path + "Promociones/GetArticulosProveedor",
                 type: 'POST',
                 dataSrc: "",
             },
-            "columns":
-            [
+            "columns": [
                 {
                     render: function (data, type, row) 
                     {
@@ -624,18 +618,16 @@
         tblArticulosPromo.destroy();
 
         tblArticulosPromo = $('#tblArticulosPromo').DataTable({
-            "language":
-            {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":
             {
                 url: path + "Promociones/GetArticulosPromo?idPromocion=" + idPromocion,
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns":
-            [
+            "columns": [
                 {
                     render: function (data, type, row)
                     {
