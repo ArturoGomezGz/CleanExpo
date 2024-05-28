@@ -6,21 +6,21 @@
 
 <h1>Empleado</h1>
 
-<div class="row">
+<div class="row fontsize">
     <div id="liveAlertPlaceholder"></div>
     <div class="col-md-6 label__bold">
         <div class="row">
             <div class="col-md-12 mb-3">
                 @Html.LabelFor(m => m.Nombre)
-                <input type="text" class="form-control" id="Empleado" placeholder="@Model.Nombre" disabled>
+                <input type="text" id="Empleado" placeholder="@Model.Nombre" class="form-control" disabled>
             </div>
             <div class="col-md-6 mb-3">
                 @Html.LabelFor(m => m.Email)
-                <input type="text" class="form-control" id="Email" placeholder="@Model.Email" value="@Model.Email" disabled>
+                <input type="text" id="Email" placeholder="@Model.Email" value="@Model.Email" class="form-control" disabled>
             </div>
             <div class="col-md-6 mb-3">
                 @Html.LabelFor(m => m.Rol)
-                @Html.DropDownListFor(model => model.IdRol, new SelectList(Model.Roles, "IdRol", "Role"), new { id = "cmb-Roles", @class = "form-control text-left", name = "cmb-Roles", disabled="disabled", title="cmb"})
+                @Html.DropDownListFor(model => model.IdRol, new SelectList(Model.Roles, "IdRol", "Role"), new { id = "cmb-Roles", @class = "form-control text-left", name = "cmb-Roles", disabled = "disabled", title = "cmb" })
             </div>
         </div>
     </div>

@@ -14,7 +14,12 @@
     padding: 0;
 }
 
-h1, h2, h3{
+h1 {
+    color: var(--azul-oscuro);
+    font-size: 2em;
+}
+
+h2, h3{
     color:var(--azul-oscuro)
 }
 
@@ -1124,22 +1129,23 @@ p, ol, h6{
     display: none;
 }
 
-/*Controldes de filtrado en tablas con datatables.net*/
+/*Formato de controldes de filtrado en tablas con datatables.net*/
 
-
-/*Alineacion del control textbox buscar*/
-div.dataTables_wrapper div.dataTables_filter {
-    padding-top: 0.8em;
+div.dataTables_wrapper div.dataTables_filter { /*textbox buscar*/
     float: left;
 }
 
-/*Tamaño del control textbox buscar*/
-div.dataTables_filter input {
-    width: 350px;
+div.dataTables_filter input { /*textbox buscar*/
+    width: 250px;
 }
 
-/*Alineacion del control Dropdown Mostrar # registros */
-div.dataTables_wrapper div.dataTables_length {
-    padding-top: 0.8em;
+
+div.dataTables_wrapper div.dataTables_length { /*Dropdown Mostrar # registros */
     float: right;
+}
+
+/*Formato en div´s*/
+
+div.fontsize {
+    font-size: 14px;
 }

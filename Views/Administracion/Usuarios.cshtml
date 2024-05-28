@@ -4,18 +4,19 @@
 }
 
 <h1>Usuarios</h1>
+<br />
 <div id="liveAlertPlaceholder"></div>
-<div class="row mb-4">
+<div class="row mb-4 fontsize">
     <div class="col-md-3 mb-4">		
 		@Html.LabelFor(m => m.IdTipoUsuario, new { @class = "fw-bold"})
-		@Html.DropDownListFor(model => model.IdTipoUsuario, new SelectList(Model.TipoUsuario, "IdTipoUsuario", "TipoUsuario"), new { id = "IdTipoCliente", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})		
-    </div>
+		@Html.DropDownListFor(model => model.IdTipoUsuario, new SelectList(Model.TipoUsuario, "IdTipoUsuario", "TipoUsuario"), new { id = "IdTipoCliente", @class = "form-control text-left", name = "cmb-TipoVenta", title = "cmb" })
+	</div>
     <div class="col-md-3 mb-4">		
 		@Html.LabelFor(m => m.Ruta, new { id="labelRuta",  @class = "fw-bold" })
 		@Html.DropDownListFor(model => model.Ruta, new SelectList(Model.Rutas, "IdRuta", "Descripcion"), new { id = "IdRuta", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})		
     </div>
 </div>
-<div class="row mb-4">
+<div class="row mb-4 fontsize">
     <div class="row">
 		<table id="Usuarios" class="display nowrap" style="width:100%"></table>
     </div>
@@ -25,7 +26,28 @@
 </div>
 
 <script>
-	$(document).ready(function () {
+
+	$(window).on('load', function () 
+	{
+		var lasValue = sessionStorage.getItem('SelTipoUsuario');
+
+		let element = document.getElementById("IdTipoCliente");
+		element.value = lasValue;								 //Se asigna el valor de la sessionStorage al control IdTipoCliente
+
+		showControls(lasValue);									//se muestran o ocultan controles dependiendo del tipoUsuario seleccionado
+	})
+
+
+	$(document).ready(function () 
+	{
+		var lasValue = sessionStorage.getItem('SelTipoUsuario'); 
+
+		if (lasValue === undefined || lasValue == null || lasValue.length <= 0)  //se valida si la sessionStorage no esta inicializada
+		{
+			var select = document.getElementById("IdTipoCliente");
+
+			sessionStorage.setItem('SelTipoUsuario', select.value);  //Se asigna el valor seleccionado del control IdTipoCliente a la sessionStorage
+		}
 		
 		tableUsuarios() //Se llena la tabla
 
@@ -33,25 +55,16 @@
 			Reload()
 		});
 
-		$("#IdTipoCliente").change(function(){
-			if(this.value != 1){
-				$('#IdRuta').addClass('d-none');
-				$('#div_check').addClass('d-none');
-				$('#labelRuta').addClass('d-none');
-				$('#InvitacionMasiva').addClass('d-none');
-			}else{
-				$('#IdRuta').removeClass('d-none');
-				$('#labelRuta').removeClass('d-none');
-				$('#div_check').removeClass('d-none');
-				$('#InvitacionMasiva').removeClass('d-none');
-			}
+		$("#IdTipoCliente").change(function()
+		{
+			sessionStorage.setItem('SelTipoUsuario', this.value); //Se asigna el valor seleccionado del control IdTipoCliente a la sessionStorage
 
-			Reload()
+			showControls(this.value);							  //se muestran o ocultan controles dependiendo del tipoUsuario seleccionado
 		});
 	});
 
 	function tableUsuarios() {
-		let idTipoUsuario = $("#IdTipoCliente").val();
+		let idTipoUsuario = sessionStorage.getItem('SelTipoUsuario');
 		let idRuta = idTipoUsuario == 1 ? $("#IdRuta").val() : 0
 
 		$('#Usuarios').DataTable({
@@ -232,6 +245,23 @@
 					ShowAlert("No fue posible cargar sus datos", false);
 				});
 		}
+	}
+
+	function showControls(tipoUsuario) 
+	{
+		if (tipoUsuario != 1) {
+			$('#IdRuta').addClass('d-none');
+			$('#div_check').addClass('d-none');
+			$('#labelRuta').addClass('d-none');
+			$('#InvitacionMasiva').addClass('d-none');
+		} else {
+			$('#IdRuta').removeClass('d-none');
+			$('#labelRuta').removeClass('d-none');
+			$('#div_check').removeClass('d-none');
+			$('#InvitacionMasiva').removeClass('d-none');
+		}
+
+		Reload()
 	}
 </script>
 
