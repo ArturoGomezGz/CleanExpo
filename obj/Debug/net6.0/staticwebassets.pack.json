@@ -1,339 +1,335 @@
 {
   "Files": [
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\ExpoMR.bundle.scp.css",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\ExpoMR.bundle.scp.css",
       "PackagePath": "staticwebassets\\ExpoMR.bundle.scp.css"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\IhImages.jfif",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\IhImages.jfif",
       "PackagePath": "staticwebassets\\Imagenes\\IhImages.jfif"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\IhImages.jpg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\IhImages.jpg",
       "PackagePath": "staticwebassets\\Imagenes\\IhImages.jpg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\aceptar.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\aceptar.png",
       "PackagePath": "staticwebassets\\Imagenes\\aceptar.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\acumulable.svg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\acumulable.svg",
       "PackagePath": "staticwebassets\\Imagenes\\acumulable.svg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\agotada.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\agotada.png",
       "PackagePath": "staticwebassets\\Imagenes\\agotada.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ajax-loader.gif",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ajax-loader.gif",
       "PackagePath": "staticwebassets\\Imagenes\\ajax-loader.gif"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\articulosGanados.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\articulosGanados.png",
       "PackagePath": "staticwebassets\\Imagenes\\articulosGanados.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\botonGira.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\botonGira.png",
       "PackagePath": "staticwebassets\\Imagenes\\botonGira.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\botonSuerte.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\botonSuerte.png",
       "PackagePath": "staticwebassets\\Imagenes\\botonSuerte.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\cabezalRuleta.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\cabezalRuleta.png",
       "PackagePath": "staticwebassets\\Imagenes\\cabezalRuleta.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\carritoClienteEstadisticas.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\carritoClienteEstadisticas.png",
       "PackagePath": "staticwebassets\\Imagenes\\carritoClienteEstadisticas.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\carritoEstadisticas.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\carritoEstadisticas.png",
       "PackagePath": "staticwebassets\\Imagenes\\carritoEstadisticas.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\confirmado.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\confirmado.png",
       "PackagePath": "staticwebassets\\Imagenes\\confirmado.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\confirmadoCliente.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\confirmadoCliente.png",
       "PackagePath": "staticwebassets\\Imagenes\\confirmadoCliente.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\descarga.jfif",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\descarga.jfif",
       "PackagePath": "staticwebassets\\Imagenes\\descarga.jfif"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\disponible.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\disponible.png",
       "PackagePath": "staticwebassets\\Imagenes\\disponible.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\escalonada.svg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\escalonada.svg",
       "PackagePath": "staticwebassets\\Imagenes\\escalonada.svg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\favicon.ico",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\favicon.ico",
       "PackagePath": "staticwebassets\\Imagenes\\favicon.ico"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\felicidades.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\felicidades.png",
       "PackagePath": "staticwebassets\\Imagenes\\felicidades.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ganada.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ganada.png",
       "PackagePath": "staticwebassets\\Imagenes\\ganada.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\icons8-calendario-48.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\icons8-calendario-48.png",
       "PackagePath": "staticwebassets\\Imagenes\\icons8-calendario-48.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\logo.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\logo.png",
       "PackagePath": "staticwebassets\\Imagenes\\logo.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\logoExpo.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\logoExpo.png",
       "PackagePath": "staticwebassets\\Imagenes\\logoExpo.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\logoMR.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\logoMR.png",
       "PackagePath": "staticwebassets\\Imagenes\\logoMR.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\monto.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\monto.png",
       "PackagePath": "staticwebassets\\Imagenes\\monto.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\monto.svg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\monto.svg",
       "PackagePath": "staticwebassets\\Imagenes\\monto.svg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\noAcumulable.svg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\noAcumulable.svg",
       "PackagePath": "staticwebassets\\Imagenes\\noAcumulable.svg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\noimage.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\noimage.png",
       "PackagePath": "staticwebassets\\Imagenes\\noimage.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\piezas.svg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\piezas.svg",
       "PackagePath": "staticwebassets\\Imagenes\\piezas.svg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\pocasPiezas.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\pocasPiezas.png",
       "PackagePath": "staticwebassets\\Imagenes\\pocasPiezas.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\porVisita.svg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\porVisita.svg",
       "PackagePath": "staticwebassets\\Imagenes\\porVisita.svg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\portadaExpo.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\portadaExpo.png",
       "PackagePath": "staticwebassets\\Imagenes\\portadaExpo.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas01.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas01.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas01.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas02.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas02.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas02.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas03.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas03.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas03.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas04.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas04.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas04.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas05.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas05.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas05.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas06.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas06.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas06.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas07.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas07.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas07.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas08.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas08.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas08.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\preguntas09.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\preguntas09.png",
       "PackagePath": "staticwebassets\\Imagenes\\preguntas09.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\promocionesHeader.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\promocionesHeader.png",
       "PackagePath": "staticwebassets\\Imagenes\\promocionesHeader.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruleta.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruleta.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruleta.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruleta.svg",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruleta.svg",
       "PackagePath": "staticwebassets\\Imagenes\\ruleta.svg"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruleta1.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruleta1.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruleta1.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruleta2.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruleta2.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruleta2.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruleta3.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruleta3.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruleta3.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaDeshabilitada.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada1.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada1.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaDeshabilitada1.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada2.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada2.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaDeshabilitada2.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada3.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaDeshabilitada3.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaDeshabilitada3.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaIcono.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaIcono.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaIcono.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaIcono0.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaIcono0.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaIcono0.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaIcono1.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaIcono1.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaIcono1.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaIcono2.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaIcono2.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaIcono2.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\ruletaIcono3.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\ruletaIcono3.png",
       "PackagePath": "staticwebassets\\Imagenes\\ruletaIcono3.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion1.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion1.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion1.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion2.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion2.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion2.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion3.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion3.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion3.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion4.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion4.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion4.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion5.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion5.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion5.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion6.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion6.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion6.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion7.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion7.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion7.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\seccion8.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\seccion8.png",
       "PackagePath": "staticwebassets\\Imagenes\\seccion8.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\user.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\user.png",
       "PackagePath": "staticwebassets\\Imagenes\\user.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\visitas.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\visitas.png",
       "PackagePath": "staticwebassets\\Imagenes\\visitas.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Imagenes\\visitasCliente.png",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Imagenes\\visitasCliente.png",
       "PackagePath": "staticwebassets\\Imagenes\\visitasCliente.png"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Media\\coin.wav",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Media\\coin.wav",
       "PackagePath": "staticwebassets\\Media\\coin.wav"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Media\\slotmachine.mp3",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Media\\slotmachine.mp3",
       "PackagePath": "staticwebassets\\Media\\slotmachine.mp3"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Media\\tour.mp4",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Media\\tour.mp4",
       "PackagePath": "staticwebassets\\Media\\tour.mp4"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\Media\\winner.mp3",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\Media\\winner.mp3",
       "PackagePath": "staticwebassets\\Media\\winner.mp3"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\css\\common.blocks\\commoncss.css",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\css\\common.blocks\\commoncss.css",
       "PackagePath": "staticwebassets\\css\\common.blocks\\commoncss.css"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\css\\desktop.blocks\\desktop.css",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\css\\desktop.blocks\\desktop.css",
       "PackagePath": "staticwebassets\\css\\desktop.blocks\\desktop.css"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\css\\index.css",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\css\\index.css",
       "PackagePath": "staticwebassets\\css\\index.css"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\css\\mobile.blocks\\mobile.css",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\css\\mobile.blocks\\mobile.css",
       "PackagePath": "staticwebassets\\css\\mobile.blocks\\mobile.css"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\css\\owl.carousel.min.css",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\css\\owl.carousel.min.css",
       "PackagePath": "staticwebassets\\css\\owl.carousel.min.css"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\css\\owl.theme.default.min.css",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\css\\owl.theme.default.min.css",
       "PackagePath": "staticwebassets\\css\\owl.theme.default.min.css"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\favicon.ico",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\js\\Index.js",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\js\\Index.js",
       "PackagePath": "staticwebassets\\js\\Index.js"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\js\\IndexAdministradore.js",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\js\\IndexAdministradore.js",
       "PackagePath": "staticwebassets\\js\\IndexAdministradore.js"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\js\\IndexClientes.js",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\js\\IndexClientes.js",
       "PackagePath": "staticwebassets\\js\\IndexClientes.js"
     },
     {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\js\\IndexProveedores.js",
-      "PackagePath": "staticwebassets\\js\\IndexProveedores.js"
-    },
-    {
-      "Id": "E:\\Documents\\Projects MR\\ExpoMR MVC\\wwwroot\\js\\codeRoulette.js",
+      "Id": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\wwwroot\\js\\codeRoulette.js",
       "PackagePath": "staticwebassets\\js\\codeRoulette.js"
     },
     {
