@@ -94,7 +94,7 @@
 					targets: 0,
 					orderable: false,
 					render: function (data, type, row, meta) {
-						if (row.idEmail != 0 && row.usuario == true && type === 'display') {
+						if (row.idEmail != 0 && row.usuario == false && idTipoUsuario == 1 && type === 'display') {
 							return data = '<div class="checkbox"><input type="checkbox" id="chkSel" class="dt-checkboxes" value="' + row.idEmail + '"></div>';
 						}
 
