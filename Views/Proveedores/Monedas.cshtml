@@ -15,12 +15,6 @@
                 </thead>
                 <tbody>
                 </tbody>
-               @* <tfoot>
-                    <tr>
-                        <th> </th>
-                        <th>Nombre</th>
-                    </tr>
-                </tfoot>*@
             </table>
         </div>
         <div id="divMonedas">
@@ -103,7 +97,7 @@
             },
             "columns": [
                 {
-                    "data": "cliente",
+                    "data": "idPersona",
                     render: function (data, type, row) {
                         return '<a class="btn btn-link" href="' + path + 'Proveedores/AsignaMonedas?idCliente=' + row.idPersona + '"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
                     }
