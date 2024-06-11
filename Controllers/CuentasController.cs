@@ -292,37 +292,45 @@ namespace ExpoMR.Controllers
             if (ModelState.IsValid)
             {
                 var resultado = await _signInManager.PasswordSignInAsync(accViewModel.Email, accViewModel.Password, accViewModel.RememberMe, lockoutOnFailure: true);
+				var currentUser = await _userManager.FindByNameAsync(accViewModel.Email);
 
-                if (resultado.Succeeded)
+				if (resultado.Succeeded)
                 {
-                    //Se inicializa la variable de session "ClienteSeleccionado" con el primer cliente que tenga el email
-                    GetClientes(accViewModel.Email);
-
-                    HttpRequest request = HttpContext.Request;
-                    Log.SaveSesion(request, accViewModel.Email, true);
-                    var user = await _userManager.FindByNameAsync(accViewModel.Email);
-
-                    if (await _userManager.IsInRoleAsync(user, "Administrador"))
+                    if (!currentUser.EmailConfirmed)
                     {
-                        return LocalRedirect("~/Administracion/Usuarios"); 
-                    }
-
-                    if (await _userManager.IsInRoleAsync(user, "Vendedor"))
+						return RedirectToAction("Index", "MiCuenta");
+					}
+                    else
                     {
-                        return LocalRedirect("~/Empleados/Cotizacion");
-                    }
+						//Se inicializa la variable de session "ClienteSeleccionado" con el primer cliente que tenga el email
+						GetClientes(accViewModel.Email);
 
-                    if (await _userManager.IsInRoleAsync(user, "Proveedor"))
-                    {
-                        return LocalRedirect("~/Estadisticas/Estadisticas");
-                    }
+						HttpRequest request = HttpContext.Request;
+						Log.SaveSesion(request, accViewModel.Email, true);
+						var user = await _userManager.FindByNameAsync(accViewModel.Email);
 
-                    if (await _userManager.IsInRoleAsync(user, "Capturista"))
-                    {
-                        return LocalRedirect("~/Empleados/Cotizacion");
-                    }
+						if (await _userManager.IsInRoleAsync(user, "Administrador"))
+						{
+							return LocalRedirect("~/Administracion/Usuarios");
+						}
 
-                    return LocalRedirect(returnUrl);
+						if (await _userManager.IsInRoleAsync(user, "Vendedor"))
+						{
+							return LocalRedirect("~/Empleados/Cotizacion");
+						}
+
+						if (await _userManager.IsInRoleAsync(user, "Proveedor"))
+						{
+							return LocalRedirect("~/Estadisticas/Estadisticas");
+						}
+
+						if (await _userManager.IsInRoleAsync(user, "Capturista"))
+						{
+							return LocalRedirect("~/Empleados/Cotizacion");
+						}
+
+						return LocalRedirect(returnUrl);
+					}
                 }
                 if (resultado.IsLockedOut)
                 {

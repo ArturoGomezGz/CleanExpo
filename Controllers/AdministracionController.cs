@@ -356,7 +356,9 @@ namespace ExpoMR.Controllers
                     }
                     else
                     {
-                        string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
+					    usuario.EmailConfirmed = true;
+
+					    string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
                         var resultado = await _userManager.ResetPasswordAsync(usuario, token, model.Password);
 
                         if (resultado.Succeeded)
