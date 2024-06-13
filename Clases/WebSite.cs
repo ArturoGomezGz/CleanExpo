@@ -108,6 +108,8 @@ namespace ExpoMR.Clases
                 TiposDocumentos.Add(TipoDocumento);
             }
 
+            dB.Close();
+
             return TiposDocumentos;
         }
 
@@ -139,6 +141,8 @@ namespace ExpoMR.Clases
                 DireccionesEntrega.Add(DireccionEntrega);
             }
 
+            dB.Close();
+
             return DireccionesEntrega;
         }
 
@@ -164,7 +168,9 @@ namespace ExpoMR.Clases
 
             }
 
-            return UsosCFDI;
+			dB.Close();
+
+			return UsosCFDI;
         }
 
         public static List<Trasportes> GetTransportes(int IdCliente)
@@ -195,7 +201,9 @@ namespace ExpoMR.Clases
                 Transportes.Add(Transporte);
             }
 
-            return Transportes;
+			dB.Close();
+
+			return Transportes;
         }
 
         public static List<TiposDeVenta> GetTiposVenta()
@@ -224,7 +232,9 @@ namespace ExpoMR.Clases
                 TiposVenta.Add(TipoVenta);
             }
 
-            return TiposVenta;
+			dB.Close();
+
+			return TiposVenta;
         }
         
         public enum TipoPromocion
@@ -395,7 +405,9 @@ namespace ExpoMR.Clases
                 Result = 0; // Hubo un error al consultar
             }
 
-            return Result;
+			dB.Close();
+
+			return Result;
         }
 
         public static bool FechaExpoActiva(string usuario)
@@ -421,7 +433,9 @@ namespace ExpoMR.Clases
                 }
             }
 
-            return false;
+			dB.Close();
+
+			return false;
         }
 
         public static void AddSucursalUser(int idEmail, int Sucursal)
@@ -432,7 +446,8 @@ namespace ExpoMR.Clases
 
             DB dB = new DB();
             SqlDataReader dr = dB.ExecuteReader("AddSucursalUsuario", ref parameters);
-        }
+            dB.Close();
+		}
 
         public static void ChangeVIP(int idEmail, bool vip)
         {
@@ -442,7 +457,8 @@ namespace ExpoMR.Clases
 
             DB dB = new DB();
             SqlDataReader dr = dB.ExecuteReader("ChangeUsuarioVIP", ref parameters);
-        }
+			dB.Close();
+		}
 
         public static int UsuarioEliminar(int idEmail)
         {

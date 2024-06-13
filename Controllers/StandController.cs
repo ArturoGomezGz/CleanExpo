@@ -82,7 +82,9 @@ namespace ExpoMR.Controllers
                     Stand.Activedhcp = "active";
                 }
 
-                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				dB.Close();
+
+				bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
@@ -151,7 +153,9 @@ namespace ExpoMR.Controllers
                     Stand.Activestatic = "active";
                 }
 
-                string query2 = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado FROM GetSales(@IdSal, @letra, @sal) AS Sal";
+				dB.Close();
+
+				string query2 = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado FROM GetSales(@IdSal, @letra, @sal) AS Sal";
 
                 DB dB2 = new();
                 SqlParameter[] parameters2 = new SqlParameter[3];
@@ -166,7 +170,9 @@ namespace ExpoMR.Controllers
                     Stand.Sal = (string)dr2["Sal"];
                 }
 
-                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				dB2.Close();
+
+				bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
@@ -212,8 +218,10 @@ namespace ExpoMR.Controllers
                 FotoProducto.IdProducto = (int)dr["IdProducto"];
                 FotoProducto.Foto = (byte[])dr["Foto"];
             }
-            
-            return Json(FotoProducto.Foto);
+
+			dB.Close();
+
+			return Json(FotoProducto.Foto);
         }
 
         public JsonResult GetImageProductByLab(int idProveedor, int IdUsuario)
@@ -243,7 +251,9 @@ namespace ExpoMR.Controllers
                 productos.Add(producto);
             }
 
-            return Json(productos);
+			dB.Close();
+
+			return Json(productos);
         }
 
         [HttpPost]
@@ -252,8 +262,9 @@ namespace ExpoMR.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
 
             ResponseModel rm = new();
+			DB dB = new();
 
-            try
+			try
             {
                 string querySearhTerms = "";
                 string[] busqueda = Busqueda.Split(' ');
@@ -299,7 +310,6 @@ namespace ExpoMR.Controllers
                                + " ExpoMR.dbo.dProductosDescuento ON vProductos.IdProducto = dProductosDescuento.IdProducto AND dProductosDescuento.Cliente =" + IdUsuario
                                + " ORDER BY vProductos.Nombre, vProductos.Presentacion";
 
-                DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[0];
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
@@ -332,6 +342,8 @@ namespace ExpoMR.Controllers
                 rm.Message = e.Message;
             }
 
+			dB.Close();
+			
             return Json(rm);
         }
 
@@ -359,6 +371,8 @@ namespace ExpoMR.Controllers
 
                 ArticulosProveedor.Add(Articulo);
             }
+
+            dB.Close();
 
             return ArticulosProveedor;
         }
@@ -390,7 +404,9 @@ namespace ExpoMR.Controllers
                 Promociones.Add(Promocion);
             }
 
-            foreach (var p in Promociones)
+			dB.Close();
+
+			foreach (var p in Promociones)
             {
                 p.ImgDisponibilidad = GetImageUrlDisponibilidad(p.Obtenida, p.Disponibilidad);
             }
@@ -426,7 +442,9 @@ namespace ExpoMR.Controllers
                 PromocionesEscalonadas.Add(PromocionEscalonada);
             }
 
-            foreach (var p in PromocionesEscalonadas)
+			dB.Close();
+
+			foreach (var p in PromocionesEscalonadas)
             {
                 p.ImgDisponibilidad = GetImageUrlDisponibilidad(p.Obtenida, p.Disponibilidad);
             }
@@ -528,7 +546,9 @@ namespace ExpoMR.Controllers
                 Anuncios.Add(Anuncio);
             }
 
-            return Anuncios;
+			dB.Close();
+
+			return Anuncios;
         }
 
         [HttpPost]
@@ -557,7 +577,9 @@ namespace ExpoMR.Controllers
                 Articulos.Add(Articulo);
             }
 
-            return Articulos;
+			dB.Close();
+
+			return Articulos;
         }
 
         [HttpPost]
@@ -595,7 +617,9 @@ namespace ExpoMR.Controllers
                 ProdCotizado.PrecioFinal = (decimal)dr["PrecioFinal"];
             }
 
-            return Json(ProdCotizado);
+			dB.Close();
+
+			return Json(ProdCotizado);
         }
 
         [HttpPost]

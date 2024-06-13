@@ -172,7 +172,9 @@ namespace ExpoMR.Controllers
                     + (string)dr["Descripcion"] + "</td></tr>";
             }
 
-            body += "</table></tr><br/><br/><br/>"
+			dB.Close();
+
+			body += "</table></tr><br/><br/><br/>"
                     + avisoConfidencialidad;
             try
             {
@@ -279,7 +281,9 @@ namespace ExpoMR.Controllers
                     return false;
                 }
             }
-               
+
+			dB.Close();
+			
             body += "<tr align='right'>" +
                         "<td colspan='6'></td><td><b>Total:</b></td>" +
                         "<td>" + Total + "</td>" +

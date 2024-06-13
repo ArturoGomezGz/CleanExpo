@@ -49,7 +49,9 @@ namespace ExpoMR.Controllers
                 ConfiguracionStand.Fechas = GetFechas();
             }
 
-            return View(ConfiguracionStand);
+            dB.Close();
+
+			return View(ConfiguracionStand);
         }
 
         [HttpPost]
@@ -93,7 +95,10 @@ namespace ExpoMR.Controllers
 
                 Fechas.Add(fecha);
             }
-            return (Fechas);     
+
+            dB.Close();
+
+			return (Fechas);     
         }
 
         public JsonResult GetfechasMoneda()
@@ -135,7 +140,9 @@ namespace ExpoMR.Controllers
                         }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -183,7 +190,9 @@ namespace ExpoMR.Controllers
                         }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]

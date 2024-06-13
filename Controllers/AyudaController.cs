@@ -68,7 +68,9 @@ namespace ExpoMR.Controllers
                 Sales.Add(sal);
             }
 
-            return Json(Sales);
+			dB.Close();
+
+			return Json(Sales);
         }
 
         [HttpPost]
@@ -104,7 +106,9 @@ namespace ExpoMR.Controllers
                 Proveedores.Add(proveedor);
             }
 
-            return Json(Proveedores);
+			dB.Close();
+
+			return Json(Proveedores);
         }
     }
 }

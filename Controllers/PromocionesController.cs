@@ -57,7 +57,9 @@ namespace ExpoMR.Controllers
                 articulos.Add(articulo);
             }
 
-            return articulos;
+			dB.Close();
+
+			return articulos;
         }
 
         [HttpPost]
@@ -102,7 +104,9 @@ namespace ExpoMR.Controllers
                 promociones.Add(promocion);
             }
 
-            return promociones;
+			dB.Close();
+
+			return promociones;
         }
 
         [HttpPost]
@@ -140,7 +144,9 @@ namespace ExpoMR.Controllers
                 promocion.articulos = getArticulos(promocion.idPromocion);
             }
 
-            return promocion;
+			dB.Close();
+
+			return promocion;
         }
 
         [HttpPost]
@@ -167,7 +173,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -193,7 +201,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -223,7 +233,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -249,7 +261,9 @@ namespace ExpoMR.Controllers
                         }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -281,7 +295,9 @@ namespace ExpoMR.Controllers
                         }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -330,7 +346,9 @@ namespace ExpoMR.Controllers
             };
 
             SqlDataReader dr = dB.ExecuteReader("PromocionesUpdate", ref parameters);
-
+			
+            dB.Close();
+			
             return (bool)parameters[8].Value;
         }
 
@@ -382,7 +400,9 @@ namespace ExpoMR.Controllers
 
             SqlDataReader dr = dB.ExecuteReader("PromocionesInsertar", ref parameters);
 
-            return (Int16)parameters[7].Value;
+			dB.Close();
+
+			return (Int16)parameters[7].Value;
         }
 
         [HttpPost]

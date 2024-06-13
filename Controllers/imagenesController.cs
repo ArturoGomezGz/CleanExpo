@@ -38,7 +38,9 @@ namespace ExpoMR.Controllers
                 Logo.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
             }
 
-            if (Logo == null)
+			dB.Close();
+
+			if (Logo == null)
                 return "Logo de proveedor no encontrado";
 
             try
@@ -69,7 +71,9 @@ namespace ExpoMR.Controllers
                 fotos = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
             }
 
-            if (fotos == null || fotos.Length == 0)
+			dB.Close();
+
+			if (fotos == null || fotos.Length == 0)
                 return "Foto de producto no encontrada";
 
             try

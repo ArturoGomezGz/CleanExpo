@@ -97,7 +97,9 @@ namespace ExpoMR.Controllers
                 LogosProveedores.Add(Logo);
             }
 
-            return LogosProveedores;
+			dB.Close();
+
+			return LogosProveedores;
         }
     }
 }

@@ -75,7 +75,9 @@ namespace ExpoMR.Controllers
                     ProdCotizado.imgProductos = GeneralesController.GetFoto(IdProducto);
                 }
 
-                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				dB.Close();
+
+				bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {

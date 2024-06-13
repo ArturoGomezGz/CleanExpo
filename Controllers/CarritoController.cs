@@ -73,8 +73,9 @@ namespace ExpoMR.Controllers
         public static List<ListaCarrito> GetCarrito(int IdCliente, int IdUsuario)
         {
             List<ListaCarrito> listaCarrito = new List<ListaCarrito>();
+			DB dB = new();
 
-            try
+			try
             {
                 string query = "SELECT CAST(ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS int)AS Registro, " +
                                 "mLaboratorios.Proveedor, mLaboratorios.Laboratorio, vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, " +
@@ -87,8 +88,7 @@ namespace ExpoMR.Controllers
                                 "AND vCotizaciones.Usuario =  @IdUsuario " +
                                 "AND vCotizaciones.Solicitado = 1 " +
                                 "ORDER BY mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
-
-                DB dB = new();
+               
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
@@ -112,23 +112,24 @@ namespace ExpoMR.Controllers
 
                     listaCarrito.Add(lcarrito);
                 }
-            }
+			}
             catch (Exception ex)
             {
                 listaCarrito = new List<ListaCarrito>();
-            }
+			}
 
-            return listaCarrito;
+			dB.Close();
+
+			return listaCarrito;
         }
 
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {
             List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>();
+			DB dB = new();
 
-            try
+			try
             {
-
-                DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
 
@@ -157,6 +158,8 @@ namespace ExpoMR.Controllers
             {
                 return new List<ddlPedidosCliente>();
             }
+
+            dB.Close();
 
             return ddlPedidos;
         }
@@ -243,7 +246,9 @@ namespace ExpoMR.Controllers
                 Articulo.Foto = (byte[])dr["Foto"];
             }
 
-            return Json(Articulo);
+			dB.Close();
+
+			return Json(Articulo);
         }
 
         [HttpPost]
@@ -251,8 +256,9 @@ namespace ExpoMR.Controllers
         {
             ResponseModel rm = new();
             List<DatosFacturacion> Datos = new List<DatosFacturacion>();
+			DB dB = new();
 
-            try
+			try
             {
                 string query = "DECLARE @idcotizacion INT " +
                                 "EXEC @idcotizacion = dbo.CotizarGetCotizacion  @IdCliente,  @IdCliente " +
@@ -262,9 +268,7 @@ namespace ExpoMR.Controllers
                                 "FROM vCotizacionDatos " +
                                 "WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
 
-                DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
-
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
@@ -294,6 +298,8 @@ namespace ExpoMR.Controllers
                 rm.Response = false;
             }
 
+            dB.Close();
+
             return Json(rm);
         }
 
@@ -316,8 +322,9 @@ namespace ExpoMR.Controllers
 
             ResponseModel rm = new();
             List<Transporte> transportes = new List<Transporte>();
+			DB dB = new();
 
-            try
+			try
             {
                 string query = "DECLARE @idcotizacion INT " +
                                 "EXEC @idcotizacion = dbo.CotizarGetCotizacion  @IdCliente,  @IdUsuario " +
@@ -327,7 +334,6 @@ namespace ExpoMR.Controllers
                                 "FROM vCotizacionDatos " +
                                 "WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
 
-                DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
@@ -369,6 +375,8 @@ namespace ExpoMR.Controllers
                 rm.Response = false;
                 rm.Message = e.Message;
             }
+
+            dB.Close();
 
             return Json(rm);
         }
@@ -420,6 +428,8 @@ namespace ExpoMR.Controllers
                 pedidos.Add(pedidoCarrito);
             }
 
+            dB.Close();
+
             return pedidos;
         }
 
@@ -427,8 +437,9 @@ namespace ExpoMR.Controllers
         public JsonResult GetPremios(int IdCliente)
         {
             ResponseModel rm = new();
+			DB dB = new();
 
-            try
+			try
             {
                 List<Premios> premios = new List<Premios>();
 
@@ -441,8 +452,7 @@ namespace ExpoMR.Controllers
                              + " mProveedores ON mArticulos.Proveedor = mProveedores.IdPersona"
                              + " WHERE dPromoCliente.Cliente = @IdCliente"
                              + " GROUP BY dPromociones.IdArticulo, mProveedores.Nombre,mArticulos.Nombre";
-
-                DB dB = new();
+                
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
@@ -476,6 +486,8 @@ namespace ExpoMR.Controllers
                 rm.Response = false;
             }
 
+            dB.Close();
+
             return Json(rm);
         }
 
@@ -497,8 +509,9 @@ namespace ExpoMR.Controllers
             ActualizaUsoCFDI(UpdCot, IdUsuario);
 
             ResponseModel rm = new();
+			DB dB = new();
 
-            try
+			try
             {
                 List<CotizacionDatos> Cotizaciones = new List<CotizacionDatos>();
 
@@ -508,7 +521,7 @@ namespace ExpoMR.Controllers
                 " vCotizacionDatos.Porte, vCotizacionDatos.Obsv " +
                 " FROM vCotizacionDatos " +
                 " WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
-                DB dB = new();
+                
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
                 parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
@@ -550,6 +563,8 @@ namespace ExpoMR.Controllers
                 rm.Message = e.Message;
                 rm.Response = false;
             }
+
+            dB.Close();
 
             return Json(rm);
         }
@@ -659,16 +674,18 @@ namespace ExpoMR.Controllers
                 totales.HasProduct = (dr["Productos"] != DBNull.Value ? true : false);
             }
 
+            dB.Close();
+
             return totales;
         }
 
         public int GetCantidadCarrito(int IdPersona, int cliente)
         {
             int resultCantidad = 0;
+			DB dB = new();
 
-            try
+			try
             {
-                DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@cliente", cliente);
                 parameters[1] = new SqlParameter("@usuario", IdPersona);
@@ -684,6 +701,8 @@ namespace ExpoMR.Controllers
             {
                 resultCantidad = 0;
             }
+
+            dB.Close();
 
             return resultCantidad;
         }
@@ -703,8 +722,10 @@ namespace ExpoMR.Controllers
             {
                 logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
             }
-			
-            return logo;
+
+            dB.Close();
+
+			return logo;
         }
 
         public void PorConfirmar(int IdProducto, int Cliente, int Confirmado)

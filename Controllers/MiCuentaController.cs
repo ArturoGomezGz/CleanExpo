@@ -119,7 +119,9 @@ namespace ExpoMR.Controllers
                 MiCuenta.Portes = GetPorte(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
             }
 
-            var currentUser = await _userManager.GetUserAsync(User);
+			dB.Close();
+
+			var currentUser = await _userManager.GetUserAsync(User);
 
             if (!currentUser.EmailConfirmed)
             {
@@ -179,7 +181,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [AllowAnonymous]
@@ -219,7 +223,9 @@ namespace ExpoMR.Controllers
                 Portes.Add(Porte);
             }
 
-            return Portes;
+			dB.Close();
+
+			return Portes;
         }
 
         public JsonResult SaveTipoDoc(int UsoCFDI, int TipoDoc)

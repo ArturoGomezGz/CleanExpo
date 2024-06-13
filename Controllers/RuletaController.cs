@@ -50,7 +50,9 @@ namespace ExpoMR.Controllers
                 ListaInforuletas.Add(Ruleta);
             }
 
-            ListaInforuletas.ForEach(i =>  i.RuletaNormalized = RemoveAccents(i.Ruleta));
+			dB.Close();
+
+			ListaInforuletas.ForEach(i =>  i.RuletaNormalized = RemoveAccents(i.Ruleta));
 
             if (!currentUser.EmailConfirmed)
             {
@@ -168,7 +170,9 @@ namespace ExpoMR.Controllers
                 PremiosRuleta.Add(Premio);
             }
 
-            return PremiosRuleta;
+			dB.Close();
+
+			return PremiosRuleta;
         }
 
         public static List<PremioRuleta> GetPremios(int idRuleta)
@@ -198,7 +202,9 @@ namespace ExpoMR.Controllers
                 PremiosRuleta.Add(Premio);
             }
 
-            return PremiosRuleta;
+			dB.Close();
+
+			return PremiosRuleta;
         }
 
         public JsonResult GetData(int IdRuleta)

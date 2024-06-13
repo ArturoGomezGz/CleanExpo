@@ -84,7 +84,9 @@ namespace ExpoMR.Controllers
                 cotizacion.portes = Porte(IdCliente);
             }
 
-            return View(cotizacion);
+			dB.Close();
+
+			return View(cotizacion);
         }
 
         public JsonResult CotizacionEditarCantidadProducto(int IdProducto, int Cantidad, int IdCotizacion)
@@ -137,7 +139,9 @@ namespace ExpoMR.Controllers
                 documentos.Add(GetDocumento);                
             }
 
-            return documentos;
+			dB.Close();
+
+			return documentos;
         }
 
         public List<GetUsoCFDI> UsosDelCFDI(int IdCliente) 
@@ -165,7 +169,9 @@ namespace ExpoMR.Controllers
                 UsosDelCFDI.Add(GetCFDI);
             }
 
-            return UsosDelCFDI;
+			dB.Close();
+
+			return UsosDelCFDI;
         }
 
         public List<GetTipoVenta> TipoVenta()
@@ -194,7 +200,9 @@ namespace ExpoMR.Controllers
                 TiposDeVenta.Add(GetVenta);
             }
 
-            return TiposDeVenta;
+			dB.Close();
+
+			return TiposDeVenta;
         }
 
         public List<GetDireccionEntrega> DirEntrega( int Cliente) 
@@ -226,7 +234,9 @@ namespace ExpoMR.Controllers
                 Entrega.Add(GetEntrega);
             }
 
-            return Entrega;
+			dB.Close();
+
+			return Entrega;
         }
 
         public List<GetTransportista> Transportista(int Cliente)
@@ -259,7 +269,9 @@ namespace ExpoMR.Controllers
                 transportistas.Add(transportista);
             }
 
-            return transportistas;
+			dB.Close();
+
+			return transportistas;
         }
 
         public List<GetPorte> Porte(int Cliente)
@@ -292,7 +304,9 @@ namespace ExpoMR.Controllers
                 portes.Add(porte);
             }
 
-            return portes;
+			dB.Close();
+
+			return portes;
         }
 
         [HttpPost]
@@ -332,7 +346,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -373,15 +389,18 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
         public JsonResult ProductoBusqueda(string Busqueda, int IdCotizacion)                               
         {
             ResponseModel rm = new();
+			DB dB = new DB();
 
-            try
+			try
             {
                 string querySearhTerms = "";
                 string[] busqueda = Busqueda.Split(' ');
@@ -405,7 +424,6 @@ namespace ExpoMR.Controllers
                                + " AND vProductos.IdProducto NOT IN (SELECT dCotizaciones.IdProducto FROM dCotizaciones WHERE dCotizaciones.IdCotizacion = " + IdCotizacion + " AND dCotizaciones.Solicitado = 1 AND dCotizaciones.PorConfirmar = 1) "
                                + " ORDER BY vProductos.Nombre ASC ";
 
-                DB dB = new DB();
                 SqlParameter[] parameters = new SqlParameter[0];
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, CommandType.Text);
@@ -433,6 +451,8 @@ namespace ExpoMR.Controllers
                 rm.Response = false;
                 rm.Message = e.Message;
             }
+
+            dB.Close();
 
             return Json(rm.Result);
         }
@@ -477,7 +497,9 @@ namespace ExpoMR.Controllers
                 }).ToArray()
             };
 
-            return Json(jsonData.rows[0]);
+			dB.Close();
+
+			return Json(jsonData.rows[0]);
         }
 
         [HttpPost]
@@ -594,7 +616,9 @@ namespace ExpoMR.Controllers
                     credito = 0
                 };
 
-                return Json(jsonData);
+				dB.Close();
+
+				return Json(jsonData);
             }
             else
             {
@@ -613,6 +637,8 @@ namespace ExpoMR.Controllers
                        }).ToArray()
                 };
 
+				dB.Close();
+				
                 return Json(jsonData.rows[0]);
             }
         }
@@ -652,7 +678,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         public IActionResult DetallePedido(int idPedido)
@@ -697,7 +725,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows[0]);
+			dB.Close();
+
+			return Json(jsonData.rows[0]);
         }
 
         [HttpPost]
@@ -735,7 +765,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -773,7 +805,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows[0]);
+			dB.Close();
+
+			return Json(jsonData.rows[0]);
         }
 
         [HttpPost]

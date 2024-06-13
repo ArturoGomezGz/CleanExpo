@@ -51,7 +51,9 @@ namespace ExpoMR.Controllers
                 Graficas.Add(grafica);
             }
 
-            return Graficas;
+			dB.Close();
+
+			return Graficas;
         }
 
         [HttpPost]
@@ -78,7 +80,9 @@ namespace ExpoMR.Controllers
                 Graficas.Add(grafica);
             }
 
-            return Graficas;
+			dB.Close();
+
+			return Graficas;
         }
 
         [HttpPost]
@@ -125,7 +129,9 @@ namespace ExpoMR.Controllers
                 Graficas.Add(grafica);
             }
 
-            return Graficas;
+			dB.Close();
+
+			return Graficas;
         }
 
         [HttpPost]
@@ -158,7 +164,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -191,7 +199,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -221,7 +231,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -248,7 +260,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -306,7 +320,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -339,7 +355,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
     }
 }

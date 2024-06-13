@@ -445,6 +445,9 @@ namespace ExpoMR.Controllers
                     break;
                 }
             }
-        }
+
+			dB.Close();
+
+		}
     }
 }

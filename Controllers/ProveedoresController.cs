@@ -217,7 +217,9 @@ namespace ExpoMR.Controllers
                 DetalleArticulo.Cantidad = (Int16)dr["Cantidad"];
             }
 
-            return Json(DetalleArticulo);
+			dB.Close();
+
+			return Json(DetalleArticulo);
         }
 
         [HttpPost]
@@ -259,7 +261,9 @@ namespace ExpoMR.Controllers
                         }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -310,7 +314,9 @@ namespace ExpoMR.Controllers
                 anuncio.Rank = (byte)dr["Rank"];
             }
 
-            return Json(anuncio);           
+			dB.Close();
+
+			return Json(anuncio);           
         }
 
         [HttpPost]
@@ -343,7 +349,9 @@ namespace ExpoMR.Controllers
                 Anuncios.Add(anuncio);
             }
 
-            return Json(Anuncios);
+			dB.Close();
+
+			return Json(Anuncios);
         }
 
         [HttpPost]
@@ -373,7 +381,9 @@ namespace ExpoMR.Controllers
                 Articulos.Add(DetalleArticulo);
             }
 
-            return Json(Articulos);
+			dB.Close();
+
+			return Json(Articulos);
         }
 
         [HttpPost]
@@ -396,7 +406,9 @@ namespace ExpoMR.Controllers
                 Visita.Nombre = (string)dr["Nombre"];
             }
 
-            return Json(Visita);
+			dB.Close();
+
+			return Json(Visita);
         }
 
         [HttpPost]
@@ -423,7 +435,9 @@ namespace ExpoMR.Controllers
                 Visitas.Add(Visita);
             }
 
-            return Json(Visitas);
+			dB.Close();
+
+			return Json(Visitas);
         }
 
 
@@ -456,7 +470,9 @@ namespace ExpoMR.Controllers
                 MonedasActuales.monedasContacto = (int)dr["MonedasContacto"];
             }
 
-            return Json(MonedasActuales);
+			dB.Close();
+
+			return Json(MonedasActuales);
         }
 
         [HttpPost]
@@ -496,7 +512,9 @@ namespace ExpoMR.Controllers
                         }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]
@@ -555,7 +573,9 @@ namespace ExpoMR.Controllers
                 Articulo.Add(DetalleArticulo);
             }
 
-            return Json(Articulo);
+			dB.Close();
+
+			return Json(Articulo);
         }
 
         [HttpPost]
@@ -588,7 +608,9 @@ namespace ExpoMR.Controllers
                  }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         [HttpPost]

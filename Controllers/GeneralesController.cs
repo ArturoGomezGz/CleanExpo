@@ -75,7 +75,9 @@ namespace ExpoMR.Controllers
                        }).ToArray()
             };
 
-            return Json(jsonData.rows);
+			dB.Close();
+
+			return Json(jsonData.rows);
         }
 
         public static byte[] GetFoto(int idProducto)
@@ -95,7 +97,9 @@ namespace ExpoMR.Controllers
                 fotos = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
             }
 
-            return fotos;
+			dB.Close();
+
+			return fotos;
         }
 
         public int SetSessionClienteSel(int IdPersona)
@@ -127,7 +131,9 @@ namespace ExpoMR.Controllers
                 ClientesSeleccion.Add(Cliente);
             }
 
-            return ClientesSeleccion;
+			dB.Close();
+
+			return ClientesSeleccion;
         }
     }
 }

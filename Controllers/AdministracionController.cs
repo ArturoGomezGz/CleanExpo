@@ -97,7 +97,9 @@ namespace ExpoMR.Controllers
                     Usuario.Invitacion = (dr["Invitacion"] != DBNull.Value ? (string)dr["Invitacion"] : "");
                 }
 
-                var user = await _userManager.FindByNameAsync(Usuario.Email);
+			    dB.Close();
+
+			    var user = await _userManager.FindByNameAsync(Usuario.Email);
                 Usuario.Sucursales = GetSucursales();
 
                 if (user != null)
@@ -143,7 +145,9 @@ namespace ExpoMR.Controllers
                     RutasVenta.Add(RutaVenta);
                 }
 
-                return RutasVenta;
+			    dB.Close();
+
+			    return RutasVenta;
             }
 
             public List<SucursalUsuario> GetSucursales()
@@ -173,7 +177,9 @@ namespace ExpoMR.Controllers
                     Sucursales.Add(Sucursal);
                 }
 
-                return Sucursales;
+			    dB.Close();
+
+			    return Sucursales;
             }
 
             public List<mTipoUsuario> GetTipoUsuarios()
@@ -200,7 +206,9 @@ namespace ExpoMR.Controllers
                     TiposUsuarios.Add(TipoUsuario);
                 }
 
-                return TiposUsuarios;
+			    dB.Close();
+
+			    return TiposUsuarios;
             }
 
             [HttpPost]
@@ -215,10 +223,12 @@ namespace ExpoMR.Controllers
 
                 SqlDataReader dr = dB.ExecuteReader("UsuariosAgregar", ref parameters);
 
-                ResponseModel rm = new();
+			    ResponseModel rm = new();
 
-                try
-                {
+			    dB.Close();
+
+			    try
+                    {
                     var usuario = new AppUsuario
                     {
                         UserName = UserName,
@@ -305,7 +315,7 @@ namespace ExpoMR.Controllers
                     rm.Message = e.Message;
                 }
 
-                return Json(rm);
+			    return Json(rm);
             }
 
             public async Task<JsonResult> Bloquear(string Email)
@@ -552,7 +562,9 @@ namespace ExpoMR.Controllers
                     Usuarios.Add(Usuario);
                 }
 
-                return Json(Usuarios);
+			    dB.Close();
+
+			    return Json(Usuarios);
             }
 
         #endregion
@@ -595,7 +607,9 @@ namespace ExpoMR.Controllers
                         Proveedor.Saldo = 0;
                     }
                 }
-
+			    
+                dB.Close();
+			
                 return View(Proveedor);
 		    }
 
@@ -741,7 +755,9 @@ namespace ExpoMR.Controllers
                     laboratorios.Add(laboratorio);
                 }
 
-                return Json(laboratorios);
+			    dB.Close();
+
+			    return Json(laboratorios);
             }
 
             [HttpPost]
@@ -768,7 +784,9 @@ namespace ExpoMR.Controllers
                     laboratorios.Add(laboratorio);
                 }
 
-                return Json(laboratorios);
+			    dB.Close();
+
+			    return Json(laboratorios);
             }
 
             [HttpPost]
@@ -809,7 +827,9 @@ namespace ExpoMR.Controllers
                     Proveedores.Add(Proveedor);
                 }
 
-                return Json(Proveedores);
+			    dB.Close();
+
+			    return Json(Proveedores);
             }
 
             [HttpPost]
@@ -914,7 +934,9 @@ namespace ExpoMR.Controllers
                     Roles.Add(Rol);
                 }
 
-                return Roles;
+			    dB.Close();
+
+			    return Roles;
             }
 
             public async Task<JsonResult> CambiarRolEmpleado(string UserName, string Rol)
@@ -968,8 +990,10 @@ namespace ExpoMR.Controllers
                     Empleado.Rol = (string)dr["Rol"];
                 }
 
-                Empleado.Roles = Roles();  //Se obtienen los roles para el usuario         
+			    dB.Close();
 
+			    Empleado.Roles = Roles();  //Se obtienen los roles para el usuario         
+                
                 return View(Empleado);
             }
 
@@ -1042,7 +1066,9 @@ namespace ExpoMR.Controllers
                     Notificaciones.Add(Notificacion);
                 }
 
-                return Json(Notificaciones);
+			    dB.Close();
+
+			    return Json(Notificaciones);
             }
 
         #endregion
