@@ -95,7 +95,7 @@
 					orderable: false,
 					render: function (data, type, row, meta) {
 						if (row.idEmail != 0 && row.usuario == false && idTipoUsuario == 1 && type === 'display') {
-							return data = '<div class="checkbox"><input type="checkbox" id="chkSel" class="dt-checkboxes" value="' + row.idEmail + '"></div>';
+							return data = '<div class="checkbox"><input type="checkbox" id="chkSel_'+row.idEmail+'" class="dt-checkboxes chkSel" value="' + row.idEmail + '"></div>';
 						}
 
 						return '';
@@ -160,13 +160,13 @@
 
 	function InvitacionMasiva() {
 
-		const cb = document.querySelectorAll('input[type=checkbox]:checked[Id="chkSel"]'); //Se seleccionan todos los controles de tipo checkbox y su id= chkSel NO DEBE DE HABER ID´REPETIDOS POR ALGO SON ID
+		const cb = document.querySelectorAll('input[type="checkbox"].chkSel:checked'); //Se seleccionan todos los controles de tipo checkbox y su id= chkSel NO DEBE DE HABER ID´REPETIDOS POR ALGO SON ID
 
 		if (cb.length < 1) { //Se valida que debe existir al menos 1 checkbox seleccionado para el envio de invitacion
 			alert('Debes selecionar un email para enviar invitacion')
-		}
+		}else //faltaba el else
 		{
-			$("input[type=checkbox]:checked").each(function () {
+			$('input[type="checkbox"].chkSel:checked').each(function () {
 
 				if ($(this).prop('checked') && $(this).val() > 0) {
 
