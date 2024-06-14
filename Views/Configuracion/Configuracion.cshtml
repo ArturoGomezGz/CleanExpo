@@ -313,6 +313,7 @@
             },
             "columns": [
                 {
+                    "data": "idProducto",
                     render: function (data, type, row) 
                     {
                         return '<button  class="btn btn-warning fa fa-pencil" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"> </button>'
@@ -346,6 +347,7 @@
             "columns":
             [
                 {
+                    "data": "idProducto",
                     render: function (data, type, row)
                     {
                         return '<button onclick="SelProducto(' + row.idProducto + ')" class="btn fa fa-chevron-right"> </button>'
