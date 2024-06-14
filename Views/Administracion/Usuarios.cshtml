@@ -13,7 +13,7 @@
 	</div>
     <div class="col-md-3 mb-4">		
 		@Html.LabelFor(m => m.Ruta, new { id="labelRuta",  @class = "fw-bold" })
-		@Html.DropDownListFor(model => model.Ruta, new SelectList(Model.Rutas, "IdRuta", "Descripcion"), new { id = "IdRuta", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})		
+		@Html.DropDownListFor(model => model.Ruta, new SelectList(Model.Rutas, "IdRuta", "Descripcion"), new { id = "IdRuta", @class = "form-control text-left", name = "cmb-TipoRutaVenta",  title="cmb"})		
     </div>
 </div>
 <div class="row mb-4 fontsize">

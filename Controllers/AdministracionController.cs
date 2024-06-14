@@ -44,8 +44,8 @@ namespace ExpoMR.Controllers
                 var Administracion = new AdminstracionViewModel
                 {
                     IdTipoUsuario = 1, //Cliente
-                    Ruta = 0,  //General
-                    IdSucrsal = 1, //Gdl
+                    Ruta = 51,  //ABOGADO 1
+					IdSucrsal = 1, //Gdl
 
                     Rutas = GetRutas(),
                     TipoUsuario = GetTipoUsuarios(),
@@ -123,12 +123,12 @@ namespace ExpoMR.Controllers
 
                 string query = "SELECT Rutas.IdRuta, Rutas.Descripcion " +
                                 "FROM ( " +
-                                "		SELECT 0 AS IdRuta, ' GENERAL' AS Descripcion " +
+								"		SELECT mRutas.IdRuta, UPPER(mRutas.Descripcion) AS Descripcion " +
+								"       FROM Indigo.dbo.mRutas" +
                                 "		UNION " +
-                                "		SELECT mRutas.IdRuta, mRutas.Descripcion " +
-                                "		FROM Indigo.dbo.mRutas " +
+								"		SELECT 0 AS IdRuta, 'GENERAL' AS Descripcion " +
                                 "	) AS Rutas " +
-                                "ORDER BY Rutas.Descripcion";
+								"ORDER BY CASE WHEN Rutas.IdRuta = 0 THEN 1 ELSE 0 END, Rutas.Descripcion";
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[0];
