@@ -842,7 +842,7 @@ namespace ExpoMR.Controllers
             parameters[0] = new SqlParameter("@cliente", IdCliente);
             parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
 
-            return dB.ExecuteReturnValue("ExpoPedidoValidar", ref parameters);
+            return (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters);
         }
 
         [HttpPost]

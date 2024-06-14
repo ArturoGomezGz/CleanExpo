@@ -608,7 +608,7 @@ namespace ExpoMR.Controllers
                 parameters[0] = new SqlParameter("@cliente", IdCliente);
                 parameters[1] = new SqlParameter("@usuario", IdUsuario);
 
-                rm.Result = dB.ExecuteReturnValue("ExpoPedidoValidar", ref parameters); ;
+                rm.Result = (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters); ;
                 rm.Response = true;
             }
             catch (Exception e)
