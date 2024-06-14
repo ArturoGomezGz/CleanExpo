@@ -456,8 +456,7 @@ namespace ExpoMR.Clases
             parameters[1] = new SqlParameter("@VIP", vip);
 
             DB dB = new DB();
-            SqlDataReader dr = dB.ExecuteReader("ChangeUsuarioVIP", ref parameters);
-			dB.Close();
+            dB.ExecuteNonQuery("ChangeUsuarioVIP", ref parameters);
 		}
 
         public static int UsuarioEliminar(int idEmail)

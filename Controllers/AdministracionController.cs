@@ -388,11 +388,9 @@ namespace ExpoMR.Controllers
             }
 
             [HttpPost]
-            public async Task<ActionResult> ChangeVip(int IdEmail, bool Vip)
+            public void ChangeVip(int IdEmail, bool Vip)
             {
                 WebSite.ChangeVIP(IdEmail, Vip);
-
-                return View();
             }
 
             [HttpPost]
