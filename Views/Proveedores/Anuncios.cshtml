@@ -102,6 +102,7 @@
             },
             "columns": [
                 {
+                    "data": "idAnuncio",
                     render: function (data, type, row)
                     {
                         return '<button id ="bt-AgregarProductos" onclick="editarAnuncio(' + row.idAnuncio + ')" class="btn btn-naranja-ch fa fa-pen-to-square" data-bs-toggle="modal" data-bs-target="#exampleModal"> </button>';
@@ -113,6 +114,7 @@
                 { "data": "feInicio", title:"Fecha Inicio" },
                 { "data": "feTermino", title: "Hora Fin" },
                 {
+                    "data": "idAnuncio",
                     render: function (data, type, row) 
                     {
                         return '<button id="bt-eliminarAnuncio" class="btn btn-rojo-ch fa fa-xmark" onclick="abrirBorrarModal(' + row.idAnuncio + ')" data-bs-toggle="modal" data-bs-target="#eliminarModal"></button>';
