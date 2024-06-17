@@ -44,10 +44,10 @@
             <div class="col-md-12">
                 <div class="row text-center">
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-verde-medio btn-success">Acepto</button>
+                        <button type="button" class="btn btn-verde-medio">Acepto</button>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-rojo btn-cancelar" data-bs-dismiss="modal" >Cancelar</button>
+                        <button type="button" class="btn btn-rojo" data-bs-dismiss="modal" >Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Regresar</button>
+                <button class="btn btn-azul-medio" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Regresar</button>
             </div>
         </div>
     </div>
@@ -136,9 +136,9 @@
                         if (row.descuentoadicional == 0)
                         {
                             return '<input class="hdfIdProducto" type="hidden" value="' + data + '" style="display:none"/>'
-                                 + '<a class="btn btn-naranja-ch editprecio" ><i class="fa-regular fa-pen-to-square"></i></a>'
+                                 + '<a class="btn btn-naranja-ch editprecio" ><i class="fa-regular fa-pencil"></i></a>'
                                  + '<a class="btn btn-outline-success acepteditprecio" style="display:none"><i class="fa fa-check" aria-hidden="true"></i></a>'
-                                 + '<a class="btn  btn-outline-danger canceleditprecio" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                                 + '<a class="btn btn-outline-danger canceleditprecio" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                         }
                         
                         return ''

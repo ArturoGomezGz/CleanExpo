@@ -216,13 +216,13 @@ p, ol, h6{
 .btn-azul {
     background-image: linear-gradient(to right, #000428 0%, #004e92 51%, #000428 100%);
     margin: 10px 0px;
-    padding: 10px 45px;
+    padding: 7px 45px;
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
     color: var(--blanco);
     box-shadow: 0 0 20px #eee;
-    border-radius: 10px;
+    border-radius: 5px;
     display: block;
 }
 
@@ -241,11 +241,13 @@ p, ol, h6{
 .btn-azul-medio {
     background-image: linear-gradient(to right, #0575E6 0%, #021B79 51%, #0575E6 100%);
     margin: 10px 10px;
+    padding: 7px 45px;
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
     color: var(--blanco);
     border-radius: 5px;
+    min-width: 100px;
 }
 
     .btn-azul-medio:hover {
@@ -262,6 +264,7 @@ p, ol, h6{
 .btn-verde {
     background-image: linear-gradient(to right,#DCE35B 0%, #45B649 51%, #DCE35B 100%);
     margin: 10px 10px;
+    padding: 7px 45px;
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
@@ -283,11 +286,13 @@ p, ol, h6{
 .btn-verde-medio {
     background-image: linear-gradient(to right,#52c234 0%, #174C0C 51%, #52c234 100%);
     margin: 10px 10px;
+    padding: 7px 45px;
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
     color: var(--blanco);
     border-radius: 5px;
+    min-width: 100px;
 }
 
     .btn-verde-medio:hover {
@@ -320,8 +325,13 @@ p, ol, h6{
 .btn-naranja {
     background-image: linear-gradient(to right, #FF512F 0%, #F09819 51%, #FF512F 100%);
     background-size: 200% auto;
+    margin: 10px 10px;
+    padding: 7px 45px;
+    text-align: center;
+    transition: 0.5s;
     color: var(--blanco);
-    font-weight: 500;
+    border-radius: 5px;
+    min-width: 150px;
 }
 
 .btn-naranja:hover {
@@ -334,35 +344,58 @@ p, ol, h6{
      color: var(--blanco);
 }
 
-.btn-rojo {
+.btn-logout {
     background-image: linear-gradient(to right,#e52d27 0%, #b31217 51%, #e52d27 100%);
     background-size: 200% auto;
     color: var(--blanco);
 }
 
-.btn-rojo:hover {
-    background-position: right center; /* change the direction of the change here */
+    .btn-logout:hover {
+        background-position: right center; /* change the direction of the change here */
+        color: var(--blanco);
+        border: none;
+    }
+
+    .btn-logout:focus {
+        color: var(--blanco);
+    }
+
+.btn-rojo {
+    background-image: linear-gradient(to right,#e52d27 0%, #b31217 51%, #e52d27 100%);
+    background-size: 200% auto;
+    margin: 10px 10px;
+    padding: 7px 45px;
     color: var(--blanco);
-    border: none;
+    text-align: center;
+    transition: 0.5s;
+    border-radius: 5px;
+    min-width: 100px;
 }
 
-.btn-rojo:focus {
-    color: var(--blanco);
-}
+    .btn-rojo:hover {
+        background-position: right center; /* change the direction of the change here */
+        color: var(--blanco);
+        border: none;
+    }
+
+    .btn-rojo:focus {
+        color: var(--blanco);
+    }
 
 .btn-naranja-ch {
-    background-image: linear-gradient(to right, #FF512F 0%, #F09819 51%, #FF512F 100%);
-    background-size: 200% auto;
-    color: var(--blanco);
+    color: var(--naranja);
+    background-color: transparent;
+    border-color: var(--naranja);
     width: 25px;
     height: 25px;
-    font-size: 0.8em;
+    font-size: 0.9em;
     padding: 0px;
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 .btn-naranja-ch:hover {
-    background-position: right center; /* change the direction of the change here */
+    background-image: linear-gradient(to right, #FF512F 0%, #F09819 51%, #FF512F 100%);
+    background-size: 200% auto;
     color: var(--blanco);
     border: none;
 }
@@ -394,7 +427,7 @@ p, ol, h6{
 .btn-outline-danger {
     width: 25px;
     height: 25px;
-    font-size: 0.8em;
+    font-size: 1em;
     padding: 0px;
 }
 
@@ -406,7 +439,7 @@ p, ol, h6{
 .btn-outline-success {
     width: 25px;
     height: 25px;
-    font-size: 0.8em;
+    font-size: 1em;
     padding: 0px;
 }
 

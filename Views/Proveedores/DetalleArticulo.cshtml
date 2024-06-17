@@ -24,8 +24,8 @@
                 </button>
             </div>
             <div id="div_botones" class="col-sm-12 text-center">
-                <button type="button" class="btn btn-primary" id="btnEditar" onclick="EditarArticulo()">Editar</button>
-                <button type="button" class="btn btn-danger" id="btnEliminar" onclick="EliminarArticulo()">Eliminar</button>
+                <button type="button" class="btn btn-azul-medio" id="btnEditar" onclick="EditarArticulo()">Editar</button>
+                <button type="button" class="btn btn-rojo" id="btnEliminar" onclick="EliminarArticulo()">Eliminar</button>
             </div>
         </div>
         <div class="col-lg-1">
@@ -36,7 +36,7 @@
             <div class="row" id="div_fotos_articulo">
             </div>
             <div class="border">
-                <button type="button" class="btn btn-primary" id="btnAgregarFotos" onclick="AgregarFoto()" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Fotos</button>
+                <button type="button" class="btn btn-azul" id="btnAgregarFotos" onclick="AgregarFoto()" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Fotos</button>
             </div>
         </div>
     </div>
@@ -55,8 +55,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnGuardarImagen">Guardar</button>
+                    <button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-azul-medio" id="btnGuardarImagen">Guardar</button>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
 </div>
 <br />
 <div class="col-md-12 text-center" id="div_btnRegresar">
-    <a class="btn btn-secondary" asp-controller="Proveedores" asp-action="Articulos"><i class="fa fa-arrow-left" aria-hidden="true"></i>Mis Articulos</a>
+    <a class="btn btn-azul" asp-controller="Proveedores" asp-action="Articulos"><i class="fa fa-arrow-left" aria-hidden="true"></i> Mis Artículos</a>
 </div>
 
 <script>
@@ -110,7 +110,7 @@
                         + '<i class="fa fa-ban" aria-hidden="true"></i>'
                         + '</button>'
                         + '</div>'
-                        + '<div id="divbtnEditar_' + value.iDdArticulos + '" class="col-md-12 text-center"><button type="button" class="btn btn-outline-success" id="btnEdit" onclick="EditarOrdenFoto(' + value.iDdArticulos + ')" title="btn-save"><i class="fa-regular fa-pen-to-square" ></i></button>'
+                        + '<div id="divbtnEditar_' + value.iDdArticulos + '" class="col-md-12 text-center"><button type="button" class="btn btn-naranja-ch" id="btnEdit" onclick="EditarOrdenFoto(' + value.iDdArticulos + ')" title="btn-save"><i class="fa fa-pencil" ></i></button>'
                         + '<button type="button" class="btn btn-outline-danger" id="btnSave" onclick="EliminarFotoArticulo(' + value.iDdArticulos + ')" title="btn-save"><i class="fa-sharp fa-solid fa-xmark" ></i></button>'
                         +'</div></div></div>'
                 });

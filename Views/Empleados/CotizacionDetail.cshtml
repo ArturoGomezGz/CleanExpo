@@ -56,7 +56,7 @@
                 <strong>Total: </strong><label id="lbltotal"></label><br /><br />
                 <strong>Total de Productos: </strong><label id="lbltotalProductos"></label><br /><br />
                 <div id="btnColocaOrden">
-                    <button id="colocaOrden" onclick="colocarOrden()" class="btn btn-warning">Coloca tu Orden</button>
+                    <button id="colocaOrden" onclick="colocarOrden()" class="btn btn-naranja">Coloca tu Orden</button>
                 </div>
             </div>
         </div>
@@ -65,10 +65,10 @@
 <div class="col-md-12">
     <div class="row">
         <div class="col-md-6">
-            <button type="button" id="btGuardarDatosCotizacion" onclick="GuardarDatosCotizacion()" class="btn btn-success">Guardar</button>
+            <button type="button" id="btGuardarDatosCotizacion" onclick="GuardarDatosCotizacion()" class="btn btn-verde-medio">Guardar</button>
         </div>
         <div class="col-md-6">
-            <button type="button" id="btCancelDatosCotizacion" class="btn btn-danger" onclick="CancelGuadar()" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" id="btCancelDatosCotizacion" class="btn btn-rojo" onclick="CancelGuadar()" data-bs-dismiss="modal">Cancelar</button>
         </div>
     </div> 
 
@@ -79,7 +79,7 @@
             <button type="button" id="AgregarProductos" onclick="btnagregarProductos()" class="btn btn-azul col-md-55" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Productos</button>
         </div>
         <div class="col-md-4">
-            <button id="btn-modificar" onclick="modificarCotizacion()" type="button" class="btn btn-azul col-md-55" data-bs-toggle="modal" data-bs-target="#editDatosCliente">Editar</button>
+            <button id="btn-modificar" onclick="modificarCotizacion()" type="button" class="btn btn-azul-medio col-md-55" data-bs-toggle="modal" data-bs-target="#editDatosCliente">Editar</button>
         </div>
         <div class="col-md-4">
             <button type="button" id="buscarCliente" class="btn btn-azul col-md-55" >Buscar cliente</button>
@@ -195,12 +195,12 @@
                                                 <div class="mb-4">
                                                     <bold>Total:</bold><label class="contenedor__Producto__Total" id="total"></label>
                                                 </div>
-                                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-warning mb-3">Añadir a Carrito</button>
+                                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" id="IraProductos" onclick="regresaProductos()" class="btn btn-primary col-md-55">Ir a Productos</button>
+                                <button type="button" id="IraProductos" onclick="regresaProductos()" class="btn btn-azul col-md-55">Ir a Productos</button>
                             </div>
                         </div>
                     </div>
@@ -239,7 +239,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <label id="lblValidaCotizacion"></label><br />
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn btn-verde-medio" data-bs-dismiss="modal">Aceptar</button>
             </div>
         </div>
     </div>
@@ -253,8 +253,8 @@
                 <p>El pedido del cliente</p>
                 <label id="lblConfirmarCliente">@Model.Cliente</label><br />
                 <p>será enviado a surtir a almacén y no se podrán hacer cambios.</p>
-                <button type="button" onclick="PedidoAgregar()" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" onclick="PedidoAgregar()" class="btn btn-verde-medio" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -429,7 +429,7 @@
                     "data": "idProducto",
                     render: function (data, type) {
                         if (type === 'display') {
-                            return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"s/><button class="btn btn-naranja-ch fa fa-pen-to-square Edit"></button><a class="btn btn-outline-success Update" style="display:none"><i class="fa fa-check" aria-hidden="true"></i></a><a class="btn  btn-outline-danger Cancel" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                            return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"s/><button class="btn btn-naranja-ch fa fa-pecil Edit"></button><a class="btn btn-outline-success Update" style="display:none"><i class="fa fa-check" aria-hidden="true"></i></a><a class="btn  btn-outline-danger Cancel" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                         }
                         return data;
                     },

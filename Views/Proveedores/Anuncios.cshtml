@@ -105,7 +105,7 @@
                     "data": "idAnuncio",
                     render: function (data, type, row)
                     {
-                        return '<button id ="bt-AgregarProductos" onclick="editarAnuncio(' + row.idAnuncio + ')" class="btn btn-naranja-ch fa fa-pen-to-square" data-bs-toggle="modal" data-bs-target="#exampleModal"> </button>';
+                        return '<button id ="bt-AgregarProductos" onclick="editarAnuncio(' + row.idAnuncio + ')" class="btn btn-naranja-ch fa fa-pencil" data-bs-toggle="modal" data-bs-target="#exampleModal"> </button>';
                     },
                     title: "Editar"
                 },
@@ -117,7 +117,7 @@
                     "data": "idAnuncio",
                     render: function (data, type, row) 
                     {
-                        return '<button id="bt-eliminarAnuncio" class="btn btn-rojo-ch fa fa-xmark" onclick="abrirBorrarModal(' + row.idAnuncio + ')" data-bs-toggle="modal" data-bs-target="#eliminarModal"></button>';
+                        return '<button id="bt-eliminarAnuncio" class="btn btn-outline-danger  fa fa-xmark" onclick="abrirBorrarModal(' + row.idAnuncio + ')" data-bs-toggle="modal" data-bs-target="#eliminarModal"></button>';
                     }, 
                     title: "Eliminar"
                 }

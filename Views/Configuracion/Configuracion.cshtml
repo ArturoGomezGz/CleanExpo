@@ -86,15 +86,15 @@
                             <input type="number" id="Numero_visitas" value="1" />
                             <label id="lblCantidadMonedas" class="mx-2"> 100 Monedas por dia</label>
                         </div>
-                        <button onclick="AgregarDia()" type="button" class="btn btn-verde-medio w-25 d-block mx-auto mt-4"> Aceptar </button>
+                        <button onclick="AgregarDia()" type="button" class="btn btn-verde-medio d-block mx-auto mt-4"> Aceptar </button>
                     </div>
                     <div class="col-md-7 text-center mx-auto mb-4">
                         <table id="productos__info" class="display" style="width:100%"></table>
                     </div>
                     <div class="col-md-7 text-center mx-auto mb-4">
-                        <h5>¿Cuales productos premiarás por visita?</h5>
+                        <h5>¿Cuáles productos premiarás por visita?</h5>
                         <div class="d-flex justify-content-center">
-                            <button class="btn-azul btn-primary" onclick="BuscarProductos()" data-bs-toggle="modal" data-bs-target="#BuscarProductoModal">Agregar</button>
+                            <button class="btn btn-azul-medio" onclick="BuscarProductos()" data-bs-toggle="modal" data-bs-target="#BuscarProductoModal">Agregar</button>
                         </div>
                     </div>
                     <div class="col-md-7 text-center mx-auto mb-4">
@@ -139,8 +139,8 @@
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-around">
-                <button type="button" class="btn btn-success" onclick="AgregarProductos()">Agregar</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Salir</button>
+                <button type="button" class="btn btn-verde-medio" onclick="AgregarProductos()">Agregar</button>
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Salir</button>
             </div>
         </div>
     </div>
@@ -316,8 +316,8 @@
                     "data": "idProducto",
                     render: function (data, type, row) 
                     {
-                        return '<button  class="btn btn-warning fa fa-pencil" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"> </button>'
-                            + '<button class="fa fa-check btn btn-success" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>'
+                        return '<button  class="btn btn-naranja-ch fa fa-pencil" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"> </button>'
+                            + '<button class="fa fa-check btn btn-verde-medio" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>'
                             + ' <label class="lblid" hidden> ' + row.idProducto + '</label>';
                     }
                 },

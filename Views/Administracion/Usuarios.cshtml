@@ -148,7 +148,7 @@
 					orderable: false,
 					render: function (data, type, row) {
 						if (!row.invitacion && row.usuario == false ) {
-							return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" style="width: 30px; height: 30px;	padding: 0;" class="btn btn-verde circle__button"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+							return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" class="btn btn-outline-success"><i class="fa fa-plus" aria-hidden="true"></i></button>'
 						}
 
 						return ''
@@ -288,7 +288,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" onclick="addUsuario()" class="btn btn-success">Aceptar</button>
+				<button type="button" onclick="addUsuario()" class="btn btn-verde-medio">Aceptar</button>
 				<button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
 			</div>
 		</div>
