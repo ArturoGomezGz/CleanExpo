@@ -44,7 +44,7 @@ namespace ExpoMR.Controllers
                 var Administracion = new AdminstracionViewModel
                 {
                     IdTipoUsuario = 1, //Cliente
-                    Ruta = 51,  //ABOGADO 1
+                    Ruta = 0,  //General
 					IdSucrsal = 1, //Gdl
 
                     Rutas = GetRutas(),
