@@ -36,12 +36,16 @@ namespace ExpoMR.Clases
         {
             if (imagen != null && imagen.Length > 0)
             {
-                var ms = new MemoryStream();
+                using(var memoryStream =new MemoryStream())                
+                {
+                    imagen.CopyTo(memoryStream);
 
-                Image image = Image.FromStream(imagen.OpenReadStream());
-                image.Save(ms, ImageFormat.Jpeg);
+                    byte[] bytes = memoryStream.ToArray();
 
-                return ms.ToArray();
+                    string base64 = Convert.ToBase64String(bytes);
+
+                    return bytes;
+                }
             }
 
             return Array.Empty<byte>();
