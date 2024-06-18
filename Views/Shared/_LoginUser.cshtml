@@ -143,9 +143,9 @@ else
             function (data) 
             {
                 //Se ejecutan las funciones de java script del index.js para inicilizar las opciones del cliente
-                GetMonedas(data);
+                GetMonedas();
                 GetRuleta(data);               
-                GetCarrito(data);
+                GetCarrito();
             }).error(function ()
             {
                 alerta(false, "No fue posible incializar su perfil de (carrito, ruleta y monedas)");
