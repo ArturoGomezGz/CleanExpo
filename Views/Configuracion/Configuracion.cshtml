@@ -77,14 +77,14 @@
                     <div class="col-md-7 text-center mx-auto mb-4">
                         <h5>¿Que día premiarás?</h5>
                         <div class="d-flex justify-content-center">
-                            @Html.DropDownListFor(model => model.Fecha, new SelectList(Model.Fechas, "Fecha", "Fecha"), new { id = "cmb_Fechas", @class = " text-left ", name = "cmb-Fechas", title="cmb"})
+                            @Html.DropDownListFor(model => model.Fecha, new SelectList(Model.Fechas, "Monedas", "Fecha"), new { id = "cmb_Fechas", @class = " text-left ", name = "cmb-Fechas", title="cmb"})
                         </div>
                     </div>
                     <div class="col-md-7 text-center mx-auto mb-4">
                         <h5>¿Cuántas visitas premiarás?</h5>
                         <div class="d-flex justify-content-center">
                             <input type="number" id="Numero_visitas" value="1" />
-                            <label id="lblCantidadMonedas" class="mx-2"> 100 Monedas por dia</label>
+                            <label id="lblCantidadMonedas" class="mx-2"> </label>
                         </div>
                         <button onclick="AgregarDia()" type="button" class="btn btn-verde-medio d-block mx-auto mt-4"> Aceptar </button>
                     </div>
@@ -154,12 +154,12 @@
         tableUsuarios()
 
         const miSelect = document.getElementById('ddlColores');
-
         miSelect.value = @Model.Color;
 
-        var monedas = document.getElementById('cmb_Fechas').value;
+        var monedas = cmb_Fechas.value.split(',')[1];  //Obtiene la cantidad de monedas por dia de expo
+        lblCantidadMonedas.innerText += monedas+ ' Monedas por dia';
 
-        if (monedas.split(',')[2] == "1")
+        if (cmb_Fechas.value.split(',')[2] == "1")  //Obtiene si es vip o no
         {
             lblCantidadMonedas.innerText += ' Presencial';
         }
@@ -252,10 +252,9 @@
     numero_visitas.addEventListener('change', function ()
     {
         var lblCantidadMonedas = document.getElementById('lblCantidadMonedas');
+        lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';  //Obtiene la cantidad de monedas por dia de expo
 
-        lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';
-
-        if (cmb_Fechas.value.split(',')[2] == "1")
+        if (cmb_Fechas.value.split(',')[2] == "1")  //Obtiene si es vip o no
         {
             lblCantidadMonedas.innerText += ' Presencial';
         }
@@ -264,10 +263,9 @@
     cmb_Fechas.addEventListener('change', function ()
     {
         var lblCantidadMonedas = document.getElementById('lblCantidadMonedas');
+        lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';  //Obtiene la cantidad de monedas por dia de expo
 
-        lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';
-
-        if (cmb_Fechas.value.split(',')[2] == "1")
+        if (cmb_Fechas.value.split(',')[2] == "1")  //Obtiene si es vip o no
         {
             lblCantidadMonedas.innerText += ' Presencial';
         }
@@ -508,8 +506,7 @@
     });
 
     function showControles(row, val) 
-    {
-    
+    {    
         var inputElement = row.find('.hdfnumvisitas');
         inputElement.prop('disabled', val);
 
