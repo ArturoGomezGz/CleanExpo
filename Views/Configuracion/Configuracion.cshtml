@@ -316,14 +316,30 @@
                     "data": "idProducto",
                     render: function (data, type, row) 
                     {
-                        return '<button  class="btn btn-naranja-ch fa fa-pencil" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"> </button>'
-                            + '<button class="fa fa-check btn btn-verde-medio" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>'
-                            + ' <label class="lblid" hidden> ' + row.idProducto + '</label>';
+                        return '<input class="hdfIdProducto" type="hidden" value="' + row.idProducto + '" style="display:none"/>'
+                            + '<a class="btn btn-naranja-ch editvisitas" ><i class="fa-regular fa-pencil"></i></a>'
+                            + '<a class="btn btn-outline-success aceptedvisitas" style="display:none"><i class="fa fa-check" aria-hidden="true"></i></a>'
+                            + '<a class="btn btn-outline-danger canceledvisitas" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                    }                    
+                },
+                { 
+                    "data": "fecha",
+                    title: " Dia a premiar ",
+                    render: function (data, type, row) 
+                    {
+                        return '<input class="hdffecha" type="text" value="' + data + '"style="display:none"/>'
+                            + ' <label class="lblid"> ' + data + '</label>';
                     }
                 },
-                { "data": "fecha", title: " Dia a premiar " },
                 { "data": "nombre", title: " Producto " },
-                { "data": "visitas", title: " No. Visitas a Premiar " },
+                { 
+                    "data": "visitas",
+                    title: " No. Visitas a Premiar " ,
+                    render: function (data, type, row) 
+                    {
+                        return '<input class="hdfnumvisitas" type="text" value="' + data + '" disabled style="width:70px; heigth:70px"/>';
+                    }
+                },
                 { "data": "maximo", title: " Costo en monedas " }
             ]
         });
@@ -433,43 +449,81 @@
         }        
     }
 
-    function editarFila(fila, data)
+    $(document).on('click', '.editvisitas', function (event) 
     {
-        fila.find('.btn-warning').hide();
-        fila.find('.btn-success').show();
-        fila.find('td:nth-child(4)').attr('contenteditable', true).css('background-color', 'gray').addClass('editando');
-    }
+        var row = $(this).closest("tr");
+        showControles(row, false);
 
-    function confirmarEdicion(fila, idProducto)
+        $("td", row).each(function ()
+        {
+            if ($(this).find(".hdfIdProducto").length > 0) 
+            {
+                $(this).find(".hdfIdProducto").show();
+            }
+        });   
+    });
+
+    $(document).on('click', '.aceptedvisitas', function (event)
     {
-        fila.find('.btn-success').hide();
-        fila.find('.btn-warning').show();
+        var row = $(this).closest("tr");
+        var visitas, fecha, idproducto;
 
-        var ProductosMax = $('#ProductosMax').DataTable();
-
-        var datos = ProductosMax.row(fila).data();
-        datos["porSurtir"] = fila.find('.editando').text();
-
+        $("td", row).each(function (){
+            if ($(this).find(".hdfIdProducto").length > 0)
+            {
+                visitas = row.find('.hdfnumvisitas').val();
+                fecha = row.find('.hdffecha').val();
+                idproducto = row.find('.hdfIdProducto').val();
+            }
+        });
         $.ajax({
             url: path + "Configuracion/AgregarProductosMaximo",
             type: 'POST',
-            dataSrc: "",
-            data: 
+            data:
             {
-                visitas: fila.find('.editando').text(),
-                fecha: fila.find('td:nth-child(2)').text(),
-                idProducto: fila.find('.lblid').text()
+                visitas: visitas,
+                fecha: fecha,
+                idProducto: idproducto
             },
             success: function (response) 
-            {
-                fila.find('.editando').attr('contenteditable', false).css('background-color', 'white').removeClass('editando');
-                ProductosMax();                
+            {              
+                $('#ProductosMax').dataTable().fnDestroy();
+                ProductosMax();
+                showControles(row, true);
             },
             error: function () 
             {
-                alert('Error al subir la imagen');
+                alert('No fue posible cargar sus datos');
             }
         });
-    }
 
+    });
+
+    $(document).on('click', '.canceledvisitas', function (event) 
+    {
+        var row = $(this).closest("tr");
+        showControles(row, true);
+        $('#ProductosMax').dataTable().fnDestroy();
+        ProductosMax();
+    });
+
+    function showControles(row, val) 
+    {
+    
+        var inputElement = row.find('.hdfnumvisitas');
+        inputElement.prop('disabled', val);
+
+        if (val == true) 
+        {
+            row.find(".editvisitas").show();
+            row.find(".aceptedvisitas").hide();
+            row.find(".canceledvisitas").hide();
+        }
+        else 
+        {
+            row.find(".editvisitas").hide();
+            row.find(".aceptedvisitas").show();
+            row.find(".canceledvisitas").show();
+        }
+    }
 </script>
