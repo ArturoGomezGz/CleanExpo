@@ -46,6 +46,10 @@
                         <label for="recipient-name" class="col-form-label txt-bold">Cantidad total disponible:</label>
                         <input type="number" class="form-control" id="txtCantidadArticulo">
                     </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label txt-bold">Selecciona una imagen para el articulo en formato JPG o PNG:</label>
+                        <input type="file" class="form-control" id="inputImg" required><br />
+                    </div>                   
                 </form>
             </div>
             <div class="modal-footer text-center">
@@ -102,28 +106,29 @@
 
     function AddArticulo()
     {
-        let Nombre = $('#txtNombre').val();
-        let Descripcion = $('#txtDescripcion').val();
-        let Cantidad = $('#txtCantidadArticulo').val();
+        var formData = new FormData();
 
-            $.ajax({
-                url: path+ "Proveedores/AddArticulo",
-                type: 'POST',
-                data: 
-                {                    
-                    nombre: Nombre,
-                    descripcion: Descripcion,
-                    cantidadarticulo: Cantidad
-                },
-                success: function (response) 
-                {
-                    window.location.reload();
-                },
-                error: function ()
-                {
-                    alert('Error al subir la imagen');
-                }
-            });    
+        formData.append('nombre', $('#txtNombre').val());
+        formData.append('descripcion', $('#txtDescripcion').val());
+        formData.append('cantidadarticulo', $('#txtCantidadArticulo').val());
+        formData.append('foto', document.getElementById("inputImg").files[0]);
+        formData.append('orden', 1);
+
+        $.ajax({
+            url: path+ "Proveedores/AddArticulo",
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) 
+            {
+                window.location.reload();
+            },
+            error: function ()
+            {
+                alert('Error al subir la imagen');
+            }
+        });    
     }
 
 </script>

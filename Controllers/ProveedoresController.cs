@@ -33,16 +33,25 @@ namespace ExpoMR.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult AddArticulo(string Nombre, string Descripcion, int CantidadArticulo)
+        public IActionResult AddArticulo(string Nombre, string Descripcion, int CantidadArticulo, IFormFile Foto, int Orden)
         {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("@Nombre", Nombre);
-            parameters[1] = new SqlParameter("@Descripcion", Descripcion);
-            parameters[2] = new SqlParameter("@Cantidad", CantidadArticulo);
-            parameters[3] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[6];
+                parameters[0] = new SqlParameter("@Nombre", Nombre);
+                parameters[1] = new SqlParameter("@Descripcion", Descripcion);
+                parameters[2] = new SqlParameter("@Cantidad", CantidadArticulo);
+                parameters[3] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+                parameters[4] = new SqlParameter("@Orden", Orden);
+                parameters[5] = new SqlParameter("@Foto", WebSite.ConvertToByteArray(Foto));
 
-            dB.ExecuteNonQuery("AddArticuloProv", ref parameters);
+                dB.ExecuteNonQuery("AddArticuloProv", ref parameters);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             return Json(new { success = true });
         }
@@ -55,22 +64,11 @@ namespace ExpoMR.Controllers
                 // Verifica si se recibió un archivo
                 if (file != null && file.Length > 0)
                 {
-                    byte[] imagenBytes;
-                    using (var ms = new MemoryStream())
-                    {
-                        // Guardar la imagen en formato JPEG en el MemoryStream
-                        Image imagen = Image.FromStream(file.OpenReadStream());
-                        imagen.Save(ms, ImageFormat.Jpeg);
-
-                        // Obtener el arreglo de bytes de la imagen
-                        imagenBytes = ms.ToArray();
-                    }
-
                     DB dB = new();
                     SqlParameter[] parameters = new SqlParameter[3];
                     parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
                     parameters[1] = new SqlParameter("@Orden", orden);
-                    parameters[2] = new SqlParameter("@Foto", imagenBytes);
+                    parameters[2] = new SqlParameter("@Foto", WebSite.ConvertToByteArray(file));
 
                     dB.ExecuteNonQuery("AddFotoArticuloProv", ref parameters);
                 }
