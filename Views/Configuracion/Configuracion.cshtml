@@ -186,6 +186,8 @@
     function tableUsuarios()
     {
         $('#productos__info').DataTable({
+            bFilter: false,
+            lengthChange: false,
             responsive: true,
             pageLength: 7,
             "info": false,
@@ -298,6 +300,8 @@
     function ProductosMax() 
     {
         $('#ProductosMax').DataTable({
+            bFilter: false,
+            lengthChange: false,
             responsive: true,
             "info": false,
             pageLength: 7,
@@ -322,7 +326,7 @@
                 },
                 { 
                     "data": "fecha",
-                    title: " Dia a premiar ",
+                    title: " Día a premiar ",
                     render: function (data, type, row) 
                     {
                         return '<input class="hdffecha" type="text" value="' + data + '"style="display:none"/>'

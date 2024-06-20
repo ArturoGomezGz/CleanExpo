@@ -429,6 +429,7 @@ p, ol, h6{
     height: 25px;
     font-size: 1em;
     padding: 0px;
+    margin-left:10px;
 }
 
 .btn-outline-danger:hover {
@@ -441,11 +442,28 @@ p, ol, h6{
     height: 25px;
     font-size: 1em;
     padding: 0px;
+    margin-left: 10px;
 }
 
 .btn-outline-success:hover {
     background-image: linear-gradient(to right,#158754 0%, #45B649 51%, #158754 100%);
     background-size: 200% auto;
+}
+
+.btn-activa {
+    background-image: linear-gradient(to right,#DCE35B 0%, #45B649 51%, #DCE35B 100%);
+    text-align: center;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: var(--blanco);
+    padding: 0.275rem 0.65rem;
+    font-size: 0.8em;
+    border: none;
+}
+
+.btn-secondary {
+    background-image: linear-gradient(to right, #ECE9E6 0%, #d7d2cc 51%, #ECE9E6 100%);
+    border:none;
 }
 
 .img-ruleta {
@@ -1182,3 +1200,27 @@ div.dataTables_wrapper div.dataTables_length { /*Dropdown Mostrar # registros */
 div.fontsize {
     font-size: 14px;
 }
+
+.capturarPiezas {
+    width: 55%;
+    margin: auto;
+    padding: auto;
+}
+
+@media only screen and (max-width: 770px) {
+    .capturarPiezas {
+        width: 100%;
+        margin: auto;
+        padding: auto;
+    }
+}
+
+
+@media only screen and (min-width: 771px) and (max-width: 1190px) {
+    .capturarPiezas {
+        width: 80%;
+        margin: auto;
+        padding: auto;
+    }
+}
+

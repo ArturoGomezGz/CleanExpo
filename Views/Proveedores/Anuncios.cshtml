@@ -22,19 +22,22 @@
                 <div class="d-flex justify-content-center">
                     <label hidden id="lblidAnuncio"></label>
                 </div>
-                <div class="d-flex justify-content-center txt-bold">
+                <div class="d-flex justify-content-center">
                     ¿Qué descripción quieres que aparezca en tu anuncio?
                 </div>
                 <div class="d-flex justify-content-center">
                     <textarea id="txaDescripcion" required rows="5" cols="50"></textarea>
                 </div>
                 <br />
-                <div class="d-flex justify-content-center txt-bold">
-                    <strong>Establece la fecha de publicación del anuncio</strong>
-                </div>
-                <br />
+                @*<div class="d-flex justify-content-center txt-bold">
+                    <label>Establece la fecha de publicación del anuncio</label>
+                </div>*@
+                
                 <div class="d-flex justify-content-center">
-                    <strong>Inicio</strong>
+                    <h5>Inicio</h5>
+                    </div>
+                <div class="d-flex justify-content-center mb-1">
+                    <label>Establece la fecha de publicación del anuncio</label>
                 </div>
                 <div class="d-flex justify-content-center">
                     <label>Fecha: </label>
@@ -45,7 +48,10 @@
                 </div>
                 <br />
                 <div class="d-flex justify-content-center">
-                    <strong>Fin</strong>
+                    <h5>Fin</h5>
+                </div>
+                <div class="d-flex justify-content-center mb-1">
+                    <label>Establece la fecha de término del anuncio</label>
                 </div>
                 <div class="d-flex justify-content-center">
                     <label>Fecha: </label>
@@ -107,7 +113,7 @@
                     {
                         return '<button id ="bt-AgregarProductos" onclick="editarAnuncio(' + row.idAnuncio + ')" class="btn btn-naranja-ch fa fa-pencil" data-bs-toggle="modal" data-bs-target="#exampleModal"> </button>';
                     },
-                    title: "Editar"
+                    title: ""
                 },
                 { "data": "idAnuncio", title: "N° Anuncio" },
                 { "data": "anuncio", title: "Anuncio" },
@@ -119,7 +125,7 @@
                     {
                         return '<button id="bt-eliminarAnuncio" class="btn btn-outline-danger  fa fa-xmark" onclick="abrirBorrarModal(' + row.idAnuncio + ')" data-bs-toggle="modal" data-bs-target="#eliminarModal"></button>';
                     }, 
-                    title: "Eliminar"
+                    title: ""
                 }
             ]
         });

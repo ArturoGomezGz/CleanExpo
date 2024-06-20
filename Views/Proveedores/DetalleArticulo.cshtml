@@ -9,11 +9,11 @@
 <div class="col-lg-12" id="div_detalle_articulo">
     <div class="row">
         <div class="col-lg-5 col-sm-12 ">
-            <strong>Nombre del Articulo: </strong><br />
+            <strong>Nombre del Artículo: </strong><br />
             <input type="text" class="form-control" id="txtnombreArticulo" disabled>
-            <strong>Descripsion: </strong><br />
+            <strong>Descripción: </strong><br />
             <textarea class="form-control" id="txtdescripcionArticulo" rows="5"></textarea><br />
-            <strong>Cantidad todal disponible:</strong><br />
+            <strong>Cantidad total disponible:</strong><br />
             <input type="text" class="form-control" id="txtcantidadArticulo" disabled><br />
             <div id="hiddenBTN" class="col-sm-12 text-center">
                 <button type="button" class="btn btn-outline-success" id="btnSave" onclick="AceptEditArticulo()" title="btn-save">
@@ -35,8 +35,8 @@
             <strong>Fotos del Artículo: </strong><br />
             <div class="row" id="div_fotos_articulo">
             </div>
-            <div class="border">
-                <button type="button" class="btn btn-azul" id="btnAgregarFotos" onclick="AgregarFoto()" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Fotos</button>
+            <div>
+                <button type="button" class="btn btn-azul-medio margin_auto mt-3" id="btnAgregarFotos" onclick="AgregarFoto()" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Fotos</button>
             </div>
         </div>
     </div>
@@ -63,8 +63,8 @@
     </div>
 </div>
 <br />
-<div class="col-md-12 text-center" id="div_btnRegresar">
-    <a class="btn btn-azul" asp-controller="Proveedores" asp-action="Articulos"><i class="fa fa-arrow-left" aria-hidden="true"></i> Mis Artículos</a>
+<div class="col-md-12" id="div_btnRegresar">
+    <a class="btn btn-azul  margin_auto" style="max-width:250px" asp-controller="Proveedores" asp-action="Articulos"><i class="fa fa-arrow-left" aria-hidden="true"></i> Mis Artículos</a>
 </div>
 
 <script>
@@ -101,7 +101,7 @@
                 $.each(resultado, function (index, value) 
                 {                   
                     console.log(value);
-                    cadena += '<div class="col-md-6" id="' + value.iDdArticulos + '"><div class="card card-inverse card-info">'
+                    cadena += '<div class="col-md-6" id="' + value.iDdArticulos + '"><div class="card card-inverse card-info pb-3 mt-2">'
                         + '<strong>Foto:</strong><div class=text-center><select style="display:none; width: 50px; height: 25px;" id="orden_' + value.iDdArticulos + '"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><label id="numFoto_' + value.iDdArticulos + '" class="">' + value.numFoto + '</label>'
                         + '<img class="card-img-top" style="width: 150px; height: 150px; margin: auto;" src="data:image/jpg;base64,' + value.foto + '" alt="image" /><br />'
                         + '<div id="divbtnGuardarNumFoto_' + value.iDdArticulos + '" class="col-md-12 text-center" style="display:none"><button type="button" class="btn btn-outline-success" id="btnSave" onclick="AceptEditOrdenFoto(' + value.iDdArticulos + ')" title="btn-save">'

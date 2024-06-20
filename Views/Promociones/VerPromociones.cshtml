@@ -25,12 +25,12 @@
 <div class="row mt-4">
     <hr />
 </div>
-<h4 class="text-center">Estas son las promociones que haz capturado</h4>
+<h4 class="text-center">Estas son los artículos disponibles para regalar</h4>
 <div class="col-md-6 m-auto">
     <table id="tblArticulosRestantes" class="display" style="width:100%">
         <thead>
             <tr>
-                <th> Articulo </th>
+                <th> Artículo </th>
                 <th> Cantidad </th>
             </tr>
         </thead>
@@ -168,7 +168,7 @@
         
         if (activa == 1)
         {
-            botonActivar.classList.add('btn-success');
+            botonActivar.classList.add('btn-activa');
             botonActivar.innerHTML = 'Activa';
         }
         else
@@ -189,7 +189,7 @@
         botonEditar.classList.add('btn');
         botonEditar.classList.add('fa');
         botonEditar.classList.add('fa-pencil');
-        botonEditar.classList.add('btn-warning');
+        botonEditar.classList.add('btn-naranja-ch');
         promoBotones.appendChild(botonEditar);
 
         const botonEliminar = document.createElement("button");
@@ -202,7 +202,7 @@
         botonEliminar.classList.add('btn');
         botonEliminar.classList.add('fa');
         botonEliminar.classList.add('fa-xmark');
-        botonEliminar.classList.add('btn-danger');
+        botonEliminar.classList.add('btn-outline-danger');
         promoBotones.appendChild(botonEliminar);
 
         promocionDiv.appendChild(promoBotones);
@@ -267,6 +267,8 @@
         tblArticulosRestantes.destroy();
         tblArticulosRestantes = $('#tblArticulosRestantes').DataTable({
             responsive: true,
+            bFilter: false,
+            lengthChange: false,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax":

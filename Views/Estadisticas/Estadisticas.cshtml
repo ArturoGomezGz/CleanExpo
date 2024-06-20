@@ -441,6 +441,8 @@
 
         $('#Ultimas__visitas').DataTable({
             responsive: true,
+            bFilter: false,
+            lengthChange: false,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
@@ -466,6 +468,8 @@
     
         $('#productos__visitados').DataTable({
             responsive: true,
+            bFilter: false,
+            lengthChange: false,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
@@ -520,6 +524,8 @@
         $.post("/Estadisticas/GetMonedasAsignadas",
             function (data) {
                 $('#monedas__asignadas').DataTable({
+                    bFilter: false,
+                    lengthChange: false,
                     data: data.monedasAsignadas,
                     columns:
                         [
