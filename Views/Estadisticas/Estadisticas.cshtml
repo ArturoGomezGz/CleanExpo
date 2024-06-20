@@ -68,6 +68,22 @@
             </div>
             <div class="tab-pane" id="monedas">
                 <div class="row">
+                    <div class="col-sm-12 col-md-6 col-xl-4">
+                        <strong>Monedas Adquiridas: </strong>
+                        <label id="MonedasAdquiridas"></label> <br />
+                        <strong>Monedas Repartidas: </strong>
+                        <label id="MonedasRepartidas"></label> <br />
+                        <strong>Saldo: </strong>
+                        <label id="Saldo"></label> <br />
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-xl-4">
+                        <strong>Visitas Stand: </strong>
+                        <label id="visitaStand"></label> <br />
+                        <strong>Visitas Productos: </strong>
+                        <label id="VisitasProductos"></label> <br />
+                    </div>
+                </div>
+                <div class="row">
                     <div style="width: 900px; height: 500px;">
                         <canvas id="canvasMonedas" width="300" height="200"></canvas>
                     </div>
@@ -228,7 +244,6 @@
         ]
     };
 
-    
     var cdMonedas = {
         labels: [],
         datasets: [
@@ -266,6 +281,80 @@
         }
     }
 
+    var chartOptionsVentas = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "bottom"
+            },
+            title: {
+                display: true,
+            },
+            subtitle: {
+                display: true,
+                text: '',
+                padding: {
+                    top: 10,
+                    bottom: 30
+                },
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                }
+            }
+        },
+        scales: {
+            y: {
+                ticks: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    stepSize: 20
+                    //callback: function (value, index, values) {
+                    //    return value + '%';
+                    //}
+                }
+            }
+        }
+    }
+
+    var chartOptionsMonto = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "bottom"
+            },
+            title: {
+                display: true,
+            },
+            subtitle: {
+                display: true,
+                text: '',
+                padding: {
+                    top: 10,
+                    bottom: 30
+                },
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                }
+
+            }
+        },
+        scales: {
+            y: {
+                ticks: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    stepSize: 20
+                    //callback: function (value, index, values) {
+                    //    return value + '%';
+                    //}
+                }
+            }
+        }
+    }
 
     window.onload = function () {
         //Grafica Visitas
@@ -318,21 +407,27 @@
                 cdVentaPiezas.datasets[0].data = resultado.map(item => item.piezasConfirmado);
                 cdVentaPiezas.datasets[1].data = resultado.map(item => item.piezasCarrito);
 
+                PiezasEnCarrito = "Total de Piezas en carrito: " + resultado.reduce((acumulador, objetoActual) => acumulador + objetoActual.piezasCarrito, 0);
+                PiezasEnCarrito = PiezasEnCarrito + " "+ "Confirmadas: " + resultado.reduce((acumulador, objetoActual) => acumulador + objetoActual.piezasConfirmado, 0);
+                chartOptionsVentas.plugins.subtitle.text = PiezasEnCarrito;
+
                 var ctx2 = document.getElementById("canvasVentaPiezas").getContext("2d");
                 window.myBar = new Chart(ctx2, {
                     type: "bar",
                     data: cdVentaPiezas,
-                    options: chartOptions
+                    options: chartOptionsVentas
                 });
 
                 cdVentaMonto.labels = resultado.map(item => item.fecha);
                 cdVentaMonto.datasets[0].data = resultado.map(item => item.ventaProv);
 
+                chartOptionsMonto.plugins.subtitle.text = "Monto Total: " + resultado.reduce((acumulador, objetoActual) => acumulador + objetoActual.ventaProv, 0);
+
                 var ctx3 = document.getElementById("canvasVentaMonto").getContext("2d");
                 window.myBar = new Chart(ctx3, {
                     type: "bar",
                     data: cdVentaMonto,
-                    options: chartOptions
+                    options: chartOptionsMonto
                 });
 
             },
@@ -422,22 +517,25 @@
             ]
         });
 
-        $('#monedas__asignadas').DataTable({
-            responsive: true,
-            "info": false,
-            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
-            "ajax": {
-                url: path + "Estadisticas/GetMonedasAsignadas",
-                type: 'POST',
-                dataSrc: ""
-            },
-            "columns": [                               
-                { "data": "cliente", title: " Cliente " },
-                { "data": "monedas", title: " Monedas " },
-                { "data": "fecha", title: " Fecha " },
-                { "data": "motivo", title: " Motivo " }
-            ]
-        });        
+        $.post("/Estadisticas/GetMonedasAsignadas",
+            function (data) {
+                $('#monedas__asignadas').DataTable({
+                    data: data.monedasAsignadas,
+                    columns:
+                        [
+                            { "data": "cliente", title: " Cliente " },
+                            { "data": "monedas", title: " Monedas " },
+                            { "data": "fecha", title: " Fecha " },
+                            { "data": "motivo", title: " Motivo " }
+                        ]
+                });
+                $("#MonedasAdquiridas").html(data.monedasAdquiridas);
+                $("#MonedasRepartidas").html(data.monedasRepartidas);
+                $("#Saldo").html(data.saldo);
+                $("#visitaStand").html(data.monedasVisitaStand);
+                $("#VisitasProductos").html(data.monedasVisitaProd);
+
+            }).error(function () {});
        
         GridDetalleProducto(0)
     });

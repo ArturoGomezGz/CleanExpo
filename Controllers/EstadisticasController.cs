@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.X500;
 using System.Data;
 
@@ -268,6 +269,8 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetMonedasAsignadas() 
         {
+            List<MonedasAsignadas> monedas = new();
+
             int idProveedor = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
 
             DB dB = new();
@@ -306,23 +309,31 @@ namespace ExpoMR.Controllers
             };
 
             dr = dB.ExecuteReader("EstadisticaMonedas", ref parameters);
-          
-            var jsonData = new
+
+            while (dr.Read())
             {
-                rows = (
-                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
-                       select new
-                       {
-                           cliente = row["Cliente"],
-                           monedas = row["Monedas"],
-                           fecha = row["Fecha"],
-                           motivo = row["Motivo"]
-                       }).ToArray()
-            };
+                MonedasAsignadas moneda = new MonedasAsignadas();
 
-			dB.Close();
+                moneda.cliente = (string)dr["Cliente"];
+                moneda.monedas = (int)dr["Monedas"];
+                moneda.fecha = (DateTime)dr["Fecha"];
+                moneda.motivo = (string)dr["Motivo"];
 
-			return Json(jsonData.rows);
+                monedas.Add(moneda);
+            }
+
+            dB.Close();
+            SaldoMonedas saldoMonedas = new SaldoMonedas();
+
+            saldoMonedas.MonedasAsignadas = monedas;
+            saldoMonedas.monedasAdquiridas = (int)parameters[1].Value;
+            saldoMonedas.monedasRepartidas = (int)parameters[2].Value;
+            saldoMonedas.saldo = (int)parameters[3].Value;
+            saldoMonedas.monedasVisitaStand = (int)parameters[4].Value;
+            saldoMonedas.monedasVisitaProd = (int)parameters[5].Value;
+
+
+            return Json(saldoMonedas);
         }
 
         [HttpPost]
