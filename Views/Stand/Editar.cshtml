@@ -431,7 +431,7 @@
         OpenModal("ModalProducto")
         $.ajax({
             type: "POST",
-            url: path + "Stand/DetalleProducto?IdProducto=" + IdProducto,
+            url: path + "Stand/DetalleProducto?IdProducto=" + IdProducto + "&Idproveedor="+@Model.Proveedor,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (resultado)

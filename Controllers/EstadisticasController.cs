@@ -160,7 +160,7 @@ namespace ExpoMR.Controllers
                        {
                            IdPersona = row["IdPersona"],
                            Cliente = row["Cliente"],
-                           Fecha = row["Fecha"]
+                           Hora = row["Hora"]
                        }).ToArray()
             };
 
@@ -341,7 +341,7 @@ namespace ExpoMR.Controllers
                        from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           imgProducto = GeneralesController.GetFoto(Convert.ToInt32(row["imgProducto"])),
+                           imgProducto = GeneralesController.GetFoto(IdProducto),
                            producto = row["producto"],
                            codigo = row["codigo"],
                            formula = row["formula"],

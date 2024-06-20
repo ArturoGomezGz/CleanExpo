@@ -583,8 +583,10 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult DetalleProducto(int IdProducto)
+        public JsonResult DetalleProducto(int IdProducto, int Idproveedor)
         {
+            Log.SaveVisita(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")), Idproveedor, IdProducto);
+
             CotizaProducto ProdCotizado = new CotizaProducto();
 
             DB dB = new();
