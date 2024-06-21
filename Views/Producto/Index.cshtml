@@ -77,24 +77,26 @@
                    </div>
                    <div class="col-md-3">
                         <div class="contenedor__Producto">
-                            <div class="mb-4 ">
-                                <bold>Precio Final: </bold> <label class="contenedor__Producto__PrecioFinal"> @Model.PrecioFinal</label>
-                                @Html.HiddenFor(m => m.PrecioFinal)
-                            </div>
-                            <div class="mb-4 d-grid">
-                                <bold>Cantidad:</bold> <input id="txtCantidad" onkeyup="actualizaTotal(this)"  type="number" min="0" value="0" placeholder="0" />
+                            <div class="row">
+                                <div class="mb-4 col-6" style="background-color:pink">
+                                    <strong>Precio Final: </strong> <label class="contenedor__Producto__PrecioFinal"> @Model.PrecioFinal</label>
+                                    @Html.HiddenFor(m => m.PrecioFinal)
+                                </div>
+                                <div class="mb-4 d-grid col-6" style="background-color:hotpink">
+                                    <strong>Cantidad:</strong> <input id="txtCantidad" onkeyup="actualizaTotal(this)"  type="number" min="0" value="0" placeholder="0" />
+                                </div>
                             </div>
                             <div class="mb-4">
-                                <bold>Subtotal: </bold><label class="contenedor__Producto__subtotal"></label>
+                                <strong>Subtotal: </strong><label class="contenedor__Producto__subtotal"></label>
                             </div>
                             <div class="mb-4">
-                                <bold>Iva: </bold><label class="contenedor__Producto__iva"></label>
+                                <strong>Iva: </strong><label class="contenedor__Producto__iva"></label>
                             </div>
                             <hr class="new1" />
                             <div class="mb-4">
-                                <bold>Total: </bold><label class="contenedor__Producto__Total"></label>
+                                <strong>Total: </strong><label class="contenedor__Producto__Total"></label>
                             </div>
-                            <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-warning mb-3">Añadir a Carrito</button>
+                            <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
                         </div>
                    </div>
                 </div>

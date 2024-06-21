@@ -1,31 +1,33 @@
 ﻿<h4 class="text-center">Estas son las promociones que haz capturado</h4>
 
 <div class="d-flex justify-content-around mt-4">
-    <div class="col-md-2 mt-4">
-        <h4 class="text-center"> Por Visita de Cliente </h4>
-        <div class="row text-center" id="PromoVisita">
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-3 px-5">
+            <h4 class="text-center"> Por Visita de Cliente </h4>
+            <div class="row text-center" id="PromoVisita">
+            </div>
         </div>
-    </div>
-    <div class="col-md-2 mt-4">
-        <h4 class="text-center"> Acumulable </h4>
-        <div class="row text-center" id="PromoAcumulable">
+        <div class="col-sm-12 col-md-6 col-lg-3 px-5">
+            <h4 class="text-center"> Acumulable </h4>
+            <div class="row text-center" id="PromoAcumulable">
+            </div>
         </div>
-    </div>
-    <div class="col-md-2 mt-4">
-        <h4 class="text-center"> No Acumulable </h4>
-        <div class="row text-center" id="PromoNoAcumulable">
+        <div class="col-sm-12 col-md-6 col-lg-3 px-5">
+            <h4 class="text-center"> No Acumulable </h4>
+            <div class="row text-center" id="PromoNoAcumulable">
+            </div>
         </div>
-    </div>
-    <div class="col-md-2 mt-4">
-        <h4 class="text-center"> Escalonada </h4>
-        <div class="row text-center" id="PromoEscalonada">
+        <div class="col-sm-12 col-md-6 col-lg-3 px-5">
+            <h4 class="text-center"> Escalonada </h4>
+            <div class="row text-center" id="PromoEscalonada">
+            </div>
         </div>
     </div>
 </div>
 <div class="row mt-4">
     <hr />
 </div>
-<h4 class="text-center">Estas son los artículos disponibles para regalar</h4>
+<h4 class="text-center">Estos son los artículos disponibles para regalar</h4>
 <div class="col-md-6 m-auto">
     <table id="tblArticulosRestantes" class="display" style="width:100%">
         <thead>
@@ -226,13 +228,13 @@
                 const boton = document.getElementById('btnActivar' +idPromocion);
                 if (boton.innerHTML == 'Inactiva')
                 {
-                    boton.classList.add('btn-success');
+                    boton.classList.add('btn-activa');
                     boton.classList.remove('btn-secondary');
                     boton.innerHTML = 'Activa';
                 }
                 else
                 {
-                    boton.classList.remove('btn-success');
+                    boton.classList.remove('btn-activa');
                     boton.classList.add('btn-secondary');
                     boton.innerHTML = 'Inactiva';
                 }

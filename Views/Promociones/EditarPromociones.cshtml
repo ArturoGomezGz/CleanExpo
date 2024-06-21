@@ -99,7 +99,7 @@
     <button id="btnSiguiente" class="btn btn-azul-medio" onclick="AgregaConfig(0)" hidden>Siguiente <i class="fa fa-chevron-right"></i></button>
     <button id="btnAceptar" onclick="ActualizaPromo()" class="btn btn-azul-medio" hidden>Aceptar</button>
     <button class="btn btn-rojo" onclick="Salir()">Salir</button>
-    <button class="btn btn-activa" id="btnActivarPromocion" style="width: 60px;height: 40px;" onclick="CambiarStatus()" hidden>
+    <button class="btn btn-activa mt-4" id="btnActivarPromocion" style="width:60px;height:30px;" onclick="CambiarStatus()" hidden>
         Activa
     </button>
 </div>
@@ -155,7 +155,7 @@
                     <thead>
                         <tr>
                             <th> </th>
-                            <th>Codigo</th>
+                            <th>Código</th>
                             <th>Producto</th>
                         </tr>
                     </thead>
@@ -548,12 +548,12 @@
             success: function (response) {
                 const boton = document.getElementById('btnActivarPromocion');
                 if (boton.innerHTML == 'Inactiva') {
-                    boton.classList.add('btn-success');
+                    boton.classList.add('btn-activa');
                     boton.classList.remove('btn-secondary');
                     boton.innerHTML = 'Activa';
                 }
                 else {
-                    boton.classList.remove('btn-success');
+                    boton.classList.remove('btn-activa');
                     boton.classList.add('btn-secondary');
                     boton.innerHTML = 'Inactiva';
                 }
@@ -654,6 +654,7 @@
         tblArticulosPromo = $('#tblArticulosPromo').DataTable({
             responsive: true,
             bFilter: false,
+            paginate: false,
             lengthChange: false,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},

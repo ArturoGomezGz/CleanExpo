@@ -74,7 +74,7 @@
     <!--/ Header-->
 
     <!--Cuerpo de la pagina-->
-    <div id="main" class="container">
+    <div id="main" @*class="container"*@ style="margin:0px; padding:20px;">
         @RenderBody()
     </div>
     <!--/ Cuerpo de la pagina-->
@@ -119,7 +119,7 @@
                         <a asp-area="" asp-controller="Proveedores" asp-action="Privacidad">Privacidad</a>
                     </div>
                     <div class="col-12 col-lg">
-                        <a asp-area="" asp-controller="Proveedores" asp-action="Preguntas">Preguntas</a>
+                        <a asp-area="" asp-controller="Proveedores" asp-action="Preguntas">Preguntas Frecuentes</a>
                     </div>
                 </div>
             </div>

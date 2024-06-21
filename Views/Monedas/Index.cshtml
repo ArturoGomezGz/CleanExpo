@@ -2,9 +2,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h5 id="Saldo_monedas" class="mb-4"></h5>
 
-<div class="row mt-4">
+
+<div class=" mt-4 container">
+    <h5 id="Saldo_monedas" class="mb-4"></h5>
     <table id="Monedas" class="display" style="width:100%"></table>
 </div>
 
@@ -12,6 +13,8 @@
     $(document).ready(function ()
     {
         $('#Monedas').DataTable({
+            bFilter: false,
+            lengthChange: false,
             responsive: true,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
@@ -28,9 +31,9 @@
                         return data;
                     }
                 },
-                { "data": "concepto", title: "concepto" },
-                { "data": "importe", title: "importe" },
-                { "data": "saldo", title: "saldo" }
+                { "data": "concepto", title: "Concepto" },
+                { "data": "importe", title: "Importe" },
+                { "data": "saldo", title: "Saldo" }
             ]
         });
 

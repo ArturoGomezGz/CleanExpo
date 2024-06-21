@@ -52,10 +52,7 @@
 .contenedor__Producto {
     width: auto;
     max-width: 300px;
-    color: whitesmoke;
-    background-color: #73757a;
-    border:solid;
-    border-color:#2b2b2b;
+    background-color: #E4E7EA;
     max-height: 50vh;
     margin: 5%;
     margin-left: auto;
@@ -64,12 +61,14 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    padding-top: 15px;
+    border-radius: 10px;
 }
 
-.contenedor_btn {
+/*.contenedor_btn {
     width: 85%;
     border-radius: 25px;
-}
+}*/
 
 .contenedor p {
     text-align: center;
