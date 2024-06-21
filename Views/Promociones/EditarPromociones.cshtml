@@ -74,8 +74,8 @@
     <div id="ConfiguraPiezas" class="card border-primary p-2 mb-3 capturarPiezas" hidden>
         <strong>Captura la cantidad de piezas que vas a regalar.</strong>
         <div class="d-flex m-2">
-            <p>llévate</p>
-            <input id="txtCantidadArticulos" type="number" class="mx-2" />
+            <p>llévate </p>
+            <input id="txtCantidadArticulos" type="number" class="mb-2 mx-2" style="width: 70px;height: 30px;" />
             <p> artículos o productos</p>
             <button class="btn btn-azul-medio mx-2" onclick="ValidaCantidadArticulos()">Agregar</button>
         </div>
@@ -99,7 +99,13 @@
     <button id="btnSiguiente" class="btn btn-azul-medio" onclick="AgregaConfig(0)" hidden>Siguiente <i class="fa fa-chevron-right"></i></button>
     <button id="btnAceptar" onclick="ActualizaPromo()" class="btn btn-azul-medio" hidden>Aceptar</button>
     <button class="btn btn-rojo" onclick="Salir()">Salir</button>
+    <button class="btn btn-activa" id="btnActivarPromocion" style="width: 60px;height: 40px;" onclick="CambiarStatus()" hidden>
+        Activa
+    </button>
 </div>
+@*<div id="ActivaPromocion" class="d-flex justify-content-around my-4" hidden">
+    <button class="btn btn-activa" id="btnActivarPromocion" onclick="CambiarStatus()" hidden>Activa</button>
+</div>*@
 <div class="modal fade" id="infoModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -294,7 +300,7 @@
             btnSiguiente.hidden = true;
 
             var botones = document.getElementById('tipoPromocionBtn').getElementsByTagName('button');
-            desactivaBotones(botones, 0);
+            //desactivaBotones(botones, 0);
         }
         else if (tipo == 'Simple')
         {
@@ -341,7 +347,6 @@
         for (var i = 0; i < botones.length; i++)
         {
             var botonSel = botones[i];
-
             if (botonNum - 1 == i)
             {
                 botonSel.classList.add('btn-primary');
@@ -485,6 +490,7 @@
         if (promo == 1)
         {
             configuraPiezas.hidden = false;
+            document.getElementById('btnActivarPromocion').hidden = false;
 
             if (editar == 0)
                 AgregaPromocion(promo, tipoPromo, cantidadPromo);
@@ -494,6 +500,7 @@
             if (promo != '' && tipoPromo != '' && cantidadPromo > 0)
             {
                 configuraPiezas.hidden = false;
+                document.getElementById('btnActivarPromocion').hidden = false;
 
                 if (editar == 0)
                     AgregaPromocion(promo, tipoPromo, cantidadPromo);
@@ -529,6 +536,29 @@
             },
             error: function ()
             {
+                alert('Error al subir la imagen');
+            }
+        });
+    }
+
+    function CambiarStatus() {
+        $.ajax({
+            url: path + "Promociones/ActivarPromocion?idPromocion=" + idPromocion.innerHTML,
+            type: 'POST',
+            success: function (response) {
+                const boton = document.getElementById('btnActivarPromocion');
+                if (boton.innerHTML == 'Inactiva') {
+                    boton.classList.add('btn-success');
+                    boton.classList.remove('btn-secondary');
+                    boton.innerHTML = 'Activa';
+                }
+                else {
+                    boton.classList.remove('btn-success');
+                    boton.classList.add('btn-secondary');
+                    boton.innerHTML = 'Inactiva';
+                }
+            },
+            error: function () {
                 alert('Error al subir la imagen');
             }
         });
