@@ -124,17 +124,17 @@
     function AgregaDescPromo(producto, piezas, monto, promocionDiv)
     {
         const promoCondicion = document.createElement("div");
-        if (producto != null)
+        if (producto != "")
         {
             if (piezas > 0)
             {
                 promoCondicion.innerHTML = '<strong> Descripción: </strong>'
-                    + '<p> En la compra de ' + piezas + ' Piezas de ' + producto + ' <p> ';
+                    + '<p> En la compra de ' + piezas + ' Piezas de ' + producto + '<p> ';
             } 
             else 
             {
                 promoCondicion.innerHTML = '<strong> Descripción: </strong>'
-                    + '<p> En la compra de ' + monto + ' Pesos de ' + producto + ' <p> ';
+                    + '<p> En la compra de ' + monto + ' Pesos de ' + producto + '<p> ';
             }
         } 
         else 
