@@ -127,12 +127,15 @@ else
         if (lasValue === undefined || lasValue == null || lasValue.length <= 0)
         {
             sessionStorage.setItem('SelValue', select.value);
+            sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
         }
 
         select.addEventListener('change', function (e)
         {
             sessionStorage.setItem('SelValue', select.value);
+            sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
             SetClienteSel(select.value);
+            location.reload();
         });
     });
 
