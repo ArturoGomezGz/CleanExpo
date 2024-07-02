@@ -302,31 +302,40 @@ namespace ExpoMR.Controllers
 					}
                     else
                     {
-						//Se inicializa la variable de session "ClienteSeleccionado" con el primer cliente que tenga el email
-						GetClientes(accViewModel.Email);
+						int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
-						HttpRequest request = HttpContext.Request;
-						Log.SaveSesion(request, accViewModel.Email, true);
-						var user = await _userManager.FindByNameAsync(accViewModel.Email);
+                        if (isFechaExpoVIP != 2) // 2 = El dia no es de Expo
+                        {
+							//Se inicializa la variable de session "ClienteSeleccionado" con el primer cliente que tenga el email
+							GetClientes(accViewModel.Email);
 
-						if (await _userManager.IsInRoleAsync(user, "Administrador"))
-						{
-							return LocalRedirect("~/Administracion/Usuarios");
+							HttpRequest request = HttpContext.Request;
+							Log.SaveSesion(request, accViewModel.Email, true);
+							var user = await _userManager.FindByNameAsync(accViewModel.Email);
+
+							if (await _userManager.IsInRoleAsync(user, "Administrador"))
+							{
+								return LocalRedirect("~/Administracion/Usuarios");
+							}
+
+							if (await _userManager.IsInRoleAsync(user, "Vendedor"))
+							{
+								return LocalRedirect("~/Empleados/Cotizacion");
+							}
+
+							if (await _userManager.IsInRoleAsync(user, "Proveedor"))
+							{
+								return LocalRedirect("~/Estadisticas/Estadisticas");
+							}
+
+							if (await _userManager.IsInRoleAsync(user, "Capturista"))
+							{
+								return LocalRedirect("~/Empleados/Cotizacion");
+							}
 						}
-
-						if (await _userManager.IsInRoleAsync(user, "Vendedor"))
-						{
-							return LocalRedirect("~/Empleados/Cotizacion");
-						}
-
-						if (await _userManager.IsInRoleAsync(user, "Proveedor"))
-						{
-							return LocalRedirect("~/Estadisticas/Estadisticas");
-						}
-
-						if (await _userManager.IsInRoleAsync(user, "Capturista"))
-						{
-							return LocalRedirect("~/Empleados/Cotizacion");
+                        else
+                        {
+							return RedirectToAction("Index", "MiCuenta");
 						}
 
 						return LocalRedirect(returnUrl);

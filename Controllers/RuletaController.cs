@@ -60,11 +60,11 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 1) //1 = Expo VIP
                     {
                         return View(ListaInforuletas);
                     }
@@ -75,13 +75,13 @@ namespace ExpoMR.Controllers
                 }
                 else
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 0) // 0 = Expo Normal
                     {
-                        return RedirectToAction("Index", "MiCuenta");
+                        return View(ListaInforuletas);
                     }
                     else
                     {
-                        return View(ListaInforuletas);
+                        return RedirectToAction("Index", "MiCuenta");
                     }
                 }
             }
@@ -115,11 +115,11 @@ namespace ExpoMR.Controllers
                         IdRuleta = IdRuleta
                     };
 
-                    bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                    int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                     if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                     {
-                        if (isFechaExpoVIP == true)
+                        if (isFechaExpoVIP == 1) // 1 = Expo VIP
                         {
                             return View(Ruleta);
                         }
@@ -130,13 +130,13 @@ namespace ExpoMR.Controllers
                     }
                     else
                     {
-                        if (isFechaExpoVIP == true)
+                        if (isFechaExpoVIP == 0) //Expo Normal
                         {
-                            return RedirectToAction("Index", "MiCuenta");
+                            return View(Ruleta);
                         }
                         else
                         {
-                            return View(Ruleta);
+                            return RedirectToAction("Index", "MiCuenta");
                         }
                     }
                 }

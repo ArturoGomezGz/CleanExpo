@@ -77,11 +77,11 @@ namespace ExpoMR.Controllers
 
 				dB.Close();
 
-				bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    if (isFechaExpoVIP)
+                    if (isFechaExpoVIP == 1) //Expo VIP
                     {
                         return View(ProdCotizado);
                     }
@@ -92,13 +92,13 @@ namespace ExpoMR.Controllers
                 }
                 else
                 {
-                    if (isFechaExpoVIP)
+                    if (isFechaExpoVIP == 0) //Expo Normal
                     {
-                        return RedirectToAction("Index", "MiCuenta");
+                        return View(ProdCotizado);
                     }
                     else
                     {
-                        return View(ProdCotizado);
+                        return RedirectToAction("Index", "MiCuenta");
                     }
                 }                
             }           

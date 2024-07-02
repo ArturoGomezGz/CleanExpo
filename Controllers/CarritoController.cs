@@ -38,7 +38,7 @@ namespace ExpoMR.Controllers
             int IdCliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
             bool IsClienteVip = WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP");
-            bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+            int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
             Carrito carrito = new Carrito(); 
             carrito.CantidadCarrito = GetCantidadCarrito(IdUsuario, IdCliente);
@@ -59,8 +59,8 @@ namespace ExpoMR.Controllers
             carrito.IdTipoVenta = 0;
             carrito.TiposVenta = WebSite.GetTiposVenta();
 
-            if ((IsClienteVip == true && isFechaExpoVIP == true)
-                || (IsClienteVip == false && isFechaExpoVIP == false))
+            if ((IsClienteVip == true && isFechaExpoVIP == 1) //1 = Expo VIP
+                || (IsClienteVip == false && isFechaExpoVIP == 0)) // 0 = Expo Normal
             {
                 return View(carrito);
             }

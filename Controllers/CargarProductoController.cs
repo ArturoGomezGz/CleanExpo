@@ -30,28 +30,29 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                bool isFechaExpoVIP = WebSite.ValidaExpoVIP();
+                int isFechaExpoVIP = WebSite.ValidaExpoVIP();
 
                 if (WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 1) //1 = Expo VIP
                     {
                         return View();
                     }
-                    else
+                    else //0 = Expo Normal; 2 = El dia no es de expo
                     {
                         return RedirectToAction("Index", "MiCuenta");
                     }
                 }
                 else
                 {
-                    if (isFechaExpoVIP == true)
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
-                    else
+                    if (isFechaExpoVIP == 0) //0 = Expo Normal
                     {
                         return View();
+                    }
+                    else //1 = Expo VIP; 2 = El dia no es de expo
+                    {
+                        return RedirectToAction("Index", "MiCuenta");
+                        
                     }
                 }
             }

@@ -84,11 +84,11 @@ namespace ExpoMR.Controllers
 
 				dB.Close();
 
-				bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 1) //1 = Expo VIP
                     {
                         return View(Stand);
                     }
@@ -99,13 +99,13 @@ namespace ExpoMR.Controllers
                 }
                 else
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 0) //0 =  Expo normal
                     {
-                        return RedirectToAction("Index", "MiCuenta");
+                        return View(Stand);
                     }
                     else
                     {
-                        return View(Stand);
+                        return RedirectToAction("Index", "MiCuenta");
                     }
                 }                
             }
@@ -172,11 +172,11 @@ namespace ExpoMR.Controllers
 
 				dB2.Close();
 
-				bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 1) //1 = Expo VIP
                     {
                         return View("~/Views/Stand/Editar.cshtml", Stand);
                     }
@@ -187,13 +187,13 @@ namespace ExpoMR.Controllers
                 }
                 else
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 0) // 0 = Expo Normal
                     {
-                        return RedirectToAction("Index", "MiCuenta");
+                        return View("~/Views/Stand/Editar.cshtml", Stand);
                     }
                     else
                     {
-                        return View("~/Views/Stand/Editar.cshtml", Stand);
+                        return RedirectToAction("Index", "MiCuenta");
                     }
                 }
             }

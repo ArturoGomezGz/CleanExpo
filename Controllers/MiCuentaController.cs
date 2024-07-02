@@ -129,11 +129,11 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                bool isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 1) //1 = Expo VIP
                     {
                         return View(MiCuenta);
                     }
@@ -144,13 +144,13 @@ namespace ExpoMR.Controllers
                 }
                 else
                 {
-                    if (isFechaExpoVIP == true)
+                    if (isFechaExpoVIP == 0) // 0 = Expo Normal
                     {
-                        return RedirectToAction("Index", "MiCuenta");
+                        return View(MiCuenta);
                     }
                     else
                     {
-                        return View(MiCuenta);
+                        return RedirectToAction("Index", "MiCuenta");                        
                     }
                 }
             }            

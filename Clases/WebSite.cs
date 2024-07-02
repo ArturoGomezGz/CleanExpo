@@ -474,12 +474,12 @@ namespace ExpoMR.Clases
             return ret;
         }
 
-        public static bool ValidaExpoVIP()
+        public static int ValidaExpoVIP()
         {
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[0];
 
-            bool ret = Convert.ToBoolean(dB.ExecuteReturnValue("ValidaExpoVIP", ref parameters));
+            int ret = Convert.ToInt16(dB.ExecuteReturnValue("ValidaExpoVIP", ref parameters));
 
             return ret;
         }
