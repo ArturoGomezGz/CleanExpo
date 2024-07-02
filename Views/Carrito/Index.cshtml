@@ -726,12 +726,12 @@
             </li>
         </ul>
     </div>
-    <div id="divCarrito" class="row display_panel_active">
-        <p><a class="btn btn-index" asp-controller="CargarProducto" asp-action="Index">Carga Masiva</a></p>
-        <div class="d-flex">
-            <p><a class="btn btn-SelectAll btn-outline-info mx-1" onclick="seleccionarTodos()">Marcar Todos</a></p>
-            <p><a class="btn btn-UnSelectAll btn-outline-info mx-1" onclick="deseleccionarTodos()">DesMarcar Todo</a></p>
-        </div>
+    <div id="divCarrito" class="row display_panel_active ">
+        <p><a class="btn btn-azul-medio btn-mediano" asp-controller="CargarProducto" asp-action="Index">Carga Masiva</a>@*</p>*@
+       @* <div class="d-flex">*@
+            @*<p>*@<a class="btn btn-SelectAll btn-outline-primary mx-1" onclick="seleccionarTodos()">Marcar Todos</a>@*</p>*@
+            @*<p>*@<a class="btn btn-UnSelectAll btn-outline-primary mx-1" onclick="deseleccionarTodos()">DesMarcar Todo</a></p>
+       @* </div>*@
         <div class="tab-content_productos col-md-8 col-sm-6">
             @{
                 int IdProveedor = 0;
@@ -788,8 +788,8 @@
                                         <input id="number_@string.Format(model.IdProducto.ToString())" class="input-number" type="number" value="@string.Format(model.cantidad.ToString())" min="1" placeholder="0" disabled>
                                     </div>
                                     <div class="col-md-12 col-sm-55 m-auto">
-                                        <button class="btn btn-naranja-ch edit_@string.Format(model.IdProducto.ToString())" onclick="Edit(@string.Format(model.IdProducto.ToString()))" title="editar" type="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                        <button class="btn btn-outline-danger delete_@string.Format(model.IdProducto.ToString())" onclick="Delete(@string.Format(model.IdProducto.ToString()))" title="eliminar" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                        <button class="btn btn-naranja-ch edit_@string.Format(model.IdProducto.ToString())" onclick="Edit(@string.Format(model.IdProducto.ToString()))" title="editar" type="button"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                                        <button class="btn btn-outline-danger delete_@string.Format(model.IdProducto.ToString())" onclick="Delete(@string.Format(model.IdProducto.ToString()))" title="eliminar" type="button"><i class="far fa-trash-alt" aria-hidden="true"></i></button>
                                         <button type="button" class="btn btn-outline-success save_@string.Format(model.IdProducto.ToString()) d-none" onclick="save(@string.Format(model.IdProducto.ToString()))" title="btn-save">
                                             <i class="fa fa-check" aria-hidden="true"></i>
                                         </button>
@@ -813,12 +813,15 @@
             <div class="contenedor carritoTotal">
                 @if (Model.TotalesCotizacion.HasProduct == true)
                 {
-                    <p><strong>Crédito: </strong><text id="txt_Credito"></text></p>
+                    <div style=" width:80%;">
+                    <p style="color:#244f87; font-size:1.2em; font-weight:bold;">Crédito: <text id="txt_Credito"></text></p>
                     <p><strong>Subtotal: </strong><text id="txt_Subtotal"></text></p>
                     <p><strong>IVA: </strong><text id="txt_IVA"></text></p>
+                    <hr/>
                     <p><strong>Total: </strong><text id="txt_Total"></text></p>
                     <p><strong>Total de Productos: </strong><text id="txt_TotalProd"></p>
-                    <button type="button" class="btn btn-naranja mb-3 mt-3" onclick="ColocarOrden()">Coloca tu Orden <i class="fa fa-chevron-circle-right"></i> </button>
+                    </div>
+                    <button type="button" class="btn btn-naranja mb-3 mt-3" onclick="ColocarOrden()">Coloca tu Orden </button>
                 }
                 else
                 {
@@ -955,9 +958,10 @@
         </div>
         <div id="show_premios" class="col-md-6">
             <div class="contenedor carritoTotal">
-                <p class="credito_show">Crédito: <text id="txt_Credito_divPedido"></text></p>
+                <p style="color:#244f87; font-size:1.2em; font-weight:bold;">Crédito: <text id="txt_Credito_divPedido"></text></p>
                 <p><strong>Subtotal: </strong><text id="txt_Subtotal_divPedido"></text></p>
                 <p><strong>IVA: </strong><text id="txt_IVA_divPedido"></text></p>
+                <hr/>
                 <p><strong>Total: </strong><text id="txt_Total_divPedido"></text></p>
                 <p><strong>Total de Productos: </strong><text id="txt_TotalProd_divPedido"></text></p>
                 <div id="liveAlertPlaceholderPedidos"></div>

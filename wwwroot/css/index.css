@@ -573,8 +573,25 @@ p, ol, h6{
     border: none;
 }
 
-.navbar-toggler{
-    width:45px;
+.btn-mediano {
+    font-size: 0.8em;
+    padding: 3px 6px;
+}
+
+.btn-SelectAll, .btn-UnSelectAll {
+    font-size: 0.8em;
+    padding: 3px 6px;
+    border-color: var(--azul);
+    color: var(--azul)
+}
+
+
+.btn-SelectAll:hover, .btn-UnSelectAll:hover {
+    background-color: var(--azul);
+    border: none
+}
+    .navbar-toggler {
+    width: 45px;
 }
 
 .navbar-toggler:hover {
@@ -871,7 +888,6 @@ p, ol, h6{
 
 .bf-ui-tab {
     display: inline-block;
-    padding: 10px 0;
     text-align: center;
     width: 45%;
 }
@@ -880,17 +896,18 @@ p, ol, h6{
     background: linear-gradient(#F2B96D, #F2B96D, #F48678);
     font-size: 1.1em;
     font-weight: 600;
-    border-radius: 15px 15px 0px 0px;
-    padding-top: 10px;
+    border-radius: 10px 10px 0px 0px;
+    padding: 5px 0px;
     color: var(--gris-oscuro);
 }
 
 .cart-container .bf-ui-tab--selected {
-    background: linear-gradient(#2F80ED, #2F80ED, #56CCF2);
+    /*background: linear-gradient(#2F80ED, #2F80ED, #56CCF2);*/
+    background: linear-gradient(#1e3c72, #2a5298);
     font-size: 1.1em;
     font-weight: 600;
-    border-radius: 15px 15px 0px 0px;
-    padding-top: 10px;
+    border-radius: 10px 10px 0px 0px;
+
     color: var(--blanco)
 }
 
@@ -1046,14 +1063,14 @@ p, ol, h6{
 .Separador_Carrito{
     border: 2px solid var(--azul-oscuro);
 }
-
+/*
 .credito_show {
     color: #024a86;
     text-align: center;
     padding-top: 10px;
     font-size: 1.2em;
     font-weight: bold;
-}
+}*/
 .cuadro-premio {
     padding: 5px;
     border: 1px solid #ccc;
