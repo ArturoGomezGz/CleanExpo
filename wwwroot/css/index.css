@@ -1273,3 +1273,15 @@ div.fontsize {
     border-color: var(--azul-oscuro) !important;
     border-width: 2px;
 }
+
+/* ----------------------- Canvas Animacion --------------------
+------------------------------------------------------------------------*/
+
+#animaCoin {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    display: none;
+}

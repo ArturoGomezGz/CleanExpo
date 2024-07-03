@@ -113,7 +113,7 @@ namespace ExpoMR.Controllers
         {
             List<Clientes> ClientesSeleccion = new();
 
-            string query = "SELECT Persona.IdPersona, Persona.Nombre FROM GetPersonasByEmail(@UserName) AS Persona";
+            string query = "SELECT Persona.IdPersona, Persona.Nombre, Persona.IdEmailFuncion FROM GetPersonasByEmail(@UserName) AS Persona";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -127,6 +127,7 @@ namespace ExpoMR.Controllers
 
                 Cliente.IdPersona = (int)dr["IdPersona"];
                 Cliente.Nombre = (string)dr["Nombre"];
+                Cliente.IdTipoUsuario = (byte)dr["IdEmailFuncion"];
 
                 ClientesSeleccion.Add(Cliente);
             }
@@ -134,6 +135,21 @@ namespace ExpoMR.Controllers
 			dB.Close();
 
 			return ClientesSeleccion;
+        }
+
+        public bool AsignarMonedas(int Origen, int Destino, int IdMotivo, int Monedas, int IdProducto, int Usuario)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[6];
+            parameters[0] = new SqlParameter("@origen", Origen);
+            parameters[1] = new SqlParameter("@destino", Destino);
+            parameters[2] = new SqlParameter("@idmotivo", IdMotivo);
+            parameters[3] = new SqlParameter("@monedas", Monedas == 0 ? null : Monedas);
+            parameters[4] = new SqlParameter("@idproducto", IdProducto == 0 ? null : IdProducto);
+            parameters[5] = new SqlParameter("@usuario", Usuario);
+
+            bool ret = Convert.ToBoolean(dB.ExecuteReturnValue("MonedasAsignar", ref parameters));
+            return ret;
         }
     }
 }

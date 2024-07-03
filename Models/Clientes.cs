@@ -9,6 +9,8 @@ namespace ExpoMR.Models
 
         public string Nombre { get; set; }
 
+        public int IdTipoUsuario { get; set; }
+
         public bool selected { get; set; }
     }
 }

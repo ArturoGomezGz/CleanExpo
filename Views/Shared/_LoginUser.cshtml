@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Newtonsoft.Json
 
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -15,7 +16,8 @@
             <select id="ddlClientes">
                 @foreach (ExpoMR.Models.Clientes Cllientes in ClientesSeleccion)
                 {
-                    <option value="@Cllientes.IdPersona">@Cllientes.Nombre</option>
+                    var clienteJson = JsonConvert.SerializeObject(Cllientes);
+                    <option value="@clienteJson">@Cllientes.Nombre</option>
                 }
             </select>
         }
@@ -107,6 +109,11 @@ else
     </div>
 }
 
+<!--scripts para la animación de monedas-->
+<script type="text/javascript" src="~/js/createjs.min.js"></script>
+<script type="text/javascript" src="~/js/preloadjs.min.js"></script>
+<script type="text/javascript" src="~/js/codeAnimation.js"></script>
+
 <script type="text/javascript">
 
     $(window).on('load', function ()
@@ -115,7 +122,17 @@ else
         SetClienteSel(lasValue);
 
         let element = document.getElementById("ddlClientes");
-        element.value = lasValue;
+
+        for (var i = 0; i < element.options.length; i++) {
+            var option = element.options[i];
+            var clienteObjeto = JSON.parse(option.value);
+
+            if (clienteObjeto.IdPersona == lasValue) {
+                element.selectedIndex = i;
+                AsignarMonedas(clienteObjeto);
+                break;
+            }
+        }
     })
 
 
@@ -124,20 +141,45 @@ else
         var select = document.getElementById("ddlClientes");
         var lasValue = sessionStorage.getItem('SelValue');
 
-        if (lasValue === undefined || lasValue == null || lasValue.length <= 0)
+        if (lasValue === "undefined" || lasValue == null || lasValue.length <= 0)
         {
-            sessionStorage.setItem('SelValue', select.value);
+            var clienteObjeto = JSON.parse(select.value);
+            sessionStorage.setItem('SelValue', clienteObjeto.IdPersona);
             sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
         }
 
         select.addEventListener('change', function (e)
         {
-            sessionStorage.setItem('SelValue', select.value);
+            var clienteObjeto = JSON.parse(select.value);
+            sessionStorage.setItem('SelValue', clienteObjeto.IdPersona);
             sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
-            SetClienteSel(select.value);
+            SetClienteSel(clienteObjeto.IdPersona);
             location.reload();
         });
     });
+
+    function AsignarMonedas(Cliente){
+        if (Cliente.IdTipoUsuario == 11){
+            $.post(path + "Generales/AsignarMonedas",
+                {
+                    Origen: 0,
+                    Destino: Cliente.IdPersona,
+                    IdMotivo: 3,
+                    Monedas: 0,
+                    IdProducto: 0,
+                    Usuario: Cliente.IdPersona
+                },
+                function (data) {
+                    if (data == true) {
+                        initCanvas();
+                        setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
+                    }
+                }).error(function (textStatus) {
+                    alert(false, "No fue posible incializar su perfil de (carrito, ruleta y monedas)");
+                }
+            );
+        }
+    }
 
     //Se ejecuta la funcion para asignar el valor de idpersona en la variable de session "ClienteSel"
     function SetClienteSel(IdPersona)
@@ -151,7 +193,7 @@ else
                 GetCarrito();
             }).error(function ()
             {
-                alerta(false, "No fue posible incializar su perfil de (carrito, ruleta y monedas)");
+                alert(false, "No fue posible incializar su perfil de (carrito, ruleta y monedas)");
             }
         );
     }

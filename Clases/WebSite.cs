@@ -371,76 +371,76 @@ namespace ExpoMR.Clases
             dB.ExecuteNonQuery("LogInvitacion", ref parameters);
         }
 
-        public static int InicioExpo(string UserName = "")
-        {
+   //     public static int InicioExpo(string UserName = "")
+   //     {
 
-            int Result = 0;
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@username", UserName);
-            DB dB = new DB();
-            SqlDataReader dr = dB.ExecuteReader("ExpoInicio", ref parameters);
-            if (dr.Read())
-            {
-                if ((bool)dr["Acceso"])
-                {
-                    Result = 3; //La Expo para este Usuario ha concluido
-                }
-                else
-                {
-                    switch (Convert.ToInt32(dr["IdTipoUsuario"]))
-                    {
-                        case 1://cliente
-                            Result = 2; //Solo Se Perimte el Cambio de contraseña
-                            break;
-                        case 2://proveedor;
-                            Result = 2; //Solo se permite el cambio de Contraseña
-                            break;
-                        case 3://administrador
-                            Result = 1;
-                            break;
-                        case 4://empleado
-                            Result = 1;
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                Result = 0; // Hubo un error al consultar
-            }
+   //         int Result = 0;
+   //         SqlParameter[] parameters = new SqlParameter[1];
+   //         parameters[0] = new SqlParameter("@username", UserName);
+   //         DB dB = new DB();
+   //         SqlDataReader dr = dB.ExecuteReader("ExpoInicio", ref parameters);
+   //         if (dr.Read())
+   //         {
+   //             if ((bool)dr["Acceso"])
+   //             {
+   //                 Result = 3; //La Expo para este Usuario ha concluido
+   //             }
+   //             else
+   //             {
+   //                 switch (Convert.ToInt32(dr["IdTipoUsuario"]))
+   //                 {
+   //                     case 1://cliente
+   //                         Result = 2; //Solo Se Perimte el Cambio de contraseña
+   //                         break;
+   //                     case 2://proveedor;
+   //                         Result = 2; //Solo se permite el cambio de Contraseña
+   //                         break;
+   //                     case 3://administrador
+   //                         Result = 1;
+   //                         break;
+   //                     case 4://empleado
+   //                         Result = 1;
+   //                         break;
+   //                 }
+   //             }
+   //         }
+   //         else
+   //         {
+   //             Result = 0; // Hubo un error al consultar
+   //         }
 
-			dB.Close();
+			//dB.Close();
 
-			return Result;
-        }
+			//return Result;
+   //     }
 
-        public static bool FechaExpoActiva(string usuario)
-        {
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@username", usuario);
-            DB dB = new DB();
-            SqlDataReader dr = dB.ExecuteReader("ExpoInicio", ref parameters);
+   //     public static bool FechaExpoActiva(string usuario)
+   //     {
+   //         SqlParameter[] parameters = new SqlParameter[1];
+   //         parameters[0] = new SqlParameter("@username", usuario);
+   //         DB dB = new DB();
+   //         SqlDataReader dr = dB.ExecuteReader("ExpoInicio", ref parameters);
 
-            if (dr.Read())
-            {
-                if ((bool)dr["Acceso"])
-                {
-                    dr.Close();
-                    dB.Close();
-                    return true;
-                }
-                else
-                {
-                    dr.Close();
-                    dB.Close();
-                    return false;
-                }
-            }
+   //         if (dr.Read())
+   //         {
+   //             if ((bool)dr["Acceso"])
+   //             {
+   //                 dr.Close();
+   //                 dB.Close();
+   //                 return true;
+   //             }
+   //             else
+   //             {
+   //                 dr.Close();
+   //                 dB.Close();
+   //                 return false;
+   //             }
+   //         }
 
-			dB.Close();
+			//dB.Close();
 
-			return false;
-        }
+			//return false;
+   //     }
 
         public static void AddSucursalUser(int idEmail, int Sucursal)
         {

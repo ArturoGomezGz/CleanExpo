@@ -45,6 +45,7 @@
             
             @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
             {
+                <canvas id="animaCoin" width="60px" height="60px"></canvas>
                 <a asp-controller="Monedas" asp-action="" class="btn btn-moneda gradient-moneda position-relative" id="moneda">
                     <i class="fa fa-usd" aria-hidden="true"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
