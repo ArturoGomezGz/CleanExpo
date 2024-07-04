@@ -109,16 +109,12 @@ else
     </div>
 }
 
-<!--scripts para la animación de monedas-->
-<script type="text/javascript" src="~/js/createjs.min.js"></script>
-<script type="text/javascript" src="~/js/preloadjs.min.js"></script>
-<script type="text/javascript" src="~/js/codeAnimation.js"></script>
-
 <script type="text/javascript">
 
     $(window).on('load', function ()
     {
         var lasValue = sessionStorage.getItem('SelValue');
+
         SetClienteSel(lasValue);
 
         let element = document.getElementById("ddlClientes");
@@ -129,7 +125,8 @@ else
 
             if (clienteObjeto.IdPersona == lasValue) {
                 element.selectedIndex = i;
-                AsignarMonedas(clienteObjeto);
+
+                AsignarMonedas();
                 break;
             }
         }
@@ -144,38 +141,48 @@ else
         if (lasValue === "undefined" || lasValue == null || lasValue.length <= 0)
         {
             var clienteObjeto = JSON.parse(select.value);
+
             sessionStorage.setItem('SelValue', clienteObjeto.IdPersona);
+            sessionStorage.setItem('SelTipoUsuario', clienteObjeto.IdTipoUsuario);
             sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
         }
 
         select.addEventListener('change', function (e)
         {
             var clienteObjeto = JSON.parse(select.value);
+
             sessionStorage.setItem('SelValue', clienteObjeto.IdPersona);
+            sessionStorage.setItem('SelTipoUsuario', clienteObjeto.IdTipoUsuario);
             sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
+
             SetClienteSel(clienteObjeto.IdPersona);
             location.reload();
         });
     });
 
-    function AsignarMonedas(Cliente){
-        if (Cliente.IdTipoUsuario == 11){
+    //Asignacion de monedas por primer visita a la expo
+    function AsignarMonedas(){
+        if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
             $.post(path + "Generales/AsignarMonedas",
                 {
-                    Origen: 0,
-                    Destino: Cliente.IdPersona,
-                    IdMotivo: 3,
+                    Origen: 0, //MR
+                    Destino: sessionStorage.getItem('SelValue'),
+                    IdMotivo: 3, //Bienvenida Expo
                     Monedas: 0,
                     IdProducto: 0,
-                    Usuario: Cliente.IdPersona
+                    Usuario: sessionStorage.getItem('SelValue')
                 },
-                function (data) {
-                    if (data == true) {
+                function (data) 
+                {
+                    //Animacion de monedas
+                    if (data == true) 
+                    {
                         initCanvas();
                         setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
                     }
-                }).error(function (textStatus) {
-                    alert(false, "No fue posible incializar su perfil de (carrito, ruleta y monedas)");
+                }).error(function (textStatus) 
+                {
+                    alert(false, "No fue posible asignar sus monedas por ingresar por primera vez a ExpoMR");
                 }
             );
         }
