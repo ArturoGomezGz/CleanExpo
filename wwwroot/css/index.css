@@ -1284,4 +1284,5 @@ div.fontsize {
     right: 0;
     overflow: hidden;
     display: none;
+    z-index: 1000;
 }

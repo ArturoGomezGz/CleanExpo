@@ -163,5 +163,19 @@ namespace ExpoMR.Controllers
             bool ret = Convert.ToBoolean(dB.ExecuteReturnValue("MonedasStand", ref parameters));
             return ret;
         }
+
+        public bool AsignarMonedasVisitaProducto(int Origen, int Destino, int IdProducto, int Usuario)
+        {
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@origen", Origen);
+            parameters[1] = new SqlParameter("@destino", Destino);
+            parameters[2] = new SqlParameter("@idproducto", IdProducto);
+            parameters[3] = new SqlParameter("@usuario", Usuario);
+
+            bool ret = Convert.ToBoolean(dB.ExecuteReturnValue("MonedasProducto", ref parameters));
+
+            return ret;
+        }
     }
 }
