@@ -106,34 +106,43 @@
 </div>
 
 <script>
-    function AgregarProducto() {
+    function AgregarProducto() 
+    {
         let IdProducto = $("#IdProducto").val()
         let Cantidad = $("#txtCantidad").val()
         let PrecioMR = $("#PrecioMR").val()
 
-        if(Cantidad > 0){
+        if(Cantidad > 0)
+        {
             $.post(path + "Producto/AddCarrito",
                 {
                     idProducto: IdProducto,
                     cantidad: Cantidad,
                     unitario: PrecioMR
                 },
-            function (data) {
+            function (data) 
+            {
                 ShowAlert(data.message, data.response)
                 GetCarrito();
                 GetMonedas()
-                setTimeout(function () {
+                setTimeout(function () 
+                {
                         window.location.href = path + "Stand/Editar?idProveedor=" + @Model.IdProveedor;
                 }, 1000);
                     
-            }).error(function () {
+            }).error(function () 
+            {
                 ShowAlert("No fue posible cargar sus datos", false);
             });
-        }else{
+        }
+        else
+        {
             ShowAlert("La Cantidad debe ser mayor a Cero", false);
         }
     }
-    function actualizaTotal(element){
+
+    function actualizaTotal(element)
+    {
         let valorIva = parseFloat($("#ValorIva").val());
         let Precio = $("#PrecioFinal").val();
         let PrecioFianl = $("#PrecioFinal").val();
@@ -149,7 +158,9 @@
         $(".contenedor__Producto__iva").html(FormatoMoneda(PrecioIva))
         $(".contenedor__Producto__Total").html(FormatoMoneda(Total))
     }
-    $(document).ready(function(){
+    
+    $(document).ready(function()
+    {
         let valorIva = parseFloat($("#ValorIva").val());
         let Precio = $("#PrecioFinal").val();
         let PrecioFianl = $("#PrecioFinal").val();
@@ -174,7 +185,35 @@
             $(".contenedor__Producto__subtotal").html(FormatoMoneda(subtotal))
             $(".contenedor__Producto__iva").html(FormatoMoneda(PrecioIva))
             $(".contenedor__Producto__Total").html(FormatoMoneda(Total))
-        })        
+        })
+        
+        AsignarMonedasProducto();
     });
+
+    //Asignacion de monedas por visita de producto del proveedor
+    function AsignarMonedasProducto() 
+    {
+        if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
+            $.post(path + "Generales/AsignarMonedasVisitaProducto",
+                {
+                    Origen: @Model.IdProveedor,
+                    Destino: sessionStorage.getItem('SelValue'),
+                    IdProducto: @Model.IdProducto,
+                    Usuario: sessionStorage.getItem('SelValue')
+                },
+                function (data) {
+                    //Animacion de monedas
+                    if (data == true) 
+                    {
+                        initCanvas();
+                        setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
+                    }
+                }).error(function (textStatus) 
+                {
+                    alert(false, "No fue posible asignar sus monedas por visitar el Producto del Proveedor");
+                }
+            );
+        }
+    }
 
 </script>
