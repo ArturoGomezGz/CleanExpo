@@ -289,17 +289,21 @@
     function TerminarOrden() {
         $.post(path + "Carrito/ExpoPedidoAgregar",
             function (data) {
-                if (data.response) {
-                    CloseModal('swModal');
-                    ShowAlert(data.response, data.response);
-                    SendMail(data.result);
-                    setTimeout(Reload, 3000);
+                CloseModal('swModal');
+                ShowAlert(data.message, true);
+                SendMail(data.result);
+                    
+                //Animacion de monedas
+                if (data.response) 
+                {
+                    initCanvas();
+                    setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
                 }
+                setTimeout(Reload, 3000);
             }
-        )
-            .error(function () {
-                ShowAlert("No fue posible cargar sus datos", false);
-            });
+        ).error(function () {
+            ShowAlert("No fue posible cargar sus datos", false);
+        });
     }
 
     function Reload() {

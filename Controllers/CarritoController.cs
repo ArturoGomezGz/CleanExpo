@@ -201,17 +201,15 @@ namespace ExpoMR.Controllers
 
             try
             {
-                string query = "EXEC ExpoPedidoAgregar @cliente = @cliente, @usuario = @usuario, @Id_Inserted = @Id_Inserted OUTPUT";
                 DB dB = new();
-
                 SqlParameter[] parameters = new SqlParameter[3];
                 parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
                 parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
                 parameters[2] = new SqlParameter() { ParameterName = "@Id_Inserted", Value = 0, Direction = ParameterDirection.Output };
 
-                dB.ExecuteNonQuery(query, ref parameters, commandType: CommandType.Text);
+                bool ret = Convert.ToBoolean(dB.ExecuteReturnValue("ExpoPedidoAgregar", ref parameters));
 
-                rm.Response = true;
+                rm.Response = ret;
                 rm.Message = "El pedido ha sido colocado correctamente.";
                 rm.Result = parameters[2].Value;
             }
