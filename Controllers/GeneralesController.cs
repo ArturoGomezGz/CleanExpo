@@ -113,7 +113,7 @@ namespace ExpoMR.Controllers
         {
             List<Clientes> ClientesSeleccion = new();
 
-            string query = "SELECT Persona.IdPersona, Persona.Nombre, Persona.IdEmailFuncion FROM GetPersonasByEmail(@UserName) AS Persona";
+            string query = "SELECT Persona.IdPersona, UPPER(Persona.Nombre) AS Nombre, Persona.IdEmailFuncion FROM GetPersonasByEmail(@UserName) AS Persona";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
