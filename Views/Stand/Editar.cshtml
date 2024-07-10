@@ -398,18 +398,17 @@
 </div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">        
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <img id="PromoImgModal" class="card-img-top mw-100 img_articulo_Modal margin_auto " src="" alt="image" />
+            <div  class="modal-body">
+                <div id="div_fotos_articulo" class="row">
                 </div>
                 <div class="row text-center">
-                    <p id="titulo_Promo" class="fw-bold p-2">Titulo </p>
-                    <p id="descripcion_Promo">Descripción</p>
+                    <p id="titulo_Promo" class="fw-bold p-2"></p>
+                    <p id="descripcion_Promo"></p>
                 </div>
                 <div class="row">
                     <button type="button" class="btn btn-outline-success w-25 margin_auto" data-bs-dismiss="modal"> Aceptar </button>
@@ -613,23 +612,23 @@
 
     function MostrarArticulo(IdArticulo, IdArticulos)
     {
+        $("#div_fotos_articulo").html('')
         OpenModal('exampleModal')
         var imageElement = document.getElementById("PromoImg_" + IdArticulo);
-    
-        // Get the value of the src attribute
-        var imageUrl = imageElement.src;
-        var imageElementModal = document.getElementById("PromoImgModal");
-        imageElementModal.src = imageUrl
+         
         $.ajax({
             type: "POST",
             url: path + "Stand/GetAnuncio?IdArticulo=" + IdArticulos,
             success: function (resultado)
             {
-                var TituloElement = document.getElementById("titulo_Promo");
-                var DescripcionElement = document.getElementById("descripcion_Promo");
+                let cadena = "";
+                $.each(resultado, function (index, value) {
+                    cadena += '<img id="PromoImgModal" class="card-img-top mw-100 img_articulo_Modal " alt="image" src="data:image/jpg;base64,' + value.foto + '" alt="image" />'
+                });
+                $("#div_fotos_articulo").append(cadena)
 
-                $("#titulo_Promo").html(resultado[0])
-                $("#descripcion_Promo").html(resultado[1])
+                document.getElementById('titulo_Promo').innerHTML = resultado[0].nombre;
+                document.getElementById('descripcion_Promo').innerHTML = resultado[0].descripcion;
             },
             error: function (xhr, status, error)
             {

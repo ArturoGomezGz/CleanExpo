@@ -572,7 +572,7 @@ namespace ExpoMR.Controllers
                 Articulo.Nombre = (string)dr["Nombre"];
                 Articulo.Descripcion = (string)dr["Descripcion"];
                 Articulo.IDdArticulos = (int)dr["IDdArticulos"];
-                Articulo.Foto = (byte[])dr["Foto"];
+                Articulo.Foto = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
 
                 Articulos.Add(Articulo);
             }
