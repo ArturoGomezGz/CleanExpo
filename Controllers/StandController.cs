@@ -56,7 +56,8 @@ namespace ExpoMR.Controllers
                     || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
                     Log.SaveVisita(Cliente, idProveedor, 0);
-                }
+                    GivePromotions(idProveedor);
+				}
 
                 StandVIewModel Stand = new StandVIewModel();
 
@@ -631,5 +632,16 @@ namespace ExpoMR.Controllers
 
             return Json(foto);
         }
-    }
+
+		private void GivePromotions(int proveedor)
+		{
+			DB dB = new DB();
+			SqlParameter[] parameters = new SqlParameter[2];
+
+			parameters[0] = new SqlParameter("@proveedor", proveedor);
+			parameters[1] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
+
+			dB.ExecuteNonQuery("PromocionesAsignarStand", ref parameters);
+		}
+	}
 }

@@ -19,11 +19,13 @@ namespace ExpoMR.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private static IConfiguration _configuration;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public CarritoController(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public CarritoController(UserManager<IdentityUser> userManager, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _configuration = configuration;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -240,8 +242,8 @@ namespace ExpoMR.Controllers
                 Articulo.IdArticulo = (Int16)dr["IdArticulo"];
                 Articulo.Nombre = (string)dr["Nombre"];
                 Articulo.Descripcion = (string)dr["Descripcion"];
-                Articulo.IDdArticulos = (int)dr["IDdArticulos"];
-                Articulo.Foto = (byte[])dr["Foto"];
+                Articulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
+                Articulo.Foto = dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : WebSite.GetImageDefault(webHostEnvironment, "noimage.png") ;
             }
 
 			dB.Close();
