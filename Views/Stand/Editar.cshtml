@@ -12,15 +12,6 @@
         padding:0px !important;
     }
 
-    .x_content_card
-    {
-        padding: 3px;
-        /*width: 60%;*/
-        margin: auto;
-        max-width:200px;
-       /* margin-top: 10%;
-        margin-bottom: 10%;*/
-    }
 
     img
     {
@@ -38,6 +29,7 @@
         transition: all 0.4s ease;
         border-radius:0.5em;
         overflow: hidden;
+        
     }
 
     .carrousel .grande 
@@ -50,6 +42,7 @@
         border-radius: 0.5em;
         transition: all 0.5s ease;
         transform: translateX(0%);
+        font-size: 0.7em;
     }
 
     .carrousel .img 
@@ -76,8 +69,8 @@
 
     .carrousel .punto 
     {
-        width: 1em !important;
-        height: 1em;
+        width: 0.8em !important;
+        height: 0.8em;
         margin: 1em 1em 0;
         color: var(--negro);
         border-radius: 1em;
@@ -101,25 +94,31 @@
     <div class="card" style="background:url(data:image/jpeg;base64,@Convert.ToBase64String(Model.Background))">
         <div class="card-body">
             <div class="row">
-                <div class="col-xl-1"></div>
-                <div class="col-12 col-md-4 col-xl-3">
-                    <div class="card x_content_card">
-                        <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="image">
-                        <div class="card-block text-center">
-                            <h5 class="text-bold text-center">@Model.Nombre</h5>
-                            <label class="w-100">@Model.Descripcion</label>
+                @*<div class="col-xl-1"></div>*@
+                <div class="col-sm-12 col-md-12 margin_auto">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 col-md-3 col-xl-2">
+                                <div class="card x_content_card">
+                                    <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="image">
+                                    <div class="card-block text-center">
+                                        <h5 class="text-bold text-center">@Model.Nombre</h5>
+                                        <label class="w-100">@Model.Descripcion</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-9 col-xl-10">
+                                <div class="accordionPromociones">
+                                    <div class="carrousel">
+                                        <div class="grande" id="divAnuncios"></div>
+                                        <ul class="puntos" id="puntosLista"></ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-8 col-xl-7">
-                    <div class="accordionPromociones">
-                        <div class="carrousel">
-                            <div class="grande" id="divAnuncios"></div>
-                            <ul class="puntos" id="puntosLista"></ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-1"></div>
+                @*<div class="col-xl-1"></div>*@
             </div>
             <div class="row">
                 <div class="col-sm-12 col-md-12 margin_auto">
@@ -164,37 +163,6 @@
                                     </div>
                                     @*Promociones*@
                                     <div class="tab-pane" id="static2">
-                                        <div class="row">
-                                            <h4>Artículos</h4>
-                                            @{
-                                                List<ArticulosProveedores> ArticulosProveedor = ExpoMR.Controllers.StandController.GetPromocionArticulo(Model.Proveedor);
-                                                if (ArticulosProveedor.Count == 0)
-                                                {
-                                                    <p>Este Stand no tiene Artículos Promocionales todavía...</p>
-                                                }
-                                                foreach (ExpoMR.Models.ArticulosProveedores model in ArticulosProveedor)
-                                                {
-                                                    <div class=" col-md-6 col-lg-3 mt-4">
-                                                        <div class="card card-inverse card-info" style="padding-top: 9px;">
-                                                            <a href="#" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="margin: auto;">
-                                                                @if (model.Foto.Length > 0)
-                                                                {
-                                                                    <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
-                                                                }
-                                                                else
-                                                                {
-                                                                    <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="~/Imagenes/noimage.png" alt="image" />
-                                                                }
-                                                            </a>
-                                                            <div class="card-block" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="text-align: center;">
-                                                                <a href="#"><h6 class="card-title">@String.Format(model.Nombre)</h6></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            }
-                                        </div>
-                                        <hr />
                                         <div class="row">
                                             <h4>Promociones</h4>
                                             @{
@@ -355,6 +323,38 @@
                                                             <a href="#" style="margin: auto;">
                                                                 <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
                                                             </a>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+
+                                        <hr />
+                                        <div class="row">
+                                            <h4>Artículos</h4>
+                                            @{
+                                                List<ArticulosProveedores> ArticulosProveedor = ExpoMR.Controllers.StandController.GetPromocionArticulo(Model.Proveedor);
+                                                if (ArticulosProveedor.Count == 0)
+                                                {
+                                                    <p>Este Stand no tiene Artículos Promocionales todavía...</p>
+                                                }
+                                                foreach (ExpoMR.Models.ArticulosProveedores model in ArticulosProveedor)
+                                                {
+                                                    <div class=" col-md-6 col-lg-3 mt-4">
+                                                        <div class="card card-inverse card-info" style="padding-top: 9px;">
+                                                            <a href="#" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="margin: auto;">
+                                                                @if (model.Foto.Length > 0)
+                                                                {
+                                                                    <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img id="PromoImg_@string.Format(Convert.ToString(model.IdArticulo))" class="card-img-top mw-100 img_articulo" src="~/Imagenes/noimage.png" alt="image" />
+                                                                }
+                                                            </a>
+                                                            <div class="card-block" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="text-align: center;">
+                                                                <a href="#"><h6 class="card-title">@String.Format(model.Nombre)</h6></a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 }
@@ -648,7 +648,7 @@
         function (data)
         {
             if (data.length > 0)
-                $("#imgModalOndemand").append('<a href="#PopupPhoto" onclick="showZoomImg()" data-toggle="modal" data-target="#PopupPhoto"><img id="imgProduct" class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" /></a><img src="../Imagenes/zoom.png" alt="image"/>')
+                $("#imgModalOndemand").append('<a href="#PopupPhoto" onclick="showZoomImg()" data-toggle="modal" data-target="#PopupPhoto"><img id="imgProduct" class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" /></a><img style="max-width:220px" src="../Imagenes/zoom.png" alt="image"/>')
             else 
                 $("#imgModalOndemand").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="../Imagenes/noimage.png" alt="image" />')           
         }).error(function () 
@@ -975,21 +975,21 @@
 
 <!-- Modal captura de productos -->
 <div class="modal fade" id="ModalProducto" tabindex="-1" aria-labelledby="ModalProductolLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" >
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ModalProductoLabel">Captura de Productos</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" >
                 <div id="descripcionProducto" class="col-md-12">
                     <div id="liveAlertPlaceholderModal"></div>
                     <div class="col-md-12">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">                                        
-                                        <div class="col-sm-6 md-55 text-justify">
+                        @*<div class="col-md-12">*@
+                            @*<div class="card">*@
+                                <div class="card card-body">
+                                    <div class="row">
+                                <div class="col-sm-6 md-55 text-justify">
                                             <div class="row">                                                
                                                 <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><label id="nombre"></label><i class="fa fa-chevron-down mx-2"></i></a></h5>
                                                 <div class="collapse" id="collapseImage">
@@ -1051,8 +1051,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                           @* </div>*@
+                        @*</div>*@
                     </div>
                 </div>
             </div>

@@ -1095,130 +1095,159 @@ p, ol, h6{
 
 /*--------- CSS Template Default Stand Productos -----------------------------------------------------*/
 
-/*PALETA 1*/
+/*PALETA 1 azul*/
 .standAccordionPaleta1Color {
-    background-color: #003673;
+    background-color: #005187;
 }
 
 .standAnuncioPaleta1Color1 {
-    background-color: #367FA9;
+    background-color: #005187;
 }
 
 .standAnuncioPaleta1Color2 {
-    background-color: #003673;
+    background-color: #4d82bc;
 }
 
 .standAnuncioPaleta1Color3 {
-    background-color: #8BC0D9;
+    background-color: #84b6f4;
 }
 
 .standAnuncioPaleta1Color4 {
-    background-color: #00285C;
+    background-color: #c4dafa;
 }
 
-/*PALETA 2*/
+p.standAnuncioPaleta1Color4 {
+    color: #606060 !important;
+}
+
+
+/*PALETA 2 turquesa*/
 .standAccordionPaleta2Color {
-    background-color: #004a57;
+    background-color: #008781;
 }
 
 .standAnuncioPaleta2Color1 {
-    background-color: #00797f;
+    background-color: #008781;
 }
 
 .standAnuncioPaleta2Color2 {
-    background-color: #0f1731;
+    background-color: #239f98;
 }
 
 .standAnuncioPaleta2Color3 {
-    background-color: #004a57;
+    background-color: #3ab8b0;
 }
 
 .standAnuncioPaleta2Color4 {
-    background-color: #00a68f;
+    background-color: #6ddbd7;
 }
 
-/*PALETA 3*/
+p.standAnuncioPaleta2Color4 {
+    color: #606060 !important;
+}
+
+/*PALETA 3 rojo*/
 .standAccordionPaleta3Color {
-    background-color: #bf0811;
+    background-color: #c32f2f;
 }
 
 .standAnuncioPaleta3Color1 {
-    background-color: #bf0811;
+    background-color: #c32f2f;
 }
 
 .standAnuncioPaleta3Color2 {
-    background-color: #6a140f;
+    background-color: #d73535;
 }
 
 .standAnuncioPaleta3Color3 {
-    background-color: #c21b17;
+    background-color: #eb3c3b;
 }
 
 .standAnuncioPaleta3Color4 {
-    background-color: #e73f12;
+    background-color: #ff4242;
 }
 
-/*PALETA 4*/
+/*PALETA 4 verde*/
 .standAccordionPaleta4Color {
-    background-color: #498c00;
+    background-color: #2a8c4a;
 }
 
 .standAnuncioPaleta4Color1 {
-    background-color: #145600;
+    background-color: #2a8c4a;
 }
 
 .standAnuncioPaleta4Color2 {
-    background-color: #002000;
+    background-color: #64c27b;
 }
 
 .standAnuncioPaleta4Color3 {
-    background-color: #5ca800;
+    background-color: #9bfab0;
 }
 
 .standAnuncioPaleta4Color4 {
-    background-color: #498c00;
+    background-color: #d0fdd7;
 }
 
-/*PALETA 5*/
+p.standAnuncioPaleta4Color3 {
+    color: #606060 !important;
+}
+
+p.standAnuncioPaleta4Color4 {
+    color: #606060 !important;
+}
+
+/*PALETA 5 amarillo*/
 .standAccordionPaleta5Color {
-    background-color: #ff5733;
+    background-color: #ff4b10;
 }
 
 .standAnuncioPaleta5Color1 {
-    background-color: #ff5733;
+    background-color: #ff4b10;
 }
 
 .standAnuncioPaleta5Color2 {
-    background-color: #c70039;
+    background-color: #ff6900;
 }
 
 .standAnuncioPaleta5Color3 {
-    background-color: #d1784f;
+    background-color: #ff9a00;
 }
 
 .standAnuncioPaleta5Color4 {
-    background-color: #ffc301;
+    background-color: #ffc519;
 }
 
-/*PALETA 6*/
+p.standAnuncioPaleta5Color4 {
+    color: #606060 !important;
+}
+
+/*PALETA 6 gris*/
 .standAccordionPaleta6Color {
-    background-color: #596171;
+    background-color: #726d73;
 }
 
 .standAnuncioPaleta6Color1 {
-    background-color: #b3bccc;
+    background-color: #726d73;
 }
 
 .standAnuncioPaleta6Color2 {
-    background-color: #8d96a8;
+    background-color: #99969a;
 }
 
 .standAnuncioPaleta6Color3 {
-    background-color: #8d96a8;
+    background-color: #c3c2c3;
 }
 
 .standAnuncioPaleta6Color4 {
-    background-color: #737c8c;
+    background-color: #d8d8d8;
+}
+
+p.standAnuncioPaleta6Color3 {;
+    color: #606060 !important;
+}
+
+p.standAnuncioPaleta6Color4 {
+    color: #606060 !important;
 }
 
 .row_retringido {
@@ -1285,4 +1314,27 @@ div.fontsize {
     overflow: hidden;
     display: none;
     z-index: 1000;
+}
+
+
+/*  STAND */
+
+.x_content_card {
+    /*width: 60%;*/
+    margin: auto;
+    max-width: 180px;
+    /* margin-top: 10%;*/
+    margin-bottom: 10px;
+}
+
+.card-img-top{
+    max-width:95%;
+    margin:auto;
+}
+
+@media only screen and (min-width: 771px) {
+    .x_content_card {
+        margin-left:0px;
+        padding-left:0px;
+    }
 }
