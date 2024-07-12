@@ -118,7 +118,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="BuscarClienteModal">
+<div class="modal fade" id="BuscarClienteModal" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -143,7 +143,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="BuscarProductoModal">
+<div class="modal fade" id="BuscarProductoModal" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -169,7 +169,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="ArticulosModal">
+<div class="modal fade" id="ArticulosModal" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -609,7 +609,12 @@
                     "data": "foto",
                     render: function (data, type)
                     {
-                        return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
+                        if(data != "")
+                        {
+                            return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />';
+                        }else{
+                            return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="' + path + '/Imagenes/noimage.png" alt="image" />';
+                        }
                     }
                 }
             ]

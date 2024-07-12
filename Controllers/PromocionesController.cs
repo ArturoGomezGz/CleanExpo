@@ -197,7 +197,7 @@ namespace ExpoMR.Controllers
                        {
                            idArticulo = row["IdArticulo"],
                            articulo = row["Nombre"],
-                           foto = row["Foto"]
+                           foto = (row["Foto"] != DBNull.Value ? (byte[])row["Foto"] : Array.Empty<byte>())
                        }).ToArray()
             };
 
