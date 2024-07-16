@@ -68,6 +68,7 @@
 		let idRuta = idTipoUsuario == 1 ? $("#IdRuta").val() : 0
 
 		$('#Usuarios').DataTable({
+			order: [[1, 'asc']],
 			responsive: true,
 			"info":false,
 			"bDestroy": true,
