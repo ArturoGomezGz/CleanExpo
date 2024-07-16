@@ -94,7 +94,6 @@
     <div class="card" style="background:url(data:image/jpeg;base64,@Convert.ToBase64String(Model.Background))">
         <div class="card-body">
             <div class="row">
-                @*<div class="col-xl-1"></div>*@
                 <div class="col-sm-12 col-md-12 margin_auto">
                     <div class="container">
                         <div class="row">
@@ -118,7 +117,6 @@
                         </div>
                     </div>
                 </div>
-                @*<div class="col-xl-1"></div>*@
             </div>
             <div class="row">
                 <div class="col-sm-12 col-md-12 margin_auto">
@@ -460,31 +458,26 @@
             success: function (resultado)
             {
                 document.getElementById('nombre').innerHTML = " " + resultado.nombre;
-                document.getElementById('presentacion').innerHTML = " " + resultado.presentacion;
+                document.getElementById('presentacion').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
                 document.getElementById('idproducto').innerHTML = " " + resultado.idProducto;
+                document.getElementById('restringido').innerHTML = " " + resultado.cantidad;
                 document.getElementById('PrecioPublico').innerHTML = " " + FormatoMoneda(resultado.publico)
                 document.getElementById('precioMR').innerHTML = " " + FormatoMoneda(resultado.precioMR)
                 document.getElementById('descuentoExpo').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo)
+                document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto)
                 document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
                 document.getElementById('codigo').innerHTML = " " + resultado.codigo;
                 document.getElementById('preciofinal').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
                 document.getElementById('getiva').innerHTML = " ";
-                document.getElementById('restingido').innerHTML = " " + resultado.cantidad;
                 document.getElementById('subtotal').innerHTML = " " + FormatoMoneda(0);
                 document.getElementById('valoriva').innerHTML = " " + FormatoMoneda(0);
                 document.getElementById('total').innerHTML = " " + FormatoMoneda(0);
+                document.getElementById('formula').innerHTML = " " + resultado.formula;
+                document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
+                document.getElementById('caja').innerHTML = " " + resultado.caja;
                 $("#IdProducto").val(IdProducto)
                 $("#PrecioMR").val(resultado.precioMR)
                 $("#cantidad").val(0)
-
-                if (resultado.restringido) 
-                {
-                    $("#div_restringido").removeClass("d-none");
-                } 
-                else 
-                {
-                    $("#div_restringido").addClass('d-none');
-                }
 
                 ValorIva = resultado.valorIva
                 Precio = resultado.precioFinal
@@ -969,102 +962,109 @@
             <div class="modal-body">
                 <div id="descripcionProducto" class="col-md-12">
                     <div id="liveAlertPlaceholderModal"></div>
-                    @*<div class="col-md-12">*@
-                        @*<div class="col-md-12">*@
-                            @*<div class="card">*@
-                                <div class="card card-body">
-                                    <div class="row">
-                                         <div class="col-md-12 col-lg-7 md-55 text-justify">
-                                            <div class="row">                                                
-                                                <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><label id="nombre"></label><i class="fa fa-chevron-down mx-2"></i></a></h5>
-                                                <div class="collapse" id="collapseImage">
-                                                    <div id="imgModalOndemand" class="card card-body"></div>
-                                                </div>
-                                                <label class="label__Presentacion" id="presentacion"></label>                                                
-                                            </div>
-                                            <div class="mb-3">
-                                                <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
-                                            </div>
-                                            <div id="div_restringido" class="row d-none">
-                                                <strong>Restringido a </strong> <label class="label__producto" id="restingido"></label>
-                                            </div>
-                                            <div class="row" >
-                                                <div class="col-6">
-                                                    <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
-                                                </div>
-                                                <div class="col-6">
-                                                    <strong>Precio MR: </strong><label class="label__PrecioMR" id="precioMR"></label>
-                                                </div>
-                                            </div>
-                                            <div class="row">                                                
-                                                <div class="col-6">
-                                                    <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo"></label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <h6>
-                                                    <strong>Iva: </strong><label class="label__DescuentoExpo" id="iva"></label>
-                                                    <label id="getiva"> </label>
-                                                </h6>
-                                            </div>
-                                            <div class="mt-3">
-                                                <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-lg-5 md-55">
-                                            <input type="hidden" id="IdProducto"/>
-                                            <input type="hidden" id="PrecioMR" />                                           
-                                            <div class="contenedor__Producto" >
-                                                <div class="row w-100 mb-2">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Precio Final:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
-                                                    </div>
-                                                </div>
-                                                 <div class="row w-100">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Cantidad:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <input id="cantidad" type="number" min="0" value="0" placeholder="0" style="width:75%"/>
-                                                    </div>
-                                                </div>
-                                                <div class="row w-100 mt-5">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Subtotal:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="contenedor__Producto__subtotal" id="subtotal"></label>
-                                                    </div>
-                                                </div>
-                                                <div class="row w-100 mb-3">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Iva:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="contenedor__Producto__iva" id="valoriva"></label>
-                                                    </div>
-                                                </div>
-                                                <div class="row" style="width:90%">
-                                                    <hr />
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Total:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="contenedor__Producto__Total" id="total"></label>
-                                                    </div>
-                                                </div>
-                                                <div class="row m-auto mt-3 mb-3"> 
-                                                    <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
-                                                </div>
-                                        </div>
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-7 md-55 text-justify">
+                                <div class="row">
+                                    <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><label id="nombre"></label><i class="fa fa-chevron-down mx-2"></i></a></h5>
+                                    <div class="collapse" id="collapseImage">
+                                        <div id="imgModalOndemand" class="card card-body"></div>
+                                    </div>
+                                    <label class="label__Presentacion" id="presentacion"></label>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
+                                </div>
+                                <div id="div_restringido" class="mb-3">
+                                    <strong>Restringido a:  </strong> <label class="label__producto" id="restringido"></label>
+                                </div>
+                                <div class="row" >
+                                    <div class="col-6">
+                                        <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Precio MR: </strong><label class="label__PrecioMR" id="precioMR"></label>
                                     </div>
                                 </div>
-                           @* </div>*@
-                        @*</div>*@
-                    @*</div>*@
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Precio Neto: </strong><label class="label__Neto" id="neto" ></label>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo"></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h6>
+                                        <strong></strong><label class="label__DescuentoExpo" id="iva"></label>
+                                        <label id="getiva"> </label>
+                                    </h6>
+                                </div>
+                                <div>
+                                    <strong>Formula: </strong> <label class="label__Formula" id="formula"></label>
+                                </div>
+                                <div>
+                                    <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio"></label>
+                                </div>
+                                <div>
+                                    <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja"></label>
+                                </div>
+                                <div class="mt-3">
+                                    <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-5 md-55">
+                                <input type="hidden" id="IdProducto"/>
+                                <input type="hidden" id="PrecioMR" />
+                                <div class="contenedor__Producto" >
+                                    <div class="row w-100 mb-2">
+                                        <div class="col-6 totalLabel">
+                                            <label>Precio Final:</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row w-100">
+                                        <div class="col-6 totalLabel">
+                                            <label>Cantidad:</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <input id="cantidad" type="number" min="0" value="0" placeholder="0" style="width:75%"/>
+                                        </div>
+                                    </div>
+                                    <div class="row w-100 mt-5">
+                                        <div class="col-6 totalLabel">
+                                            <label>Subtotal:</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row w-100 mb-3">
+                                        <div class="col-6 totalLabel">
+                                            <label>Iva:</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="contenedor__Producto__iva" id="valoriva"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="width:90%">
+                                        <hr />
+                                        <div class="col-6 totalLabel">
+                                            <label>Total:</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="contenedor__Producto__Total" id="total"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row m-auto mt-3 mb-3"> 
+                                        <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

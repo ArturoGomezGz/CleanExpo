@@ -16,19 +16,18 @@
                        }else{
                             <img class="card-img-top m-auto" src="~/Imagenes/noimage.png" alt="image">
                        }
-                        
                    </div>
                     <div class="col-sm-12 col-md-5 col-lg-6 text-justify">
                        <div class="row">
                             <h5 class="card-title "> @Model.Nombre</h5>
-                            <label class="label__Presentacion">@Model.Presentacion</label>
+                            <label class="label__Presentacion">@Model.Presentacion @Model.Unidades</label>
                        </div>
                        <div class="mt-2">
                            <strong>No. Producto: </strong> <label class="label__producto">@Model.IdProducto</label>
                            @Html.HiddenFor(m=>m.IdProducto)
                        </div>
                        <div class="mb-3">
-                           <strong>Restringido a </strong> <label class="label__producto">@Model.Cantidad</label>
+                           <strong>Restringido a:  </strong> <label class="label__producto">@Model.Cantidad</label>
                        </div>
                        <div class="row">
                            <div class="col-6">
@@ -73,7 +72,6 @@
                        <div>
                             <strong>Código: </strong> <label class="label__Caja"> @Model.Codigo</label>
                        </div>
-
                    </div>
                     <div class="col-sm-12 col-md-4 col-lg-3">
                         <div class="contenedor__Producto">

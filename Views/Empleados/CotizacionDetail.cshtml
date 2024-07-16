@@ -4,87 +4,80 @@
     ViewData["Title"] = "GetCotizacion";
 }
 
-@*<div class="col-md-12">*@
-    <div class="row">
-         <div id="liveAlertDetailCotizacion"></div>
-        <div class="col-8">
-            <h3>Orden</h3>
-            <label hidden>@Model.IdCliente</label>
-            <label hidden>@Model.IdCotizacion</label>
-            <strong>Cliente: </strong><label>@Model.Cliente</label><br />
-            <strong>RFC: </strong><label>@Model.RFC</label><br /><br />
-            <strong>Tipo de Comprobante:</strong>
-            <label>
-                @Html.DropDownListFor(model => model.IdDocumento, new SelectList(Model.TipoDocumentos, "IdDocumento", "Documentos"), new { id = "txtDocumento", @class= "form-select", name = "Documento", disabled="disabled", title="cmb"})
-            </label>
-            <br />
-            <strong>Uso del CFDI: </strong>
-            <label>
-                @Html.DropDownListFor(model => model.IdUsoCFDI, new SelectList(Model.CFDI, "IdUsoCFDI", "UsoCFDI"), new { id = "txtUsoCFDI", @class= "form-select", name = "Documento", disabled="disabled", title="cmb"})
-            </label>
-            <br />
-            <br />
-            <strong>Tipo de Envío: </strong>
-            <label>
-                @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.Venta, "IdTipoVenta", "TipoVenta"), new { id = "txtTipoVenta",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
-            </label>
-            <br />
-            <strong>Trasportista: </strong>
-            <label>
-                @Html.DropDownListFor(model => model.IdTransporte, new SelectList(Model.transportistas, "IdTransporte", "Transportista"), new { id = "txtTransportista",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
-            </label>
-            <br />
-            <strong>Porte: </strong>
-            <label>
-                @Html.DropDownListFor(model => model.IdPorte, new SelectList(Model.portes, "IdPorte", "Porte"), new { id = "txtPorte",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
-            </label>
-            <br />
-            <strong>Dirección de Entrega: </strong>
-            <label>
-                @Html.DropDownListFor(model => model.Direccion, new SelectList(Model.Direcciones, "Entrega", "DirEntrega"), new { id = "txtDirEntrega",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
-            </label>
-            <br />
-            <strong>Observaciones:</strong><lable><input type="text" id="txtObsv" value="@Model.Observaciones" class="form-control" disabled /></lable>
-        </div>
-        <div id="divCotizacionTotal" class="col-4 d-none">
-            <div class="contenedor carritoTotal">
-                <p style="color:#244f87; font-size:1.2em; font-weight:bold;"><label>Crédito: </label> <label id="lblcredito"></label></p>
-                <p><strong>Subtotal: </strong><label id="lblsubtotal"></label></p>
-                <p><strong>Iva: </strong><label id="lbliva"></label></p>
-                <hr/>
-                <p><strong>Total: </strong><label id="lbltotal"></label></p>
-                <p><strong>Total de Productos: </strong><label id="lbltotalProductos"></label></p>
-                <div id="btnColocaOrden">
-                    <button id="colocaOrden" onclick="colocarOrden()" class="btn btn-naranja">Coloca tu Orden</button>
-                </div>
+<div class="row">
+    <div id="liveAlertDetailCotizacion"></div>
+    <div class="col-8">
+        <h3>Orden</h3>
+        <label hidden>@Model.IdCliente</label>
+        <label hidden>@Model.IdCotizacion</label>
+        <strong>Cliente: </strong><label>@Model.Cliente</label><br />
+        <strong>RFC: </strong><label>@Model.RFC</label><br /><br />
+        <strong>Tipo de Comprobante:</strong>
+        <label>
+            @Html.DropDownListFor(model => model.IdDocumento, new SelectList(Model.TipoDocumentos, "IdDocumento", "Documentos"), new { id = "txtDocumento", @class= "form-select", name = "Documento", disabled="disabled", title="cmb"})
+        </label>
+        <br />
+        <strong>Uso del CFDI: </strong>
+        <label>
+            @Html.DropDownListFor(model => model.IdUsoCFDI, new SelectList(Model.CFDI, "IdUsoCFDI", "UsoCFDI"), new { id = "txtUsoCFDI", @class= "form-select", name = "Documento", disabled="disabled", title="cmb"})
+        </label>
+        <br />
+        <br />
+        <strong>Tipo de Envío: </strong>
+        <label>
+            @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.Venta, "IdTipoVenta", "TipoVenta"), new { id = "txtTipoVenta",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+        </label>
+        <br />
+        <strong>Trasportista: </strong>
+        <label>
+            @Html.DropDownListFor(model => model.IdTransporte, new SelectList(Model.transportistas, "IdTransporte", "Transportista"), new { id = "txtTransportista",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+        </label>
+        <br />
+        <strong>Porte: </strong>
+        <label>
+            @Html.DropDownListFor(model => model.IdPorte, new SelectList(Model.portes, "IdPorte", "Porte"), new { id = "txtPorte",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+        </label>
+        <br />
+        <strong>Dirección de Entrega: </strong>
+        <label>
+            @Html.DropDownListFor(model => model.Direccion, new SelectList(Model.Direcciones, "Entrega", "DirEntrega"), new { id = "txtDirEntrega",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
+        </label>
+        <br />
+        <strong>Observaciones:</strong><lable><input type="text" id="txtObsv" value="@Model.Observaciones" class="form-control" disabled /></lable>
+    </div>
+    <div id="divCotizacionTotal" class="col-4 d-none">
+        <div class="contenedor carritoTotal">
+            <p style="color:#244f87; font-size:1.2em; font-weight:bold;"><label>Crédito: </label> <label id="lblcredito"></label></p>
+            <p><strong>Subtotal: </strong><label id="lblsubtotal"></label></p>
+            <p><strong>Iva: </strong><label id="lbliva"></label></p>
+            <hr/>
+            <p><strong>Total: </strong><label id="lbltotal"></label></p>
+            <p><strong>Total de Productos: </strong><label id="lbltotalProductos"></label></p>
+            <div id="btnColocaOrden">
+                <button id="colocaOrden" onclick="colocarOrden()" class="btn btn-naranja">Coloca tu Orden</button>
             </div>
         </div>
     </div>
-@*</div>*@ 
-@*<div class="col-md-12>*@
-    <div class="row">
-        <div class="col-md-6">
-            <button type="button" id="btGuardarDatosCotizacion" onclick="GuardarDatosCotizacion()" class="btn btn-verde-medio">Guardar</button>
-        </div>
-        <div class="col-md-6">
-            <button type="button" id="btCancelDatosCotizacion" class="btn btn-rojo" onclick="CancelGuadar()" data-bs-dismiss="modal">Cancelar</button>
-        </div>
-    </div> 
-
-@*</div>*@
-@*<div class="col-md-12">*@
-    <div class="row">
-        <div class="col-md-4">
-            <button type="button" id="AgregarProductos" onclick="btnagregarProductos()" class="btn btn-azul col-md-55" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Productos</button>
-        </div>
-        <div class="col-md-4">
-            <button id="btn-modificar" onclick="modificarCotizacion()" type="button" class="btn btn-naranja col-md-55" data-bs-toggle="modal" data-bs-target="#editDatosCliente">Editar</button>
-        </div>
-        <div class="col-md-4">
-            <button type="button" id="buscarCliente" class="btn btn-azul col-md-55" >Buscar cliente</button>
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <button type="button" id="btGuardarDatosCotizacion" onclick="GuardarDatosCotizacion()" class="btn btn-verde-medio">Guardar</button>
     </div>
-@*</div>*@
+    <div class="col-md-6">
+        <button type="button" id="btCancelDatosCotizacion" class="btn btn-rojo" onclick="CancelGuadar()" data-bs-dismiss="modal">Cancelar</button>
+    </div>
+</div> 
+<div class="row">
+    <div class="col-md-4">
+        <button type="button" id="AgregarProductos" onclick="btnagregarProductos()" class="btn btn-azul col-md-55" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Productos</button>
+    </div>
+    <div class="col-md-4">
+        <button id="btn-modificar" onclick="modificarCotizacion()" type="button" class="btn btn-naranja col-md-55" data-bs-toggle="modal" data-bs-target="#editDatosCliente">Editar</button>
+    </div>
+    <div class="col-md-4">
+        <button type="button" id="buscarCliente" class="btn btn-azul col-md-55" >Buscar cliente</button>
+    </div>
+</div>
 <br/>
 
 <!-- Modal captura de productos -->
@@ -97,7 +90,6 @@
             </div>
             <div class="modal-body">
                 <div class="col-md-10">
-                   @* <strong>Cliente: </strong><label class="label__producto">@Model.Cliente</label><br /><br />*@
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="txtBuscar" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                         <div class="input-group-append">
@@ -122,115 +114,107 @@
                 </div>
                 <div id="descripcionProducto" class="col-md-12">
                     <div id="liveAlertPlaceholder"></div>
-                    @*<div class="col-md-12">*@
-                        @*<div class="col-md-12">*@
-                            <div class="card">
-                                <div class="card-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-7  text-justify">
                                     <div class="row">
-                                        <div class="col-md-3">
-                                            <img class="card-img-top" id="imgProducto" alt="image">
+                                        <h5 class="card-title "><label id="nombre"></label></h5>
+                                        <label class="label__Presentacion" id="presentacion"></label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Restringido a: </strong> <label class="label__producto" id="restingido"></label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Precio Publico: </strong> <label class="label__publico" id="publico"></label>
                                         </div>
-                                            <div class="col-md-12 col-lg-7  text-justify">
-                                                <div class="row">
-                                                    <h5 class="card-title "><label id="nombre"></label></h5>
-                                                    <label class="label__Presentacion" id="presentacion"></label>
-                                                </div>
-                                            <div class="mb-3">
-                                                <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
-                                            </div>
-                                            <div class="row">
-                                                <strong>Restringido a </strong> <label class="label__producto" id="restingido"></label>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <strong>Precio Publico: </strong> <label class="label__publico" id="publico"></label>
-                                                </div>
-                                                <div class="col-6">
-                                                    <strong>Precio MR: </strong><label class="label__PrecioMR" id="precio"></label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <strong>Precio Neto: </strong><label class="label__Neto" id="neto"></label>
-                                                </div>
-                                                <div class="col-6">
-                                                    <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoexpo"></label>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-4">
-                                                <h6>
-                                                    <strong>Iva:</strong><label class="label__DescuentoExpo" id="iva"></label>
-                                                    <label id="getiva"></label>
-                                                </h6>
-                                            </div>
-                                            <div class="row">
-                                                <strong>Formula: </strong> <label class="label__Formula" id="formula"></label>
-                                            </div>
-                                            <div class="row">
-                                                <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio"></label>
-                                            </div>
-                                            <div class="row">
-                                                <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja"></label>
-                                            </div>
-                                            <div class="row">
-                                                <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
-                                            </div>
-
-                                        </div>
-                                        <div class="col-md-12 col-lg-5">
-                                            <div class="contenedor__Producto">
-                                                <div class="row w-100 mb-2">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Precio Final:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                         <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
-                                                    </div>
-                                                </div>
-                                                <div class="row w-100">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Cantidad:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <input id="cantidad" type="number" min="0" value="0" placeholder="0" style="width:75%" />
-                                                    </div>
-                                                </div>
-                                                <div class="row w-100 mt-5">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Subtotal:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="contenedor__Producto__subtotal" id="subtotal"></label>
-                                                    </div>
-                                                </div>
-                                                <div class="row w-100 mb-3">
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Iva:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="contenedor__Producto__iva" id="valoriva"></label>
-                                                    </div>
-                                                </div>
-                                                <div class="row" style="width:90%">
-                                                    <hr />
-                                                    <div class="col-6 totalLabel">
-                                                        <label>Total:</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="contenedor__Producto__Total" id="total"></label>
-                                                    </div>
-                                                </div>
-                                                <div class="row" style="width:90%">
-                                                    <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
-                                                </div>
-                                            </div>
+                                        <div class="col-6">
+                                            <strong>Precio MR: </strong><label class="label__PrecioMR" id="precio"></label>
                                         </div>
                                     </div>
-                                <button type="button" id="IraProductos" onclick="regresaProductos()" class="btn btn-azul">Ir a Productos</button>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Precio Neto: </strong><label class="label__Neto" id="neto"></label>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoexpo"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-4">
+                                        <h6>
+                                            <label class="label__DescuentoExpo" id="iva"></label>
+                                            <label id="getiva"></label>
+                                        </h6>
+                                    </div>
+                                    <div class="row">
+                                        <strong>Formula: </strong> <label class="label__Formula" id="formula"></label>
+                                    </div>
+                                    <div>
+                                        <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio"></label>
+                                    </div>
+                                    <div>
+                                        <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja"></label>
+                                    </div>
+                                    <div>
+                                        <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-lg-5">
+                                    <div class="contenedor__Producto">
+                                        <div class="row w-100 mb-2">
+                                            <div class="col-6 totalLabel">
+                                                <label>Precio Final:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                    <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row w-100">
+                                            <div class="col-6 totalLabel">
+                                                <label>Cantidad:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <input id="cantidad" type="number" min="0" value="0" placeholder="0" style="width:75%" />
+                                            </div>
+                                        </div>
+                                        <div class="row w-100 mt-5">
+                                            <div class="col-6 totalLabel">
+                                                <label>Subtotal:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row w-100 mb-3">
+                                            <div class="col-6 totalLabel">
+                                                <label>Iva:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="contenedor__Producto__iva" id="valoriva"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="width:90%">
+                                            <hr />
+                                            <div class="col-6 totalLabel">
+                                                <label>Total:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="contenedor__Producto__Total" id="total"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="width:90%">
+                                            <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                        <button type="button" id="IraProductos" onclick="regresaProductos()" class="btn btn-azul">Ir a Productos</button>
                         </div>
-                        @*</div>*@
-                   @* </div>*@
+                    </div>
                 </div>
             </div>
         </div>
@@ -368,26 +352,26 @@
         $('#BuscarProducto').DataTable({
             bFilter: false,
             lengthChange: false,
-                    "ajax": {
-                "url": path+"Empleados/ProductoBusqueda?Busqueda=" + Busqueda + "&IdCotizacion=" + @Model.IdCotizacion,
+            "ajax": {
+                        "url": path+"Empleados/ProductoBusqueda?Busqueda=" + Busqueda + "&IdCotizacion=" + @Model.IdCotizacion,
                         type: 'POST',
                         dataSrc: ""
                     },
-                    "columns": [
-                        {
-                            "data":  "idProducto",
-                            render: function (data, type) {
-                                if (type === 'display') {
-                                    return '<a onclick="detalleProducto(' + data + ')" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
-                                }
-                                return data;
-                            },
-                        },
-                        { "data": "nombre" },
-                        { "data": "presentacion" },
-                        { "data": "formula" },
-                        { "data": "laboratorio" }
-                    ]
+            "columns": [
+                {
+                    "data":  "idProducto",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<a onclick="detalleProducto(' + data + ')" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                        }
+                        return data;
+                    },
+                },
+                { "data": "nombre" },
+                { "data": "presentacion" },
+                { "data": "formula" },
+                { "data": "laboratorio" }
+            ]
         });
     }
 
@@ -576,22 +560,21 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (resultado) {
-                document.getElementById('imgProducto').src = "data:image/png;base64," + resultado.imgProducto;
                 document.getElementById('nombre').innerHTML = " " + resultado.nombre;
-                document.getElementById('presentacion').innerHTML = " " + resultado.presentacion;
+                document.getElementById('presentacion').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
                 document.getElementById('idproducto').innerHTML = " " + resultado.idproducto;
-                document.getElementById('restingido').innerHTML = " " + resultado.restringido;
-                document.getElementById('publico').innerHTML = " " + resultado.publico;
-                document.getElementById('precio').innerHTML = " " + resultado.preciomr;
-                document.getElementById('neto').innerHTML = " " + resultado.neto;
-                document.getElementById('descuentoexpo').innerHTML = " " + resultado.descuentoexpo;
-                document.getElementById('iva').innerHTML = resultado.iva == false ? 0 : 1 ;
+                document.getElementById('restingido').innerHTML = " " + resultado.cantidad;
+                document.getElementById('publico').innerHTML = " " + FormatoMoneda(resultado.publico);
+                document.getElementById('precio').innerHTML = " " + FormatoMoneda(resultado.preciomr);
+                document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto);
+                document.getElementById('descuentoexpo').innerHTML = " " + FormatoMoneda(resultado.descuentoexpo);
+                document.getElementById('preciofinal').innerHTML = " " + resultado.precioFinal;
+                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
+                document.getElementById('getiva').innerHTML = " " + resultado.valoriva;
                 document.getElementById('formula').innerHTML = " " + resultado.formula;
                 document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
                 document.getElementById('caja').innerHTML = " " + resultado.caja;
-                document.getElementById('codigo').innerHTML = " " + resultado.codigo;
-                document.getElementById('preciofinal').innerHTML = " " + resultado.preciofinal;
-                document.getElementById('getiva').innerHTML = " " + resultado.valoriva;    
+                document.getElementById('codigo').innerHTML = " " + resultado.codigo; 
             },
             error: function (xhr, status, error) {
                 console.log(error);

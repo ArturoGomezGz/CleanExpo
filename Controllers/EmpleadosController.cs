@@ -439,9 +439,8 @@ namespace ExpoMR.Controllers
                            presentacion = row[2],
                            formula = row[3] == DBNull.Value ? "" : row[3],
                            laboratorio = row[4]
-                           
                         }).ToArray()
-              };
+                };
                 rm.Response = true;
                 rm.Message = "ok";
                 rm.Result = jsonData.rows;
@@ -474,7 +473,6 @@ namespace ExpoMR.Controllers
                        from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                            imgProducto = GeneralesController.GetFoto(IdProducto),
                             idproducto = row["IdProducto"],
                             nombre = row["Nombre"],
                             presentacion = row["Presentacion"],
@@ -487,7 +485,7 @@ namespace ExpoMR.Controllers
                             codigo = row["Codigo"],
                             restringido = row["Restringido"],
                             cantidad = row["Cantidad"],
-                            formula = row["Formula"],
+                            formula = (row["Formula"] != DBNull.Value ? row["Formula"] : ""),
                             controlado = row["Controlado"],
                             preciomr = row["PrecioMR"],
                             descuentoexpo = row["DescuentoExpo"],
@@ -861,7 +859,6 @@ namespace ExpoMR.Controllers
 
             dB.ExecuteNonQuery("ExpoPedidoAgregar", ref parameters);
         }
-
 
         public IActionResult Contacto()
         {
