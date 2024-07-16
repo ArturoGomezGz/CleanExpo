@@ -353,7 +353,7 @@ p, ol, h6{
     transition: 0.5s;
     color: var(--blanco);
     border-radius: 5px;
-    min-width: 150px;
+    min-width: 100px;
 }
 
 .btn-naranja:hover {
@@ -1332,9 +1332,22 @@ div.fontsize {
     margin:auto;
 }
 
-@media only screen and (min-width: 771px) {
-    .x_content_card {
-        margin-left:0px;
-        padding-left:0px;
+a.nombrePromo{
+    text-decoration:none !important;
+}
+
+
+
+    @media only screen and (min-width: 771px) {
+        .x_content_card {
+            margin-left: 0px;
+            padding-left: 0px;
+        }
     }
+
+    .form-select {
+    height: 25px;
+    padding: .075rem 2.25rem .075rem .55rem;
+    line-height: 0.8em;
+    margin-bottom:5px
 }

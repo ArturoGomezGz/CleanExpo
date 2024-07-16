@@ -126,13 +126,13 @@ hr.new1 {
     width: 27%;
 }*/
 
-.pointer {
+/*.pointer {
     position: absolute;
     top: 0;
     left: 0;
     pointer-events: none;
     width:100%;
-}
+}*/
 
 .contenedor__ruleta {
     position: relative;
@@ -243,17 +243,39 @@ hr.new1 {
 }
 
 .label_Descuento_stnd {
-    color: #ff730b;
+    color: #082c47;
     font-weight: bold;
 }
 
-.label_PrecioFinal_stnd {
-    color: #082c47;
+.label_PrecioFinal_stnd, .contenedor__Producto__PrecioFinal {
+    color: #ff730b;
     font-size: 1.15em;
     font-weight: bold;
+}
+
+.label__PrecioMR {
+    color: #082c47;
+    font-weight: bold;
+}
+
+.label__DescuentoExpo {
+    color: #ff730b;
+    font-size: 1.15em;
+    font-weight: bold;
+}
+
+.contenedor__Producto__Total {
+    color: #082c47;
+    font-weight: bold;
+    font-size: 1.15em;
 }
 
 .margin_auto {
     margin-left: auto;
     margin-right: auto;
+}
+
+.totalLabel{
+    font-weight:bold;
+    text-align:right;
 }

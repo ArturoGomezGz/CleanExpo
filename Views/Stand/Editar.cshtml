@@ -222,7 +222,7 @@
                                                                         <strong>@String.Format(modelo.Premios)</strong>
                                                                     </div>
                                                                     <a href="#" style="margin: auto;">
-                                                                        <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
+                                                                        <img class="card-img-top mw-100 pb-3" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
                                                                     </a>
                                                                 </div>
                                                         </div>
@@ -306,7 +306,7 @@
                                                                 <strong>@String.Format(modelo.Premios)</strong>
                                                             </div>
                                                             <a href="#" style="margin: auto;">
-                                                                <img class="card-img-top mw-100" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
+                                                                <img class="card-img-top mw-100 pb-3" src="@String.Format(modelo.ImgDisponibilidad)" alt="image" />
                                                             </a>
                                                         </div>
                                                     </div>
@@ -338,7 +338,7 @@
                                                                 }
                                                             </a>
                                                             <div class="card-block" onclick="MostrarArticulo(@string.Format(Convert.ToString(model.IdArticulo)), @string.Format(Convert.ToString(model.IDdArticulos))); return false;" style="text-align: center;">
-                                                                <a href="#"><h6 class="card-title">@String.Format(model.Nombre)</h6></a>
+                                                                <a href="#" class="nombrePromo"><h6 class="card-title">@String.Format(model.Nombre)</h6></a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -465,7 +465,7 @@
                 document.getElementById('PrecioPublico').innerHTML = " " + FormatoMoneda(resultado.publico)
                 document.getElementById('precioMR').innerHTML = " " + FormatoMoneda(resultado.precioMR)
                 document.getElementById('descuentoExpo').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo)
-                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:red'>Sin Iva</span>" : " <span style='color:green'>Con Iva</span>";
+                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
                 document.getElementById('codigo').innerHTML = " " + resultado.codigo;
                 document.getElementById('preciofinal').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
                 document.getElementById('getiva').innerHTML = " ";
@@ -633,7 +633,7 @@
         function (data)
         {
             if (data.length > 0)
-                $("#imgModalOndemand").append('<a href="#PopupPhoto" onclick="showZoomImg()" data-toggle="modal" data-target="#PopupPhoto"><img id="imgProduct" class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" /></a><img style="max-width:220px" src="../Imagenes/zoom.png" alt="image"/>')
+                $("#imgModalOndemand").append('<a href="#PopupPhoto" onclick="showZoomImg()" data-toggle="modal" data-target="#PopupPhoto"><img id="imgProduct" class="card-img-top" style="margin: auto;" src="data:image/png;base64,' + data + '" alt="image" /></a><img style="max-width:220px" src="../Imagenes/zoom.png" alt="image"/>')
             else 
                 $("#imgModalOndemand").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="../Imagenes/noimage.png" alt="image" />')           
         }).error(function () 
@@ -966,15 +966,15 @@
                 <h5 class="modal-title" id="ModalProductoLabel">Captura de Productos</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" >
+            <div class="modal-body">
                 <div id="descripcionProducto" class="col-md-12">
                     <div id="liveAlertPlaceholderModal"></div>
-                    <div class="col-md-12">
+                    @*<div class="col-md-12">*@
                         @*<div class="col-md-12">*@
                             @*<div class="card">*@
                                 <div class="card card-body">
                                     <div class="row">
-                                <div class="col-sm-6 md-55 text-justify">
+                                         <div class="col-md-12 col-lg-7 md-55 text-justify">
                                             <div class="row">                                                
                                                 <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><label id="nombre"></label><i class="fa fa-chevron-down mx-2"></i></a></h5>
                                                 <div class="collapse" id="collapseImage">
@@ -982,13 +982,13 @@
                                                 </div>
                                                 <label class="label__Presentacion" id="presentacion"></label>                                                
                                             </div>
-                                            <div class="row">
+                                            <div class="mb-3">
                                                 <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
                                             </div>
                                             <div id="div_restringido" class="row d-none">
                                                 <strong>Restringido a </strong> <label class="label__producto" id="restingido"></label>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" >
                                                 <div class="col-6">
                                                     <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
                                                 </div>
@@ -1007,38 +1007,64 @@
                                                     <label id="getiva"> </label>
                                                 </h6>
                                             </div>
-                                            <div class="row">
+                                            <div class="mt-3">
                                                 <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6 md-55">
+                                        <div class="col-md-12 col-lg-5 md-55">
                                             <input type="hidden" id="IdProducto"/>
                                             <input type="hidden" id="PrecioMR" />                                           
-                                            <div class="contenedor__Producto">
-                                                <div class="mb-4 ">
-                                                    <bold>Precio Final: </bold><label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                            <div class="contenedor__Producto" >
+                                                <div class="row w-100 mb-2">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Precio Final:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-4 d-grid">
-                                                    <bold>Cantidad: </bold><input id="cantidad" type="number" min="0" value="0" placeholder="0" />
+                                                 <div class="row w-100">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Cantidad:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input id="cantidad" type="number" min="0" value="0" placeholder="0" style="width:75%"/>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-4">
-                                                    <bold>Subtotal: </bold><label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                                <div class="row w-100 mt-5">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Subtotal:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-4">
-                                                    <bold>Iva: </bold><label class="contenedor__Producto__iva" id="valoriva"></label>
+                                                <div class="row w-100 mb-3">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Iva:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="contenedor__Producto__iva" id="valoriva"></label>
+                                                    </div>
                                                 </div>
-                                                <hr class="new1" />
-                                                <div class="mb-4">
-                                                    <bold>Total: </bold><label class="contenedor__Producto__Total" id="total"></label>
+                                                <div class="row" style="width:90%">
+                                                    <hr />
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Total:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="contenedor__Producto__Total" id="total"></label>
+                                                    </div>
                                                 </div>
-                                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
-                                            </div>
+                                                <div class="row m-auto mt-3 mb-3"> 
+                                                    <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
                            @* </div>*@
                         @*</div>*@
-                    </div>
+                    @*</div>*@
                 </div>
             </div>
         </div>

@@ -10,24 +10,24 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                   <div class="col-md-3">
+                   <div class="col-sm-12 col-md-3 col-lg-3">
                        @if(Model.imgProductos.Length>0){
                             <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.imgProductos))" alt="image">
                        }else{
-                            <img class="card-img-top" src="~/Imagenes/noimage.png" alt="image">
+                            <img class="card-img-top m-auto" src="~/Imagenes/noimage.png" alt="image">
                        }
                         
                    </div>
-                   <div class="col-md-6 text-justify">
+                    <div class="col-sm-12 col-md-5 col-lg-6 text-justify">
                        <div class="row">
-                            <h5 class="card-title "><i class="fa fa-plus-square"></i> @Model.Nombre</h5>
+                            <h5 class="card-title "> @Model.Nombre</h5>
                             <label class="label__Presentacion">@Model.Presentacion</label>
                        </div>
-                       <div class="row">
+                       <div class="mt-2">
                            <strong>No. Producto: </strong> <label class="label__producto">@Model.IdProducto</label>
                            @Html.HiddenFor(m=>m.IdProducto)
                        </div>
-                       <div class="row">
+                       <div class="mb-3">
                            <strong>Restringido a </strong> <label class="label__producto">@Model.Cantidad</label>
                        </div>
                        <div class="row">
@@ -53,50 +53,75 @@
                        <div class="row mb-4">
                             <h6>@{
                                     if (Model.Iva) {
-                                        <span style="color:green">Con Iva</span>
+                                        <span style="color:#0fa200;">Con Iva</span>
                                     } else {
-                                        <span style="color:red">Sin Iva</span>
+                                        <span style="color:#808080;">Sin Iva</span>
                                     }
                                 }</h6>
 
                              @Html.HiddenFor(m => m.ValorIva)
                         </div>
-                       <div class="row">
+                       <div>
                             <strong>Formula: </strong> <label class="label__Formula"> @Model.Formula</label>
                        </div>
-                       <div class="row">
+                       <div>
                             <strong>Laboratorio: </strong> <label class="label__Laboratorio"> @Model.Laboratorio</label>
                        </div>
-                       <div class="row">
+                       <div>
                             <strong>Caja Colectiva: </strong> <label class="label__Caja"> @Model.Caja</label>
                        </div>
-                       <div class="row">
+                       <div>
                             <strong>Código: </strong> <label class="label__Caja"> @Model.Codigo</label>
                        </div>
 
                    </div>
-                   <div class="col-md-3">
+                    <div class="col-sm-12 col-md-4 col-lg-3">
                         <div class="contenedor__Producto">
-                            
-                                <div class="mb-4 col-6" style="background-color:pink">
-                                    <strong>Precio Final: </strong> <label class="contenedor__Producto__PrecioFinal"> @Model.PrecioFinal</label>
-                                    @Html.HiddenFor(m => m.PrecioFinal)
+                            <div class="row w-100 mb-2">
+                                <div class="col-6 totalLabel">
+                                        <label>Precio Final: </label>
                                 </div>
-                                <div class="mb-4 d-grid col-6" style="background-color:hotpink">
-                                    <strong>Cantidad:</strong> <input id="txtCantidad" onkeyup="actualizaTotal(this)"  type="number" min="0" value="0" placeholder="0" />
+                                <div class="col-6">
+                                    <label class="contenedor__Producto__PrecioFinal"> @Model.PrecioFinal</label>
+                                        @Html.HiddenFor(m => m.PrecioFinal)
+                                 </div>
+                            </div>
+                            <div class="row w-100">
+                                <div class="col-6 totalLabel">
+                                    <label>Cantidad:</label>
                                 </div>
-                            
-                            <div class="mb-4">
-                                <strong>Subtotal: </strong><label class="contenedor__Producto__subtotal"></label>
+                                <div class="col-6">
+                                    <input id="txtCantidad" onkeyup="actualizaTotal(this)" type="number" min="0" value="0" placeholder="0" style="width:75%" />
+                                </div>
                             </div>
-                            <div class="mb-4">
-                                <strong>Iva: </strong><label class="contenedor__Producto__iva"></label>
+                            <div class="row w-100 mt-5">
+                                <div class="col-6 totalLabel">
+                                    <label>Subtotal: </label>
+                                </div>
+                                <div class="col-6">
+                                    <label class="contenedor__Producto__subtotal"></label>
+                                </div>
                             </div>
-                            <hr class="new1" />
-                            <div class="mb-4">
-                                <strong>Total: </strong><label class="contenedor__Producto__Total"></label>
+                            <div class="row w-100 mb-3">
+                                <div class="col-6 totalLabel">
+                                <label>Iva: </label>
+                                </div>
+                                <div class="col-6">
+                                <label class="contenedor__Producto__iva"></label>
+                                </div>
                             </div>
-                            <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                            <div class="row" style="width:90%">
+                                <hr />
+                                <div class="col-6 totalLabel">    
+                                <label>Total: </label>
+                                </div>
+                                <div class="col-6">
+                                <label class="contenedor__Producto__Total"></label>
+                                </div>
+                            </div>
+                            <div class="row" style="width:90%">
+                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                            </div>
                         </div>
                    </div>
                 </div>

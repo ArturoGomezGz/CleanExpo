@@ -4,14 +4,13 @@
     ViewData["Title"] = "GetCotizacion";
 }
 
-<h1>Orden</h1>
-
-<div class="col-md-12">
+@*<div class="col-md-12">*@
     <div class="row">
          <div id="liveAlertDetailCotizacion"></div>
         <div class="col-8">
-            <label hidden>@Model.IdCliente</label><br />
-            <label hidden>@Model.IdCotizacion</label><br />
+            <h3>Orden</h3>
+            <label hidden>@Model.IdCliente</label>
+            <label hidden>@Model.IdCotizacion</label>
             <strong>Cliente: </strong><label>@Model.Cliente</label><br />
             <strong>RFC: </strong><label>@Model.RFC</label><br /><br />
             <strong>Tipo de Comprobante:</strong>
@@ -25,7 +24,7 @@
             </label>
             <br />
             <br />
-            <strong>Tipo de Envio: </strong>
+            <strong>Tipo de Envío: </strong>
             <label>
                 @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.Venta, "IdTipoVenta", "TipoVenta"), new { id = "txtTipoVenta",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
             </label>
@@ -40,7 +39,7 @@
                 @Html.DropDownListFor(model => model.IdPorte, new SelectList(Model.portes, "IdPorte", "Porte"), new { id = "txtPorte",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
             </label>
             <br />
-            <strong>Direccion de Entrega: </strong>
+            <strong>Dirección de Entrega: </strong>
             <label>
                 @Html.DropDownListFor(model => model.Direccion, new SelectList(Model.Direcciones, "Entrega", "DirEntrega"), new { id = "txtDirEntrega",  @class="form-select", disabled="disabled",name = "Documento",  title="cmb"})
             </label>
@@ -61,8 +60,8 @@
             </div>
         </div>
     </div>
-</div> <br /><br />
-<div class="col-md-12">
+@*</div>*@ 
+@*<div class="col-md-12>*@
     <div class="row">
         <div class="col-md-6">
             <button type="button" id="btGuardarDatosCotizacion" onclick="GuardarDatosCotizacion()" class="btn btn-verde-medio">Guardar</button>
@@ -72,20 +71,21 @@
         </div>
     </div> 
 
-</div>
-<div class="col-md-12">
+@*</div>*@
+@*<div class="col-md-12">*@
     <div class="row">
         <div class="col-md-4">
             <button type="button" id="AgregarProductos" onclick="btnagregarProductos()" class="btn btn-azul col-md-55" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Productos</button>
         </div>
         <div class="col-md-4">
-            <button id="btn-modificar" onclick="modificarCotizacion()" type="button" class="btn btn-azul-medio col-md-55" data-bs-toggle="modal" data-bs-target="#editDatosCliente">Editar</button>
+            <button id="btn-modificar" onclick="modificarCotizacion()" type="button" class="btn btn-naranja col-md-55" data-bs-toggle="modal" data-bs-target="#editDatosCliente">Editar</button>
         </div>
         <div class="col-md-4">
             <button type="button" id="buscarCliente" class="btn btn-azul col-md-55" >Buscar cliente</button>
         </div>
     </div>
-</div>
+@*</div>*@
+<br/>
 
 <!-- Modal captura de productos -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -97,7 +97,7 @@
             </div>
             <div class="modal-body">
                 <div class="col-md-10">
-                    <strong>Cliente: </strong><label class="label__producto">@Model.Cliente</label><br /><br />
+                   @* <strong>Cliente: </strong><label class="label__producto">@Model.Cliente</label><br /><br />*@
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="txtBuscar" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                         <div class="input-group-append">
@@ -122,20 +122,20 @@
                 </div>
                 <div id="descripcionProducto" class="col-md-12">
                     <div id="liveAlertPlaceholder"></div>
-                    <div class="col-md-12">
-                        <div class="col-md-12">
+                    @*<div class="col-md-12">*@
+                        @*<div class="col-md-12">*@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-3">
                                             <img class="card-img-top" id="imgProducto" alt="image">
                                         </div>
-                                        <div class="col-md-6 text-justify">
-                                            <div class="row">
-                                                <h5 class="card-title "><i class="fa fa-plus-square"></i><label id="nombre"></label></h5>
-                                                <label class="label__Presentacion" id="presentacion"></label>
-                                            </div>
-                                            <div class="row">
+                                            <div class="col-md-12 col-lg-7  text-justify">
+                                                <div class="row">
+                                                    <h5 class="card-title "><label id="nombre"></label></h5>
+                                                    <label class="label__Presentacion" id="presentacion"></label>
+                                                </div>
+                                            <div class="mb-3">
                                                 <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
                                             </div>
                                             <div class="row">
@@ -177,33 +177,60 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-12 col-lg-5">
                                             <div class="contenedor__Producto">
-                                                <div class="mb-4 ">
-                                                    <bold>Precio Final:</bold><label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                                <div class="row w-100 mb-2">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Precio Final:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                         <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-4 d-grid">
-                                                    <bold>Cantidad:</bold><input id="cantidad" type="number" min="0" value="0" placeholder="0" />
+                                                <div class="row w-100">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Cantidad:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input id="cantidad" type="number" min="0" value="0" placeholder="0" style="width:75%" />
+                                                    </div>
                                                 </div>
-                                                <div class="mb-4">
-                                                    <bold>Subtotal:</bold><label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                                <div class="row w-100 mt-5">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Subtotal:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="contenedor__Producto__subtotal" id="subtotal"></label>
+                                                    </div>
                                                 </div>
-                                                <div class="mb-4">
-                                                    <bold>Iva:</bold><label class="contenedor__Producto__iva" id="valoriva"></label>
+                                                <div class="row w-100 mb-3">
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Iva:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="contenedor__Producto__iva" id="valoriva"></label>
+                                                    </div>
                                                 </div>
-                                                <hr class="new1" />
-                                                <div class="mb-4">
-                                                    <bold>Total:</bold><label class="contenedor__Producto__Total" id="total"></label>
+                                                <div class="row" style="width:90%">
+                                                    <hr />
+                                                    <div class="col-6 totalLabel">
+                                                        <label>Total:</label>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="contenedor__Producto__Total" id="total"></label>
+                                                    </div>
                                                 </div>
-                                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                                                <div class="row" style="width:90%">
+                                                    <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <button type="button" id="IraProductos" onclick="regresaProductos()" class="btn btn-azul col-md-55">Ir a Productos</button>
+                                <button type="button" id="IraProductos" onclick="regresaProductos()" class="btn btn-azul">Ir a Productos</button>
                             </div>
                         </div>
-                    </div>
+                        @*</div>*@
+                   @* </div>*@
                 </div>
             </div>
         </div>
@@ -339,6 +366,8 @@
         $('#BuscarProducto').dataTable().fnDestroy();
         
         $('#BuscarProducto').DataTable({
+            bFilter: false,
+            lengthChange: false,
                     "ajax": {
                 "url": path+"Empleados/ProductoBusqueda?Busqueda=" + Busqueda + "&IdCotizacion=" + @Model.IdCotizacion,
                         type: 'POST',
