@@ -271,20 +271,25 @@
 </div>
 
 <script>
-    function btnagregarProductos() {
+    function btnagregarProductos() 
+    {
         document.getElementById("txtBuscar").value = "";
         $('#descripcionProducto').hide();        
     }
 
-    function cerrarCapturaProductos(){
-        location.reload();    }
+    function cerrarCapturaProductos()
+    {
+        location.reload();    
+    }
 
-    function regresaProductos(){
+    function regresaProductos()
+    {
         $('#descripcionProducto').hide();
         $('#BuscarProducto').show();
     }
 
-    function modificarCotizacion() {
+    function modificarCotizacion() 
+    {
         document.getElementById("txtDocumento").disabled = false;
         document.getElementById("txtUsoCFDI").disabled = false;
         document.getElementById("txtTipoVenta").disabled = false;
@@ -299,8 +304,8 @@
         $("#btn-modificar").hide();     
     }
 
-    function GuardarDatosCotizacion(){
-        let IdCotizacion = @Model.IdCotizacion;
+    function GuardarDatosCotizacion()
+    {
         let IdDocumento = document.getElementById("txtDocumento").value;
         let IdUsoCFDI = document.getElementById("txtUsoCFDI").value;
         let IdTipoVenta = document.getElementById("txtTipoVenta").value;
@@ -311,7 +316,7 @@
 
         $.post(path + "Empleados/EditarClienteCotizacion",
             {
-                IdCotizacion: IdCotizacion,
+                IdCotizacion: @Model.IdCotizacion,
                 IdDocumento: IdDocumento,
                 IdUsoCFDI: IdUsoCFDI,
                 IdTipoVenta: IdTipoVenta,
@@ -325,10 +330,12 @@
             }).error(function () {
                 ShowAlert("No fue posible cargar sus datos", false);
             });
+
         window.location.reload();     
     }
 
-    function CancelGuadar(){
+    function CancelGuadar()
+    {
         $("#AgregarProductos").show();
         $("#buscarCliente").show();
         $("#btn-modificar").show();
@@ -350,6 +357,7 @@
         let Busqueda = $("#txtBuscar").val();
         
         $('#BuscarProducto').DataTable({
+            order: [[1, 'asc']],
             bFilter: false,
             lengthChange: false,
             "ajax": {
@@ -378,21 +386,35 @@
         });
     }
 
-    $('#buscarCliente').click(function () {       
-        document.location = '@Url.Action("Cotizacion")';
-        });
-
     function regresarBuscarProductos(){
         $('#descripcionProducto').hide();
         document.getElementById("txtBuscar").value = "";
         $('#BuscarProducto').dataTable().fnDestroy();
     }
 
+    $('#buscarCliente').click(function () {
+        document.location = '@Url.Action("Cotizacion")';
+    });
+
+    document.getElementById('txtBuscar').addEventListener('keydown', function (e) { //Se detecta el enter en el control txtBuscar de productos
+        if (e.keyCode === 13) 
+        {
+            BuscarListaProducto();
+        }
+    });
+
 </script>
 
 <script>
-    window.onload = function () {
 
+    var precio = 0;
+    var iva = 0;
+    var subtotal = 0;
+    var ivatotal = 0;
+    var total = 0;
+
+    window.onload = function ()
+    {
         $.ajax({
             type: "POST",
             url: path + "Empleados/TotalCotizacion?IdCliente=" + @Model.IdCliente,
@@ -415,10 +437,12 @@
         });
     }
 
-    $(document).ready(function () {
+    $(document).ready(function () 
+    {
         $("#descripcionProducto").hide();
         $("#btGuardarDatosCotizacion").hide();
         $("#btCancelDatosCotizacion").hide();
+
         $("btn-modificar").click(function () {
             removeclass()
 
@@ -426,26 +450,25 @@
             element.removeAttribute("disabled");
         })
 
-        let IdCliente = @Model.IdCliente;
-        let IdCotizacion = @Model.IdCotizacion;
-
         $('#Productos').DataTable({
+            order: [[1, 'asc']],
             responsive: true,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
-                url: path + "Empleados/ProductosCapturados?IdCliente=" + IdCliente,
+                url: path + "Empleados/ProductosCapturados?IdCliente=" + @Model.IdCliente,
                 type: 'POST',
                 dataSrc: ""
-                   
             },
             "columns": [
                 {
                     "data": "idProducto",
                     render: function (data, type) {
-                        if (type === 'display') {
+                        if (type === 'display') 
+                        {
                             return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"s/><button class="btn btn-naranja-ch fa fa-pencil Edit"></button><a class="btn btn-outline-success Update" style="display:none"><i class="fa fa-check" aria-hidden="true"></i></a><a class="btn btn-outline-danger Cancel" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                         }
+
                         return data;
                     },
                 },
@@ -453,76 +476,97 @@
                 { "data": "presentacion" },
                 { "data": "laboratorio" },
                 { "data": "cantidad",
-                    render: function (data, type) {
-                        if (type === 'display') {
+                    render: function (data, type) 
+                    {
+                        if (type === 'display') 
+                        {
                             return '<input class="text" type="text" value="' + data + '" disabled style="width:70px; heigth:70px"/>';
                         }
+
                         return data;
-                    },
-                
+                    },                
                 },
                 { "data": "precioFinal" },
                 { "data": "total" },
                 {
                     "data": "idProducto",
-                    render: function (data, type) {
-                        if (type === 'display') {
+                    render: function (data, type) 
+                    {
+                        if (type === 'display')
+                        {
                             return '<a class="btn btn-link Borrar" id="btnBorrarProducto" onclick="BorrarProducto(' + data + ')"><i class="far fa-trash-alt btn btn-outline-danger"></i></a>';
                         }
+
                         return data;
                     },
                 },
             ]
         });
+
+        var pzas;
+
         $('#Productos').on('click','.Edit', function () {
+
             var row = $(this).closest("tr");
-            $("td", row).each(function () {
-                if ($(this).find(".text").length > 0) {
-                    $(this).find(".text").show();
-                }
+
+            $('#Productos tr').each(function () { // Buscar y deshabilitar los botones con la clase 'edit'
+                $(this).find('.Edit').prop('disabled', true); 
+                $(this).find('.Borrar').prop('disabled', true);
             });
+            
             row.find(".Update").show();
             row.find(".Cancel").show();
             row.find(".Borrar").hide();
+            
             var inputElement  = row.find('.text');
+            pzas = inputElement.val();
             inputElement.prop('disabled', false);
+            
             $(this).hide();
         });
+        
         $('#Productos').on('click', '.Cancel', function () {
+
             var row = $(this).closest("tr");
-            $("td", row).each(function () {
-                if ($(this).find(".text").length > 0) {
-                    var input = $(this).find(".text");
-                }
+
+            $('#Productos tr').each(function () { // Buscar y deshabilitar los botones con la clase 'edit'
+                $(this).find('.Edit').prop('disabled', false);
+                $(this).find('.Borrar').prop('disabled', false);
             });
+                       
             row.find(".Edit").show();
             row.find(".Update").hide();
             row.find(".Cancel").hide();
             row.find(".Borrar").show();
+            
             var inputElement = row.find('.text');
+            inputElement.val(pzas);
             inputElement.prop('disabled', true);
+            pzas = 0;
         });
+        
         $('#Productos').on('click', '.Update', function () {
+
             var row = $(this).closest("tr");
             var input, inputhidden;
-            $("td", row).each(function () {
-                if ($(this).find(".text").length > 0) {
-                    input = row.find('.text').val();
-                    inputhidden = row.find('.hdn').val();
-                }
-            });
+
+            input = row.find('.text').val();
+            inputhidden = row.find('.hdn').val();
+            
             row.find(".Edit").show();
             row.find(".Cancel").hide();
+
             $(this).hide();
 
             $.post(path + "Empleados/CotizacionEditarCantidadProducto",
                 {
                     idproducto: inputhidden,
                     cantidad: input,
-                    idcotizacion: IdCotizacion
+                    idcotizacion: @Model.IdCotizacion
 
                 },
-                function (data) {
+                function (data) 
+                {
                     window.location.reload()
 
                 }).error(function () {
@@ -534,12 +578,11 @@
     function BorrarProducto(data)
         {
             let IdProducto = data;
-            let Cliente = @Model.IdCliente;
 
             $.post(path + "Empleados/ProductoDelete",
                 {
                     idproducto: IdProducto,
-                    cliente: Cliente
+                    cliente: @Model.IdCliente
                 },
                 function (data){
                     window.location.reload()
@@ -552,12 +595,6 @@
     {
         $('#descripcionProducto').show();
         $('#divMostrarProductos').hide();
-
-        var precio = 0;
-        var iva = 0;
-        var subtotal = 0;
-        var ivatotal = 0;
-        var total = 0;
        
         $.ajax({
             type: "POST",
@@ -607,26 +644,24 @@
         }
     }
 
-    function AgregarProducto() {
-        let Cliente = @Model.IdCliente;
+    function AgregarProducto()
+    {
         let IdProducto = document.getElementById('idproducto').innerHTML;
-        let Cantidad = $("#cantidad").val();
-        let PrecioMR = document.getElementById('preciofinal').innerHTML;
 
-        if (Cantidad > 0) {
+        if ($("#cantidad").val() > 0) {
             $.post(path + "Empleados/AddCotizacion",
                 {
-                    cliente: Cliente,
+                    cliente: @Model.IdCliente,
                     idProducto: IdProducto,
-                    unitario: PrecioMR,
-                    cantidad: Cantidad
+                    unitario: precio,
+                    cantidad: $("#cantidad").val()
                 },
                 function (data) {
                     ShowAlert(data.message, data.response)
                     GetCarrito();
                     GetMonedas();
                     document.getElementById('cantidad').value = 0;
-                    $('#BuscarProducto').show()
+                    $('#BuscarProducto').show();
                 }).error(function () {
                     ShowAlert("No fue posible cargar sus datos", false);
                 });
@@ -635,7 +670,8 @@
         }
     }
 
-    function colocarOrden(){
+    function colocarOrden()
+    {
         var IdDocumento = $("#txtDocumento").val();
         var IdUsoCFDI = $("#txtUsoCFDI").val();
 
@@ -675,7 +711,8 @@
         }
     }
 
-    function PedidoAgregar(){
+    function PedidoAgregar()
+    {
         $.ajax({
             type: "POST",
             url: path + "Empleados/ExpoPedidoAgregar?IdCliente=" + @Model.IdCliente,
