@@ -56,9 +56,14 @@ namespace ExpoMR.Controllers
                     ProdCotizado.Nombre = (string)dr["Nombre"];
                     ProdCotizado.Presentacion = (string)dr["Presentacion"];
                     ProdCotizado.Unidades = (string)dr["Unidades"];
-                    ProdCotizado.Publico = (decimal)dr["Publico"];
                     ProdCotizado.Neto = (decimal)dr["Neto"];
+                    ProdCotizado.Publico = (decimal)dr["Publico"];                   
+                    ProdCotizado.PrecioMR = (decimal)dr["PrecioMR"];
+                    ProdCotizado.PrecioFinal = (decimal)dr["PrecioFinal"];
+                    ProdCotizado.DescuentoExpo = (decimal)dr["DescuentoExpo"];
+                    ProdCotizado.DescuentoCliente = (bool)(dr["DescuentoCliente"]);
                     ProdCotizado.Iva = (bool)(dr["Iva"]);
+                    ProdCotizado.ValorIva = (decimal)dr["ValorIva"];
                     ProdCotizado.Laboratorio = (string)(dr["Laboratorio"]);
                     ProdCotizado.Caja = (Int16)dr["Caja"];
                     ProdCotizado.Codigo = (string)dr["Codigo"];
@@ -66,11 +71,6 @@ namespace ExpoMR.Controllers
                     ProdCotizado.Cantidad = (int)dr["Cantidad"];
                     ProdCotizado.Formula = (dr["Formula"] != DBNull.Value ? (string)dr["Formula"] : "");
                     ProdCotizado.Controlado = (bool)(dr["Controlado"]);
-                    ProdCotizado.PrecioMR = (decimal)dr["PrecioMR"];
-                    ProdCotizado.DescuentoExpo = (decimal)dr["DescuentoExpo"];
-                    ProdCotizado.DescuentoCliente = (bool)(dr["DescuentoCliente"]);
-                    ProdCotizado.ValorIva = (decimal)dr["ValorIva"];
-                    ProdCotizado.PrecioFinal = (decimal)dr["PrecioFinal"];
                     ProdCotizado.IdProveedor = Idproveedor;
                     ProdCotizado.imgProductos = GeneralesController.GetFoto(IdProducto);
                 }

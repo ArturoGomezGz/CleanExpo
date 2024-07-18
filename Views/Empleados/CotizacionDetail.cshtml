@@ -147,7 +147,6 @@
                                     <div class="row mb-4">
                                         <h6>
                                             <label class="label__DescuentoExpo" id="iva"></label>
-                                            <label id="getiva"></label>
                                         </h6>
                                     </div>
                                     <div class="row">
@@ -170,7 +169,7 @@
                                                 <label>Precio Final:</label>
                                             </div>
                                             <div class="col-6">
-                                                    <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
+                                                <label class="contenedor__Producto__PrecioFinal" id="preciofinal"></label>
                                             </div>
                                         </div>
                                         <div class="row w-100">
@@ -343,11 +342,12 @@
         document.getElementById("txtPorte").disabled = true;
     }
 
-    function BuscarListaProducto() {
+    function BuscarListaProducto() 
+    {
         $('#descripcionProducto').hide();
         $('#divMostrarProductos').show();
-        let Busqueda = $("#txtBuscar").val();
         $('#BuscarProducto').dataTable().fnDestroy();
+        let Busqueda = $("#txtBuscar").val();
         
         $('#BuscarProducto').DataTable({
             bFilter: false,
@@ -357,11 +357,14 @@
                         type: 'POST',
                         dataSrc: ""
                     },
-            "columns": [
+            "columns": 
+            [
                 {
                     "data":  "idProducto",
-                    render: function (data, type) {
-                        if (type === 'display') {
+                    render: function (data, type) 
+                    {
+                        if (type === 'display') 
+                        {
                             return '<a onclick="detalleProducto(' + data + ')" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
                         }
                         return data;
@@ -386,6 +389,7 @@
     }
 
 </script>
+
 <script>
     window.onload = function () {
 
@@ -415,8 +419,6 @@
         $("#descripcionProducto").hide();
         $("#btGuardarDatosCotizacion").hide();
         $("#btCancelDatosCotizacion").hide();
-        document.getElementById('getiva').style.display = 'none';
-
         $("btn-modificar").click(function () {
             removeclass()
 
@@ -472,7 +474,6 @@
                 },
             ]
         });
-
         $('#Productos').on('click','.Edit', function () {
             var row = $(this).closest("tr");
             $("td", row).each(function () {
@@ -487,7 +488,6 @@
             inputElement.prop('disabled', false);
             $(this).hide();
         });
-
         $('#Productos').on('click', '.Cancel', function () {
             var row = $(this).closest("tr");
             $("td", row).each(function () {
@@ -502,7 +502,6 @@
             var inputElement = row.find('.text');
             inputElement.prop('disabled', true);
         });
-
         $('#Productos').on('click', '.Update', function () {
             var row = $(this).closest("tr");
             var input, inputhidden;
@@ -553,48 +552,59 @@
     {
         $('#descripcionProducto').show();
         $('#divMostrarProductos').hide();
-        
+
+        var precio = 0;
+        var iva = 0;
+        var subtotal = 0;
+        var ivatotal = 0;
+        var total = 0;
+       
         $.ajax({
             type: "POST",
             url: path + "Empleados/DetalleProducto?IdProducto=" + IdProducto + "&Cliente=" + @Model.IdCliente,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            success: function (resultado) {
+            success: function (resultado) 
+            {
+                document.getElementById('txtBuscar').value = "";
+                document.getElementById('cantidad').value = 0;
+
+                document.getElementById('idproducto').innerHTML = " " + resultado.idproducto;
                 document.getElementById('nombre').innerHTML = " " + resultado.nombre;
                 document.getElementById('presentacion').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
-                document.getElementById('idproducto').innerHTML = " " + resultado.idproducto;
-                document.getElementById('restingido').innerHTML = " " + resultado.cantidad;
+                document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto);               
                 document.getElementById('publico').innerHTML = " " + FormatoMoneda(resultado.publico);
                 document.getElementById('precio').innerHTML = " " + FormatoMoneda(resultado.preciomr);
-                document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto);
-                document.getElementById('descuentoexpo').innerHTML = " " + FormatoMoneda(resultado.descuentoexpo);
-                document.getElementById('preciofinal').innerHTML = " " + resultado.precioFinal;
-                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
-                document.getElementById('getiva').innerHTML = " " + resultado.valoriva;
-                document.getElementById('formula').innerHTML = " " + resultado.formula;
+                document.getElementById('preciofinal').innerHTML = " " + FormatoMoneda(resultado.preciofinal);
+                document.getElementById('descuentoexpo').innerHTML = " " + FormatoMoneda(resultado.descuentoexpo);                
+                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";              
                 document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
                 document.getElementById('caja').innerHTML = " " + resultado.caja;
-                document.getElementById('codigo').innerHTML = " " + resultado.codigo; 
+                document.getElementById('codigo').innerHTML = " " + resultado.codigo;
+                document.getElementById('restingido').innerHTML = " " + resultado.cantidad;
+                document.getElementById('formula').innerHTML = " " + resultado.formula;
+                document.getElementById('subtotal').innerHTML = " " + FormatoMoneda(0);
+                document.getElementById('valoriva').innerHTML = " " + FormatoMoneda(0);
+                document.getElementById('total').innerHTML = " " + FormatoMoneda(0);
+
+                precio = resultado.preciofinal;
+                iva = resultado.valoriva;
             },
             error: function (xhr, status, error) {
                 console.log(error);
             }
         });      
 
-        cantidad.oninput = function () {
-
-            let precio = parseFloat(document.getElementById('preciofinal').innerHTML);
-            let valoriva = parseFloat(document.getElementById('getiva').innerHTML);
-
-            let subtotal = cantidad.value * precio;
-            let iva = cantidad.value * precio * valoriva;
-            let total = cantidad.value * precio * (1 + valoriva);
+        cantidad.oninput = function ()
+        {
+            subtotal = cantidad.value * precio;
+            ivatotal = cantidad.value * precio * iva;
+            total = cantidad.value * precio * (1 + iva);
 
             document.getElementById('subtotal').innerHTML = FormatoMoneda(subtotal);
-            document.getElementById('valoriva').innerHTML = iva.toFixed(2);
+            document.getElementById('valoriva').innerHTML = FormatoMoneda(ivatotal);
             document.getElementById('total').innerHTML = FormatoMoneda(total);
         }
-
     }
 
     function AgregarProducto() {

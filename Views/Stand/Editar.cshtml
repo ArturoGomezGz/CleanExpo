@@ -402,9 +402,6 @@
 </div>
 
 <script>
-    let ValorIva
-    let Precio
-
     function AgregarProducto()
     {
         let IdProducto = $("#IdProducto").val()
@@ -440,6 +437,11 @@
     function detalleProducto(IdProducto)
     {        
         var elemento = document.getElementById('collapseImage');
+        var precio = 0;
+        var iva = 0;
+        var subtotal = 0;
+        var ivatotal = 0;
+        var total = 0;
 
         // Verifica si el elemento tiene la clase 'show'
         if (elemento.classList.contains('show'))
@@ -449,7 +451,8 @@
 
         AsignarMonedasProducto(IdProducto);
         
-        OpenModal("ModalProducto")
+        OpenModal("ModalProducto");
+
         $.ajax({
             type: "POST",
             url: path + "Stand/DetalleProducto?IdProducto=" + IdProducto + "&Idproveedor="+@Model.Proveedor,
@@ -457,30 +460,31 @@
             dataType: "json",
             success: function (resultado)
             {
+                document.getElementById('idproducto').innerHTML = " " + resultado.idProducto;
                 document.getElementById('nombre').innerHTML = " " + resultado.nombre;
                 document.getElementById('presentacion').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
-                document.getElementById('idproducto').innerHTML = " " + resultado.idProducto;
-                document.getElementById('restringido').innerHTML = " " + resultado.cantidad;
-                document.getElementById('PrecioPublico').innerHTML = " " + FormatoMoneda(resultado.publico)
-                document.getElementById('precioMR').innerHTML = " " + FormatoMoneda(resultado.precioMR)
-                document.getElementById('descuentoExpo').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo)
-                document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto)
-                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
-                document.getElementById('codigo').innerHTML = " " + resultado.codigo;
+                document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto);
+                document.getElementById('PrecioPublico').innerHTML = " " + FormatoMoneda(resultado.publico);
+                document.getElementById('precioMR').innerHTML = " " + FormatoMoneda(resultado.precioMR);
                 document.getElementById('preciofinal').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
+                document.getElementById('descuentoExpo').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo);
+                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
                 document.getElementById('getiva').innerHTML = " ";
+                document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
+                document.getElementById('caja').innerHTML = " " + resultado.caja;
+                document.getElementById('codigo').innerHTML = " " + resultado.codigo;
+                document.getElementById('restringido').innerHTML = " " + resultado.cantidad;
+                document.getElementById('formula').innerHTML = " " + resultado.formula;
                 document.getElementById('subtotal').innerHTML = " " + FormatoMoneda(0);
                 document.getElementById('valoriva').innerHTML = " " + FormatoMoneda(0);
                 document.getElementById('total').innerHTML = " " + FormatoMoneda(0);
-                document.getElementById('formula').innerHTML = " " + resultado.formula;
-                document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
-                document.getElementById('caja').innerHTML = " " + resultado.caja;
+
                 $("#IdProducto").val(IdProducto)
                 $("#PrecioMR").val(resultado.precioMR)
                 $("#cantidad").val(0)
 
-                ValorIva = resultado.valorIva
-                Precio = resultado.precioFinal
+                precio = resultado.precioFinal;
+                iva = resultado.valorIva;
             },
             error: function (xhr, status, error)
             {
@@ -490,15 +494,12 @@
 
         cantidad.oninput = function ()
         {
-            let precio = Precio
-            let valoriva = ValorIva
+            subtotal = cantidad.value * precio;
+            ivatotal = cantidad.value * precio * iva;
+            total = cantidad.value * precio * (1 + iva);
 
-            let subtotal = cantidad.value * precio;
-            let iva = cantidad.value * precio * valoriva;
-            let total = cantidad.value * precio * (1 + valoriva);
-
-            document.getElementById('subtotal').innerHTML = FormatoMoneda(subtotal)
-            document.getElementById('valoriva').innerHTML = FormatoMoneda(iva)
+            document.getElementById('subtotal').innerHTML = FormatoMoneda(subtotal);
+            document.getElementById('valoriva').innerHTML = FormatoMoneda(ivatotal);
             document.getElementById('total').innerHTML = FormatoMoneda(total)
         }
     }

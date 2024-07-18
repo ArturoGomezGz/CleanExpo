@@ -477,21 +477,18 @@ namespace ExpoMR.Controllers
                             nombre = row["Nombre"],
                             presentacion = row["Presentacion"],
                             unidades = row["Unidades"],
-                            publico = row["Publico"],
                             neto = row["Neto"],
+                            publico = row["Publico"],
+                            preciomr = row["PrecioMR"],
+                            preciofinal = row["PrecioFinal"],
+                            descuentoexpo = row["DescuentoExpo"],
                             iva = row["Iva"],
+                            valoriva = row["ValorIva"],
                             laboratorio = row["Laboratorio"],
                             caja = row["Caja"],
                             codigo = row["Codigo"],
-                            restringido = row["Restringido"],
                             cantidad = row["Cantidad"],
-                            formula = (row["Formula"] != DBNull.Value ? row["Formula"] : ""),
-                            controlado = row["Controlado"],
-                            preciomr = row["PrecioMR"],
-                            descuentoexpo = row["DescuentoExpo"],
-                            descuentocliente = row["DescuentoCliente"],
-                            valoriva = row["ValorIva"],
-                            preciofinal = row["PrecioFinal"]
+                            formula = (row["Formula"] != DBNull.Value ? row["Formula"] : "")
                 }).ToArray()
             };
 
