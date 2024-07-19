@@ -6,6 +6,8 @@
     --gris: #EEE;
     --gris-oscuro: #2a2a2a;
     --blanco: #FFF;
+    --cfdi: #20417b;
+    --cfdi-done: #95c3e3;
 }
 
 * {
@@ -907,9 +909,9 @@ p, ol, h6{
     font-size: 1.1em;
     font-weight: 600;
     border-radius: 10px 10px 0px 0px;
-
     color: var(--blanco)
 }
+
 
 .bf-ui-tab-container {
     border-bottom: 1px solid #ededed;
@@ -987,7 +989,7 @@ p, ol, h6{
 }
 
 .font_moneda {
-    color: #63839b;
+    color: var(--azul-oscuro);
     font-weight: bold;
 }
 
@@ -997,6 +999,26 @@ p, ol, h6{
 }
 
 
+.sw-theme-arrows > .nav .nav-link.active {
+    /*background: linear-gradient(#1e3c72, #2a5298) !important;*/
+    background-color: var(--cfdi);
+}
+
+    .sw-theme-arrows > .nav .nav-link.active::after {
+        border-left-color: var(--cfdi) !important;
+    }
+
+.sw-theme-arrows > .nav .nav-link.done {
+    background: var(--cfdi-done) !important;
+}
+
+    .sw-theme-arrows > .nav .nav-link.done::after {
+        border-left-color: var(--cfdi-done) !important
+    }
+
+.progress-bar {
+    background-color: var(--cfdi) !important
+}
 
 .nav-link.link-item-titulo {
     color: var(--azul-oscuro)
@@ -1350,4 +1372,15 @@ a.nombrePromo{
     padding: .075rem 2.25rem .075rem .55rem;
     line-height: 0.8em;
     margin-bottom:5px
+}
+
+div.fotoCarrito {
+    width:100px;
+    margin:auto;
+}
+
+@media only screen and (max-width: 771px) {
+    div.fotoCarrito {
+        display:none
+    }
 }

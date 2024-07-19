@@ -77,8 +77,6 @@
 
 .promocion {
     max-width: 250px;
-    max-height: 50vh;
-    margin: 5%;
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -91,13 +89,18 @@
     text-align: center;
     font-size: 1em;
     font-style: oblique;
+    color: #244f87;
+}
+
+.promocion_imagen{
+    width:auto
 }
 
 .input_busqueda {
     max-width: 200px;
     margin-left: 5%;
-    height:45px;
-    margin-top:10px;
+    height: 45px;
+    margin-top: 10px;
     border-radius: 5px;
 }
 
