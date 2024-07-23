@@ -44,8 +44,8 @@ namespace ExpoMR.Controllers
                 ConfiguracionStand.NombreStand = (string)dr["Nombre"];
                 ConfiguracionStand.DescripcionStand = (string)dr["Descripcion"];
                 ConfiguracionStand.Color = (byte)dr["Paleta"];
-                ConfiguracionStand.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : Array.Empty<byte>());
-                ConfiguracionStand.Fondo = (dr["Background"] != DBNull.Value ? (byte[])dr["Background"] : Array.Empty<byte>());
+                ConfiguracionStand.Logo = (dr["Logo"] != DBNull.Value ? (byte[])dr["Logo"] : WebSite.GetImageDefault(webHostEnvironment, "noimage.png"));
+                ConfiguracionStand.Fondo = (dr["Background"] != DBNull.Value ? (byte[])dr["Background"] : WebSite.GetImageDefault(webHostEnvironment, "noimage.png"));
                 ConfiguracionStand.Fechas = GetFechas();
             }
 

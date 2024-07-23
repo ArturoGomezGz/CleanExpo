@@ -328,12 +328,20 @@
         switch (tipoDocumento) {
             case "0":
                 NextBoton.setAttribute("disabled", "");
-                cmbCFDI.value = "23";
                 cmbCFDI.setAttribute("disabled", "");
                 break;
             case "1":
-                NextBoton.setAttribute("disabled", "");
-                cmbCFDI.value = "23"
+                NextBoton.removeAttribute("disabled");
+                $.post(path + "Carrito/GetDatosFacturacion",
+                {
+                    IdCliente: @Model.IdCliente
+                },
+                function (data) {
+                   cmbCFDI.value = data.result[0].idUsoCFDI
+                })
+                .error(function () {
+                    ShowAlert("No fue posible cargar tu usoCFDI", false);
+                });
                 cmbCFDI.removeAttribute("disabled");
                 break;
             case "2":
