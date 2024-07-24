@@ -39,21 +39,22 @@
     }
 </style>
 <div id="liveAlertPlaceholder"></div>
-<div class="row">    
-    <div class="col-lg-6  col-md-5 col-sm-12  justify-content-center">
+<div class="row">
+    <div class="col-xxl-1"></div>
+    <div class="col-xxl-5 col-lg-5 col-md-5 col-sm-12 justify-content-center">
         <div class="row">
             <div class="col-md-12">
-                <div id="container" style="position: relative; left: 0; top: 0; max-width:600px">
+                <div id="container" style="position:relative; left: 0; top: 0; max-width:600px; margin:auto">
                     <img id="imgRoulette" src="~/Imagenes/ruleta.png" style="max-width: 100%" />
-                    <img src="~/Imagenes/cabezalRuleta.png" class="pointer" style="max-width: 100%" />
+                    <img src="~/Imagenes/cabezalRuleta.png" class="pointer" style="width: 100%;"/>
                 </div>
             </div>
-            <div class="col-md-12" style="text-align: center;">
+            <div class="col-md-12" style="text-align: center;max-width:600px; margin:auto">
                 <button class="btn btn-lg btn-ruleta-dorada" onclick="play()">Girar Ruleta</button>
             </div>
         </div>                
     </div>
-    <div class="col-lg-6 col-md-7 col-sm-12">
+    <div class="col-xxl-5 col-lg-7 col-md-7 col-sm-12">
         <div class="row">
             <p style="font-size:0.9em; font-style:oblique">* Las imágenes son de caracter ilustrativo, los premios pueden variar en color y presentación.</p>
             @{
@@ -78,6 +79,7 @@
             }            
         </div>
     </div>
+    <div class="col-xxl-1"></div>
 </div>
 
 <div id="divPremio" class="center"></div>
