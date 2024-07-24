@@ -302,17 +302,22 @@ namespace ExpoMR.Controllers
 					}
                     else
                     {
-						int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+						//Se inicializa la variable de session "ClienteSeleccionado" con el primer cliente que tenga el email
+						GetClientes(accViewModel.Email);
 
-                        if (isFechaExpoVIP != 2) // 2 = El dia no es de Expo
+						HttpRequest request = HttpContext.Request;
+						Log.SaveSesion(request, accViewModel.Email, true);
+						var user = await _userManager.FindByNameAsync(accViewModel.Email);
+
+                        if (await _userManager.IsInRoleAsync(user, "ClienteVIP") || await _userManager.IsInRoleAsync(user, "Cliente"))
                         {
-							//Se inicializa la variable de session "ClienteSeleccionado" con el primer cliente que tenga el email
-							GetClientes(accViewModel.Email);
-
-							HttpRequest request = HttpContext.Request;
-							Log.SaveSesion(request, accViewModel.Email, true);
-							var user = await _userManager.FindByNameAsync(accViewModel.Email);
-
+                            if (ExpoMR.Clases.WebSite.ValidaExpoVIP() == 2)  // 2 = El dia no es de Expo
+                            {
+                                return RedirectToAction("Index", "MiCuenta");
+                            }
+                        }
+                        else
+                        {
 							if (await _userManager.IsInRoleAsync(user, "Administrador"))
 							{
 								return LocalRedirect("~/Administracion/Usuarios");
@@ -332,10 +337,6 @@ namespace ExpoMR.Controllers
 							{
 								return LocalRedirect("~/Empleados/Cotizacion");
 							}
-						}
-                        else
-                        {
-							return RedirectToAction("Index", "MiCuenta");
 						}
 
 						return LocalRedirect(returnUrl);
