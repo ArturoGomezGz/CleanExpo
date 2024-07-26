@@ -189,6 +189,10 @@ p, ol, h6{
     background-position: center center;
 }
 
+
+/* BOTONES */
+
+
 .btn-grad-sesion {
     background-image: linear-gradient(to right, #000000 0%, #434343 51%, #000000 100%);
     margin: 10px 0px;
@@ -231,7 +235,7 @@ p, ol, h6{
 }
 
     .btn-azul:hover {
-        background-position: right center; /* change the direction of the change here */
+        background-position: right center;
         color: var(--blanco);
         text-decoration: none;
         border: none;
@@ -255,7 +259,7 @@ p, ol, h6{
 }
 
     .btn-azul-medio:hover {
-        background-position: right center; /* change the direction of the change here */
+        background-position: right center;
         color: var(--blanco);
         text-decoration: none;
         border: none;
@@ -277,8 +281,7 @@ p, ol, h6{
 }
 
 .btn-verde:hover {
-    background-position: right center; /* change the direction of the change here */
-    color: var(--blanco);
+    background-position: right center; 
     text-decoration: none;
     border: none;
 }
@@ -300,7 +303,7 @@ p, ol, h6{
 }
 
     .btn-verde-medio:hover {
-        background-position: right center; /* change the direction of the change here */
+        background-position: right center; 
         color: var(--blanco);
         text-decoration: none;
         border: none;
@@ -317,7 +320,7 @@ p, ol, h6{
 }
 
 .btn-moneda:hover {
-    background-position: right center; /* change the direction of the change here */
+    background-position: right center;
     color: var(--blanco);
     border: none;
 }
@@ -336,7 +339,7 @@ p, ol, h6{
 }
 
     .btn-carrito:hover {
-        background-position: right center; /* change the direction of the change here */
+        background-position: right center; 
         color: var(--blanco);
         border: none;
     }
@@ -359,7 +362,7 @@ p, ol, h6{
 }
 
 .btn-naranja:hover {
-     background-position: right center; /* change the direction of the change here */
+     background-position: right center; 
      color: var(--blanco);
      border: none;
 }
@@ -375,7 +378,7 @@ p, ol, h6{
 }
 
     .btn-logout:hover {
-        background-position: right center; /* change the direction of the change here */
+        background-position: right center; 
         color: var(--blanco);
         border: none;
     }
@@ -397,7 +400,7 @@ p, ol, h6{
 }
 
     .btn-rojo:hover {
-        background-position: right center; /* change the direction of the change here */
+        background-position: right center; 
         color: var(--blanco);
         border: none;
     }
@@ -439,7 +442,7 @@ p, ol, h6{
 }
 
 .btn-rojo-ch:hover {
-    background-position: right center; /* change the direction of the change here */
+    background-position: right center; 
     color: var(--blanco);
     border: none;
 }
@@ -474,6 +477,21 @@ p, ol, h6{
     background-size: 200% auto;
 }
 
+
+@media only screen and (max-width: 750px) {
+
+    .btn-verde, .btn-verde-medio, .btn-azul, .btn-azul-medio, .btn-rojo, .btn-naranja {
+        font-size: 0.95em;
+        margin: 7px 7px;
+        padding: 5px 15px;
+    }
+
+    .img-promo{
+        height:23px;
+    }
+}
+
+
 .btn-activa {
     background-image: linear-gradient(to right,#DCE35B 0%, #45B649 51%, #DCE35B 100%);
     text-align: center;
@@ -498,6 +516,7 @@ p, ol, h6{
     max-height: 25px;
     margin-top: -7px;
 }
+
 
 .btn-ruleta-inactiva {
     background-image: linear-gradient(to right, #ECE9E6 0%, #d7d2cc 51%, #ECE9E6 100%);
@@ -595,6 +614,11 @@ p, ol, h6{
     .navbar-toggler {
     width: 45px;
 }
+
+
+
+
+
 
 .navbar-toggler:hover {
     border-color:var(--blanco);
@@ -1077,7 +1101,8 @@ p, ol, h6{
     margin: auto;
 }
 
-.img_articulo_Modal {
+.img_articulo
+{
     width: 250px;
     margin: auto;
 }
@@ -1354,6 +1379,7 @@ div.fontsize {
     margin:auto;
 }
 
+
 a.nombrePromo{
     text-decoration:none !important;
 }
@@ -1393,3 +1419,12 @@ div.fotoCarrito {
     pointer-events: none;
     z-index:10;
 }
+
+
+
+@media only screen and (min-width: 1086px) {
+    .modal {
+        --bs-modal-width: 800px;
+    }
+}
+

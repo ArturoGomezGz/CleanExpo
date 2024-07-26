@@ -10,18 +10,18 @@
             <table id="Clientes" class="display" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Acceder</th>
+                        <th></th>
                         <th>Cliente</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
-                <tfoot>
+                @*<tfoot>
                     <tr>
                         <th>Acceder</th>
                         <th>Cliente</th>
                     </tr>
-                </tfoot>
+                    </tfoot>*@
             </table>
         </div>
     </div>
@@ -46,7 +46,7 @@
                 </thead>
                 <tbody>
                 </tbody>
-                <tfoot>
+                @* <tfoot>
                     <tr>
                         <th></th>
                         <th>Cliente</th>
@@ -56,7 +56,7 @@
                         <th>Productos</th>
                         <th>Capturo</th>
                     </tr>
-                </tfoot>
+                </tfoot>*@
             </table>
         </div>
     </div>
@@ -81,7 +81,7 @@
                 {
                     "data": "acceder",
                     render: function (data, type, row) {
-                        return '<button class="fa fa-chevron-right" onclick="seleccionarCliente(' + row.acceder + ')"></button>';
+                        return '<button class="btn fa fa-chevron-right" onclick="seleccionarCliente(' + row.acceder + ')"></button>';
                     }
                 },
                 { "data": "cliente" }
@@ -106,7 +106,7 @@
                 {
                     "data": "cliente",
                     render: function (data, type, row) {                      
-                        return '<a href="'+ path +'Empleados/DetallePedido?idPedido=' + row.idPedido + '" class="fa fa-chevron-right"></a>';
+                        return '<a href="'+ path +'Empleados/DetallePedido?idPedido=' + row.idPedido + '" class="btn fa fa-chevron-right"></a>';
                     }
                 },
                 { "data": "cliente" },

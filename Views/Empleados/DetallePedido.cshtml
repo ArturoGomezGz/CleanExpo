@@ -33,13 +33,13 @@
         <br />
         <div class="d-flex">
             <div class="w-25">
-                <strong>Tipo de Envio:</strong>
+                <strong>Tipo de Envío:</strong>
             </div>
             <label id="envio"></label>
         </div>
         <div class="d-flex">
             <div class="w-25">
-                <strong>Direccion de Entrega:</strong>
+                <strong>Dirección de Entrega:</strong>
             </div>
             <label id="direccion"></label>
         </div>
@@ -115,7 +115,7 @@
                 <tr>
                     <th> </th>
                     <th>Nombre</th>
-                    <th>Presentacion</th>
+                    <th>Presentación</th>
                     <th>Laboratorio</th>
                     <th>Pzas Solicitadas</th>
                     <th>Pzas Pendientes</th>
@@ -129,7 +129,7 @@
         </table>
     </div>
     <div>
-        <a class="btn btn-azul text-light" asp-controller="Empleados" asp-action="Pedidos">Buscar Cliente</a>
+        <a class="btn btn-azul" asp-controller="Empleados" asp-action="Pedidos">Buscar Cliente</a>
     </div>
 
 </div>
@@ -152,7 +152,7 @@
                 {
                     "data": "idProducto",
                     render: function (data, type, row) {
-                        return '<button class="fa fa-pen-to-square btn btn-warning btn-editar" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
+                        return '<button class="fa fa-pencil btn btn-naranja-ch btn-editar" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
                             '<button class="fa fa-check btn btn-success btn-confirmar" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
                             '<button class="fa fa-ban btn btn-danger btn-cancelar" style="display: none" onclick="cancelarEdicion($(this).closest(\'tr\'))"></button>';
                     }

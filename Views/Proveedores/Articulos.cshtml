@@ -94,9 +94,9 @@
                     render: function (data, type) 
                     {
                         if(data != "" ){
-                        return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
+                        return '<img class="card-img-top" style=" max-width:150px; max-height:150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
                         }else {
-                            return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="' + path + '/Imagenes/noimage.png" alt="image" />'
+                            return '<img class="card-img-top" style=" max-width:150px; max-height:150px; margin: auto;" src="' + path + '/Imagenes/noimage.png" alt="image" />'
                         }
                     }
                 },

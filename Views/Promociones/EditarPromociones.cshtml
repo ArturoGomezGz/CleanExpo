@@ -4,19 +4,19 @@
 </div>
 <div id="divBotones" class="d-md-flex justify-content-around">
     <div>
-        <button class="btn btn-azul-medio my-2" onclick="selectPromocion('Simple', 1)">Por Visita De Cliente <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/porVisita.svg" /></i></button>
+        <button class="btn btn-azul-medio " onclick="selectPromocion('Simple', 1)">Por Visita De Cliente <i aria-hidden="true"><img class="img-promo" src="~/imagenes/porVisita.svg" /></i></button>
         <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(1)"></i>
     </div>
     <div>
-        <button class="btn btn-azul-medio  my-2" onclick="selectPromocion('Compuesta', 2)">Acumulable <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/acumulable.svg" /></i></button>
+        <button class="btn btn-azul-medio " onclick="selectPromocion('Compuesta', 2)">Acumulable <i aria-hidden="true"><img class="img-promo" src="~/imagenes/acumulable.svg" /></i></button>
         <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(2)"></i>
     </div>
     <div>
-        <button class="btn btn-azul-medio my-2" onclick="selectPromocion('Compuesta', 3)">No Acumulable <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/noAcumulable.svg" /></i></button>
+        <button class="btn btn-azul-medio" onclick="selectPromocion('Compuesta', 3)">No Acumulable <i aria-hidden="true"><img class="img-promo" src="~/imagenes/noAcumulable.svg" /></i></button>
         <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(3)"></i>
     </div>
     <div>
-        <button class="btn btn-azul-medio my-2" onclick="selectPromocion('Compuesta', 4)">Escalonada <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/escalonada.svg" /></i></button>
+        <button class="btn btn-azul-medio" onclick="selectPromocion('Compuesta', 4)">Escalonada <i aria-hidden="true"><img class="img-promo" src="~/imagenes/escalonada.svg" /></i></button>
         <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(4)"></i>
     </div>
     <label id="lblpromoSel" hidden></label>
@@ -170,7 +170,7 @@
     </div>
 </div>
 <div class="modal fade" id="ArticulosModal" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="width:100%">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Selecciona el Artículo</h5>
@@ -611,9 +611,9 @@
                     {
                         if(data != "")
                         {
-                            return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />';
+                            return '<img style=" width: 100px; height: 100px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />';
                         }else{
-                            return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="' + path + '/Imagenes/noimage.png" alt="image" />';
+                            return '<img style=" width: 100px; height: 100px; margin: auto;" src="' + path + '/Imagenes/noimage.png" alt="image" />';
                         }
                     }
                 }
@@ -683,7 +683,7 @@
                     "data": "foto",
                     render: function (data, type)
                     {
-                        return '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
+                        return '<img style=" max-width: 100px; max-height: 100px; margin: auto;" src="data:image/png;base64,' + data + '" alt="image" />'
                     }
                 }
             ]
