@@ -28,7 +28,7 @@ namespace ExpoMR.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int PageIndex)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -60,6 +60,8 @@ namespace ExpoMR.Controllers
             carrito.Trasportes = WebSite.GetTransportes(IdCliente);
             carrito.IdTipoVenta = 0;
             carrito.TiposVenta = WebSite.GetTiposVenta();
+            carrito.ListaCarritoViewModel = GetCarrito(IdCliente, IdUsuario, PageIndex);
+            carrito.ListaCarritoViewModel.PageIndex = PageIndex;
 
             if ((IsClienteVip == true && isFechaExpoVIP == 1) //1 = Expo VIP
                 || (IsClienteVip == false && isFechaExpoVIP == 0)) // 0 = Expo Normal
@@ -72,10 +74,12 @@ namespace ExpoMR.Controllers
             }
         }
 
-        public static List<ListaCarrito> GetCarrito(int IdCliente, int IdUsuario)
+        public static ListaCarritoViewModel GetCarrito(int IdCliente, int IdUsuario, int PageIndex)
         {
             List<ListaCarrito> listaCarrito = new List<ListaCarrito>();
 			DB dB = new();
+
+            int PageSize = 20;
 
 			try
             {
@@ -118,13 +122,16 @@ namespace ExpoMR.Controllers
             catch (Exception ex)
             {
                 listaCarrito = new List<ListaCarrito>();
-			}
+            }
 
-			dB.Close();
+            dB.Close();
+            
+            int totalItems = listaCarrito.Count; 
+            var itemsOnPage = listaCarrito.Skip((PageIndex - 1) * PageSize).Take(PageSize).ToList();
+            ListaCarritoViewModel viewModel = new ListaCarritoViewModel { ListCarrito = itemsOnPage, PageIndex = PageIndex, TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize) };
 
-			return listaCarrito;
+            return viewModel;
         }
-
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {
             List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>();

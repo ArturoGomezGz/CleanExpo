@@ -754,11 +754,9 @@
             @{
                 int IdProveedor = 0;
 
-                List<ListaCarrito> ListCarrito = ExpoMR.Controllers.CarritoController.GetCarrito(Model.IdCliente, Model.IdCliente);
-
-                if (ListCarrito.Count() > 0)
+                if (Model.ListaCarritoViewModel.ListCarrito.Count() > 0)
                 {
-                    foreach (ExpoMR.Models.ListaCarrito model in ListCarrito)
+                    foreach (ExpoMR.Models.ListaCarrito model in Model.ListaCarritoViewModel.ListCarrito)
                     {
                         @if (model.Proveedor != IdProveedor)
                         {
@@ -826,6 +824,11 @@
                         </div>
                         <hr />
                     }
+                    <div class="pagination"> 
+                        @if (@Model.ListaCarritoViewModel.HasPreviousPage) { <a href="@Url.Action("Index", new { pageIndex = Model.ListaCarritoViewModel.PageIndex - 1 })">Anterior</a> } 
+                        <span>Página @Model.ListaCarritoViewModel.PageIndex de @Model.ListaCarritoViewModel.TotalPages</span> 
+                        @if (@Model.ListaCarritoViewModel.HasNextPage) { <a href="@Url.Action("Index", new { pageIndex = Model.ListaCarritoViewModel.PageIndex + 1 })">Siguiente</a> }
+                    </div>
                 }
                 else
                 {

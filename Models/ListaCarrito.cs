@@ -25,4 +25,17 @@ namespace ExpoMR.Models
 
         public bool PorConfirmar { get; set; }
     }
+
+    public class ListaCarritoViewModel 
+    {
+        public List<ListaCarrito> ListCarrito { get; set; }
+        
+        public int PageIndex { get; set; }
+        
+        public int TotalPages { get; set; }
+        
+        public bool HasPreviousPage => PageIndex > 1; 
+        
+        public bool HasNextPage => PageIndex < TotalPages;
+    }
 }
