@@ -218,7 +218,7 @@
                 if (response.tipoPromo > 1)
                 {
                     selectPromocion('Compuesta', response.tipoPromo);
-                    if (response.monto != null)
+                    if (response.monto != 0)
                     {
                         selTipoPromo('Monto', 1);
                         document.getElementById('txtCantidadPromo').value = response.monto;

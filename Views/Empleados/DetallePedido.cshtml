@@ -1,4 +1,8 @@
-﻿@model int
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@model int
 @{
     ViewData["Title"] = "DetallePedido";
 }
@@ -137,7 +141,7 @@
 <script>
     $(document).ready(function() {
         var tblPedido = $('#Pedido').DataTable();
-        tblPedido.destroy();        
+        tblPedido.destroy();
 
         tblPedido = $('#Pedido').DataTable({
             responsive: true,
@@ -152,9 +156,17 @@
                 {
                     "data": "idProducto",
                     render: function (data, type, row) {
-                        return '<button class="fa fa-pencil btn btn-naranja-ch btn-editar" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
-                            '<button class="fa fa-check btn btn-success btn-confirmar" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
-                            '<button class="fa fa-ban btn btn-danger btn-cancelar" style="display: none" onclick="cancelarEdicion($(this).closest(\'tr\'))"></button>';
+                        if (@User.IsInRole("BackOrder").ToString().ToLower()) 
+                        {
+                            return '<button class="fa fa-pencil btn btn-naranja-ch btn-editar" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
+                                '<button class="fa fa-check btn btn-outline-success btn-confirmar" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
+                                '<button class="fa fa-ban btn btn-outline-danger btn-cancelar" style="display: none" onclick="cancelarEdicion($(this).closest(\'tr\'))"></button>';
+                        }
+                        else
+                        {
+                            return '';
+                        }
+
                     }
                 },
                 { "data": "nombre" },
@@ -167,7 +179,15 @@
                 {
                     "data": "idProducto",
                     render: function (data, type, row) {
-                        return '<button class="far fa-trash-alt btn btn-danger" onclick="eliminarProducto(' + row.idProducto + ')"></button>';
+                        if (@User.IsInRole("BackOrder").ToString().ToLower())
+                        {
+                            return '<button class="far fa-trash-alt btn btn-outline-danger" onclick="eliminarProducto(' + row.idProducto + ')"></button>';
+                        }
+                        else
+                        {
+                            return '';
+                        }
+                            
                     }
                 }
             ]

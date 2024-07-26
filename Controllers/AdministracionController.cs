@@ -232,7 +232,8 @@ namespace ExpoMR.Controllers
                     var usuario = new AppUsuario
                     {
                         UserName = UserName,
-                        Email = UserName
+                        Email = UserName,
+                        EmailConfirmed = false
                     };
 
                     var user = await _userManager.FindByNameAsync(usuario.Email);
@@ -258,7 +259,8 @@ namespace ExpoMR.Controllers
                             else //Empleado - Capturista
                             {
                                 Rol = "Capturista";
-                            }
+							    usuario.EmailConfirmed = true;
+							}
 
                             //Se asigna el rol del usuario en la tabla AspNetUserRoles
                             await _userManager.AddToRoleAsync(usuario, Rol);

@@ -68,7 +68,7 @@ namespace ExpoMR.Controllers
             List<Promociones> promociones = new List<Promociones>();
 
             string query = "SELECT mPromociones.IdPromocion, CONVERT(FLOAT, ISNULL(dPromoCondicion.Monto,0)) AS Monto, ISNULL(dPromoCondicion.Piezas,0) AS Piezas, " +
-                            "ISNULL(vProductos.IdProducto,0) AS IdProducto, ISNULL(vProductos.Nombre, '') AS Producto, " +
+							"ISNULL(vProductos.IdProducto,0) AS IdProducto, ISNULL(vProductos.Nombre + ' ' + vProductos.Presentacion, '') AS Producto, " +
                             "ISNULL(vPersonas.IdPersona,0) AS IdCliente, ISNULL(vPersonas.Nombre, '') AS Cliente, " +
                             "mPromociones.Activa, mPromociones.IdTipoPromocion AS TipoPromo " +
                             "FROM mPromociones INNER JOIN " +
