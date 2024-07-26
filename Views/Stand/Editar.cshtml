@@ -99,7 +99,12 @@
                         <div class="row">
                             <div class="col-12 col-md-3 col-xl-2">
                                 <div class="card x_content_card">
-                                    <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="image">
+                                    @if (Model.Logo.Length <= 0)
+                                    {
+                                        <img class="card-img-top" src="~/Imagenes/noimage.png" alt="image">
+                                    }else{
+                                        <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="@Model.Logo.Length">
+                                    }                                    
                                     <div class="card-block text-center">
                                         <h5 class="text-bold text-center">@Model.Nombre</h5>
                                         <label class="w-100">@Model.Descripcion</label>
