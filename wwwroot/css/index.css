@@ -39,6 +39,10 @@ p, ol, h6{
     color: var(--gris-oscuro)
 }
 
+a {
+    color:var(--azul);
+}
+
 #footer {
     min-height: 50px;
     background-color: #022e51;
@@ -583,7 +587,7 @@ p, ol, h6{
 }
 
 .btn-index {
-    background-image: linear-gradient(to right,#56CCF2 0%, #2F80ED 51%, #56CCF2 100%);
+    background-image: linear-gradient(to right,#457fca 0%, #74a8d8 51%, #457fca 100%);
     background-size: 200% auto;
     color: var(--blanco);
 }
@@ -639,10 +643,10 @@ p, ol, h6{
 }
 
 .accordion-button {
-    background: linear-gradient(#000428 0%, #004e92 51%);
+    background: linear-gradient(#1e3c72, #2a5298);
     color: var(--blanco);
     font-weight: 500;
-    height: 45px;
+    height: 40px;
     border: none;
 }
 
@@ -1024,8 +1028,7 @@ p, ol, h6{
 
 
 .sw-theme-arrows > .nav .nav-link.active {
-    /*background: linear-gradient(#1e3c72, #2a5298) !important;*/
-    background-color: var(--cfdi);
+    background-color: var(--cfdi) !important;
 }
 
     .sw-theme-arrows > .nav .nav-link.active::after {
