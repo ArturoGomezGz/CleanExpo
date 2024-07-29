@@ -17,14 +17,17 @@
                 <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
                     <div class="ruleta" style="border:none">
                         @if (item.Activa == 1)
-                        { 
-                            <a asp-controller="Ruleta" asp-action="PlayRuleta" asp-route-IdRuleta="@item.IdRuleta" alt="Play Ruleta" class="mx-auto">
+                        {
+                            <input type="hidden" id="idRuleta" value="@item.IdRuleta" />
+                            <a onclick="showModal()">
                                 <img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="~/Imagenes/ruleta@{@item.IdRuleta;}.png" alt="image" />
                             </a>
                             <div class="card-block">
                                 <p class="txt-ruleta-activa">Se activa con @item.Monedas</p>
                             </div>
-                            <a asp-controller="Ruleta" asp-action="PlayRuleta" asp-route-IdRuleta="@item.IdRuleta" type="button" class="btn__Condiciones btn btn-azul btn-lg mb-3 mx-auto">Prueba tu Suerte</a>
+                            <a class="btn__Condiciones btn btn-azul btn-lg mb-3 mx-auto" onclick="showModal()">
+                                Prueba tu Suerte
+                            </a>
                         }else{
                             <a href="#" alt="Play Ruleta" class="mx-auto">
                                 <img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="~/Imagenes/ruletaDeshabilitada@{@item.IdRuleta;}.png" alt="image" />
@@ -55,4 +58,42 @@
         </div>
     }  
 </div>
+
+@*Modal de confirmacion para girar la ruleta*@
+<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>
+                    <b>Si giras esta ruleta, ya NO podrás girar alguna de las otras ruletas</b><br />
+
+                    <b>¿Estas seguro de que deseas girar la ruleta,</b><br />
+
+                    <b>son todas la monedas que puedes conseguir?</b></br>                  
+                </p>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-verde-medio btn-success">Acepto</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-rojo btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showModal() 
+    {
+        const myModal = new bootstrap.Modal(document.getElementById('exampleModalToggle'));
+        myModal.show();
+    }
+
+    $(document).on('click', '.btn-success', function (event)
+    {
+        document.location = '@Url.Action("PlayRuleta", "Ruleta")' + '?IdRuleta=' + document.getElementById("idRuleta").value;
+    });
+</script>
 

@@ -44,10 +44,10 @@
             <div class="col-md-12">
                 <div class="row text-center">
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-verde-medio">Acepto</button>
+                        <button type="button" class="btn btn-verde-medio btn-success">Acepto</button>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-rojo" data-bs-dismiss="modal" >Cancelar</button>
+                        <button type="button" class="btn btn-rojo btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -85,6 +85,7 @@
         let cliente = $('#ddlLisClientes').val()
 
         $('#PrecioClientes').DataTable({
+            order: [[1, 'asc']],
             responsive: true,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
@@ -228,9 +229,8 @@
                                     IdProducto: idproducto,
                                     PorcentajeDescuento: DescClienteNew
                                 },
-                                function (data)
+                                function (data) // Esta función se ejecutará cuando la solicitud sea exitosa
                                 {
-                                    // Esta función se ejecutará cuando la solicitud sea exitosa
                                     myModal.hide();
                                     miCheckbox.checked = false;
                                     inputElement.prop('disabled', true);

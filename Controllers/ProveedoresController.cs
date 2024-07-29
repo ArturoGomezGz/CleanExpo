@@ -40,7 +40,7 @@ namespace ExpoMR.Controllers
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[6];
                 parameters[0] = new SqlParameter("@Nombre", Nombre);
-                parameters[1] = new SqlParameter("@Descripcion", Descripcion);
+                parameters[1] = new SqlParameter("@Descripcion", Descripcion != null? Descripcion : "");
                 parameters[2] = new SqlParameter("@Cantidad", CantidadArticulo);
                 parameters[3] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
                 parameters[4] = new SqlParameter("@Orden", Orden);
