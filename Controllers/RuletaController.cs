@@ -261,11 +261,11 @@ namespace ExpoMR.Controllers
 
                     while (dr2.Read())
                     {
-                        foto = WebSite.ConvertToBase64((dr2["Foto"] != DBNull.Value ? (byte[])dr2["Foto"] : Array.Empty<byte>()));
+                        ruletaGiro[0].foto = (dr2["Foto"] != DBNull.Value ? (byte[])dr2["Foto"] : Array.Empty<byte>());
                     }
 
                     rm.Response = true;
-                    rm.Result = ruletaGiro[0].GradosGiro + "," + ruletaGiro[0].IdPremio + "," + ruletaGiro[0].Premio + "," + ruletaGiro[0].Descripcion + "," + foto;
+                    rm.Result = ruletaGiro[0];
                 }
                 else
                 {

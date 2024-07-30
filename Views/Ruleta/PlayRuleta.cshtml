@@ -17,10 +17,7 @@
             dataType: 'json',
             success: function (response) {  
                 if (response.response){
-                    var str = response.result;
-                    var data = str.split(',');
-                    console.log(data)
-                    playRoulette(data[0], data[1], data[2], data[3], data[4]);
+                    playRoulette(response.result.gradosGiro, response.result.idPremio, response.result.premio, response.result.descripcion, response.result.foto);
                 }else{
                     ShowAlert(response.message, response.response)
                 }                

@@ -11,5 +11,7 @@ namespace ExpoMR.Models
         public string Premio { get; set; }
 
         public string Descripcion { get; set; }
+
+        public byte[] foto { get; set; }
     }
 }
