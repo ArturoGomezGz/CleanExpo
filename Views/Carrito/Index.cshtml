@@ -824,11 +824,64 @@
                         </div>
                         <hr />
                     }
-                    <div class="pagination"> 
-                        @if (@Model.ListaCarritoViewModel.HasPreviousPage) { <a href="@Url.Action("Index", new { pageIndex = Model.ListaCarritoViewModel.PageIndex - 1 })">Anterior</a> } 
-                        <span>Página @Model.ListaCarritoViewModel.PageIndex de @Model.ListaCarritoViewModel.TotalPages</span> 
-                        @if (@Model.ListaCarritoViewModel.HasNextPage) { <a href="@Url.Action("Index", new { pageIndex = Model.ListaCarritoViewModel.PageIndex + 1 })">Siguiente</a> }
-                    </div>
+
+                    <nav>
+                        <ul class="pagination">
+                            @if (Model.ListaCarritoViewModel.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <span class="page-link">
+                                        <a href="@Url.Action("Index", new { pageIndex = Model.ListaCarritoViewModel.PageIndex - 1 })">Anterior</a>
+                                    </span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <a>Anterior</a>
+                                    </span>
+                                </li>
+                            }
+
+                            @for (var i = 1; i <= Model.ListaCarritoViewModel.TotalPages; i++)
+                            {
+                                @if (Model.ListaCarritoViewModel.PageIndex == @i)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                           <a>@i</a>
+                                        </span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <span class="page-link">
+                                           <a href="@Url.Action("Index", new { pageIndex = @i })">@i</a>
+                                        </span>
+                                    </li>
+                                }
+                            }
+
+                            @if (Model.ListaCarritoViewModel.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <span class="page-link">
+                                        <a href="@Url.Action("Index", new { pageIndex = Model.ListaCarritoViewModel.PageIndex + 1 })">Siguiente</a>
+                                    </span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        <a>Siguiente</a>
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </nav>                 
                 }
                 else
                 {

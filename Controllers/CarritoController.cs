@@ -28,7 +28,7 @@ namespace ExpoMR.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Index(int PageIndex)
+        public async Task<IActionResult> Index(int PageIndex = 1)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
