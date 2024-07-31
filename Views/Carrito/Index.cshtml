@@ -1082,7 +1082,7 @@
 <div class="modal fade" id="swModal" tabindex="-1" aria-labelledby="swModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header pb-1 pt-2">
                 <h5 class="" id="swModalLabel">Coloca Tu Orden</h5>
 
                 <div class="float-end text-muted ms-5">
@@ -1091,12 +1091,12 @@
 
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pt-0 pb-0">
                 <!-- SmartWizard html -->
                 <div id="smartwizard">
                     <ul class="nav nav-progress">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
+                        <li class="nav-item" >
+                            <a class="nav-link"  href="#">
                                 <div class="num">1</div>
                                 Tipo de Comprobante
                             </a>
@@ -1119,28 +1119,28 @@
                             <h4>Paso 1</h4>
                             <p class="mb-0"><strong>Cliente: </strong><label id="colocar_Cliente"></label></p>
                             <p class="mb-0"><strong>RFC: </strong><label id="colocar_RFC"></label></p>
-                            <div class="col-12 pb-2">
+                            <div class="col-12 pb-1 pt-0" style="font-size:0.9em">
                                 @Html.LabelFor(m => m.IdTipoDoc, new { @class = "fw-bold" })
-                                @Html.DropDownListFor(model => model.IdTipoDoc, new SelectList(Model.TipoDocumentos, "IdTipoDoc", "TipoDoc"), new { id = "cmb-TipoDoc", @class = "form-control text-left", name = "cmb-TipoDoc",  title="cmb"})
+                                @Html.DropDownListFor(model => model.IdTipoDoc, new SelectList(Model.TipoDocumentos, "IdTipoDoc", "TipoDoc"), new { id = "cmb-TipoDoc", @class = "form-control text-left colocaOrdenDropDown", name = "cmb-TipoDoc",  title="cmb" })
                             </div>
-                            <div class="col-12 pb-2">
+                            <div class="col-12 pb-1">
                                 @Html.LabelFor(m => m.IdUsoCFDI, new { @class = "fw-bold" })
-                                @Html.DropDownListFor(model => model.IdUsoCFDI, new SelectList(Model.UsoCFDI, "IdUsoCFDI", "UsoCFDI"), new { id = "cmb-UsosCFDI", @class = "form-control text-left", name = "cmb-UsosCFDI",  title="cmb"})
+                                @Html.DropDownListFor(model => model.IdUsoCFDI, new SelectList(Model.UsoCFDI, "IdUsoCFDI", "UsoCFDI"), new { id = "cmb-UsosCFDI", @class = "form-control text-left colocaOrdenDropDown", name = "cmb-UsosCFDI",  title="cmb"})
                             </div>
                         </div>
                         <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                             <h4>Paso 2</h4>
-                            <div class="col-12 pb-2">
+                            <div class="col-12 pb-1">
                                 @Html.LabelFor(m => m.IdTipoVenta, new { @class = "fw-bold" })
-                                @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.TiposVenta, "IdTipoVenta", "TipoVenta"), new { id = "cmb-TipoVenta", @class = "form-control text-left", name = "cmb-TipoVenta",  title="cmb"})
+                                @Html.DropDownListFor(model => model.IdTipoVenta, new SelectList(Model.TiposVenta, "IdTipoVenta", "TipoVenta"), new { id = "cmb-TipoVenta", @class = "form-control text-left colocaOrdenDropDown", name = "cmb-TipoVenta",  title="cmb"})
                             </div>
-                            <div class="col-12 pb-2">
+                            <div class="col-12 pb-1">
                                 @Html.LabelFor(m => m.Entrega, new { @class = "fw-bold" })
-                                @Html.DropDownListFor(model => model.Entrega, new SelectList(Model.Direccciones, "IdEntrega", "Entrega"), new { id = "cmb-Entrega", @class = "form-control text-left", name = "cmb-Entrega",  title="cmb"})
+                                @Html.DropDownListFor(model => model.Entrega, new SelectList(Model.Direccciones, "IdEntrega", "Entrega"), new { id = "cmb-Entrega", @class = "form-control text-left colocaOrdenDropDown", name = "cmb-Entrega",  title="cmb"})
                             </div>
                             <p class="mb-0"><strong>Transportista: </strong><select id="colocar_Transportista"></select></p>
                             <p class="mb-0"><strong>Porte: </strong><select id="colocar_Porte"></select></p>
-                            <p class="mb-0"><strong>Observaciones: </strong><input id="obsv" type="text" placeholder="Obsevaciones" class="form-control" /></p>
+                            <p class="mb-0"><strong>Observaciones: </strong><input id="obsv" type="text" placeholder="Obsevaciones" class="form-control colocaOrdenDropDown" /></p>
                         </div>
                         <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
                             <h4>Paso 3</h4>
@@ -1154,7 +1154,7 @@
                             <p class="mb-0"><strong>Transportista: </strong><label id="confirmar_Transtportista"></label></p>
                             <p class="mb-0"><strong>Porte: </strong><label id="confirmar_Porte"></label></p>
                             <div style="text-align:center">
-                                <button type="button" onclick="TerminarOrden()" class="btn btn-naranja mb-3 mt-3">Colocar tu Orden <i class="fa fa-chevron-circle-right"></i> </button>
+                                <button type="button" onclick="TerminarOrden()" class="btn btn-naranja mb-1 mt-1">Colocar tu Orden <i class="fa fa-chevron-circle-right"></i> </button>
                             </div>
                         </div>
                     </div>
@@ -1164,9 +1164,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-azul-medio d-none" id="prev-btn-modal"><i class="fa fa-chevron-circle-left"></i> Anterior</button>
-                <button class="btn btn-azul-medio" id="next-btn-modal" disabled>Siguiente <i class="fa fa-chevron-circle-right"></i></button>
-                <button class="btn btn-rojo" onclick="onCancel()">Cancelar</button>
+                <button class="btn btn-azul-medio d-none mb-0 mt-0" id="prev-btn-modal"><i class="fa fa-chevron-circle-left"></i> Anterior</button>
+                <button class="btn btn-azul-medio mb-0 mt-0" id="next-btn-modal" disabled>Siguiente <i class="fa fa-chevron-circle-right"></i></button>
+                <button class="btn btn-rojo mb-0 mt-0" onclick="onCancel()">Cancelar</button>
             </div>
         </div>
     </div>

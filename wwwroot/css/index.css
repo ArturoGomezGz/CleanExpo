@@ -1026,6 +1026,11 @@ a {
     margin: auto;
 }
 
+.colocaOrdenDropDown {
+    height: 30px;
+    margin: 0px;
+    padding: 0px 10px
+}
 
 .sw-theme-arrows > .nav .nav-link.active {
     background-color: var(--cfdi) !important;
@@ -1098,17 +1103,17 @@ a {
     background: transparent;
 }
 
-.img_articulo {
+.img_articulo, .img_articulo_Modal {
     width: 150px;
     height: 150px;
     margin: auto;
 }
 
-.img_articulo
+./*img_articulo
 {
     width: 250px;
     margin: auto;
-}
+}*/
 
 .Separador_Carrito{
     border: 2px solid var(--azul-oscuro);
@@ -1378,7 +1383,7 @@ div.fontsize {
 }
 
 .card-img-top{
-    max-width:95%;
+    /*max-width:95%;*/
     margin:auto;
 }
 
@@ -1421,13 +1426,5 @@ div.fotoCarrito {
     left: 0;
     pointer-events: none;
     z-index:10;
-}
-
-
-
-@media only screen and (min-width: 1086px) {
-    .modal {
-        --bs-modal-width: 800px;
-    }
 }
 

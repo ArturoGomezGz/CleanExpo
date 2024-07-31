@@ -610,7 +610,7 @@ Promociones">
             {
                 let cadena = "";
                 $.each(resultado, function (index, value) {
-                    cadena += '<img id="PromoImgModal" class="card-img-top mw-100 img_articulo_Modal " alt="image" src="data:image/jpg;base64,' + value.foto + '" alt="image" />'
+                    cadena += '<img id="PromoImgModal" class="card-img-top img_articulo_Modal " alt="image" src="data:image/jpg;base64,' + value.foto + '" alt="image" />'
                 });
                 $("#div_fotos_articulo").append(cadena)
 
@@ -715,7 +715,7 @@ Promociones">
                     "data": "idProducto", title: "Agregar",
 					render: function (data, type, row) 
                     {
-                        return '<button onClick="detalleProducto(' + data + ')" type="button" class="btn btn-outline-success"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+                        return '<button onClick="detalleProducto(' + data + ')" type="button" class="btn btn-outline-success mt-2 mb-2"><i class="fa fa-plus" aria-hidden="true"></i></button>'
 					}
 
                 }
