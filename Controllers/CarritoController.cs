@@ -58,6 +58,8 @@ namespace ExpoMR.Controllers
             carrito.Direccciones = WebSite.GetDireccionesEntrega(IdCliente);
             carrito.IdTransporte = 0;
             carrito.Trasportes = WebSite.GetTransportes(IdCliente);
+            carrito.IdPorte = 0;
+            carrito.Portes = WebSite.GetPortes(IdCliente);
             carrito.IdTipoVenta = 0;
             carrito.TiposVenta = WebSite.GetTiposVenta();
             carrito.ListaCarritoViewModel = GetCarrito(IdCliente, IdUsuario, PageIndex);
@@ -540,7 +542,7 @@ namespace ExpoMR.Controllers
                     CotizacionDatos Cotizacion = new CotizacionDatos()
                     {
                         IdCotizacion = Convert.ToInt32(dr["IdCotizacion"]),
-                        Cliente = dr["IdCotizacion"].ToString(),
+                        Cliente = dr["Cliente"].ToString(),
                         RFC = dr["RFC"].ToString(),
                         Documento = dr["Documento"].ToString(),
                         UsoCFDI = dr["UsoCFDI"].ToString(),
@@ -644,7 +646,7 @@ namespace ExpoMR.Controllers
                 parameters[5] = new SqlParameter("@IdTransporte", cotizacion.IdTransporte);
                 parameters[6] = new SqlParameter("@IdPorte", cotizacion.IdPorte);
                 parameters[7] = new SqlParameter("@IdDireccion", cotizacion.Direccion);
-                parameters[8] = new SqlParameter("@Obsv", cotizacion.Observaciones);
+                parameters[8] = new SqlParameter("@Obsv", cotizacion.Observaciones == null ? "" : cotizacion.Observaciones);
 
 
                 dB.ExecuteNonQuery("CotizarActualizarDatos", ref parameters);

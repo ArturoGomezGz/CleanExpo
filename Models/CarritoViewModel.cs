@@ -42,9 +42,15 @@ namespace ExpoMR.Models
         public int IdTransporte { get; set; }
         
         public List<Trasportes> Trasportes { get; set; }
-        
+
+        [Display(Name = "Porte: ")]
+        public int IdPorte { get; set; }
+
+        public List<Portes> Portes { get; set; }
+
         [Display(Name = "Tipo de Envío")]
         public int IdTipoVenta { get; set; }
+
         
         public List<TiposDeVenta> TiposVenta { get; set; }
 

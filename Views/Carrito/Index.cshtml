@@ -249,7 +249,7 @@
                         $("#confirmar_Entrega").html(res.result[0].dirEntrega)
                         $("#confirmar_Observaciones").html(res.result[0].obsv)
                         $("#confirmar_Transtportista").html(res.result[0].transportista)
-                        $("#confirmar_Transtportista").html(res.result[0].porte)
+                        $("#confirmar_Porte").html(res.result[0].porte)
                     }
                     $('#smartwizard').smartWizard("loader", "hide");
                 }).fail(function (err) {
@@ -1138,8 +1138,14 @@
                                 @Html.LabelFor(m => m.Entrega, new { @class = "fw-bold" })
                                 @Html.DropDownListFor(model => model.Entrega, new SelectList(Model.Direccciones, "IdEntrega", "Entrega"), new { id = "cmb-Entrega", @class = "form-control text-left colocaOrdenDropDown", name = "cmb-Entrega",  title="cmb"})
                             </div>
-                            <p class="mb-0"><strong>Transportista: </strong><select id="colocar_Transportista"></select></p>
-                            <p class="mb-0"><strong>Porte: </strong><select id="colocar_Porte"></select></p>
+                            <div class="col-12 pb-1">
+                                @Html.LabelFor(m => m.IdTransporte, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.IdTransporte, new SelectList(Model.Trasportes, "IdTrasporte", "Transporte"), new { id = "colocar_Transportista", @class = "form-control text-left colocaOrdenDropDown", name = "colocar_Transportista",  title="cmb"})
+                            </div>
+                            <div class="col-12 pb-1">
+                                @Html.LabelFor(m => m.IdPorte, new { @class = "fw-bold" })
+                                @Html.DropDownListFor(model => model.IdPorte, new SelectList(Model.Portes, "Idporte", "Porte"), new { id = "colocar_Porte", @class = "form-control text-left colocaOrdenDropDown", name = "colocar_Porte",  title="cmb"})
+                            </div>
                             <p class="mb-0"><strong>Observaciones: </strong><input id="obsv" type="text" placeholder="Obsevaciones" class="form-control colocaOrdenDropDown" /></p>
                         </div>
                         <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">

@@ -210,6 +210,39 @@ namespace ExpoMR.Clases
 			return Transportes;
         }
 
+        public static List<Portes> GetPortes(int IdCliente)
+        {
+            string query = "SELECT 0 AS IdPorte, '...' AS Porte " +
+                            "UNION " +
+                            "SELECT dPorteCliente.IdPorte, mPortes.Porte " +
+                            "FROM Indigo.dbo.dPorteCliente INNER JOIN " +
+                            "Indigo.dbo.mPortes ON dPorteCliente.IdPorte = mPortes.IdPorte " +
+                            "WHERE dPorteCliente.IdPersona =  @IdPersona " +
+                            "ORDER BY Porte";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            List<Portes> Portes = new();
+
+            while (dr.Read())
+            {
+                Portes Porte = new();
+
+                Porte.Idporte = (int)dr["IdPorte"];
+                Porte.Porte = (string)dr["Porte"];
+
+                Portes.Add(Porte);
+            }
+
+            dB.Close();
+
+            return Portes;
+        }
+
         public static List<TiposDeVenta> GetTiposVenta()
         {
             string query = "SELECT 0 AS IdTipoVenta, '...' AS TipoVenta " +
