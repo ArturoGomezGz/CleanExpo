@@ -163,9 +163,9 @@ a {
     padding: 0px;
 }
 
-.bg-header {
+/*.bg-header {
     background-color: red;
-}
+}*/
         
 .acceso{
     max-width:500px;
@@ -1032,7 +1032,14 @@ a {
     padding: 0px 10px
 }
 
-.sw-theme-arrows > .nav .nav-link.active {
+.finalizaOrden {
+    min-height: 50vh !important;
+    overflow-y: auto !important;
+}
+
+
+
+    .sw-theme-arrows > .nav .nav-link.active {
     background-color: var(--cfdi) !important;
 }
 
@@ -1055,6 +1062,20 @@ a {
 .nav-link.link-item-titulo {
     color: var(--azul-oscuro)
 }
+
+@media only screen and (max-width: 520px) {
+    .sw-theme-arrows > .nav .nav-link.done {
+        display: none
+    }
+
+    #step-3 {
+        font-size: 0.9em;
+        min-height: 60vh !important;
+    }
+
+
+}
+
 /* PROVEEDORES */
 .btn-link {
     --bs-btn-font-weight: 400;

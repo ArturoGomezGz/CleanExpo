@@ -12,8 +12,8 @@
                 <a asp-controller="Proveedores" asp-action="Monedas" class="btn btn-naranja text-light">Cambiar Cliente</a>
             </div>
             <br />
-            <div class="d-flex justify-content-between">
-                <div class="d-flex flex-column align-items-center">
+            <div class="row d-flex justify-content-between">
+                <div class="col-12 col-lg-6 d-flex flex-column align-items-center">
                     <strong>Monedas de Regalo</strong>
                     <br />
                     <label class="txt-azul txt-bold">Por Regalar</label>
@@ -22,7 +22,7 @@
                     <br />
                     <button class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#popAgregarMonedas" onclick="SeleccionaTipoAsignacion(1)">Agregar</button>
                 </div>
-                <div class="d-flex flex-column align-items-center">
+                <div class="col-12 col-lg-6  d-flex flex-column align-items-center">
                     <strong>Monedas de Contacto</strong>
                     <laber id="lblMonedasContacto"></laber>
                     <label class="txt-azul txt-bold">Por Asignar</label>

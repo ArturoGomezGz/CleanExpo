@@ -140,7 +140,7 @@
                 IdArticulo: IdArticulo
             },
             function (data) {
-                cadena += '<img class="promocion_imagen mx-auto pb-3" alt="imagen" src="data:image/png;base64,' + data.foto + '">'
+                cadena += '<img class="promocion_imagen mx-auto pb-3" style="width:250px; heigh:250px" alt="imagen" src="data:image/png;base64,' + data.foto + '">'
                     + '<label class="promocion_label">'
                     +  data.nombre
                     + '</label>'
@@ -1081,7 +1081,7 @@
 <!-- Modal Colocar Orden-->
 <div class="modal fade" id="swModal" tabindex="-1" aria-labelledby="swModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-lg">
-        <div class="modal-content">
+        <div class="modal-content modalColocaOrden">
             <div class="modal-header pb-1 pt-2">
                 <h5 class="" id="swModalLabel">Coloca Tu Orden</h5>
 
@@ -1093,7 +1093,7 @@
             </div>
             <div class="modal-body pt-0 pb-0">
                 <!-- SmartWizard html -->
-                <div id="smartwizard">
+                <div id="smartwizard" class="">
                     <ul class="nav nav-progress">
                         <li class="nav-item" >
                             <a class="nav-link"  href="#">
@@ -1114,7 +1114,7 @@
                             </a>
                         </li>
                     </ul>
-                    <div class="tab-content">
+                    <div class="tab-content finalizaOrden" >
                         <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
                             <h4>Paso 1</h4>
                             <p class="mb-0"><strong>Cliente: </strong><label id="colocar_Cliente"></label></p>
@@ -1146,7 +1146,7 @@
                                 @Html.LabelFor(m => m.IdPorte, new { @class = "fw-bold" })
                                 @Html.DropDownListFor(model => model.IdPorte, new SelectList(Model.Portes, "Idporte", "Porte"), new { id = "colocar_Porte", @class = "form-control text-left colocaOrdenDropDown", name = "colocar_Porte",  title="cmb"})
                             </div>
-                            <p class="mb-0"><strong>Observaciones: </strong><input id="obsv" type="text" placeholder="Obsevaciones" class="form-control colocaOrdenDropDown" /></p>
+                            <p class="mb-0"><strong>Observaciones: </strong><input id="obsv" type="text" placeholder="Observaciones" class="form-control colocaOrdenDropDown" /></p>
                         </div>
                         <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
                             <h4>Paso 3</h4>
