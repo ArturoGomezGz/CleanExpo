@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewData["Title"] = "PremioGanado";
+}
+
+<div class="row">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img id="imgPremio" />
+                    </div>
+                    <div class="col-md-6">
+                        <img class="mb-2" id="imgFelicidades" src="~/Imagenes/felicidades.png" />
+                        <p class=mb-2>
+                            Tu premio en la Ruleta de la ExpoMR es
+                        </p>
+                        <p id="pPremio"></p>
+                        <p class="mb-2" id="pDescripcion"></p>
+                        <p>
+                            Medicinas Rosario te da las gracias por participar
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    
+        $.ajax({
+            type: "POST",
+            url: path + "Ruleta/Premio",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (resultado) {
+                console.log(resultado);
+                document.getElementById('imgPremio').src = "data:image/png;base64," + resultado[0].foto;
+                $('p#pPremio').text(resultado[0].premio);
+                $('p#pDescripcion').text(resultado[0].descripcion);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+</script>
+

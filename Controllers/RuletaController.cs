@@ -10,6 +10,7 @@ using System.Text;
 using System.Globalization;
 using ExpoMR.Datos;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Ocsp;
 
 namespace ExpoMR.Controllers
 {
@@ -25,6 +26,12 @@ namespace ExpoMR.Controllers
             _userManager = userManager;
             _configuration = config;
         }
+
+        public async Task<IActionResult> PremioGanado()
+        {
+            return View();
+        }
+
 
         public async Task<IActionResult> Index()
         {
@@ -61,11 +68,17 @@ namespace ExpoMR.Controllers
             else
             {
                 int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                bool ruleta = RuletaGirada(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
 
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
                     if (isFechaExpoVIP == 1) //1 = Expo VIP
                     {
+                        if (ruleta)
+                        {
+                            return RedirectToAction("PremioGanado", "Ruleta");
+                        }
+
                         return View(ListaInforuletas);
                     }
                     else
@@ -77,6 +90,11 @@ namespace ExpoMR.Controllers
                 {
                     if (isFechaExpoVIP == 0) // 0 = Expo Normal
                     {
+                        if (ruleta)
+                        {
+                            return RedirectToAction("PremioGanado", "Ruleta");
+                        }
+
                         return View(ListaInforuletas);
                     }
                     else
@@ -291,6 +309,65 @@ namespace ExpoMR.Controllers
             }
 
             return stringBuilder.ToString();
+        }
+
+        public static bool RuletaGirada(int IdCliente)
+        {
+            string query = "DECLARE @Result BIT = 0 " +
+                           "IF EXISTS (SELECT mJuego.IdJuego " +
+                           "FROM mJuego " +
+                           "WHERE Cliente = @Cliente) " +
+                           "BEGIN " +
+                           "SET @Result = 1 " +
+                           "END " +
+                           "SELECT @Result AS RuletaGirada";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@Cliente", IdCliente);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+            bool result = false;
+
+            while (dr.Read())
+            {
+                result = (bool)dr["RuletaGirada"];
+            }
+
+            dB.Close();
+
+            return result;
+        }
+
+        public JsonResult Premio()
+        {
+            string query = "SELECT mPremios.IdPremio, mPremios.Premio, mPremios.Descripcion, mPremios.Foto " +
+                           "FROM mJuego INNER JOIN " +
+                           "mPremios ON mJuego.IdPremio = mPremios.IdPremio " +
+                           "WHERE mJuego.Cliente = @IdCliente";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdCliente", HttpContext.Session.GetString("ClienteSel"));
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            var jsonData = new
+            {
+                rows = (
+                from c in dr.Cast<System.Data.Common.DbDataRecord>()
+                select new
+               {
+                   IdPremio = c["IdPremio"],
+                   Premio = c["Premio"],
+                   Descripcion = c["Descripcion"],
+                   Foto = WebSite.ConvertToBase64((byte[])c["Foto"])
+               }).ToArray()
+            };
+
+            dB.Close();
+
+            return Json(jsonData.rows);
         }
     }
 }
