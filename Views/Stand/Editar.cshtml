@@ -476,6 +476,15 @@ Promociones">
                 document.getElementById('precioMR').innerHTML = " " + FormatoMoneda(resultado.precioMR);
                 document.getElementById('preciofinal').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
                 document.getElementById('descuentoExpo').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo);
+                if(resultado.descuentoCliente == true)
+                {
+                    document.getElementById(`imgDescuento`).style.display = 'block';
+                    document.getElementById('imgDescuento').src = "../Imagenes/descuentoExclusivo.png"
+                }
+                else
+                {
+                    document.getElementById(`imgDescuento`).style.display = 'none';
+                }
                 document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
                 document.getElementById('getiva').innerHTML = " ";
                 document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
@@ -705,7 +714,7 @@ Promociones">
                 { "data": "presentacion", title: "Presentación" },
                 { "data": "formula", title: "Fórmula" },
                 {
-                    "data": "precioMR", title: "Precio Final",
+                    "data": "precioFinal", title: "Precio Final",
                     "render": function (data, type, row) 
                     {
                         return FormatoMoneda(data);
@@ -1001,6 +1010,7 @@ Promociones">
                                     </div>
                                     <div class="col-6">
                                         <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo"></label>
+                                        <img id="imgDescuento" />
                                     </div>
                                 </div>
                                 <div class="row">

@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente,ClienteVIP,Proveedor")]
     public class HomeController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -36,29 +36,36 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
-
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Proveedor") == true)
                 {
-                    if (isFechaExpoVIP == 1) //1 = Expo VIP
-                    {
-                        return View();
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View();
                 }
                 else
                 {
-                    if (isFechaExpoVIP == 0) //1 = Expo Normal
+                    int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+
+                    if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                     {
-                        return View();
+                        if (isFechaExpoVIP == 1) //1 = Expo VIP
+                        {
+                            return View();
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "MiCuenta");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "MiCuenta");
-                        
+                        if (isFechaExpoVIP == 0) //1 = Expo Normal
+                        {
+                            return View();
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "MiCuenta");
+
+                        }
                     }
                 }
             }             

@@ -49,7 +49,16 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+				int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+
+				if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Proveedor") == true)
+                {
+					if (Cliente != idProveedor)
+					{
+						return RedirectToAction("Index", "Home");
+					}
+                    
+				}
 
                 //Se guarda el registro de vista del cliente al stand
                 if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
