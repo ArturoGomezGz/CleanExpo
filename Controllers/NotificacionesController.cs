@@ -230,8 +230,8 @@ namespace ExpoMR.Controllers
             {
                 if (string.IsNullOrEmpty(email))
                 {
-                    email = (string)dr["Email"];
-                    obsv = (string)dr["Obsv"];
+                    email = (dr["Email"] != DBNull.Value ? (string)dr["Email"] : "");
+                    obsv = (dr["Obsv"] != DBNull.Value ? (string)dr["Obsv"] : "");
                 }
 
                 if (string.IsNullOrEmpty(body))
