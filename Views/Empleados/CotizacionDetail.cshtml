@@ -290,13 +290,21 @@
 
     function modificarCotizacion() 
     {
+        var dirEntrega = document.getElementById("txtDirEntrega");
+        var transportista = document.getElementById("txtTransportista");
+        var Porte = document.getElementById("txtPorte");
+
         document.getElementById("txtDocumento").disabled = false;
         document.getElementById("txtUsoCFDI").disabled = false;
         document.getElementById("txtTipoVenta").disabled = false;
-        document.getElementById("txtTransportista").disabled = false;
-        document.getElementById("txtPorte").disabled = false;
-        document.getElementById("txtDirEntrega").disabled = false;
         document.getElementById("txtObsv").disabled = false;
+
+        if (document.getElementById("txtTipoVenta").value == 1) {
+            dirEntrega.classList.add('d-none');
+            transportista.classList.add('d-none');
+            Porte.classList.add('d-none');
+        }
+
         $("#AgregarProductos").hide();
         $("#buscarCliente").hide();
         $("#btGuardarDatosCotizacion").show();
@@ -320,13 +328,14 @@
                 IdDocumento: IdDocumento,
                 IdUsoCFDI: IdUsoCFDI,
                 IdTipoVenta: IdTipoVenta,
-                IdTrasportista: IdTrasportista,
+                IdTransportista: IdTrasportista,
                 IdPorte: IdPorte,
                 IdEntrega: IdEntrega,
                 Obsv: Obsv
             },
             function (data) {   
                 ShowAlert(data.message, data.response, "liveAlertDetailCotizacion")
+                location.reload();
             }).error(function () {
                 ShowAlert("No fue posible cargar sus datos", false);
             });
@@ -336,6 +345,7 @@
 
     function CancelGuadar()
     {
+        location.reload();
         $("#AgregarProductos").show();
         $("#buscarCliente").show();
         $("#btn-modificar").show();
@@ -347,6 +357,7 @@
         document.getElementById("txtDirEntrega").disabled = true;
         document.getElementById("txtTransportista").disabled = true;
         document.getElementById("txtPorte").disabled = true;
+        
     }
 
     function BuscarListaProducto() 
@@ -448,6 +459,11 @@
 
             var element = document.getElementById("Documento")
             element.removeAttribute("disabled");
+        })
+
+        $("#txtTipoVenta").change(function () {
+            console.log("Entra en el selected");
+            ChangeTipoVenta(this.value)
         })
 
         $('#Productos').DataTable({
@@ -575,6 +591,46 @@
         });        
     });
  
+    function ChangeTipoVenta(TipoVenta) 
+    {
+        var dirEntrega = document.getElementById("txtDirEntrega")
+        var transportista = document.getElementById("txtTransportista")
+        var Porte = document.getElementById("txtPorte")
+
+        switch (TipoVenta) {
+            case "0":
+                NextBoton.setAttribute("disabled", "");
+                break;
+            case "1":
+                dirEntrega.classList.add('d-none');
+                transportista.classList.add('d-none');
+                Porte.classList.add('d-none');
+                transportista.value = "0";
+                Porte.value = "0";
+                break;
+            case "2":
+                dirEntrega.classList.remove('d-none');
+                transportista.classList.remove('d-none');
+                Porte.classList.remove('d-none');
+                dirEntrega.disabled = false;
+                transportista.disabled = false;
+                Porte.disabled = false;
+                break;
+            case "3":
+                dirEntrega.classList.remove('d-none');
+                transportista.classList.add('d-none');
+                Porte.classList.add('d-none');
+                dirEntrega.disabled = false;
+                break;
+            case "4":
+                dirEntrega.classList.remove('d-none');
+                transportista.classList.add('d-none');
+                Porte.classList.add('d-none');
+                dirEntrega.disabled = false;
+                break;
+        }
+    }
+
     function BorrarProducto(data)
         {
             let IdProducto = data;
