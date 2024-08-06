@@ -126,7 +126,7 @@
                                 </td>
                                 <td style="width:35%">
                                     <p class="valorEtadisticas" id="numero_visitas"></p>
-                                    <p class="estadisticasTexto">Número Visitas</p>
+                                    <p class="estadisticasTexto">Número de Visitas</p>
                                 </td>
                                 <td>
                                     <img src="~/Imagenes/visitasCliente.png">
@@ -142,7 +142,7 @@
                                 </td>
                                 <td>
                                     <p class="valorEtadisticas" id="piezas_carrito"></p>
-                                    <p class="estadisticasTexto">Piezas en Carritos</p>
+                                    <p class="estadisticasTexto">Piezas en Carrito</p>
                                 </td>
                                 <td>
                                     <img src="~/Imagenes/carritoClienteEstadisticas.png">
@@ -455,7 +455,7 @@
                     "data": "idPersona",
                     render: function (data, type) {
                         if (type === 'display') {
-                            return '<a onclick="GetPrecios(' + data + ')" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                            return '<a onclick="GetPrecios(' + data + ')" class="btn btn-link"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
                         }
                         return data;
                     },
@@ -482,14 +482,14 @@
                     "data": "idProducto",
                     render: function (data, type) {
                         if (type === 'display') {
-                            return '<a onclick="modalShow(' + data + ')" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                            return '<a onclick="modalShow(' + data + ')" class="btn btn-link"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
                         }
                         return data;
                     },
                     title: ""
                 },
                 { "data": "producto", title: " Producto " },
-                { "data": "visitas", title: " visitas " }
+                { "data": "visitas", title: " Visitas " }
             ]
         });
 
@@ -507,7 +507,7 @@
                     "data": "idProducto",
                     render: function (data, type) {
                         if (type === 'display') {
-                            return '<a onclick="modalShow(' + data + ')" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+                            return '<a onclick="modalShow(' + data + ')" class="btn btn-link"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
                         }
                         return data;
                     },

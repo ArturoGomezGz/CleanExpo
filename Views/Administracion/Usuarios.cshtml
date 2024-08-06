@@ -22,7 +22,7 @@
     </div>
 </div>
 <div class="row mb-4">
-	<div class="col-md-3"><button id="InvitacionMasiva" type="button" class="btn btn-azul btn-large" onclick="InvitacionMasiva();"> Enviar <i class="fa fa-envelope" aria-hidden="true"></i></button></div>
+	<div class="col-md-3"><button id="InvitacionMasiva" type="button" class="btn btn-azul btn-large" onclick="InvitacionMasiva();"> Enviar <i class="fas fa-envelope" aria-hidden="true"></i></button></div>
 </div>
 
 <script>
@@ -84,7 +84,7 @@
 					orderable: false,
 					render: function (data, type, row) {
 						if (row.idEmail != 0 && row.usuario == true && type === 'display') {
-							return '<a href="' + path + 'Administracion/EditarUsuario?IdEmail=' + data + '" class="btn btn-link"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>';
+							return '<a href="' + path + 'Administracion/EditarUsuario?IdEmail=' + data + '" class="btn btn-link"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
 						}
 
 						return '';
@@ -116,10 +116,10 @@
 					render: function (data, type) {
 						if (!data) {
 								
-							return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-square-o" aria-hidden="true"></i>';
+							return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="far fa-square" aria-hidden="true"></i>';
 						}
 							
-						return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="fa fa-check-square-o" aria-hidden="true"></i>';
+						return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="far fa-check-square" aria-hidden="true"></i>';
 					},
 				},
 				{
@@ -127,10 +127,10 @@
 					title: "Usuario",
 					render: function (data, type) {
 						if (!data) {
-							return '<i class="fa fa-square-o" aria-hidden="true"></i>';
+							return '<i class="far fa-square" aria-hidden="true"></i>';
 						}
 
-						return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+						return '<i class="far fa-check-square" aria-hidden="true"></i>';
 					},
 				},
 				{
@@ -138,10 +138,10 @@
 					title: "Bloqueado",
 					render: function (data, type) {
 						if (!data) {
-							return '<i class="fa fa-square-o" aria-hidden="true"></i>';
+							return '<i class="far fa-square" aria-hidden="true"></i>';
 						}
 
-						return '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+						return '<i class="far fa-check-square" aria-hidden="true"></i>';
 					},
 				},
 				{
@@ -149,7 +149,7 @@
 					orderable: false,
 					render: function (data, type, row) {
 						if (!row.invitacion && row.usuario == false ) {
-							return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" class="btn btn-outline-success"><i class="fa fa-plus" aria-hidden="true"></i></button>'
+							return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" class="btn btn-outline-success"><i class="fas fa-plus" aria-hidden="true"></i></button>'
 						}
 
 						return ''

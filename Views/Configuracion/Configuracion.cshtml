@@ -319,9 +319,9 @@
                     render: function (data, type, row) 
                     {
                         return '<input class="hdfIdProducto" type="hidden" value="' + row.idProducto + '" style="display:none"/>'
-                            + '<a class="btn btn-naranja-ch editvisitas" ><i class="fa fa-pencil"></i></a>'
-                            + '<a class="btn btn-outline-success aceptedvisitas" style="display:none"><i class="fa fa-check" aria-hidden="true"></i></a>'
-                            + '<a class="btn btn-outline-danger canceledvisitas" style="display:none"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                            + '<a class="btn btn-naranja-ch editvisitas" ><i class="fas fa-pencil-alt"></i></a>'
+                            + '<a class="btn btn-outline-success aceptedvisitas" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
+                            + '<a class="btn btn-outline-danger canceledvisitas" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>';
                     }                    
                 },
                 { 
@@ -368,7 +368,7 @@
                     "data": "idProducto",
                     render: function (data, type, row)
                     {
-                        return '<button onclick="SelProducto(' + row.idProducto + ')" class="btn fa fa-chevron-right"> </button>'
+                        return '<button onclick="SelProducto(' + row.idProducto + ')" class="btn fas fa-chevron-right"> </button>'
                             + ' <label hidden> ' + row.idProducto + '</label>';
                     }
                 },

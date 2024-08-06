@@ -17,10 +17,10 @@
             <input type="text" class="form-control" id="txtcantidadArticulo" disabled><br />
             <div id="hiddenBTN" class="col-sm-12 text-center">
                 <button type="button" class="btn btn-outline-success" id="btnSave" onclick="AceptEditArticulo()" title="btn-save">
-                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <i class="fas fa-check" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="btn  btn-outline-danger" id="btnCancel" onclick="CancelEditArticulo()" title="btn-cancel">
-                    <i class="fa fa-ban" aria-hidden="true"></i>
+                    <i class="fas fa-ban" aria-hidden="true"></i>
                 </button>
             </div>
             <div id="div_botones" class="col-sm-12 text-center">
@@ -64,7 +64,7 @@
 </div>
 <br />
 <div class="col-md-12" id="div_btnRegresar">
-    <a class="btn btn-azul  margin_auto" style="max-width:250px" asp-controller="Proveedores" asp-action="Articulos"><i class="fa fa-arrow-left" aria-hidden="true"></i> Mis Artículos</a>
+    <a class="btn btn-azul  margin_auto" style="max-width:250px" asp-controller="Proveedores" asp-action="Articulos"><i class="fas fa-arrow-left" aria-hidden="true"></i> Mis Artículos</a>
 </div>
 
 <script>
@@ -105,12 +105,12 @@
                         + '<strong>Foto:</strong><div class=text-center><select style="display:none; width: 50px; height: 25px;" id="orden_' + value.iDdArticulos + '"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><label id="numFoto_' + value.iDdArticulos + '" class="">' + value.numFoto + '</label>'
                         + '<img class="card-img-top" style="width: 150px; height: 150px; margin: auto;" src="data:image/jpg;base64,' + value.foto + '" alt="image" /><br />'
                         + '<div id="divbtnGuardarNumFoto_' + value.iDdArticulos + '" class="col-md-12 text-center" style="display:none"><button type="button" class="btn btn-outline-success" id="btnSave" onclick="AceptEditOrdenFoto(' + value.iDdArticulos + ')" title="btn-save">'
-                        + '<i class="fa fa-check" aria-hidden="true"></i></button>'
+                        + '<i class="fas fa-check" aria-hidden="true"></i></button>'
                         + '<button type="button" class="btn  btn-outline-danger" id="btnCancel" onclick="CancelEditOrdenFoto(' + value.iDdArticulos + ')" title="btn-cancel">'
-                        + '<i class="fa fa-ban" aria-hidden="true"></i>'
+                        + '<i class="fas fa-ban" aria-hidden="true"></i>'
                         + '</button>'
                         + '</div>'
-                        + '<div id="divbtnEditar_' + value.iDdArticulos + '" class="col-md-12 text-center"><button type="button" class="btn btn-naranja-ch" id="btnEdit" onclick="EditarOrdenFoto(' + value.iDdArticulos + ')" title="btn-save"><i class="fa fa-pencil" ></i></button>'
+                        + '<div id="divbtnEditar_' + value.iDdArticulos + '" class="col-md-12 text-center"><button type="button" class="btn btn-naranja-ch" id="btnEdit" onclick="EditarOrdenFoto(' + value.iDdArticulos + ')" title="btn-save"><i class="fas fa-pencil-alt" ></i></button>'
                         + '<button type="button" class="btn btn-outline-danger" id="btnSave" onclick="EliminarFotoArticulo(' + value.iDdArticulos + ')" title="btn-save"><i class=" far fa-trash-alt" ></i></button>'
                         +'</div></div></div>'
                 });

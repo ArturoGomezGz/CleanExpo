@@ -158,9 +158,9 @@
                     render: function (data, type, row) {
                         if (@User.IsInRole("BackOrder").ToString().ToLower()) 
                         {
-                            return '<button class="fa fa-pencil btn btn-naranja-ch btn-editar" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
-                                '<button class="fa fa-check btn btn-outline-success btn-confirmar" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
-                                '<button class="fa fa-ban btn btn-outline-danger btn-cancelar" style="display: none" onclick="cancelarEdicion($(this).closest(\'tr\'))"></button>';
+                            return '<button class="fas fa-pencil-alt btn btn-naranja-ch btn-editar" onclick="editarFila($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
+                                '<button class="fas fa-check btn btn-outline-success btn-confirmar" style="display: none" onclick="confirmarEdicion($(this).closest(\'tr\'),' + row.idProducto + ')"></button>' +
+                                '<button class="fas fa-ban btn btn-outline-danger btn-cancelar" style="display: none" onclick="cancelarEdicion($(this).closest(\'tr\'))"></button>';
                         }
                         else
                         {

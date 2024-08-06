@@ -5,19 +5,19 @@
 <div id="divBotones" class="d-md-flex justify-content-around">
     <div>
         <button class="btn btn-azul-medio " onclick="selectPromocion('Simple', 1)">Por Visita De Cliente <i aria-hidden="true"><img class="img-promo" src="~/imagenes/porVisita.svg" /></i></button>
-        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(1)"></i>
+        <i class="far fa-question-circle" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(1)"></i>
     </div>
     <div>
         <button class="btn btn-azul-medio " onclick="selectPromocion('Compuesta', 2)">Acumulable <i aria-hidden="true"><img class="img-promo" src="~/imagenes/acumulable.svg" /></i></button>
-        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(2)"></i>
+        <i class="far fa-question-circle" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(2)"></i>
     </div>
     <div>
         <button class="btn btn-azul-medio" onclick="selectPromocion('Compuesta', 3)">No Acumulable <i aria-hidden="true"><img class="img-promo" src="~/imagenes/noAcumulable.svg" /></i></button>
-        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(3)"></i>
+        <i class="far fa-question-circle" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(3)"></i>
     </div>
     <div>
         <button class="btn btn-azul-medio" onclick="selectPromocion('Compuesta', 4)">Escalonada <i aria-hidden="true"><img class="img-promo" src="~/imagenes/escalonada.svg" /></i></button>
-        <i class="fa fa-question-circle-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(4)"></i>
+        <i class="far fa-question-circle" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="infoModal(4)"></i>
     </div>
     <label id="lblpromoSel" hidden></label>
 </div>
@@ -38,7 +38,7 @@
         <div class="card-header">
             <strong>Si la promoción es para un cliente en específico, búscalo.</strong>
             <div class="d-flex m-2">
-                <i class="fa fa-search my-1 mx-2" aria-hidden="true" onclick="BuscarClientes()" data-bs-toggle="modal" data-bs-target="#BuscarClienteModal"></i>
+                <i class="fas fa-search my-1 mx-2" aria-hidden="true" onclick="BuscarClientes()" data-bs-toggle="modal" data-bs-target="#BuscarClienteModal"></i>
                 <p>Buscar Cliente Específico</p>
             </div>
             <div class="d-flex m-2">
@@ -52,7 +52,7 @@
             <strong>Si es de un producto en específico, búscalo.</strong>
 
             <div class="d-flex m-2">
-                <i class="fa fa-search my-1 mx-2" aria-hidden="true" onclick="BuscarProductos()" data-bs-toggle="modal" data-bs-target="#BuscarProductoModal"></i>
+                <i class="fas fa-search my-1 mx-2" aria-hidden="true" onclick="BuscarProductos()" data-bs-toggle="modal" data-bs-target="#BuscarProductoModal"></i>
                 <p>Buscar Producto Específico</p>
             </div>
             <div class="d-flex m-2">
@@ -96,7 +96,7 @@
     </div>
 </div>
 <div id="botonesTermino" class="d-flex justify-content-around my-4 capturarPiezas">
-    <button id="btnSiguiente" class="btn btn-azul-medio" onclick="AgregaConfig(0)" hidden>Siguiente <i class="fa fa-chevron-right"></i></button>
+    <button id="btnSiguiente" class="btn btn-azul-medio" onclick="AgregaConfig(0)" hidden>Siguiente <i class="fas fa-chevron-right"></i></button>
     <button id="btnAceptar" onclick="ActualizaPromo()" class="btn btn-azul-medio" hidden>Aceptar</button>
     <button class="btn btn-rojo" onclick="Salir()">Salir</button>
     <button class="btn btn-activa mt-4" id="btnActivarPromocion" style="width:60px;height:30px;" onclick="CambiarStatus()" hidden>
@@ -380,7 +380,7 @@
                     "data": "cliente",
                     render: function (data, type, row)
                     {
-                        return '<button onclick="ClienteSelected(' + row.cliente + ', \'' + row.nombre + '\')" class="btn fa fa-chevron-right" data-bs-dismiss="modal"> </button>';
+                        return '<button onclick="ClienteSelected(' + row.cliente + ', \'' + row.nombre + '\')" class="btn fas fa-chevron-right" data-bs-dismiss="modal"> </button>';
                     }
                 },
                 { "data": "nombre" }
@@ -408,7 +408,7 @@
                     "data": "idProducto",
                     render: function (data, type, row)
                     {
-                        return '<button onclick="ProductoSelected(' + row.idProducto + ', \'' + row.producto + '\')" class="btn fa fa-chevron-right" data-bs-dismiss="modal"> </button>';
+                        return '<button onclick="ProductoSelected(' + row.idProducto + ', \'' + row.producto + '\')" class="btn fas fa-chevron-right" data-bs-dismiss="modal"> </button>';
                     }
                 },
                 { "data": "codigo" },
@@ -601,7 +601,7 @@
                     "data": "idArticulo",
                     render: function (data, type, row) 
                     {
-                        return '<button  class="btn fa fa-chevron-right" onclick="ArticuloSelected(' + row.idArticulo + ')" data-bs-dismiss="modal"> </button>';
+                        return '<button  class="btn fas fa-chevron-right" onclick="ArticuloSelected(' + row.idArticulo + ')" data-bs-dismiss="modal"> </button>';
                     }
                 },
                 { "data": "articulo" },
