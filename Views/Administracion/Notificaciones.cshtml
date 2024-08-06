@@ -50,7 +50,14 @@
                 { "data": "idPersona"},
                 { "data": "nombre", title: "Nombre" },
                 { "data": "email", title: "Email" },
-                { "data": "notificado", title: "Promociones" }
+                { "data": "notificado", title: "Promociones",
+                    render: function (data, type) {
+                        if (data == 1) {
+                            return '<img class="card-img-top" style=" width: 20px; height: 20px; margin: auto;" src="../Imagenes/AceptarGrid.png" alt="image" />'
+                        }
+                        return '';
+                    },
+                }
             ]
         });    
     }
