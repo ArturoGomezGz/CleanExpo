@@ -54,7 +54,7 @@ namespace ExpoMR.Models
         
         public List<TiposDeVenta> TiposVenta { get; set; }
 
-        public ListaCarritoViewModel ListaCarritoViewModel { get; set; }
+        public List<ListaCarrito> ListaCarrito { get; set; }
     }
 
    public class ddlPedidosCliente 

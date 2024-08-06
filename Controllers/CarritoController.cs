@@ -28,7 +28,7 @@ namespace ExpoMR.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Index(int PageIndex = 1)
+        public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -62,8 +62,7 @@ namespace ExpoMR.Controllers
             carrito.Portes = WebSite.GetPortes(IdCliente);
             carrito.IdTipoVenta = 0;
             carrito.TiposVenta = WebSite.GetTiposVenta();
-            carrito.ListaCarritoViewModel = GetCarrito(IdCliente, IdUsuario, PageIndex);
-            carrito.ListaCarritoViewModel.PageIndex = PageIndex;
+            carrito.ListaCarrito = GetCarrito(IdCliente, IdUsuario);
 
             if ((IsClienteVip == true && isFechaExpoVIP == 1) //1 = Expo VIP
                 || (IsClienteVip == false && isFechaExpoVIP == 0)) // 0 = Expo Normal
@@ -76,7 +75,7 @@ namespace ExpoMR.Controllers
             }
         }
 
-        public static ListaCarritoViewModel GetCarrito(int IdCliente, int IdUsuario, int PageIndex)
+        public static List<ListaCarrito> GetCarrito(int IdCliente, int IdUsuario)
         {
             List<ListaCarrito> listaCarrito = new List<ListaCarrito>();
 			DB dB = new();
@@ -127,12 +126,8 @@ namespace ExpoMR.Controllers
             }
 
             dB.Close();
-            
-            int totalItems = listaCarrito.Count; 
-            var itemsOnPage = listaCarrito.Skip((PageIndex - 1) * PageSize).Take(PageSize).ToList();
-            ListaCarritoViewModel viewModel = new ListaCarritoViewModel { ListCarrito = itemsOnPage, PageIndex = PageIndex, TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize) };
 
-            return viewModel;
+            return listaCarrito;
         }
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {
