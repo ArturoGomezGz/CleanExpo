@@ -432,7 +432,7 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (resultado) {
-                document.getElementById('lblcredito').innerHTML = " $" + resultado.credito;
+                document.getElementById('lblcredito').innerHTML = "" + FormatoMoneda(resultado.credito);
                 document.getElementById('lblsubtotal').innerHTML = " $" + resultado.subtotal;
                 document.getElementById('lbliva').innerHTML = " $" + resultado.iva;
                 document.getElementById('lbltotal').innerHTML = " $" + resultado.total;
@@ -462,7 +462,6 @@
         })
 
         $("#txtTipoVenta").change(function () {
-            console.log("Entra en el selected");
             ChangeTipoVenta(this.value)
         })
 
