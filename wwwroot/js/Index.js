@@ -1,6 +1,36 @@
 ﻿let path = Getpath();
-var inactivityTimeout = 5000000; // Tiempo de inactividad en milisegundos (1 minutos)
+
+//Configuracion para cierre automatico de session de usuario por inactividad
+
+var inactivityTimeout = 3600000; // Tiempo de inactividad en milisegundos
 var timer;
+
+//Reiniciar el temporizador cuando haya actividad del usuario
+window.addEventListener("mousemove", resetTimer);
+window.addEventListener("mousedown", resetTimer);
+window.addEventListener("keypress", resetTimer);
+window.addEventListener("DOMMouseScroll", resetTimer);
+window.addEventListener("mousewheel", resetTimer);
+window.addEventListener("touchmove", resetTimer);
+window.addEventListener("MSPointerMove", resetTimer);
+
+//Comenzar el temporizador inicial
+resetTimer();
+
+function resetTimer()
+{
+    clearTimeout(timer);
+    timer = setTimeout(logout, inactivityTimeout);
+}
+
+function logout()
+{
+    // Realizar acciones de cierre de sesión o redireccionamiento
+    $("#btn_logout").click();
+    // Ejemplo: window.location.href = "/logout";
+}
+
+//Configuracion para cierre automatico de session de usuario por inactividad
 
 function GetMonedas()
 {
@@ -161,19 +191,6 @@ function Getpath()
     }
 }
 
-function resetTimer()
-{    
-    clearTimeout(timer);
-    timer = setTimeout(logout, inactivityTimeout);
-}
-
-function logout()
-{
-    // Realizar acciones de cierre de sesión o redireccionamiento
-    $("#btn_logout").click();
-    // Ejemplo: window.location.href = "/logout";
-}
-
 function CloseModal(IdModal)
 {
     var myModalEl = document.getElementById(IdModal);
@@ -210,17 +227,3 @@ function SendMail(IdPedido)
         }
     );
 }
-
-
-// Reiniciar el temporizador cuando haya actividad del usuario
-window.addEventListener("mousemove", resetTimer);
-window.addEventListener("mousedown", resetTimer);
-window.addEventListener("keypress", resetTimer);
-window.addEventListener("DOMMouseScroll", resetTimer);
-window.addEventListener("mousewheel", resetTimer);
-window.addEventListener("touchmove", resetTimer);
-window.addEventListener("MSPointerMove", resetTimer);
-
-// Comenzar el temporizador inicial
-resetTimer();
-

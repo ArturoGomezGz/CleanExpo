@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ builder.Services.ConfigureApplicationCookie(option =>
 {
     option.LoginPath = new PathString("/Cuentas/Acceso");
     option.AccessDeniedPath = new PathString("/Cuentas/Denegado");
+    option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    option.SlidingExpiration = true;
 });
 
 //Configuración de indentity
