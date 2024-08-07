@@ -268,7 +268,7 @@ namespace ExpoMR.Controllers
                             string linkExpo = Vip ? "https://expomr.online" : "https://expomr.online";
 
                             string body = "<br/>Hola " + UserName + "<br/><br/>"
-                                    + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2022<br/><br/>"
+                                    + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2024<br/><br/>"
                                     + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
                                     + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
                                     + "Usuario: " + UserName + "<br/>"
@@ -468,7 +468,7 @@ namespace ExpoMR.Controllers
                     string linkExpo = Vip ? "https://expomr.online" : "https://expomr.online";
 
                     string body = "<br/>Hola " + UserName + "<br/><br/>"
-                            + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2022<br/><br/>"
+                            + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2024<br/><br/>"
                             + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
                             + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
                             + "Usuario: " + UserName + "<br/>"
