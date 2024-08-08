@@ -149,7 +149,7 @@ namespace ExpoMR.Controllers
                 SqlParameter[] parameters = new SqlParameter[4];
                 parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
                 parameters[1] = new SqlParameter("@Nombre", Nombre);
-                parameters[2] = new SqlParameter("@Descripcion", Descripcion);
+                parameters[2] = new SqlParameter("@Descripcion", Descripcion != null ? Descripcion : "");
                 parameters[3] = new SqlParameter("@Cantidad", Cantidad);
 
                 dB.ExecuteNonQuery("EditArticuloProv", ref parameters);
