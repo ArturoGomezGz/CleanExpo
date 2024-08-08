@@ -253,7 +253,7 @@
             type: 'POST',
             success: function (response)
             {
-                if(response == 1)
+                if(response == true)
                 {
                     const divPromo = document.getElementById('divPromo' + idPromocion);
                     const divParent = divPromo.parentElement;
@@ -306,7 +306,22 @@
 
     function EditarPromo(idPromocion)
     {
-        document.location = '@Url.Action("EditarPromociones")' + '?idPromocion=' + idPromocion;
+        $.ajax({
+            url: path + "Promociones/PromocionesEditar?idPromocion=" + idPromocion,
+            type: 'POST',
+            success: function (response) {
+                if (response == false) {
+                    document.location = '@Url.Action("EditarPromociones")' + '?idPromocion=' + idPromocion;
+                }
+                else 
+                {
+                    alert('La promocion no puede ser modificada porque ya la obtuvieron clientes');
+                }
+            },
+            error: function () {
+                alert('Error al editar la promocion');
+            }
+        });
     }
 
 </script>

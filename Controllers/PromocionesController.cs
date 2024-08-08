@@ -433,5 +433,23 @@ namespace ExpoMR.Controllers
 
             return (bool)parameters[1].Value;
         }
-    }
+
+		[HttpPost]
+		public bool PromocionesEditar(int idPromocion)
+		{
+			DB dB = new();
+			SqlParameter[] parameters = new SqlParameter[2];
+			parameters[0] = new SqlParameter("@IdPromocion", idPromocion);
+			parameters[1] = new()
+			{
+				ParameterName = "@Editado",
+				DbType = DbType.Boolean,
+				Direction = ParameterDirection.Output
+			};
+
+			dB.ExecuteNonQuery("PromocionesValEditar", ref parameters);
+
+			return (bool)parameters[1].Value;
+		}
+	}
 }

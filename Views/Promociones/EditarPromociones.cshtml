@@ -566,17 +566,33 @@
 
     function ValidaCantidadArticulos()
     {
-        var txtCantidadArticulos = document.getElementById('txtCantidadArticulos').value;
+        var idPromocion = document.getElementById('idPromocion').innerHTML;
 
-        if (txtCantidadArticulos > 0)
-        {
-            GetArticulos();
-            $('#ArticulosModal').modal('show');  
-        }
-        else
-        {
-            alert('ingrese una cantidad de articulos mayor a 0');
-        }
+        $.ajax({
+            url: path + "Promociones/PromocionesEditar?idPromocion=" + idPromocion,
+            type: 'POST',
+            success: function (response) {
+                if (response == false) 
+                {
+                    var txtCantidadArticulos = document.getElementById('txtCantidadArticulos').value;
+
+                    if (txtCantidadArticulos > 0) {
+                        GetArticulos();
+                        $('#ArticulosModal').modal('show');
+                    }
+                    else {
+                        alert('ingrese una cantidad de articulos mayor a 0');
+                    }
+                }
+                else {
+                    alert('No es posible agregar articulos porque la promocion ya la obtuvieron los clientes');
+                }
+            },
+            error: function () {
+                alert('Error al editar la promocion');
+            }
+        });
+        
     }
 
     function GetArticulos()
@@ -714,6 +730,7 @@
             },
             success: function (response)
             {
+                console.log(response);
                 if(response == 1)
                     document.location = '@Url.Action("Promociones")';
                 else 

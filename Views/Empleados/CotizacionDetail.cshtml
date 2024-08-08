@@ -304,6 +304,17 @@
             transportista.classList.add('d-none');
             Porte.classList.add('d-none');
         }
+        else if (document.getElementById("txtTipoVenta").value > 2) {
+            transportista.classList.add('d-none');
+            Porte.classList.add('d-none');
+            dirEntrega.disabled = false;
+        }
+        else
+        {
+            dirEntrega.disabled = false;
+            transportista.disabled = false;
+            Porte.disabled = false;
+        }
 
         $("#AgregarProductos").hide();
         $("#buscarCliente").hide();
