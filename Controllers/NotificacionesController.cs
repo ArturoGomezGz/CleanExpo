@@ -79,9 +79,10 @@ namespace ExpoMR.Controllers
 
                 if (usuario != null)
                 {
-                    string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
+					usuario.EmailConfirmed = false;
+					string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
                     var resultado = await _userManager.ResetPasswordAsync(usuario, token, "Expo2024");
-
+                    
                     if (resultado.Succeeded)
                     {
                         string linkExpo = Vip ? "https://expomr.online" : "https://expomr.online";
