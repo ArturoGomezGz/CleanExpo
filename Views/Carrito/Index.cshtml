@@ -456,11 +456,13 @@
     $(document).ready(function () 
     {
         $('#Show_Pedidos').paginate({
-        	items_per_page: 10
+            pagination_class: 'paginationPedido',
+        	items_per_page: 20
         });
 
          $('#ShowCarrito').paginate({
-        	items_per_page: 5
+             pagination_class: 'paginationCarrito',
+        	items_per_page: 20
         });
 
         $("#txt_Credito").html(FormatoMoneda(@Model.TotalesCotizacion.Credito))
@@ -473,7 +475,8 @@
             FiltroPedido($(this).val()) 
             $('.pagination__controls').remove();
             $('#Show_Pedidos').paginate({
-        	    items_per_page: 10,
+                pagination_class: 'paginationPedido',
+        	    items_per_page: 20,
                 numPedido:  $("#cmb-pedidos").val()
             });
         });
@@ -742,18 +745,18 @@
 }
 
 <style>
-    .pagination {
+    .paginationPedido, .paginationCarrito  {
         display: flex;
         justify-content: center;
         list-style-type: none;
         padding: 0;
     }
 
-    .pagination li {
+    .paginationPedido  li, .paginationCarrito li {
         margin: 0 5px;
     }
 
-    .pagination li a {
+    .paginationPedido  li a, .paginationCarrito li a {
         text-decoration: none;
         color: #007bff;
         padding: 8px 16px;
@@ -762,23 +765,23 @@
         transition: background-color 0.3s;
     }
 
-    .pagination li a.active {
+    .paginationPedido  li a.active, .paginationCarrito li a.active {
         background-color: #007bff;
         color: white;
         border-color: #007bff;
     }
 
-    .pagination li a:hover {
+    .paginationPedido  li a:hover, .paginationCarrito li a:hover {
         background-color: #ddd;
     }
 
-    .pagination li a.disabled {
+    .paginationPedido  li a.disabled, .paginationCarrito li a.disabled {
         color: #ccc;
         pointer-events: none;
         border-color: #ccc;
     }
 
-    .pagination li a.hidden {
+    .paginationPedido  li a.hidden, .paginationCarrito li a.hidden {
         display: none;
     }
 </style>

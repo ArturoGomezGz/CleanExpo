@@ -39,7 +39,7 @@
 
         // Add a div after the #slideshow to put the navigation controls in
         obj.append(
-            $('<div/>').addClass(options.pagination_class + "__controls").append(
+            $('<div/>').addClass("pagination__controls").append(
                 $('<ul/>').addClass(options.pagination_class))
         );
 
@@ -62,48 +62,48 @@
         }
 
         function showPagePagination(page) {
-            var totalPages = $('.pagination .page').length;
+            var totalPages = $('.' + options.pagination_class +' .page').length;
             currentPage = page;
-            $('.pagination .page').addClass('d-none');
+            $('.' + options.pagination_class +' .page').addClass('d-none');
             var start = (currentPage - 1) - ((currentPage - 1) % options.paginationPages);
             var end = Math.min(start + options.paginationPages, totalPages);
 
             for (var i = start; i < end; i++) {
-                $('.pagination .page').eq(i).removeClass('d-none');
+                $('.' + options.pagination_class +' .page').eq(i).removeClass('d-none');
             }
 
-            $('.pagination .page a').removeClass('active');
-            $('.pagination .page a').eq(currentPage - 1).addClass('active');
+            $('.' + options.pagination_class +' .page a').removeClass('active');
+            $('.' + options.pagination_class +' .page a').eq(currentPage - 1).addClass('active');
 
             if (currentPage === 1) {
-                $('.pagination .prev').addClass('d-none');
+                $('.' + options.pagination_class +' .prev').addClass('d-none');
             } else {
-                $('.pagination .prev').removeClass('d-none');
+                $('.' + options.pagination_class +' .prev').removeClass('d-none');
             }
 
             if (currentPage === totalPages) {
-                $('.pagination .next').addClass('d-none');
+                $('.' + options.pagination_class +' .next').addClass('d-none');
             } else {
-                $('.pagination .next').removeClass('d-none');
+                $('.' + options.pagination_class +' .next').removeClass('d-none');
             }
         }
 
-        $('.pagination').on('click', '.page', function (e) {
+        $('.' + options.pagination_class).on('click', '.page', function (e) {
             e.preventDefault();
             var page = parseInt($(this).text());
             showPagePagination(page);
         });
 
-        $('.pagination').on('click', '.prev', function (e) {
+        $('.' + options.pagination_class).on('click', '.prev', function (e) {
             e.preventDefault();
             if (currentPage > 1) {
                 showPagePagination(currentPage - 1);
             }
         });
 
-        $('.pagination').on('click', '.next', function (e) {
+        $('.' + options.pagination_class).on('click', '.next', function (e) {
             e.preventDefault();
-            var totalPages = $('.pagination .page').length;
+            var totalPages = $('.' + options.pagination_class + ' .page').length;
             if (currentPage < totalPages) {
                 showPagePagination(currentPage + 1);
             }
@@ -126,10 +126,10 @@
         showPage(0);
         showPagePagination(1);
 
-        obj.find('.pagination li').not(".prev,.next").first().addClass('active');
+        obj.find('.' + options.pagination_class + ' li').not(".prev,.next").first().addClass('active');
 
         // Navigate to the coresponding slide when clicking on a nav-control
-        obj.find('.pagination li').not(".prev,.next").click(function () {
+        obj.find('.' + options.pagination_class + ' li').not(".prev,.next").click(function () {
 
             // Reset the obj element to match the current pagination element
             obj = $(this).parent().parent().parent();
@@ -147,7 +147,7 @@
         });
 
         // Navigate to the previous slide when clicking on the prev button
-        obj.find('.pagination li.prev').click(function () {
+        obj.find('.' + options.pagination_class + ' li.prev').click(function () {
 
             // Reset the obj element to match the current pagination element
             obj = $(this).parent().parent().parent();
@@ -161,7 +161,7 @@
         });
 
         // Navigate to the next slide when clicking on the next button
-        obj.find('.pagination li.next').click(function () {
+        obj.find('.' + options.pagination_class + ' li.next').click(function () {
 
             // Reset the obj element to match the current pagination element
             obj = $(this).parent().parent().parent();
