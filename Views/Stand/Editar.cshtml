@@ -469,7 +469,7 @@ Promociones">
             success: function (resultado)
             {
                 document.getElementById('idproducto').innerHTML = " " + resultado.idProducto;
-                document.getElementById('nombre').innerHTML = " " + resultado.nombre;
+                document.getElementById('lbl_nombre').innerHTML = " " + resultado.nombre;
                 document.getElementById('presentacion').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
                 document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto);
                 document.getElementById('PrecioPublico').innerHTML = " " + FormatoMoneda(resultado.publico);
@@ -644,7 +644,7 @@ Promociones">
         function (data)
         {
             if (data.length > 0)
-                $("#imgModalOndemand").append('<a href="#PopupPhoto" onclick="showZoomImg()" data-toggle="modal" data-target="#PopupPhoto"><img id="imgProduct" class="card-img-top" style="margin: auto;" src="data:image/png;base64,' + data + '" alt="image" /></a><img style="max-width:220px" src="../Imagenes/zoom.png" alt="image"/>')
+                    $("#imgModalOndemand").append('<img id="imgProduct" class="card-img-top zoom d-desktop" style="margin: auto;" src="data:image/png;base64,' + data + '" alt="image" /><img id="imgProduct_sm" class="card-img-top d-mobile" style="margin: auto;" src="data:image/png;base64,' + data + '" alt="image producto" />')
             else 
                 $("#imgModalOndemand").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="../Imagenes/noimage.png" alt="image" />')           
         }).error(function () 
@@ -808,33 +808,6 @@ Promociones">
     $(document).on('mouseleave', '.frame', function () {
         $(this).children(".zoom").css("transform", "none");
     });
-
-    function showZoomImg() {
-        var fotoZoom = document.getElementById('imgProduct').src;
-
-        window.location.href = "#PopupPhoto";
-
-        document.getElementById('imgFotoZoom').src = fotoZoom;
-    };
-
-    function getUrlParameter(name) {
-        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-        var results = regex.exec(location.search);
-        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-    };
-
-    function chagueImage(urlFoto) {
-        fotoZoom = document.getElementById('imgFotoZoom');
-        fotoZoom.src = urlFoto;
-    };
-
-    (function ($) {
-        $(document).on('contextmenu', 'img', function () {
-            return false;
-        })
-    })(jQuery);
-
 </script>
 
 <script type="text/javascript">
@@ -984,9 +957,9 @@ Promociones">
                         <div class="row">
                             <div class="col-md-12 col-lg-7 md-55 text-justify">
                                 <div class="row">
-                                    <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><label id="nombre"></label><i class="fas fa-chevron-down mx-2"></i></a></h5>
+                                    <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><label id="lbl_nombre"></label><i class="fas fa-chevron-down mx-2"></i></a></h5>
                                     <div class="collapse" id="collapseImage">
-                                        <div id="imgModalOndemand" class="card card-body"></div>
+                                        <div id="imgModalOndemand" class="card card-body frame"></div>
                                     </div>
                                     <label class="label__Presentacion" id="presentacion"></label>
                                 </div>
@@ -1085,19 +1058,6 @@ Promociones">
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="PopupPhoto" class="overlay light">
-    <a class="cancel" href="#"></a>
-    <div class="popup">
-        <a class="close" href="#"><img alt="" src="../Imagenes/closeCh.png" /></a>
-        <br />
-        <div class="content">
-            <div class="frame">
-                <img id="imgFotoZoom" alt="" class="zoom" />
             </div>
         </div>
     </div>

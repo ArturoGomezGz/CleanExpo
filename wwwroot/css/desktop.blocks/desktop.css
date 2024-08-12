@@ -25,6 +25,9 @@
     height: 100%;
 }
 
-
-
-
+.d-desktop {
+    display: none;
+}
+.d-mobile {
+    display: block;
+}

@@ -86,12 +86,11 @@
     transition: transform 0.1s linear;
 }
 
-.frame img {
+/*.frame img {
   width:570px;
   height:570px;
-
 }
-
+*/
 li {
     z-index: 0 !important;
 }
