@@ -1,6 +1,4 @@
-﻿#define TESTMODE
-
-using ExpoMR.Clases;
+﻿using ExpoMR.Clases;
 using ExpoMR.Datos;
 using ExpoMR.Models;
 using Microsoft.AspNetCore.Identity;

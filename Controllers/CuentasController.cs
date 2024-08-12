@@ -1,6 +1,4 @@
-﻿#define TESTMODE
-
-using ExpoMR.Models;
+﻿using ExpoMR.Models;
 using ExpoMR.Clases;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -146,15 +144,11 @@ namespace ExpoMR.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(usuario);
 
                     var urlRetorno = Url.Action("ConfirmarEmail", "Cuentas", new { userId = usuario.Id, code }, protocol: HttpContext.Request.Scheme);
-
-                #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Confirmar su cuenta - ExpoMR",
-                                            "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
-                #else                   
+                 
                     await _emailSender.SendEmailAsync(rgViewModel.Email, "Confirmar su cuenta - ExpoMR",
-                        "Por favor confirme su cuenta dando click aquí: <a href=\""+urlRetorno+"\"> enlace </a>");                    
+                        "Por favor confirme su cuenta dando click aquí: <a href=\""+urlRetorno+"\"> enlace </a>");      
+                    
                     await _signInManager.SignInAsync(usuario, isPersistent: false);
-                #endif
 
                     return RedirectToAction("RegistroConfirmacion");
                 }
@@ -239,18 +233,11 @@ namespace ExpoMR.Controllers
                     //Implementación de configuracion de email en el registro
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(usuario);
 
-                    var urlRetorno = Url.Action("ConfirmarEmail", "Cuentas", new { userId = usuario.Id, code }, protocol: HttpContext.Request.Scheme);
-
-                #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Confirmar su cuenta - ExpoMR",
-                                            "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
-                    await _signInManager.SignInAsync(usuario, isPersistent: false);
-                #else
+                    var urlRetorno = Url.Action("ConfirmarEmail", "Cuentas", new { userId = usuario.Id, code }, protocol: HttpContext.Request.Scheme);                
                     
                     await _emailSender.SendEmailAsync(rgViewModel.Email, "Confirmar su cuenta - ExpoMR",
                         "Por favor confirme su cuenta dando click aquí: <a href=\""+urlRetorno+"\"> enlace </a>");                    
                     await _signInManager.SignInAsync(usuario, isPersistent: false);
-                #endif                   
                     
                     return LocalRedirect(returnUrl);
                 }

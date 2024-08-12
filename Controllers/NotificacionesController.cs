@@ -1,6 +1,4 @@
-﻿#define TESTMODE
-
-using ExpoMR.Clases;
+﻿using ExpoMR.Clases;
 using ExpoMR.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -56,11 +54,7 @@ namespace ExpoMR.Controllers
                         + "<a href='mailto:ventas@medicinasrosario.com.mx'>Soporte ExpoMR</a><br/><br/><br/>"
                         + avisoConfidencialidad;
                
-            #if (TESTMODE)
                 await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR", body);
-            #else                    
-                await _emailSender.SendEmailAsync(opViewModel.Email, "Recuperar Contraseña ExpoMR", body);
-            #endif
 
                 return RedirectToAction(nameof(CuentasController.ConfirmacionOlvidoPassword), "Cuentas");
             }
@@ -97,12 +91,8 @@ namespace ExpoMR.Controllers
                                 + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
                                 + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
                                 + avisoConfidencialidad;
-
-                        #if (TESTMODE)
-                            await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Bienvenido a Expo Virtual Medicinas Rosario", body);
-                        #else
+                        
                             await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
-                        #endif
 
                         WebSite.InsertFeNotificacion(IdEmail);
                         WebSite.InsertIinvitacion(IdEmail, Vip, "SUCCESS");
@@ -179,11 +169,8 @@ namespace ExpoMR.Controllers
                     + avisoConfidencialidad;
             try
             {
-                #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Promociones Obtenidas", body);
-                #else
-                    await _emailSender.SendEmailAsync(email, "Promociones Obtenidas", body);
-                #endif
+              
+                await _emailSender.SendEmailAsync(email, "Promociones Obtenidas", body);
             }
             catch (Exception ex)
             {
@@ -302,13 +289,8 @@ namespace ExpoMR.Controllers
                  "</table>"
                  + avisoConfidencialidad;           
             try
-            {
-                #if (TESTMODE)
-                    await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Pedido en firme", body);
-                #else                   
-                    await _emailSender.SendEmailAsync(email, "Pedido en firme", body);
-                #endif
-                
+            {                  
+                await _emailSender.SendEmailAsync(email, "Pedido en firme", body);                
                 return true;
             }
             catch (Exception ex)

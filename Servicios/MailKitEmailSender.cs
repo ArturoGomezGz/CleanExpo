@@ -1,5 +1,4 @@
-﻿#define TESTMODE 
-
+﻿
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using MailKit.Net.Smtp;
@@ -32,7 +31,12 @@ namespace ExpoMR.Servicios
 
                 var emailSend = new MimeMessage();
                 emailSend.From.Add(MailboxAddress.Parse(_opcionesMailKit.SenderEmail));
-                emailSend.To.Add(MailboxAddress.Parse(email));
+
+                if(_opcionesMailKit.Pruebas == 1)
+                    emailSend.To.Add(MailboxAddress.Parse(_opcionesMailKit.Tosend));
+                else
+                    emailSend.To.Add(MailboxAddress.Parse(email));
+
                 emailSend.Subject = subject;
                 emailSend.Body = new TextPart(TextFormat.Html) { Text = htmlMessage };
 

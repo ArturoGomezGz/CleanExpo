@@ -1,6 +1,4 @@
-﻿#define TESTMODE
-
-using ExpoMR.Clases;
+﻿using ExpoMR.Clases;
 using ExpoMR.Datos;
 using ExpoMR.Models;
 using MailKit;
@@ -279,16 +277,13 @@ namespace ExpoMR.Controllers
                                     + avisoConfidencialidad;
 
                             try
-                            {
-    #if (TESTMODE)
-                                await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Bienvenido a Expo Virtual Medicinas Rosario", body);
-    #else
-                                    await _emailSender.SendEmailAsync(UserName, "Confirmar su cuenta - ExpoMR",
-                                        "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
-                                    await _signInManager.SignInAsync(usuario, isPersistent: false);
-    #endif
+                        {
+                            await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
+                            //await _emailSender.SendEmailAsync(UserName, "Confirmar su cuenta - ExpoMR",
+                            //    "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
+                            //await _signInManager.SignInAsync(usuario, isPersistent: false);
 
-                                WebSite.InsertFeNotificacion(idEmail);
+                            WebSite.InsertFeNotificacion(idEmail);
                                 WebSite.InsertIinvitacion(idEmail, Vip, "SUCCESS");
                             }
                             catch (Exception e)
@@ -480,14 +475,7 @@ namespace ExpoMR.Controllers
 
                     try
                     {
-    #if (TESTMODE)
-                        await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Bienvenido a Expo Virtual Medicinas Rosario", body);
-    #else
-
-                             await _emailSender.SendEmailAsync(UserName, "Confirmar su cuenta - ExpoMR",
-                                "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
-                             await _signInManager.SignInAsync(usuario, isPersistent: false);
-    #endif
+                        await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
 
                         WebSite.InsertFeNotificacion(IdEmail);
                         WebSite.InsertIinvitacion(IdEmail, Vip, "SUCCESS");

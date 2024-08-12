@@ -1,5 +1,4 @@
-﻿#define TESTMODE
-using ExpoMR.Controllers;
+﻿using ExpoMR.Controllers;
 using ExpoMR.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
