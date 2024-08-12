@@ -817,14 +817,11 @@
                 {
                     foreach (ExpoMR.Models.ListaCarrito model in Model.ListaCarrito)
                     {
-                        
-
-                        
+                        <div class="pagination__item">
                         @if (model.Proveedor != IdProveedor)
                         {
                             <hr class="Separador_Carrito" />
                         }
-                        <div cass="pagination__item">
                         <div class="row" >
                             <div class="" style="width:20px;">
                                 @if (model.PorConfirmar == true)

@@ -80,8 +80,6 @@ namespace ExpoMR.Controllers
             List<ListaCarrito> listaCarrito = new List<ListaCarrito>();
 			DB dB = new();
 
-            int PageSize = 20;
-
 			try
             {
                 string query = "SELECT CAST(ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS int)AS Registro, " +

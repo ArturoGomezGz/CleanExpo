@@ -28,7 +28,7 @@
         obj = $(this);
 
         // Count entries in block for pagination
-        var hijos = obj.children();
+        var hijos = obj.children(':not(p)');
 
         var n = Array.from(hijos).filter(function (hijo) {
             return window.getComputedStyle(hijo).display !== 'none';
@@ -114,7 +114,7 @@
             var end_on = ((page_number + 1) * options.items_per_page);
             var displayDivs
             if (options.numPedido == 0) {
-                displayDivs = obj.children();
+                displayDivs = obj.children(':not(p)');
             } else {
                 displayDivs = obj.children('#Pedido_' + options.numPedido);
             }

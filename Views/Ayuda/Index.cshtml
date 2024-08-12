@@ -49,22 +49,29 @@
                 Sal: Sal
             },
             function (data) {
+                var srcLogo;
                 $.each(data, function (index, value) {
+                    if(value.logo != "")
+                    {
+                        srcLogo = 'data:image/png;base64,' + value.logo + ''
+                    }
+                    else
+                    {
+                        srcLogo = "../Imagenes/noimage.png"
+                    }
+
                     cadena += '<div class="col-md-55 col-md-6 col-lg-4 mt-4">'
-                        + '<div class="h-100 card card-inverse card-info">'
-                        + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal=' + Sal + '" style=" margin: auto;">'
-                        if(value.logo != "")
-                            cadena += '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="data:image/png;base64,' + value.logo + '" alt="image" />'
-                        else
-                            cadena += '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="../Imagenes/noimage.png" alt="image" />'
-                        +'</a>'
-                        +'<div class="card-block" style="text-align: center;">'
-                        + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal='+Sal+'"><h6 class="card-title">' + value.nombre + '</h6></a>'
-                                    +'</div>'
-                                +'</div>'
-                             +'</div>'                   
+                            + '<div class="h-100 card card-inverse card-info">'
+                            + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal=' + Sal + '" style=" margin: auto;">'
+                            + '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="' + srcLogo + '" alt="image" />'   
+                            +'</a>'
+                            +'<div class="card-block" style="text-align: center;">'
+                            + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal='+Sal+'"><h6 class="card-title">' + value.nombre + '</h6></a>'
+                            +'</div>'
+                            +'</div>'
+                            +'</div>'                   
                 });
-                console.log(cadena)
+
                 cadena += '</div>';
                 $("#divLaboratorio").append(cadena)
                 block.remove();
