@@ -465,7 +465,7 @@ namespace ExpoMR.Controllers
                         }
                     }
 
-                    string linkExpo = Vip ? "https://expomr.online" : "https://expomr.online";
+                    string linkExpo = "https://expomr.online";
 
                     string body = "<br/>Hola " + UserName + "<br/><br/>"
                             + "Medicinas Rosario te da la bienvenida a su Expo Virtual 2024<br/><br/>"
