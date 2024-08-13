@@ -29,7 +29,7 @@
     <br />
 
     <div id="divPedidosCliente" class="row">
-        <h1>Pedidos</h1>
+        <h3>Pedidos</h3>
         <br />
         <div class="col-md-12">
             <table id="PedidosCliente" class="display responsive nowrap" style="width:100%">
@@ -94,6 +94,7 @@
         tblPedidosCliente.destroy();
         $('#divPedidosCliente').show();
         $('#PedidosCliente').DataTable({
+            "bFilter": false,
             responsive: true,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
