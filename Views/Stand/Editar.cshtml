@@ -547,6 +547,7 @@ Promociones">
                 },
                 function (data)
                 {
+                    var ImgDescuentoCliente;
                     if (data.response)
                     {
                         if (data.result.length > 0)
@@ -557,7 +558,15 @@ Promociones">
                                     imagen = ' src="data:image/png;base64,' + value.imgProducto + '"'
                                 else
                                     imagen = 'src="' + path + 'Imagenes/noimage.png"'
-
+                                
+                                if (value.descuentoCliente == true)
+                                {
+                                    ImgDescuentoCliente = '<img id="imgDescuento" alt="Desceuento" src = "../Imagenes/descuentoExclusivo.png"/>'
+                                }
+                                else
+                                {
+                                    ImgDescuentoCliente = '<img id="imgDescuento" class="d-none" alt="Desceuento" src = "../Imagenes/descuentoExclusivo.png"/>'                                  
+                                }
                                 lista += '<div class="tab-content_productos mb-4">'
                                     + '    <div class="lista__busqueda_stand">'
                                     + '        <div class="listaStand_article">'
@@ -576,6 +585,7 @@ Promociones">
                                     + '     <div class="listaStand_actions">'
                                     + '           <p><strong>Descuento: </strong><label class="label_Descuento_stnd"> ' + FormatoMoneda(value.descuento) + '</label></p>'
                                     + '           <p>Precio Final: <label class="label_PrecioFinal_stnd"> ' + FormatoMoneda(value.precioFinal) + '</label></p>'
+                                    + '           ' + ImgDescuentoCliente
                                     + '     </div>'
                                     + '    </div>'
                                     + '     <hr />'

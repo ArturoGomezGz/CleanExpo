@@ -46,7 +46,13 @@
                            </div>
                            <div class="col-6">
                                 <strong>Descuento Expo: </strong><label class="label__DescuentoExpo"> @Model.DescuentoExpo</label>
-                                @Html.HiddenFor( m=> m.DescuentoExpo)
+                                @Html.HiddenFor( m=> m.DescuentoExpo) <br />
+                                @{
+                                    if (Model.DescuentoCliente == true)
+                                    {
+                                        <img id="imgDescuento" alt="Desceuento" src="../Imagenes/descuentoExclusivo.png" />
+                                    }
+                                }
                            </div>
                        </div>
                        <div class="row mb-4">
