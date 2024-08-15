@@ -277,13 +277,13 @@ namespace ExpoMR.Controllers
                                     + avisoConfidencialidad;
 
                             try
-                        {
-                            await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
+                            {
+                                await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
                             //await _emailSender.SendEmailAsync(UserName, "Confirmar su cuenta - ExpoMR",
                             //    "Por favor confirme su cuenta dando click aquí: <a href=\"" + urlRetorno + "\"> enlace </a>");
                             //await _signInManager.SignInAsync(usuario, isPersistent: false);
 
-                            WebSite.InsertFeNotificacion(idEmail);
+                                WebSite.InsertFeNotificacion(idEmail);
                                 WebSite.InsertIinvitacion(idEmail, Vip, "SUCCESS");
                             }
                             catch (Exception e)
@@ -302,6 +302,8 @@ namespace ExpoMR.Controllers
                     }
                     else
                     {
+                        WebSite.InsertFeNotificacion(idEmail);
+                        WebSite.InsertIinvitacion(idEmail, Vip, "SUCCESS");
                         rm.Response = true;
                         rm.Message = "El usuario de: " + UserName + " se creo correctamente";
                     }
