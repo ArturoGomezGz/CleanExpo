@@ -1451,3 +1451,6 @@ div.fotoCarrito {
 .d-mobile {
     display:none;
 }
+.d-mobile-inline {
+    display: none;
+}

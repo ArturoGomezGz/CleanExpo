@@ -106,6 +106,8 @@
         </div>
     </div>
 </div>
+
+<!--Buscar producto Modal-->
 <div class="modal fade" id="BuscarProductoModal" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -130,7 +132,7 @@
                 </div>
                 <div class="col-md-4 m-auto">
                     <h5>Cantidad de Visitas a premiar</h5>
-                    <input type="number" id="txtCantidadVisitas" value="1"/>
+                    <input type="number" id="txtCantidadVisitas" value="1" />
                 </div>
             </div>
             <div class="card m-2 d-flex flex-column align-items-center">
@@ -157,7 +159,7 @@
         miSelect.value = @Model.Color;
 
         var monedas = cmb_Fechas.value.split(',')[1];  //Obtiene la cantidad de monedas por dia de expo
-        lblCantidadMonedas.innerText += monedas+ ' Monedas por dia';
+        lblCantidadMonedas.innerText += monedas + ' Monedas por dia';
 
         if (cmb_Fechas.value.split(',')[2] == "1")  //Obtiene si es vip o no
         {
@@ -192,30 +194,28 @@
             pageLength: 7,
             "info": false,
             "bDestroy": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
             "ajax":
             {
                 url: path + "Configuracion/GetfechasMoneda",
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns": 
-            [
-                { "data": "fecha", title: " Fechas " },
-                { "data": "visitas", title: " Visitas a premiar " },
-                { "data": "monedas", title: " Monedas " }
-            ]
+            "columns":
+                [
+                    { "data": "fecha", title: " Fechas " },
+                    { "data": "visitas", title: " Visitas a premiar " },
+                    { "data": "monedas", title: " Monedas " }
+                ]
         });
     }
 
-    function Reload()
-    {
+    function Reload() {
         $('#productos__info').dataTable().fnDestroy();
         tableUsuarios()
     }
 
-    function guardarConfiguracion()
-    {
+    function guardarConfiguracion() {
         var logo = document.getElementById('Logo').files[0];
         var fondo = document.getElementById('Fondo').files[0];
         var nombre = document.getElementById('NombreStand').value;
@@ -236,13 +236,11 @@
             data: formData,
             contentType: false,
             processData: false,
-            success: function (result) 
-            {
+            success: function (result) {
                 alert('Guardado');
                 window.location.reload();
             },
-            error: function (xhr, status, error) 
-            {
+            error: function (xhr, status, error) {
                 alert('Error al subir la imagen.');
             }
         });
@@ -251,8 +249,7 @@
     var numero_visitas = document.getElementById('Numero_visitas');
     var cmb_Fechas = document.getElementById('cmb_Fechas');
 
-    numero_visitas.addEventListener('change', function ()
-    {
+    numero_visitas.addEventListener('change', function () {
         var lblCantidadMonedas = document.getElementById('lblCantidadMonedas');
         lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';  //Obtiene la cantidad de monedas por dia de expo
 
@@ -262,8 +259,7 @@
         }
     });
 
-    cmb_Fechas.addEventListener('change', function ()
-    {
+    cmb_Fechas.addEventListener('change', function () {
         var lblCantidadMonedas = document.getElementById('lblCantidadMonedas');
         lblCantidadMonedas.innerText = (cmb_Fechas.value.split(',')[1] * numero_visitas.value) + ' Monedas por dia';  //Obtiene la cantidad de monedas por dia de expo
 
@@ -273,32 +269,28 @@
         }
     });
 
-    function AgregarDia()
-    {
+    function AgregarDia() {
         var fecha = document.getElementById('cmb_Fechas').value;
 
         $.ajax({
             url: path + "Configuracion/AgregarDia",
             type: 'POST',
             dataSrc: "",
-            data: 
+            data:
             {
                 visitas: numero_visitas.value,
                 fecha: fecha.split(',')[0]
             },
-            success: function (response)
-            {
+            success: function (response) {
                 tableUsuarios();
             },
-            error: function ()
-            {
+            error: function () {
                 alert('Error al subir la imagen');
             }
         });
     }
 
-    function ProductosMax() 
-    {
+    function ProductosMax() {
         $('#ProductosMax').DataTable({
             bFilter: false,
             lengthChange: false,
@@ -306,7 +298,7 @@
             "info": false,
             pageLength: 7,
             "bDestroy": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
             "ajax":
             {
                 url: path + "Configuracion/GetProductosMax",
@@ -315,47 +307,38 @@
             },
             "columns": [
                 {
-                    "data": "idProducto",
-                    render: function (data, type, row) 
-                    {
-                        return '<input class="hdfIdProducto" type="hidden" value="' + row.idProducto + '" style="display:none"/>'
-                            + '<a class="btn btn-naranja-ch editvisitas" ><i class="fas fa-pencil-alt"></i></a>'
-                            + '<a class="btn btn-outline-success aceptedvisitas" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
-                            + '<a class="btn btn-outline-danger canceledvisitas" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>';
-                    }                    
-                },
-                { 
                     "data": "fecha",
                     title: " Día a premiar ",
-                    render: function (data, type, row) 
-                    {
-                        return '<input class="hdffecha" type="text" value="' + data + '"style="display:none"/>'
-                            + ' <label class="lblid"> ' + data + '</label>';
+                    render: function (data, type, row) {
+                        return ' <label class="lblid"> ' + data + '</label>';
                     }
                 },
-                { "data": "nombre", title: " Producto " },
-                { 
+                { "data": "nombre", title: "Producto" },
+                { "data": "maximo", title: "Costo en monedas" },
+                {
                     "data": "visitas",
-                    title: " No. Visitas a Premiar " ,
-                    render: function (data, type, row) 
-                    {
-                        return '<input class="hdfnumvisitas" type="text" value="' + data + '" disabled style="width:70px; heigth:70px"/>';
+                    title: " No. Visitas a Premiar",
+                    render: function (data, type, row) {
+                        return '<input class="hdfnumvisitas" type="number" value="' + data + '" disabled style="width:50px; heigth:70px"/>'
+                            + '<input class="hdfIdProducto" type="hidden" value="' + row.idProducto + '" />'
+                            + '<a class="btn btn-naranja-ch editvisitas" ><i class="fas fa-pencil-alt"></i></a>'
+                            + '<div class="d-block"><a class="btn btn-outline-success aceptedvisitas" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
+                            + '<a class="btn btn-outline-danger canceledvisitas" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a></div>'
+                            + '<input class="hdffecha" type="text" value="' + row.fecha + '"style="display:none"/>';
                     }
-                },
-                { "data": "maximo", title: " Costo en monedas " }
+                }
             ]
         });
     }
 
-    function BuscarProductos() 
-    {
+    function BuscarProductos() {
         var tblProductos = $('#tblProductos').DataTable();
 
         tblProductos.destroy();
         tblProductos = $('#tblProductos').DataTable({
             responsive: true,
             "info": false,
-            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
             "ajax":
             {
                 url: path + "Promociones/GetProdcutos",
@@ -363,30 +346,28 @@
                 dataSrc: ""
             },
             "columns":
-            [
-                {
-                    "data": "idProducto",
-                    render: function (data, type, row)
+                [
                     {
-                        return '<button onclick="SelProducto(' + row.idProducto + ')" class="btn fas fa-chevron-right"> </button>'
-                            + ' <label hidden> ' + row.idProducto + '</label>';
-                    }
-                },
-                { "data": "codigo" },
-                { "data": "producto" }
-            ]
+                        "data": "idProducto",
+                        render: function (data, type, row) {
+                            return '<button onclick="SelProducto(' + row.idProducto + ')" class="btn fas fa-chevron-right"> </button>'
+                                + ' <label hidden> ' + row.idProducto + '</label>';
+                        }
+                    },
+                    { "data": "codigo" },
+                    { "data": "producto" }
+                ]
         });
 
         document.getElementById('txtCantidadVisitas').value = 1;
-        
+
         var diasPremiados = document.getElementById('diasPremiados');
-        
-        while (diasPremiados.firstChild) 
-        {
+
+        while (diasPremiados.firstChild) {
             diasPremiados.removeChild(diasPremiados.firstChild);
         }
 
-        Array.from(cmb_Fechas.options).forEach(option =>{
+        Array.from(cmb_Fechas.options).forEach(option => {
 
             const diaDiv = document.createElement("div");
             diaDiv.classList.add('m-1');
@@ -406,73 +387,61 @@
         })
     }
 
-    function SelProducto(idProducto) 
-    {
+    function SelProducto(idProducto) {
         document.getElementById('idProductoSel').innerText = idProducto;
     }
 
-    function AgregarProductos()
-    {
+    function AgregarProductos() {
         var producto = document.getElementById('idProductoSel').innerText;
         var diasPremiados = document.getElementById('diasPremiados').querySelectorAll('div');
         var visitas = document.getElementById('txtCantidadVisitas').value;
 
-        if(producto == '' || visitas < 1)
-        {
+        if (producto == '' || visitas < 1) {
             alert('Seleccione algun producto o agregue un numero de visitas mayor a 1');
-        } 
-        else 
-        {
+        }
+        else {
             diasPremiados.forEach(dia => {
-                if (dia.querySelector('input').checked)
-                {
+                if (dia.querySelector('input').checked) {
                     $.ajax({
                         url: path + "Configuracion/AgregarProductosMaximo",
                         type: 'POST',
                         dataSrc: "",
-                        data: 
+                        data:
                         {
                             visitas: visitas,
                             fecha: dia.querySelector('label').innerText,
                             idProducto: producto
                         },
-                        success: function (response) 
-                        {
+                        success: function (response) {
                             $('#BuscarProductoModal').modal('hide');
                             ProductosMax();
                         },
-                        error: function () 
-                        {
+                        error: function () {
                             alert('Error al subir la imagen');
                         }
                     });
                 }
             })
-        }        
+        }
     }
 
-    $(document).on('click', '.editvisitas', function (event) 
-    {
+    $(document).on('click', '.editvisitas', function (event) {
         var row = $(this).closest("tr");
         showControles(row, false);
 
-        $("td", row).each(function ()
-        {
-            if ($(this).find(".hdfIdProducto").length > 0) 
-            {
+        $("td", row).each(function () {
+            if ($(this).find(".hdfIdProducto").length > 0) {
                 $(this).find(".hdfIdProducto").show();
             }
-        });   
+        });
     });
 
-    $(document).on('click', '.aceptedvisitas', function (event)
-    {
+    $(document).on('click', '.aceptedvisitas', function (event) {
         var row = $(this).closest("tr");
         var visitas, fecha, idproducto;
 
-        $("td", row).each(function (){
-            if ($(this).find(".hdfIdProducto").length > 0)
-            {
+        $("td", row).each(function () {
+            if ($(this).find(".hdfIdProducto").length > 0) {
                 visitas = row.find('.hdfnumvisitas').val();
                 fecha = row.find('.hdffecha').val();
                 idproducto = row.find('.hdfIdProducto').val();
@@ -487,41 +456,35 @@
                 fecha: fecha,
                 idProducto: idproducto
             },
-            success: function (response) 
-            {              
+            success: function (response) {
                 $('#ProductosMax').dataTable().fnDestroy();
                 ProductosMax();
                 showControles(row, true);
             },
-            error: function () 
-            {
+            error: function () {
                 alert('No fue posible cargar sus datos');
             }
         });
 
     });
 
-    $(document).on('click', '.canceledvisitas', function (event) 
-    {
+    $(document).on('click', '.canceledvisitas', function (event) {
         var row = $(this).closest("tr");
         showControles(row, true);
         $('#ProductosMax').dataTable().fnDestroy();
         ProductosMax();
     });
 
-    function showControles(row, val) 
-    {    
+    function showControles(row, val) {
         var inputElement = row.find('.hdfnumvisitas');
         inputElement.prop('disabled', val);
 
-        if (val == true) 
-        {
+        if (val == true) {
             row.find(".editvisitas").show();
             row.find(".aceptedvisitas").hide();
             row.find(".canceledvisitas").hide();
         }
-        else 
-        {
+        else {
             row.find(".editvisitas").hide();
             row.find(".aceptedvisitas").show();
             row.find(".canceledvisitas").show();

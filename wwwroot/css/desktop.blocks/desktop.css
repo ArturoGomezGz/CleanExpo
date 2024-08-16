@@ -31,3 +31,6 @@
 .d-mobile {
     display: block;
 }
+.d-mobile-inline {
+    display: inline;
+}

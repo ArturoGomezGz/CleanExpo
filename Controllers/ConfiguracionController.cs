@@ -196,16 +196,26 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public void AgregarProductosMaximo(int visitas, string fecha, int idProducto)
+        public JsonResult AgregarProductosMaximo(int visitas, string fecha, int idProducto)
         {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("@proveedor", HttpContext.Session.GetString("ClienteSel"));
-            parameters[1] = new SqlParameter("@fecha", DateTime.Parse(fecha).ToString("yyyy-MM-dd"));
-            parameters[2] = new SqlParameter("@visitas", visitas);
-            parameters[3] = new SqlParameter("@IdProducto", idProducto);
+            var rm = new ResponseModel();
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[4];
+                parameters[0] = new SqlParameter("@proveedor", HttpContext.Session.GetString("ClienteSel"));
+                parameters[1] = new SqlParameter("@fecha", DateTime.Parse(fecha).ToString("yyyy-MM-dd"));
+                parameters[2] = new SqlParameter("@visitas", visitas);
+                parameters[3] = new SqlParameter("@IdProducto", idProducto);
 
-            dB.ExecuteNonQuery("StandProductosMaximo", ref parameters);
+                dB.ExecuteNonQuery("StandProductosMaximo", ref parameters);
+                rm.Message = "datos Guardados correctamente";
+                rm.Response = true;
+            } catch (Exception ex) {
+                rm.Response = false;
+                rm.Message= ex.Message;
+            }
+           return Json(rm);
         }
     }
 }

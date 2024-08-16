@@ -421,7 +421,7 @@
                 cdVentaMonto.labels = resultado.map(item => item.fecha);
                 cdVentaMonto.datasets[0].data = resultado.map(item => item.ventaProv);
 
-                chartOptionsMonto.plugins.subtitle.text = "Monto Total: " + resultado.reduce((acumulador, objetoActual) => acumulador + objetoActual.ventaProv, 0);
+                chartOptionsMonto.plugins.subtitle.text = "Monto Total: " + FormatoMoneda(resultado.reduce((acumulador, objetoActual) => acumulador + objetoActual.ventaProv, 0));
 
                 var ctx3 = document.getElementById("canvasVentaMonto").getContext("2d");
                 window.myBar = new Chart(ctx3, {
@@ -513,11 +513,17 @@
                     },
                     title: ""
                 },
-                { "data": "producto", title: " Producto " },
-                { "data": "visitas", title: " Visitas " },
-                { "data": "carrito", title: " Carrito " },
-                { "data": "confirmado", title: " Confirmado " },
-                { "data": "ventaProv", title: " Monto Venta " }
+                { "data": "producto", title: "Producto" },
+                { "data": "visitas", title: "Visitas" },
+                { "data": "carrito", title: "Carrito" },
+                { "data": "confirmado", title:  "Confirmado" },
+                {
+                    "data": "ventaProv", title: "Monto Venta", 
+                    "render": function (data, type, row)
+                    {
+                        return FormatoMoneda(data);
+                    }
+                }
             ]
         });
 
@@ -573,7 +579,7 @@
 
                 $("#piezas_confirmadas").html(data[0].confirmado)
                 $("#confimado_cliente").html(data[0].confirmadoCliente)
-                $("#monto_total").html(data[0].ventaProv)
+                $("#monto_total").html(FormatoMoneda(data[0].ventaProv))
 
 
             }).error(function () {

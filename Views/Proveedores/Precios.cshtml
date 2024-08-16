@@ -7,25 +7,7 @@
     <div class="col-lg-12 col-md-12 col-sm-12 mb-4">
         <select id="ddlLisClientes"></select>
     </div>
-    <table class="table" id="PrecioClientes" style="width:100%">
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Producto </th>
-                <th>Comprado</th>
-                <th>Carrito</th>
-                <th>Pedido</th>
-                <th>Precio Cliente</th>
-                <th>Descuento Expo</th>
-                <th>Precio Expo</th>
-                <th>Descuento Adicional</th>
-                <th>Precio Final</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <table class="table" id="PrecioClientes" style="width:100%"></table>
 </div>
 
 @*Modal Terminos y condiciones*@
@@ -91,15 +73,16 @@
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": 
             {
-                url: path + "Proveedores/getPreciosCliente?cliente=" + $('#ddlLisClientes').val(),
+                url: path + "Proveedores/getPreciosCliente?cliente=" + cliente,
                 type: 'POST',
                 dataSrc: ""
             },
             "columns": [
-                { "data": "codigo" },
-                { "data": "producto" },
+                { "data": "codigo", title: "Código" },
+                { "data": "producto", title: "Producto" },
                 {
-                    "data": "comprado",
+                    "data": "comprado", 
+                    title: "Comprado",
                     render: function (data, type) 
                     {
                         if (data)
@@ -110,26 +93,47 @@
                         return '<i class="far fa-square" aria-hidden="true"></i>';
                     }
                 },
-                { "data": "carrito" },
-                { "data": "pedido" },
-                { "data": "preciocliente" },
-                { "data": "descuentoexpo" },
-                { "data": "precioexpo" },
+                { "data": "carrito", title: "Carrito" },
+                { "data": "pedido", title: "Pedido" },
+                { "data": "preciocliente", title: "Precio Cliente",
+                    "render": function (data, type, row) 
+                    {
+                        return FormatoMoneda(data);
+                    }
+                
+                },
+                {
+                    "data": "descuentoexpo", title: "Descuento Expo",
+                    "render": function (data, type, row) 
+                    {
+                        return FormatoMoneda(data);
+                    }
+                },
+                { "data": "precioexpo", title: "Precio Expo",
+                    "render": function (data, type, row) 
+                    {
+                        return FormatoMoneda(data);
+                    }
+                },
+                { "data": "preciofinal", title: "Precio Final",
+                    "render": function (data, type, row) 
+                    {
+                        return FormatoMoneda(data);
+                    }
+                },
                 {
                     "data": "descuentoadicional",
-                    render: function (data, type, row) 
-                    {
-                        if (type === 'display')
-                        {
-                            return '<input class="text" type="text" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
-                                 + '<input class="hdfCosto" type="hidden" value="' + row.costo + '" style="display:none"/>'
-                                 + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>';
+                    title: "Descuento Adicional",
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return '<input class="text" type="number" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
+                                + '<input class="hdfCosto" type="hidden" value="' + row.costo + '" style="display:none"/>'
+                                + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>';
                         }
-                        
+
                         return data;
                     },
                 },
-                { "data": "preciofinal" },
                 {
                     "data": "idproducto",
                     render: function (data, type, row)
@@ -145,8 +149,7 @@
                         return ''
                     }
 
-                },
-
+                }
             ]
         })
     }

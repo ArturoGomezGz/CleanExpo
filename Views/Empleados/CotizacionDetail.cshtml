@@ -367,8 +367,7 @@
         document.getElementById("txtTipoVenta").disabled = true;
         document.getElementById("txtDirEntrega").disabled = true;
         document.getElementById("txtTransportista").disabled = true;
-        document.getElementById("txtPorte").disabled = true;
-        
+        document.getElementById("txtPorte").disabled = true;        
     }
 
     function BuscarListaProducto() 
@@ -493,7 +492,7 @@
                     render: function (data, type) {
                         if (type === 'display') 
                         {
-                            return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"s/><button class="btn btn-naranja-ch fas fa-pencil-alt Edit"></button><a class="btn btn-outline-success Update" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a><a class="btn btn-outline-danger Cancel" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>';
+                            return '<input class="hdn" type="hidden" value="' + data + '"/>';
                         }
 
                         return data;
@@ -503,25 +502,40 @@
                 { "data": "presentacion" },
                 { "data": "laboratorio" },
                 { "data": "cantidad",
-                    render: function (data, type) 
+                    render: function (data, type, row) 
                     {
                         if (type === 'display') 
                         {
-                            return '<input class="text" type="text" value="' + data + '" disabled style="width:70px; heigth:70px"/>';
+                            return '<input class="text" type="number" value="' + data + '" disabled style="width:60px; heigth:70px"/>'
+                                  + '<button class="btn btn-naranja-ch fas fa-pencil-alt Edit"></button>'
+                                  + '<div class="d-block">'
+                                  + '<a class="btn btn-outline-success Update" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
+                                  + '<a class="btn btn-outline-danger Cancel" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>'
+                                  + '</div>'
+                                + '<input class="hdn" type="hidden" value="' + row.idProducto + '"/>';
                         }
-
                         return data;
                     },                
                 },
-                { "data": "precioFinal" },
-                { "data": "total" },
+                {
+                    "data": "precioFinal",
+                    render: function (data, type) {                       
+                        return  FormatoMoneda(data);
+                    }
+                },
+                {
+                    "data": "total",
+                    render: function (data, type) {
+                        return FormatoMoneda(data);
+                    }                
+                },
                 {
                     "data": "idProducto",
                     render: function (data, type) 
                     {
                         if (type === 'display')
                         {
-                            return '<a class="btn btn-link Borrar" id="btnBorrarProducto" onclick="BorrarProducto(' + data + ')"><i class="far fa-trash-alt btn btn-outline-danger"></i></a>';
+                            return '<button class="btn btn-outline-danger Borrar far fa-trash-alt" onclick="BorrarProducto(' + data + ')">';
                         }
 
                         return data;

@@ -623,16 +623,28 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public void productoAgregarDescuento(int IdCliente, int IdProducto, decimal PorcentajeDescuento)
+        public JsonResult productoAgregarDescuento(int IdCliente, int IdProducto, decimal PorcentajeDescuento)
         {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
-            parameters[1] = new SqlParameter("@IdProducto", IdProducto);
-            parameters[2] = new SqlParameter("@Descuento", PorcentajeDescuento);
-            parameters[3] = new SqlParameter("@Cliente", IdCliente);
+            var rm = new ResponseModel();
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[4];
+                parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+                parameters[1] = new SqlParameter("@IdProducto", IdProducto);
+                parameters[2] = new SqlParameter("@Descuento", PorcentajeDescuento);
+                parameters[3] = new SqlParameter("@Cliente", IdCliente);
 
-             dB.ExecuteNonQuery("AddDescuentoProv", ref parameters);
+                dB.ExecuteNonQuery("AddDescuentoProv", ref parameters);
+                rm.Result = true;
+                rm.Message = "Descuento agregado con exito";
+            }
+            catch(Exception ex) 
+            {
+                rm.Message = ex.Message;
+            }
+            
+            return Json(rm);
         }
 
         [HttpPost]

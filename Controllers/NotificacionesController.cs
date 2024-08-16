@@ -54,7 +54,7 @@ namespace ExpoMR.Controllers
                         + "<a href='mailto:ventas@medicinasrosario.com.mx'>Soporte ExpoMR</a><br/><br/><br/>"
                         + avisoConfidencialidad;
                
-                await _emailSender.SendEmailAsync("pruebas@medicinasrosario.com.mx", "Recuperar Contraseña ExpoMR", body);
+                await _emailSender.SendEmailAsync(opViewModel.Email, "Recuperar Contraseña ExpoMR", body);
 
                 return RedirectToAction(nameof(CuentasController.ConfirmacionOlvidoPassword), "Cuentas");
             }
