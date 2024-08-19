@@ -36,6 +36,8 @@ namespace ExpoMR.Models
 
         public byte Notificado { get; set; }
 
+        public int IdEmail { get; set; }
+
         public string Email { get; set; }
     }
 }

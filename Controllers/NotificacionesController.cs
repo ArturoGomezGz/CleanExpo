@@ -117,26 +117,26 @@ namespace ExpoMR.Controllers
             return Json(rm);
         }
 
-        public async Task<JsonResult> SendPromos(int IdCliente)
+        public async Task<JsonResult> SendPromos(int IdCliente, int IdEmail)
         {
             var rm = new ResponseModel();
 
             string email = "";
             string body = string.Empty;
-            string query = "SELECT dPromoCliente.IdPromocion, vPersonas.Nombre AS Cliente, " +
-                            "CAST(dPromoCliente.Cantidad AS NVARCHAR(12)) + ' ' + mArticulos.Nombre AS Articulo, " +
-                            "mArticulos.Descripcion, LOWER(mEmails.Email) AS Email " +
-                            "FROM dPromoCliente INNER JOIN " +
-                            "dPromociones ON dPromociones.IdPromocion = dPromoCliente.IdPromocion INNER JOIN " +
-                            "mArticulos ON mArticulos.IdArticulo = dPromociones.IdArticulo INNER JOIN " +
-                            "vPersonas ON vPersonas.IdPersona = dPromoCliente.Cliente INNER JOIN  " +
-                            "mUsuarios ON vPersonas.IdPersona = mUsuarios.IdPersona INNER JOIN " +
-                            "Indigo.dbo.mEmails ON mUsuarios.IdEmail = mEmails.IdEmail " +
-                            "WHERE dPromoCliente.Cliente = @IdPersona";
+            string query = "SELECT dPromoCliente.IdPromocion, vPersonas.Nombre AS Cliente, "+ 
+                            "CAST(dPromoCliente.Cantidad AS NVARCHAR(12)) + ' ' + mArticulos.Nombre AS Articulo, "+ 
+                            "mArticulos.Descripcion, LOWER(vPersonas.Email) AS Email "+ 
+                            "FROM dPromoCliente INNER JOIN "+ 
+                            "dPromociones ON dPromociones.IdPromocion = dPromoCliente.IdPromocion INNER JOIN "+ 
+                            "mArticulos ON mArticulos.IdArticulo = dPromociones.IdArticulo INNER JOIN "+ 
+                            "vPersonas ON vPersonas.IdPersona = dPromoCliente.Cliente "+
+                            "WHERE dPromoCliente.Cliente = @IdCliente " + 
+                            "AND vPersonas.IdEmail = @IdEmail"; 
 
             DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdPersona", IdCliente);
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+            parameters[1] = new SqlParameter("@IdEmail", IdEmail);
 
             SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 

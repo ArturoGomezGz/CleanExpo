@@ -1030,13 +1030,13 @@ namespace ExpoMR.Controllers
             {
                 List<UsuariosNotificacion> Notificaciones = new();
 
-                string query = "SELECT mClientes.IdPersona, mClientes.Nombre, ISNULL(lNotificaciones.IdTipoNotificacion, 0) AS Notificado, LOWER(mEmails.Email) AS Email " +
+                string query = "SELECT mClientes.IdPersona, mClientes.Nombre, ISNULL(lNotificaciones.IdTipoNotificacion, 0) AS Notificado, mEmails.IdEmail, LOWER(mEmails.Email) AS Email " +
                                 "FROM mClientes INNER JOIN " +
                                 "mUsuarios ON mClientes.IdPersona = mUsuarios.IdPersona INNER JOIN " +
                                 "Indigo.dbo.mEmails ON mUsuarios.IdEmail = mEmails.IdEmail INNER JOIN " +
                                 "dPromoCliente ON mClientes.IdPersona = dPromoCliente.Cliente LEFT OUTER JOIN " +
                                 "lNotificaciones ON mClientes.IdPersona = lNotificaciones.IdPersona AND IdTipoNotificacion = 1 " +
-                                "GROUP BY mClientes.IdPersona, mClientes.Nombre, mEmails.Email, Lnotificaciones.IdTipoNotificacion " +
+                                "GROUP BY mClientes.IdPersona, mClientes.Nombre, mEmails.IdEmail, mEmails.Email, Lnotificaciones.IdTipoNotificacion " +
                                 "ORDER BY Lnotificaciones.IdTipoNotificacion ASC, mClientes.Nombre";
 
             DB dB = new();
@@ -1051,7 +1051,8 @@ namespace ExpoMR.Controllers
                     Notificacion.IdPersona = (int)dr["IdPersona"];
                     Notificacion.Nombre = (string)dr["Nombre"];
                     Notificacion.Notificado = (byte)dr["Notificado"];
-                    Notificacion.Email = (string)dr["Email"];
+				    Notificacion.IdEmail = (int)dr["IdEmail"];
+				    Notificacion.Email = (string)dr["Email"];
 
                     Notificaciones.Add(Notificacion);
                 }

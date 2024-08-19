@@ -32,22 +32,23 @@
                 type: 'POST',
                 dataSrc: ""
             },
-            'columnDefs':
-            [
-                {
-                    'targets': 0,
-                    'checkboxes':
-                    {
-                        'selectRow': true
-                    }
-                }
-            ],
-            'select':
-            {
-                'style': 'multi'
-            },
             "columns":[
-                { "data": "idPersona"},
+                {
+                    "data": null,
+                    targets: 0,
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        return data = '<div class="checkbox"><input type="checkbox" id="chkSel_' + row.idEmail + '" class="dt-checkboxes chkSel" value="' + row.idEmail + '"></div>';
+                    },
+                    checkboxes: {
+                        'selectRow': true
+                    },
+                },
+                { "data": "idPersona", 
+                    render: function (data, type) {
+                        return '<input class="hdfIdPersona" type="hidden" value="' + data + '" style="display:none"/>'
+                    }
+                },
                 { "data": "nombre", title: "Nombre" },
                 { "data": "email", title: "Email" },
                 { "data": "notificado", title: "Promociones",
@@ -62,18 +63,6 @@
         });    
     }
 
-    function GetSelected()
-    {
-        var checkedId = [];
-        var selectedIds = tableClientes.columns().checkboxes.selected()[0];
-
-        selectedIds.forEach(function (selectedId) {
-            checkedId.push(selectedId);
-        });
-
-        return (checkedId)
-    }
-
     function Reload() 
     {
         $('#clientes').dataTable().fnDestroy();
@@ -84,28 +73,38 @@
 
     function SendPromos() 
     {
-        let arrayIdPersonas = GetSelected()
+        const cb = document.querySelectorAll('input[type="checkbox"].chkSel:checked'); //Se seleccionan todos los controles de tipo checkbox y su id= chkSel NO DEBE DE HABER ID´REPETIDOS POR ALGO SON ID
 
-        for (i = 0; i < arrayIdPersonas.length; i++)
+        if (cb.length < 1) 
+        { //Se valida que debe existir al menos 1 checkbox seleccionado para el envio de invitacion
+            alert('Debes selecionar un email para enviar invitacion')
+        }
+        else
         {
-            var Cliente = arrayIdPersonas[i];
+            $('input[type="checkbox"].chkSel:checked').each(function () {
 
-            $.post(path + "Notificaciones/SendPromos",
-                {
-                    IdCliente: Cliente
-                },
-                function (data)
-                {
-                    ShowAlert(data.message, data.response);
-                    Reload();
+                if ($(this).prop('checked') && $(this).val() > 0) {
 
-                }).error(function ()
-                {
-                    alerta(false, "No fue posible cargar sus datos");
-                    Reload();
-                }
-            );
-        }        
+                    const IdCliente = $(this).closest('tr').find('.hdfIdPersona').val();
+                    const IdEmail = $(this).val();
+
+                    $.post(path + "Notificaciones/SendPromos",
+                        {
+                            IdCliente: IdCliente,
+                            IdEmail: IdEmail
+                        },
+                        function (data) {
+                            ShowAlert(data.message, data.response);
+                            Reload();
+
+                        }).error(function () {
+                            alerta(false, "No fue posible cargar sus datos");
+                            Reload();
+                        }
+                    );
+                };
+            });
+        }
     }
 
 </script>
