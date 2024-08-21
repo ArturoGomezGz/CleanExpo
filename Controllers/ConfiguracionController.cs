@@ -55,20 +55,31 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public IActionResult GuardarConfiguracion(IFormFile logo, IFormFile fondo, string nombre, string descripcion, int color)
+        public IActionResult GuardarConfiguracion(IFormFile logo, IFormFile fondo, string nombre, int color, string descripcion)
         {
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[6];
-            parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
-            parameters[1] = new SqlParameter("@Nombre", nombre);
-            parameters[2] = new SqlParameter("@Descripcion", descripcion);
-            parameters[3] = new SqlParameter("@Paleta", color);
-            parameters[4] = new SqlParameter("@Logo",  WebSite.ConvertToByteArray(logo) );
-            parameters[5] = new SqlParameter("@Background", WebSite.ConvertToByteArray(fondo));
+            var rm = new ResponseModel();
+            try 
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[6];
+                parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
+                parameters[1] = new SqlParameter("@Nombre", nombre == null ? "" : nombre);
+                parameters[2] = new SqlParameter("@Descripcion", descripcion == null ? "" : descripcion);
+                parameters[3] = new SqlParameter("@Paleta", color);
+                parameters[4] = new SqlParameter("@Logo", WebSite.ConvertToByteArray(logo));
+                parameters[5] = new SqlParameter("@Background", WebSite.ConvertToByteArray(fondo));
 
-            dB.ExecuteNonQuery("EditStandProv", ref parameters);
+                dB.ExecuteNonQuery("EditStandProv", ref parameters);
+                rm.Response = true;
+                rm.Message = "Datos Guardados";
 
-            return Json(new { success = true });
+            } catch (Exception ex)
+            {
+                rm.Response = false;
+                rm.Message = ex.Message;
+            }
+
+            return Json(rm);
         }
 
         public List<Fechas> GetFechas()

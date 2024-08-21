@@ -34,12 +34,12 @@
                             <div class="col-md-8 text-center mx-auto mt-4">
                                 <div class="row">
                                     <div class="col-md-6 text-center">
-                                        <label style="height:50px" asp-for="Logo"></label>
+                                        <label class="d-block" style="height:50px" asp-for="Logo"></label>
                                         <img class="w-50 mx-auto" style="max-height:250px;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="Logo" />
                                         <input asp-for="Logo" type="file" class="form-control-file" id="Logo">
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <label style="height:50px" asp-for="Fondo"></label>
+                                        <label class="d-block" style="height:50px" asp-for="Fondo"></label>
                                         <img class="w-50" style="max-height:250px;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Fondo))" alt="Logo" />
                                         <input asp-for="Fondo" type="file" class="form-control-file" id="Fondo">
                                     </div>
@@ -48,17 +48,15 @@
                             <div class="col-md-8 text-center mx-auto mt-4">
                                 <div class="row">
                                     <div class="form-group">
-                                        <label asp-for="Color" class="control-label"></label>
-                                        <div style="height: 150px">
-                                            <select id="ddlColores">
-                                                <option value="1">Azul</option>
-                                                <option value="2">Aqua</option>
-                                                <option value="3">Rojo</option>
-                                                <option value="4">Verde</option>
-                                                <option value="5">Naranja</option>
-                                                <option value="6">Gris</option>
-                                            </select>
-                                        </div>
+                                        <label asp-for="Color" class="control-label d-block"></label>
+                                        <select id="ddlColores">
+                                            <option value="1">Azul</option>
+                                            <option value="2">Aqua</option>
+                                            <option value="3">Rojo</option>
+                                            <option value="4">Verde</option>
+                                            <option value="5">Naranja</option>
+                                            <option value="6">Gris</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -216,14 +214,13 @@
     }
 
     function guardarConfiguracion() {
-        var logo = document.getElementById('Logo').files[0];
-        var fondo = document.getElementById('Fondo').files[0];
-        var nombre = document.getElementById('NombreStand').value;
-        var descripcion = document.getElementById('DescripcionStand').value;
-        var color = document.getElementById('ddlColores').value;
+        let logo = document.getElementById('Logo').files[0];
+        let fondo = document.getElementById('Fondo').files[0];
+        let nombre = document.getElementById('NombreStand').value;
+        let color = document.getElementById('ddlColores').value;
+        let descripcion = document.getElementById('DescripcionStand').value;
 
-        var formData = new FormData();
-
+        let formData = new FormData();
         formData.append('logo', logo);
         formData.append('fondo', fondo);
         formData.append('nombre', nombre);
@@ -237,8 +234,13 @@
             contentType: false,
             processData: false,
             success: function (result) {
-                alert('Guardado');
-                window.location.reload();
+                if(result.response)
+                {
+                    alert(result.message);
+                    window.location.reload();
+                }else{
+                    ShowAlert(result.message, result.response);
+                }                
             },
             error: function (xhr, status, error) {
                 alert('Error al subir la imagen.');
