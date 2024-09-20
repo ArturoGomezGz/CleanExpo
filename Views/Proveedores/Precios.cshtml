@@ -19,14 +19,14 @@
                     <label id="lblMensaje">El descuento otorgado al cliente es mayor al costo.</label>
                 </h5>
             </div>
-            <div class="modal-body">
+            <div id="TerminosCondiciones" class="modal-body">
                 <input type="checkbox" id="miCheckbox">
                 <label for="vehicle1"> Acepto</label><label><a href="#" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal"> los Términos y Condiciones</a></label>
             </div>
             <div class="col-md-12">
                 <div class="row text-center">
                     <div class="col-md-6">
-                        <button type="button" class="btn btn-verde-medio btn-success">Acepto</button>
+                        <button type="button" id="success" class="btn btn-verde-medio btn-success">Acepto</button>
                     </div>
                     <div class="col-md-6">
                         <button type="button" class="btn btn-rojo btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
@@ -214,10 +214,18 @@
                 {
                     //Se muestra el mensaje al proveedor de que su descuento es mayor
                     if (data == 2)
+                    {
                         document.getElementById("lblMensaje").style.visibility = "visible";
+                        document.getElementById("lblMensaje").style.color = "red";
+                        document.getElementById("TerminosCondiciones").style.visibility = "hidden";
+                        document.getElementById("success").style.visibility = "hidden";
+                    }
                     else
+                    {
                         document.getElementById("lblMensaje").style.visibility = "hidden";
-
+                        document.getElementById("TerminosCondiciones").style.visibility = "visible";
+                        document.getElementById("success").style.visibility = "visible";
+                    }
                     const myModal = new bootstrap.Modal(document.getElementById('exampleModalToggle'));
                     myModal.show();
 

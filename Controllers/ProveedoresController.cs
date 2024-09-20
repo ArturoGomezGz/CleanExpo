@@ -662,12 +662,13 @@ namespace ExpoMR.Controllers
         {
             decimal MontoDescuento = PrecioExpo * PorcentajeDescuento / 100;
 
-            Int16 res = 2; //El descuento otorgado es mayor al costo, mostrar aviso al proveedor
+            Int16 res = 1; //El descuento otorgado es valido
+						   
 
-            if (PrecioExpo - MontoDescuento > Costo)
-                res = 1; //El descuento otorgado es valido
+			if (MontoDescuento > Costo)
+                res = 2; //El descuento otorgado es mayor al costo, mostrar aviso al proveedor
 
-            return res;
+			return res;
         }
     }
 }
