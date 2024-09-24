@@ -50,8 +50,9 @@ namespace ExpoMR.Controllers
             else
             {
 				int Cliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+                bool EsProveedor = ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Proveedor");
 
-				if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Proveedor") == true)
+				if (EsProveedor == true)
                 {
 					if (Cliente != idProveedor)
 					{
@@ -94,30 +95,38 @@ namespace ExpoMR.Controllers
 
 				dB.Close();
 
-				int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
-
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (EsProveedor == true)
                 {
-                    if (isFechaExpoVIP == 1) //1 = Expo VIP
-                    {
-                        return View(Stand);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View(Stand);
                 }
-                else
+                else 
                 {
-                    if (isFechaExpoVIP == 0) //0 =  Expo normal
-                    {
-                        return View(Stand);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
-                }                
+					int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+
+					if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+					{
+						if (isFechaExpoVIP == 1) //1 = Expo VIP
+						{
+							return View(Stand);
+						}
+						else
+						{
+							return RedirectToAction("Index", "MiCuenta");
+						}
+					}
+					else
+					{
+						if (isFechaExpoVIP == 0) //0 =  Expo normal
+						{
+							return View(Stand);
+						}
+						else
+						{
+							return RedirectToAction("Index", "MiCuenta");
+						}
+					}
+				}
+				                
             }
         }
 
