@@ -730,17 +730,28 @@ namespace ExpoMR.Controllers
 			return logo;
         }
 
-        public void PorConfirmar(int IdProducto, int Cliente, int Confirmado)
+        public JsonResult PorConfirmar(int IdProducto, int Cliente, int Confirmado) //Confirmado = 1 Marcar Todos // confirmado = 2 DesMarcar Todo
         {
+            var rm = new ResponseModel();
             DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[4];
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[4];
 
-            parameters[0] = new SqlParameter("@IdProducto", IdProducto);
-            parameters[1] = new SqlParameter("@cliente", Cliente);
-            parameters[2] = new SqlParameter("@usuario", Cliente);
-            parameters[3] = new SqlParameter("@Confirmado", Confirmado);
+                parameters[0] = new SqlParameter("@IdProducto", IdProducto);
+                parameters[1] = new SqlParameter("@cliente", Cliente);
+                parameters[2] = new SqlParameter("@usuario", Cliente);
+                parameters[3] = new SqlParameter("@Confirmado", Confirmado);
+                dB.ExecuteNonQuery("ConfirmarProducto", ref parameters);
+                dB.Close();
+                rm.Response = true;
+            } catch (Exception ex) {
+                rm.Response = false;
+                rm.Message = ex.Message;
+                dB.Close();
+            }
 
-            dB.ExecuteNonQuery("ConfirmarProducto", ref parameters);
+            return Json(rm);
         }
     }
 }

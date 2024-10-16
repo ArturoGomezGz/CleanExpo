@@ -387,39 +387,19 @@
         }
     }
 
-    function seleccionarTodos() {
-        var inputs = document.querySelectorAll('input[class^="chkSel"]');
+    function seleccionarTodos(Confirmado) {     
 
-        for (i = 0; i < inputs.length; i++) {
-            $.post(path + "Carrito/PorConfirmar",
-                {
-                    IdProducto: inputs[i].value,
-                    Cliente: @Model.IdCliente,
-                    Confirmado: 1 //Confirma todos los productos
-                });
-
-            //inputs.checked = true;
-        }
-
-        window.location.reload()
+         $.post(path + "Carrito/PorConfirmar",
+         {
+            IdProducto: 0,
+            Cliente: @Model.IdCliente,
+            Confirmado: Confirmado //Confirma todos los productos
+         },
+         function (data) {
+            window.location.reload()
+         });              
     }
 
-    function deseleccionarTodos() {
-        var inputs = document.querySelectorAll('input[class^="chkSel"]');
-
-        for (i = 0; i < inputs.length; i++) {
-            $.post(path + "Carrito/PorConfirmar",
-                {
-                    IdProducto: inputs[i].value,
-                    Cliente: @Model.IdCliente,
-                    Confirmado: 2 //Desconfirma todos los productos
-                });
-
-            //inputs.checked = false;
-        }
-
-        window.location.reload()
-    }
 
     function Checked(IdProducto) {
         let Cliente = @Model.IdCliente;
@@ -744,8 +724,8 @@
         <div id="ShowCarrito" class="tab-content_productos col-sm-12 col-lg-8 col-xxl-7 pagination_list">
         <p><a class="btn btn-azul-medio btn-mediano" asp-controller="CargarProducto" asp-action="Index">Carga Masiva</a>@*</p>*@
        @* <div class="d-flex">*@
-            @*<p>*@<a class="btn btn-SelectAll btn-outline-primary mx-1" onclick="seleccionarTodos()">Marcar Todos</a>@*</p>*@
-            @*<p>*@<a class="btn btn-UnSelectAll btn-outline-primary mx-1" onclick="deseleccionarTodos()">DesMarcar Todo</a></p>
+            @*<p>*@<a class="btn btn-SelectAll btn-outline-primary mx-1" onclick="seleccionarTodos(1)">Marcar Todos</a>@*</p>*@
+            @*<p>*@<a class="btn btn-UnSelectAll btn-outline-primary mx-1" onclick="seleccionarTodos(2)">DesMarcar Todo</a></p>
        @* </div>*@
        
             @{
