@@ -1,4 +1,5 @@
 ﻿<input type="hidden" id="hdfSal" />
+<div id="liveAlertPlaceholder"></div>
 <partial name="_Ayuda_Index_Partial" />
 
 <script>
@@ -75,7 +76,7 @@
                 $("#divLaboratorio").append(cadena)
                 block.remove();
             }).error(function () {
-                alerta(false, "No fue posible cargar sus datos")
+                ShowAlert("No fue posible cargar sus datos", false);
             });
     }
 </script>

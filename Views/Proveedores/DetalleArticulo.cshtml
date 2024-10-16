@@ -5,7 +5,7 @@
 <div class="col-md-12 text-center">
     <h1>Detalle del Artículo</h1>
 </div>
-
+<div id="liveAlertPlaceholder"></div>
 <div class="col-lg-12" id="div_detalle_articulo">
     <div class="row">
         <div class="col-lg-5 col-sm-12 ">
@@ -19,7 +19,7 @@
                 <button type="button" class="btn btn-outline-success" id="btnSave" onclick="AceptEditArticulo()" title="btn-save">
                     <i class="fas fa-check" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="btn  btn-outline-danger" id="btnCancel" onclick="CancelEditArticulo()" title="btn-cancel">
+                <button type="button" class="btn btn-outline-danger" id="btnCancel" onclick="CancelEditArticulo()" title="btn-cancel">
                     <i class="fas fa-ban" aria-hidden="true"></i>
                 </button>
             </div>
@@ -99,8 +99,7 @@
             {
                 let cadena ="";
                 $.each(resultado, function (index, value) 
-                {                   
-                    console.log(value);
+                {    
                     cadena += '<div class="col-md-6" id="' + value.iDdArticulos + '"><div class="card card-inverse card-info pb-3 mt-2">'
                         + '<strong>Foto:</strong><div class=text-center><select style="display:none; width: 50px; height: 25px;" id="orden_' + value.iDdArticulos + '"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><label id="numFoto_' + value.iDdArticulos + '" class="">' + value.numFoto + '</label>'
                         + '<img class="card-img-top" style="width: 150px; height: 150px; margin: auto;" src="data:image/jpg;base64,' + value.foto + '" alt="image" /><br />'
@@ -235,7 +234,6 @@
                 select.empty();
                 $.each(data, function (index, item) 
                 {
-                    console.log(data);
                     select.append($('<option></option>').val(item.ordenfoto).text(item.ordenfoto));
                 });
             }

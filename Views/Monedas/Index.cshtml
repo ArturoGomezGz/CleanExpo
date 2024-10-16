@@ -3,7 +3,7 @@
 }
 
 
-
+<div id="liveAlertPlaceholder"></div>
 <div class=" mt-4 container">
     <h5 id="Saldo_monedas" class="mb-4"></h5>
     <table id="Monedas" class="display" style="width:100%"></table>
@@ -45,7 +45,7 @@
                 $("#Saldo_monedas").html("Saldo al "+dia+" " + data + " Monedas")
             }).error(function () 
             {
-                alerta(false, "No fue posible cargar sus monedas")
+                ShowAlert("No fue posible cargar sus monedas", false)
             }
         );
     });
