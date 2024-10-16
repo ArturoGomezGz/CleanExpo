@@ -39,8 +39,7 @@
 
         $.post(path + "Generales/GetMonedas",
             function (data) 
-            {
-               
+            {               
                 var dia = FormatoFecha();              
                
                 $("#Saldo_monedas").html("Saldo al "+dia+" " + data + " Monedas")

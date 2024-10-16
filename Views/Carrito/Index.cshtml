@@ -119,20 +119,6 @@
         }
     }
 
-    function decrement(IdProducto) {
-        var value = $("#number_" + IdProducto).val();
-        var element = document.getElementById("number_" + IdProducto)
-        value--;
-        element.value = value;
-    }
-
-    function increment(IdProducto) {
-        var value = $("#number_" + IdProducto).val();
-        var element = document.getElementById("number_" + IdProducto)
-        value++;
-        element.value = value;
-    }
-
     function mostrarModal(IdArticulo) {
         $("#datail_modal_Articulo").html("")
         cadena = "";
@@ -141,7 +127,7 @@
                 IdArticulo: IdArticulo
             },
             function (data) {
-                cadena += '<img class="promocion_imagen mx-auto pb-3" style="width:250px; heigh:250px" alt="imagen" src="data:image/png;base64,' + data.foto + '">'
+                cadena += '<img class="promocion_imagen_modal mx-auto pb-3" alt="imagen" src="data:image/png;base64,' + data.foto + '">'
                     + '<label class="promocion_label">'
                     +  data.nombre
                     + '</label>'
@@ -402,7 +388,7 @@
     }
 
     function seleccionarTodos() {
-        var inputs = document.querySelectorAll('input[id^="chkSel"]');
+        var inputs = document.querySelectorAll('input[class^="chkSel"]');
 
         for (i = 0; i < inputs.length; i++) {
             $.post(path + "Carrito/PorConfirmar",
@@ -412,14 +398,14 @@
                     Confirmado: 1 //Confirma todos los productos
                 });
 
-            inputs.checked = true;
+            //inputs.checked = true;
         }
 
         window.location.reload()
     }
 
     function deseleccionarTodos() {
-        var inputs = document.querySelectorAll('input[id^="chkSel"]');
+        var inputs = document.querySelectorAll('input[class^="chkSel"]');
 
         for (i = 0; i < inputs.length; i++) {
             $.post(path + "Carrito/PorConfirmar",
@@ -429,7 +415,7 @@
                     Confirmado: 2 //Desconfirma todos los productos
                 });
 
-            inputs.checked = false;
+            //inputs.checked = false;
         }
 
         window.location.reload()
@@ -625,13 +611,7 @@
         
 
         var fotosProd = document.querySelectorAll('img.FotoProd'); //Se obtienen todos los controles que muestran la foto de producto mendiante la Clase
-        fotosProd = removeDuplicatesIds(fotosProd);
-
-        for (var i = 0; i < fotosProd.length; i++)
-        {
-            var productoId = fotosProd[i].getAttribute("data-id");
-            GetAsyncFotoProd(productoId) 
-        }
+        fotosProd = removeDuplicatesIds(fotosProd);        
     }
 
     async function GetAsyncLogoProv(proveedorId)
@@ -744,48 +724,6 @@
     </script>
 }
 
-<style>
-    .paginationPedido, .paginationCarrito  {
-        display: flex;
-        justify-content: center;
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .paginationPedido  li, .paginationCarrito li {
-        margin: 0 5px;
-    }
-
-    .paginationPedido  li a, .paginationCarrito li a {
-        text-decoration: none;
-        color: #007bff;
-        padding: 8px 16px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        transition: background-color 0.3s;
-    }
-
-    .paginationPedido  li a.active, .paginationCarrito li a.active {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
-    }
-
-    .paginationPedido  li a:hover, .paginationCarrito li a:hover {
-        background-color: #ddd;
-    }
-
-    .paginationPedido  li a.disabled, .paginationCarrito li a.disabled {
-        color: #ccc;
-        pointer-events: none;
-        border-color: #ccc;
-    }
-
-    .paginationPedido  li a.hidden, .paginationCarrito li a.hidden {
-        display: none;
-    }
-</style>
-
 <div class="row">
     <div id="liveAlertPlaceholder"></div>
     @Html.HiddenFor(m => m.IdUsuario)
@@ -823,29 +761,24 @@
                             <hr class="Separador_Carrito" />
                         }
                         <div class="row" >
-                            <div class="" style="width:20px;">
+                            <div class="w-20px">
                                 @if (model.PorConfirmar == true)
                                 {
-                                    <input type="checkbox" id="chkSel" checked="checked" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
+                                    <input type="checkbox" class="chkSel" checked="checked" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
                                 }
                                 else
                                 {
-                                   <input type="checkbox" id="chkSel" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
+                                   <input type="checkbox" class="chkSel" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
                                 }
                             </div>
                             <div class="fotoCarrito" >
                                 @if (model.Proveedor != IdProveedor)
                                 {
-                                    <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                    <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
                                         <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
                                     </a>
                                     IdProveedor = model.Proveedor;
                                 }
-                            </div>
-                            <div class="fotoCarrito">
-                                    <a href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
-                                        <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
-                                    </a>
                             </div>
                             <div class="row col-md-7 col-lg-7 texto-carrito">
                                 
@@ -855,7 +788,7 @@
                                         </a>
                                         <p class="mb-0"><label>@string.Format(model.Presentacion.ToString())</label></p>
                                     </div>
-                                    <div class="col-5" style="text-align:right">
+                                    <div class="col-5 text-end">
                                         <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.cantidad.ToString())</p>
                                         <input id="hdnPrecioFinal_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.PrecioFinal.ToString())">
                                         <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
@@ -863,8 +796,8 @@
                                     </div>
                                
                             </div>
-                            <div class="col-sm-2 col-md-2 " style="max-width:100px">
-                                <div class="row" style="">
+                            <div class="col-sm-2 col-md-2 mw-100px" >
+                                <div class="row">
                                     <div class="">
                                         <input id="hdn_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.cantidad.ToString())">
                                         <input id="number_@string.Format(model.IdProducto.ToString())" class="input-number" type="number" value="@string.Format(model.cantidad.ToString())" min="1" placeholder="0" disabled>
@@ -896,13 +829,13 @@
             <div class="contenedor carritoTotal">
                 @if (Model.TotalesCotizacion.HasProduct == true)
                 {
-                    <div style=" width:80%;">
-                    <p style="color:#244f87; font-size:1.2em; font-weight:bold;">Crédito: <text id="txt_Credito"></text></p>
-                    <p><strong>Subtotal: </strong><text id="txt_Subtotal"></text></p>
-                    <p><strong>IVA: </strong><text id="txt_IVA"></text></p>
-                    <hr/>
-                    <p><strong>Total: </strong><text id="txt_Total"></text></p>
-                    <p><strong>Total de Productos: </strong><text id="txt_TotalProd"></p>
+                    <div class="w-80">
+                        <p class="credito_carrito">Crédito: <text id="txt_Credito"></text></p>
+                        <p><strong>Subtotal: </strong><text id="txt_Subtotal"></text></p>
+                        <p><strong>IVA: </strong><text id="txt_IVA"></text></p>
+                        <hr/>
+                        <p><strong>Total: </strong><text id="txt_Total"></text></p>
+                        <p><strong>Total de Productos: </strong><text id="txt_TotalProd"></p>
                     </div>
                     <button type="button" class="btn btn-naranja mb-3 mt-3" onclick="ColocarOrden()">Coloca tu Orden </button>
                 }
@@ -951,13 +884,8 @@
                                     <h6 class='lblPedido'>Pedido: @string.Format(PedidoActual.ToString()) </h6>
                                     <div class="row">
                                         <div class="fotoCarrito">
-                                            <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                            <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
                                                 <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">    
-                                            </a>
-                                        </div>
-                                        <div class="fotoCarrito">
-                                            <a href="#" style=" margin:auto;">
-                                                <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
                                             </a>
                                         </div>
                                         <div class="row col-sm-12 col-md-8 col-lg-9">
@@ -965,10 +893,10 @@
                                                 <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
                                                 <p><label>@String.Format(model.Presentacion )</label></p>
                                             </div>
-                                            <div class="col-sm-6" style="font-size:0.9em; line-height:1.2em">
+                                            <div class="col-sm-6 resumen_producto">
                                                 <p class="mb-0 pb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                                <p class="mb-0 pb-0"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                                <p class="mb-0"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p> 
+                                                <p class="mb-0 pb-0"><strong>Precio Expo: </strong><font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
+                                                <p class="mb-0"><strong>Total: </strong><font class="font_moneda">$@string.Format(model.Total.ToString())</font></p> 
                                             </div>
                                         </div>
                                     </div>
@@ -980,22 +908,17 @@
                                 <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
                                 <div class="row">
                                     <div class="fotoCarrito">
-                                        <a href="#" style=" margin: auto;"></a>
-                                    </div>
-                                    <div class="fotoCarrito">
-                                        <a href="#" style=" margin: auto;">
-                                            <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
-                                        </a>
-                                    </div>
+                                        <a href="#" class="mx-auto"></a>
+                                    </div>                                    
                                     <div class="row col-sm-12 col-md-8 col-lg-9">
                                         <div class="col-sm-6">
                                             <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
                                             <p><label>@String.Format(model.Presentacion)</label></p>
                                         </div>
-                                        <div class="col-sm-6" style="font-size:0.9em; line-height:1.2em">
+                                        <div class="col-sm-6 resumen_producto">
                                             <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                            <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                            <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
+                                            <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
+                                            <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
                                         </div>
                                     </div>
                                     <hr />
@@ -1013,13 +936,8 @@
                                 <h6 class="lblPedido">Pedido:@string.Format(PedidoActual.ToString()) </h6>
                                 <div class="row">
                                     <div class="fotoCarrito">
-                                        <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;">
+                                        <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
                                             <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
-                                        </a>
-                                    </div>
-                                    <div class="fotoCarrito">
-                                        <a href="#" style=" margin: auto;">
-                                            <img id="FotoProd_@string.Format(model.IdProducto.ToString())" data-id="@Convert.ToString(model.IdProducto)" class="FotoProd" src="" alt="image">
                                         </a>
                                     </div>
                                     <div class="row col-sm-12 col-md-8 col-lg-9">
@@ -1027,10 +945,10 @@
                                             <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
                                             <p><label>@String.Format(model.Presentacion) </label></p>
                                         </div>
-                                        <div class="col-sm-6" style="font-size:0.9em; line-height:1.2em">
+                                        <div class="col-sm-6 resumen_producto">
                                             <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
-                                            <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">@string.Format(model.PrecioFinal.ToString())</font></p>
-                                            <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">@string.Format(model.Total.ToString())</font></p>
+                                            <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
+                                            <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
                                         </div>
                                     </div>
                                 </div>
@@ -1047,7 +965,7 @@
         </div>
         <div id="show_premios" class="col-md-4">
             <div class="contenedor carritoTotal">
-                <p style="color:#244f87; font-size:1.2em; font-weight:bold;">Crédito: <text id="txt_Credito_divPedido"></text></p>
+                <p class="credito_carrito">Crédito: <text id="txt_Credito_divPedido"></text></p>
                 <p><strong>Subtotal: </strong><text id="txt_Subtotal_divPedido"></text></p>
                 <p><strong>IVA: </strong><text id="txt_IVA_divPedido"></text></p>
                 <hr/>
@@ -1059,7 +977,7 @@
                 <img class="promocion_imagen mx-auto" alt="" src="~/Imagenes/articulosGanados.png">
             </div>
             <div id="lista_premios" class="row"></div>
-            <table id="Premios_table" class="display" style="width:70%; font-size:0.85em"></table>
+            <table id="Premios_table" class="display premios_table"></table>
         </div>
     </div>
     <div class="col-sm-0 col-xxl-1"></div>
@@ -1122,7 +1040,7 @@
                             <h4>Paso 1</h4>
                             <p class="mb-0"><strong>Cliente: </strong><label id="colocar_Cliente"></label></p>
                             <p class="mb-0"><strong>RFC: </strong><label id="colocar_RFC"></label></p>
-                            <div class="col-12 pb-1 pt-0" style="font-size:0.9em">
+                            <div class="col-12 pb-1 pt-0 fs-6">
                                 @Html.LabelFor(m => m.IdTipoDoc, new { @class = "fw-bold" })
                                 @Html.DropDownListFor(model => model.IdTipoDoc, new SelectList(Model.TipoDocumentos, "IdTipoDoc", "TipoDoc"), new { id = "cmb-TipoDoc", @class = "form-control text-left colocaOrdenDropDown", name = "cmb-TipoDoc",  title="cmb" })
                             </div>
@@ -1162,7 +1080,7 @@
                             <p class="mb-0"><strong>Observaciones: </strong><label id="confirmar_Observaciones"></label></p>
                             <p class="mb-0"><strong>Transportista: </strong><label id="confirmar_Transtportista"></label></p>
                             <p class="mb-0"><strong>Porte: </strong><label id="confirmar_Porte"></label></p>
-                            <div style="text-align:center">
+                            <div class="text-center">
                                 <button type="button" onclick="TerminarOrden()" class="btn btn-naranja mb-1 mt-1">Colocar tu Orden <i class="fas fa-chevron-circle-right"></i> </button>
                             </div>
                         </div>

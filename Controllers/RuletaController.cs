@@ -266,7 +266,6 @@ namespace ExpoMR.Controllers
 
                 if (ruletaGiro != null && ruletaGiro.Count() > 0)
                 {
-                    string foto = "";
                     string query = "SELECT mPremios.IdPremio, mPremios.IdRuleta, mPremios.Seccion, mPremios.Foto " +
                                     "FROM mPremios " +
                                     "WHERE mPremios.IdPremio = @IdPremio";

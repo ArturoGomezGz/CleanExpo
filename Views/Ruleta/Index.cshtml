@@ -15,12 +15,12 @@
         <div class="col-md-12 mb-2 @item.RuletaNormalized">
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 mt-2">
-                    <div class="ruleta" style="border:none">
+                    <div class="ruleta border-0">
                         @if (item.Activa == 1)
                         {
                             <input type="hidden" id="idRuleta" value="@item.IdRuleta" />
                             <a onclick="showModal()">
-                                <img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="~/Imagenes/ruleta@{@item.IdRuleta;}.png" alt="image" />
+                                <img class="card-img-top img_ruleta" src="~/Imagenes/ruleta@{@item.IdRuleta;}.png" alt="image" />
                             </a>
                             <div class="card-block">
                                 <p class="txt-ruleta-activa">Se activa con @item.Monedas</p>
@@ -30,7 +30,7 @@
                             </a>
                         }else{
                             <a href="#" alt="Play Ruleta" class="mx-auto">
-                                <img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="~/Imagenes/ruletaDeshabilitada@{@item.IdRuleta;}.png" alt="image" />
+                                <img class="card-img-top img_ruleta" src="~/Imagenes/ruletaDeshabilitada@{@item.IdRuleta;}.png" alt="image" />
                             </a>                            
                             <div class="card-block">
                                 <p class="txt-ruleta-activa">Se activa con @item.Monedas</p>
@@ -46,7 +46,7 @@
                             {                            
                                 <div class="col-12 col-sm-12 col-md-3 mb-2">
                                     <div class="h-100 card ruleta-premio">
-                                        <img class="img__max-width card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
+                                        <img class="img__max-width card-img-top img_ruleta" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(model.Foto))" alt="image" />
                                         <p>@String.Format(model.Premio)</p>
                                     </div>
                                 </div>
@@ -63,7 +63,7 @@
 <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body" style="text-align:center">
+            <div class="modal-body text-center">
                 <p class="mdl_confirm_ruleta">
                     <b>Si giras esta ruleta, ya NO podrás girar alguna de las otras ruletas</b>
                     <b>¿Estas seguro de que deseas girar la ruleta,</b>

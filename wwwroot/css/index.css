@@ -912,6 +912,61 @@ a {
 }
 
 /* CARRITO */
+.paginationPedido, .paginationCarrito {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+    .paginationPedido li, .paginationCarrito li {
+        margin: 0 5px;
+    }
+
+        .paginationPedido li a, .paginationCarrito li a {
+            text-decoration: none;
+            color: #007bff;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+            .paginationPedido li a.active, .paginationCarrito li a.active {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+
+            .paginationPedido li a:hover, .paginationCarrito li a:hover {
+                background-color: #ddd;
+            }
+
+            .paginationPedido li a.disabled, .paginationCarrito li a.disabled {
+                color: #ccc;
+                pointer-events: none;
+                border-color: #ccc;
+            }
+
+            .paginationPedido li a.hidden, .paginationCarrito li a.hidden {
+                display: none;
+            }
+
+.resumen_producto {
+    font-size: 0.9em;
+    line-height: 1.2em
+}
+
+.credito_carrito {
+    color: #244f87;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.premios_table {
+    width: 70%;
+    font-size: 0.85em
+}
 .display_panel_active {
     display: flex;
 }
@@ -936,7 +991,6 @@ a {
 }
 
 .cart-container .bf-ui-tab--selected {
-    /*background: linear-gradient(#2F80ED, #2F80ED, #56CCF2);*/
     background: linear-gradient(#1e3c72, #2a5298);
     font-size: 1.1em;
     font-weight: 600;
@@ -1453,4 +1507,24 @@ div.fotoCarrito {
 }
 .d-mobile-inline {
     display: none;
+}
+.w-80 {
+    width: 80%;
+}
+.w-20px {
+    width: 20px;
+}
+.mw-100px {
+    max-width: 100px;
+}
+
+.promocion_imagen_modal {
+    width: 250px;
+    heigh: 250px;
+}
+
+.img_ruleta {
+    width: 150px;
+    height: 150px;
+    margin: auto;
 }

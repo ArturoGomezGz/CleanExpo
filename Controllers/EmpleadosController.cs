@@ -832,7 +832,6 @@ namespace ExpoMR.Controllers
         public int ColocarOrden(int IdCliente)
         {
             DB dB = new();
-            SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
             parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
