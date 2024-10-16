@@ -12,5 +12,7 @@ namespace ExpoMR.Models
         public int IdTipoUsuario { get; set; }
 
         public bool selected { get; set; }
+
+        public int Monedas { get; set; }
     }
 }

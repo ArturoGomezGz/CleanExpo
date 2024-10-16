@@ -1528,3 +1528,9 @@ div.fotoCarrito {
     height: 150px;
     margin: auto;
 }
+
+.saldo_monedas {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #F1592B;
+}

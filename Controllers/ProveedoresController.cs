@@ -414,7 +414,9 @@ namespace ExpoMR.Controllers
         {
             List<Clientes> Visitas = new();
 
-            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre, (SELECT SUM(monedas) FROM mTransacciones " +
+                "Where Destino = Vitisas.IdPersona AND (IdMotivo = 12 OR IdMotivo=6) AND Usuario = @IdProveedor) Monedas " +
+                "FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
@@ -429,6 +431,7 @@ namespace ExpoMR.Controllers
 
                 Visita.IdPersona = (int)dr["IdPersona"];
                 Visita.Nombre = (string)dr["Nombre"];
+                Visita.Monedas = (int)dr["Monedas"];
 
                 Visitas.Add(Visita);
             }
