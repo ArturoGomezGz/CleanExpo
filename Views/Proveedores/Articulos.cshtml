@@ -33,6 +33,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div id="liveAlertPlaceholderModal"></div>
                 <form id="formGuardarArticulo" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label txt-bold">Nombre del Artículo:</label>
@@ -47,7 +48,7 @@
                         <input type="number" class="form-control" id="txtCantidadArticulo">
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label txt-bold">Selecciona una imagen para el articulo en formato JPG o PNG:</label>
+                        <label for="recipient-name" class="col-form-label txt-bold">Selecciona una imagen para el articulo en formato JPG o PNG (menor a 1MB):</label>
                         <input type="file" class="form-control" id="inputImg" required><br />
                     </div>                   
                 </form>
@@ -107,29 +108,43 @@
 
     function AddArticulo()
     {
-        var formData = new FormData();
+        let file = document.getElementById("inputImg").files[0];       
 
-        formData.append('nombre', $('#txtNombre').val());
-        formData.append('descripcion', $('#txtDescripcion').val());
-        formData.append('cantidadarticulo', $('#txtCantidadArticulo').val());
-        formData.append('foto', document.getElementById("inputImg").files[0]);
-        formData.append('orden', 1);
+        if (file) {
+            let fileSizeInMB = file.size / (1024 * 1024); // Convertir a MB
 
-        $.ajax({
-            url: path+ "Proveedores/AddArticulo",
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) 
-            {
-                window.location.reload();
-            },
-            error: function ()
-            {
-                alert('Error al subir la imagen');
+            if (fileSizeInMB > 1) {
+                ShowAlert("El archivo supera 1 MB.", false, "liveAlertPlaceholderModal");
+                // Puedes agregar alguna lógica adicional aquí, como mostrar un mensaje de advertencia
+            } else {
+                var formData = new FormData();
+
+                formData.append('nombre', $('#txtNombre').val());
+                formData.append('descripcion', $('#txtDescripcion').val());
+                formData.append('cantidadarticulo', $('#txtCantidadArticulo').val());
+                formData.append('foto', document.getElementById("inputImg").files[0]);
+                formData.append('orden', 1);
+
+                $.ajax({
+                    url: path+ "Proveedores/AddArticulo",
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response)
+                    {
+                        window.location.reload();
+                    },
+                    error: function ()
+                    {
+                        alert('Error al subir la imagen');
+                    }
+                });
             }
-        });    
+        } else {
+            ShowAlert("No se ha seleccionado ningún archivo.", false, "liveAlertPlaceholderModal");
+        }        
+       
     }
 
 </script>
