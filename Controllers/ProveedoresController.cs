@@ -414,8 +414,8 @@ namespace ExpoMR.Controllers
         {
             List<Clientes> Visitas = new();
 
-            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre, (SELECT SUM(monedas) FROM mTransacciones " +
-                "Where Destino = Vitisas.IdPersona AND (IdMotivo = 12 OR IdMotivo=6) AND Usuario = @IdProveedor) Monedas " +
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre, ISNULL((SELECT SUM(monedas) FROM mTransacciones " +
+                "Where Destino = Vitisas.IdPersona AND (IdMotivo = 12 OR IdMotivo=6) AND Usuario = @IdProveedor),0 ) Monedas " +
                 "FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
 
             DB dB = new();

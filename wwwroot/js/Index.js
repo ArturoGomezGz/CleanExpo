@@ -42,7 +42,7 @@ function GetMonedas()
     ).error(
         function ()
         {
-            alerta(false, "No fue posible cargar sus modenas")
+            ShowAlert("No fue posible cargar sus datos", false);
         }
     );
 }
@@ -58,7 +58,7 @@ function GetRuleta(IdPersona)
     ).error(
         function ()
         {
-            alerta(false, "No fue posible cargar su ruleta")
+            ShowAlert("No fue posible cargar sus datos", false);
         }
     );
 }
@@ -73,7 +73,7 @@ function GetCarrito()
     ).error(
         function ()
         {
-            alerta(false, "No fue posible cargar su carrito")
+            ShowAlert("No fue posible cargar sus datos", false);
         }
     );
 }
@@ -223,7 +223,7 @@ function SendMail(IdPedido)
             console.log(data)
         }).error(function ()
         {
-            alerta(false, "No fue posible cargar sus datos")
+            ShowAlert("No fue posible cargar sus datos", false);
         }
     );
 }
