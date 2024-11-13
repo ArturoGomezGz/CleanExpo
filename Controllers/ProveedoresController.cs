@@ -117,6 +117,10 @@ namespace ExpoMR.Controllers
         {
             return View(idCliente);
         }
+        public IActionResult DetallePrecios(int idCliente = 0)
+        {
+            return View(idCliente);
+        }
 
         public IActionResult Preguntas()
         {

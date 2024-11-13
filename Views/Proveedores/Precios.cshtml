@@ -5,335 +5,60 @@
 <div id="liveAlertPlaceholder"></div>
 <div class="col-md-12">
     <div class="col-lg-12 col-md-12 col-sm-12 mb-4">
-        <select id="ddlLisClientes"></select>
-    </div>
-    <table class="table" id="PrecioClientes" style="width:100%"></table>
-</div>
-
-@*Modal Terminos y condiciones*@
-<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalToggleLabel">
-                    <label id="lblMensaje">El descuento otorgado al cliente es mayor al costo.</label>
-                </h5>
-            </div>
-            <div id="TerminosCondiciones" class="modal-body">
-                <input type="checkbox" id="miCheckbox">
-                <label for="vehicle1"> Acepto</label><label><a href="#" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal"> los Términos y Condiciones</a></label>
-            </div>
-            <div class="col-md-12">
-                <div class="row text-center">
-                    <div class="col-md-6">
-                        <button type="button" id="success" class="btn btn-verde-medio btn-success">Acepto</button>
-                    </div>
-                    <div class="col-md-6">
-                        <button type="button" class="btn btn-rojo btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h1>Términos y Condiciones</h1>
-                <br />
-                <h2>Obligaciones del Promotor</h2>
-                <p>
-                    - <b>“LA EMPRESA”</b> establece un precio para cada producto, sin embrago, el proveedor podrá negociar uno diferente al pactado en la página oficial, con la intención de mejorar el publicado, el cual <b>“MEDICINAS ROSARIO”</b>, no se hace responsable del precio pactado entre el proveedor y el cliente.<br />
-
-                    - <b>“LA EMPRESARIA”</b> permite que se realice ese tipo de negociación en el sitio lugar del presente instrumento, durante el evento, quedando evidenciado el precio pactado entre las partes mismo que será almacenado en la misma contratación.<br />
-
-                    - <b>“EL PROVEEDOR”</b>  una vez que otorgue el precio al cliente, no podrá cambiarlo, salvo para en beneficio de este, es decir, podrá mejorar el con anterioridad pactado. </br>
-
-                    - El proveedor queda obligado del pago a <b>“LA EMPRESARIA”</b>  por el medio que se establezca o los ya reconocidos por los contratantes,  la diferencia entre el precio que estableció <b>“MEDICINAS ROSARIO”</b> y el precio que otorgó al cliente, mismo que queda debidamente firme y almacenado en la página, lugar de este contrato.<br />
-
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-azul-medio" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Regresar</button>
-            </div>
-        </div>
-    </div>
+        <table id="Clientes" class="display" style="width:100%"></table>
+    </div>   
 </div>
 
 <script>
-    function PreciosDt()
+    $(document).ready(function ()
     {
-        let cliente = $('#ddlLisClientes').val()
+        //$.ajax({
+        //    url: path + "Proveedores/ddlLisCliente",
+        //    contentType: "application/json; charset=utf-8",
+        //    type: 'POST',
+        //    dataType: 'json',
+        //    success: function (data)
+        //    {
+        //        // Cargar los datos en el select
+        //        var select = $('#ddlLisClientes');
+        //        select.empty();
+        //        $.each(data, function (index, item)
+        //        {
+        //            select.append($('<option></option>').val(item.cliente).text(item.nombre));
+        //        });
 
-        $('#PrecioClientes').DataTable({
-            order: [[1, 'asc']],
+        //        if (@Model > 0)
+        //            $('#ddlLisClientes').val(@Model);
+
+        //        PreciosDt()
+        //    }
+        //});
+
+        //$('#ddlLisClientes').change(function ()
+        //{
+        //    $('#PrecioClientes').dataTable().fnDestroy();
+        //    var ddlLisClientes = $('#ddlLisClientes').val();
+        
+        //    PreciosDt()
+        //});
+        $('#Clientes').DataTable({
             responsive: true,
             "info": false,
-            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
-            "ajax": 
-            {
-                url: path + "Proveedores/getPreciosCliente?cliente=" + cliente,
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+            "ajax": {
+                url: path + "Proveedores/ddlLisCliente",
                 type: 'POST',
                 dataSrc: ""
             },
             "columns": [
-                { "data": "codigo", title: "Código" },
-                { "data": "producto", title: "Producto" },
                 {
-                    "data": "comprado", 
-                    title: "Comprado",
-                    render: function (data, type) 
-                    {
-                        if (data)
-                        {
-                            return '<i class="far fa-check-square" aria-hidden="true"></i>';
-                        }
-                        
-                        return '<i class="far fa-square" aria-hidden="true"></i>';
-                    }
-                },
-                { "data": "carrito", title: "Carrito" },
-                { "data": "pedido", title: "Pedido" },
-                { "data": "preciocliente", title: "Precio Cliente",
-                    "render": function (data, type, row) 
-                    {
-                        return FormatoMoneda(data);
-                    }
-                
-                },
-                {
-                    "data": "descuentoexpo", title: "Descuento Expo",
-                    "render": function (data, type, row) 
-                    {
-                        return data + ' %';
-                    }
-                },
-                { "data": "precioexpo", title: "Precio Expo",
-                    "render": function (data, type, row) 
-                    {
-                        return FormatoMoneda(data);
-                    }
-                },
-                { "data": "preciofinal", title: "Precio Final",
-                    "render": function (data, type, row) 
-                    {
-                        return FormatoMoneda(data);
-                    }
-                },
-                {
-                    "data": "descuentoadicional",
-                    title: "Descuento Adicional",
+                    "data": "cliente",
                     render: function (data, type, row) {
-                        if (type === 'display') {
-                            return '<input class="text" type="number" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
-                                + '<input class="hdfCosto" type="hidden" value="' + row.costo + '" style="display:none"/>'
-                                + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>';
-                        }
-
-                        return data;
-                    },
+                        return '<a class="btn btn-link" href="' + path + 'Proveedores/DetallePrecios?idCliente=' + row.cliente + '"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
+                    }
                 },
-                {
-                    "data": "idproducto",
-                    render: function (data, type, row)
-                    {
-                        if (row.descuentoadicional == 0)
-                        {
-                            return '<input class="hdfIdProducto" type="hidden" value="' + data + '" style="display:none"/>'
-                                + '<a class="btn btn-naranja-ch editprecio" ><i class="fas fa-pencil-alt"></i></a>'
-                                 + '<a class="btn btn-outline-success acepteditprecio" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
-                                 + '<a class="btn btn-outline-danger canceleditprecio" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>';
-                        }
-                        
-                        return ''
-                    }
-
-                }
+                { "data": "nombre", title: "Nombre" }
             ]
-        })
-    }
-
-    $(document).on('click', '.editprecio', function (event)
-    {
-        var row = $(this).closest("tr");
-
-        $("td", row).each(function () {
-            if ($(this).find(".text").length > 0)
-            {
-                $(this).find(".text").show();
-            }
         });
-
-        var inputElement = row.find('.text');
-        inputElement.prop('disabled', false);
-
-        row.find(".acepteditprecio").show();
-        row.find(".canceleditprecio").show();
-        $(this).hide();
-    });
-
-    $(document).on('click', '.acepteditprecio', function (event)
-    {
-        var ddlLisClientes = $('#ddlLisClientes').val();
-        var row = $(this).closest("tr");
-        var idproducto, DescClienteNew, Costo, PrecioExpo;
-
-        $("td", row).each(function ()
-        {
-            if ($(this).find(".text").length > 0) 
-            {
-                DescClienteNew = row.find('.text').val();
-                Costo = row.find('.hdfCosto').val();
-                PrecioExpo = row.find('.hdfPrecioExpo').val();
-                idproducto = row.find('.hdfIdProducto').val();
-            }
-        });
-
-        row.find(".editprecio").show();
-        row.find(".canceleditprecio").hide();
-        $(this).hide();
-
-        var inputElement = row.find('.text');
-
-        $.post(path + "Proveedores/ValidaDescuento",
-            {
-                PorcentajeDescuento: DescClienteNew,
-                Costo: Costo,
-                PrecioExpo: PrecioExpo
-            },
-            function (data)
-            {
-                if (data == 0) 
-                {
-                    alert("El descuento del cliente ingresado debe ser mayor a 0.", false);
-                    DescClienteNew = row.find('.text').val(0);
-                    inputElement.prop('disabled', true);
-                }
-                else 
-                {
-                    //Se muestra el mensaje al proveedor de que su descuento es mayor
-                    if (data == 2)
-                    {
-                        document.getElementById("lblMensaje").style.visibility = "visible";
-                        document.getElementById("lblMensaje").style.color = "red";
-                        document.getElementById("TerminosCondiciones").style.visibility = "hidden";
-                        document.getElementById("success").style.visibility = "hidden";
-                    }
-                    else
-                    {
-                        document.getElementById("lblMensaje").style.visibility = "hidden";
-                        document.getElementById("TerminosCondiciones").style.visibility = "visible";
-                        document.getElementById("success").style.visibility = "visible";
-                    }
-                    const myModal = new bootstrap.Modal(document.getElementById('exampleModalToggle'));
-                    myModal.show();
-
-                    $('#exampleModalToggle').on('click', '.btn-success', function () {
-                        const miCheckbox = document.getElementById("miCheckbox");
-
-                        if (miCheckbox.checked && inputElement.val() > 0)
-                        {
-                            $.post(path + "Proveedores/productoAgregarDescuento",
-                                {
-                                    IdCliente: ddlLisClientes,
-                                    IdProducto: idproducto,
-                                    PorcentajeDescuento: DescClienteNew
-                                },
-                                function (data) // Esta función se ejecutará cuando la solicitud sea exitosa
-                                {
-                                    myModal.hide();
-                                    miCheckbox.checked = false;
-                                    inputElement.prop('disabled', true);
-                                    row.find(".editprecio").hide()
-                                    $('#PrecioClientes').dataTable().fnDestroy();
-                                    PreciosDt()
-                                },
-                            );
-                        }
-                        else 
-                        {
-                            myModal.hide();
-                            row.find(".editprecio").hide();
-                            row.find(".acepteditprecio").show();
-                            row.find(".canceleditprecio").show();
-                        }
-                    });
-
-                    $('#exampleModalToggle').on('click', '.btn-cancelar', function () 
-                    {
-                        row.find(".editprecio").show();
-                        row.find(".acepteditprecio").hide();
-                        row.find(".canceleditprecio").hide();
-
-                        var inputElement = row.find('.text');
-                        inputElement.prop('disabled', true);
-                        inputElement.val(0);
-
-                        $('#PrecioClientes').dataTable().fnDestroy();
-                        PreciosDt()
-                    });
-                }
-            }).error(function () 
-            {
-                ShowAlert("No fue posible cargar sus datos", false);
-            }
-        );
-    });
-
-    $(document).on('click', '.canceleditprecio', function (event)
-    {
-        var row = $(this).closest("tr");
-
-        $("td", row).each(function ()
-        {
-            if ($(this).find(".text").length > 0)
-            {
-                $(this).find(".text").show();
-            }
-        });
-
-        var inputElement = row.find('.text');
-        inputElement.prop('disabled', true);
-        inputElement.val(0);
-
-        row.find(".acepteditprecio").hide();
-        row.find(".editprecio").show();
-        $(this).hide();
-    });
-
-    let DescCliente, DescExpo
-
-    $(document).ready(function ()
-    {
-        $.ajax({
-            url: path + "Proveedores/ddlLisCliente",
-            contentType: "application/json; charset=utf-8",
-            type: 'POST',
-            dataType: 'json',
-            success: function (data)
-            {
-                // Cargar los datos en el select
-                var select = $('#ddlLisClientes');
-                select.empty();
-                $.each(data, function (index, item)
-                {
-                    select.append($('<option></option>').val(item.cliente).text(item.nombre));
-                });
-
-                if (@Model > 0)
-                    $('#ddlLisClientes').val(@Model);
-
-                PreciosDt()
-            }
-        });
-
-        $('#ddlLisClientes').change(function ()
-        {
-            $('#PrecioClientes').dataTable().fnDestroy();
-            var ddlLisClientes = $('#ddlLisClientes').val();
-        
-            PreciosDt()
-        });        
     });
 </script>
