@@ -253,6 +253,42 @@ namespace ExpoMR.Controllers
 			return Json(Articulo);
         }
 
+
+        [HttpPost]
+        public JsonResult GetTotalByPedido(int IdPedido)
+        {
+            ResumenPedido Pedido = new();
+
+            string query = "SELECT mPedidos.IdPedido, COUNT(dbo.dPedidos.IdProducto) AS Productos, " +
+                " CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) AS DECIMAL(18, 2)) AS Subtotal, " +
+                " CAST(SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18, 2)) AS IvaMonto," +
+                " CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) + SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0)  ELSE 0 END) AS DECIMAL(18, 2)) AS Total" +
+                " FROM dbo.mPedidos " +
+                " INNER JOIN dbo.dPedidos ON dbo.mPedidos.IdPedido = dbo.dPedidos.IdPedido " +
+                " INNER JOIN dbo.mProductos ON dbo.dPedidos.IdProducto = dbo.mProductos.IdProducto" +
+                " WHERE mPedidos.IdPedido = @IdPedido" +
+                " GROUP BY mPedidos.IdPedido";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPedido", IdPedido);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            while (dr.Read())
+            {
+                Pedido.Pedido = (int)dr["IdPedido"];
+                Pedido.Cantidad = (int)(dr["Productos"]);
+                Pedido.Subtotal = Convert.ToDecimal(dr["Subtotal"]);
+                Pedido.IVA = Convert.ToDecimal(dr["IvaMonto"]);
+                Pedido.Total = Convert.ToDecimal(dr["Total"]);
+            }
+
+			dB.Close();
+
+			return Json(Pedido);
+        }
+
         [HttpPost]
         public JsonResult GetDatosFacturacion(int IdCliente)
         {
@@ -610,7 +646,7 @@ namespace ExpoMR.Controllers
                 parameters[0] = new SqlParameter("@cliente", IdCliente);
                 parameters[1] = new SqlParameter("@usuario", IdUsuario);
 
-                rm.Result = (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters); ;
+                rm.Result = 2;//s (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters);
                 rm.Response = true;
             }
             catch (Exception e)
@@ -640,7 +676,6 @@ namespace ExpoMR.Controllers
                 parameters[6] = new SqlParameter("@IdPorte", cotizacion.IdPorte);
                 parameters[7] = new SqlParameter("@IdDireccion", cotizacion.Direccion);
                 parameters[8] = new SqlParameter("@Obsv", cotizacion.Observaciones == null ? "" : cotizacion.Observaciones);
-
 
                 dB.ExecuteNonQuery("CotizarActualizarDatos", ref parameters);
 
