@@ -278,18 +278,21 @@
             ShowAlert("El usuario no tiene un Uso de CFDI asignado", false, "ModalStep3");
         }else{
             $.post(path + "Carrito/ExpoPedidoAgregar",
-                function (data) {
-                    CloseModal('swModal');
-                    ShowAlert(data.message, true);
-                    SendMail(data.result);
+                function (data) {                    
                     
                     //Animacion de monedas
                     if (data.response) 
                     {
+                        CloseModal('swModal');
+                        ShowAlert(data.message, true);
+                        SendMail(data.result);
                         initCanvas();
                         setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
+                        setTimeout(Reload, 3000);
+                    }else{
+                        ShowAlert(data.message, false, "ModalStep3");
                     }
-                    setTimeout(Reload, 3000);
+                    
                 }
             ).error(function () {
                 ShowAlert("No fue posible cargar sus datos", false);

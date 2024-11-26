@@ -203,6 +203,38 @@ namespace ExpoMR.Controllers
         {
             ResponseModel rm = new();
 
+            try {
+                string usoCFDI = HttpContext.Session.GetString("ClienteSel");
+                string query = "SELECT mPersonas.Persona, mPersonas.Nombre, mSatUsoCFDI.UsoCFDI " +
+                    "FROM Indigo.dbo.mPersonas LEFT OUTER JOIN " +
+                    "Indigo.dbo.mEmpresas ON mPersonas.Persona = mEmpresas.Persona LEFT OUTER JOIN " +
+                    "Indigo.dbo.mSatRegimenFiscal ON mPersonas.IdRegimenFiscal = mSatRegimenFiscal.IdRegimenFiscal LEFT OUTER JOIN " +
+                    "Indigo.dbo.mSatUsoCFDI ON mPersonas.IdUsoCFDI = mSatUsoCFDI.IdUsoCFDI " +
+                    "where mPersonas.Persona = @IdPersona";
+
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
+
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+                while (dr.Read())
+                {
+                   usoCFDI = dr["UsoCFDI"] == DBNull.Value ? "": (string)dr["UsoCFDI"];
+                }
+
+                dB.Close();
+
+                if (usoCFDI == "") {
+                    rm.Message = "El usuario no tiene un uso de CFDI en Indigo";
+                    return Json(rm);
+                }
+            }
+            catch (Exception ex){
+                rm.Message=ex.Message;
+                return Json(rm);
+            }
+
             try
             {
                 DB dB = new();
