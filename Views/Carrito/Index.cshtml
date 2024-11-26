@@ -788,9 +788,12 @@
                                         @if (model.Proveedor != IdProveedor)
                                 {
                                         decimal Total = Model.ListaCarrito.Where(x => x.Proveedor == model.Proveedor).Sum(x => x.total);
+                                        decimal TotalProductos = Model.ListaCarrito.Where(x => x.Proveedor == model.Proveedor).Count();
                                         <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
                                                 <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
                                             </a>
+                                            <p><strong>Total Laboratorio:</strong><font class="font_moneda">$ @Total</font></p>
+                                            <p><strong>Total Productos:</strong><font class="font_moneda"> @TotalProductos</font></p>
                                     IdProveedor = model.Proveedor;
                                 }
                                     </div>
