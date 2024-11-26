@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.X500;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace ExpoMR.Controllers
 {
@@ -264,6 +265,77 @@ namespace ExpoMR.Controllers
 			dB.Close();
 
 			return Json(jsonData.rows);
+        }
+
+        [HttpPost]
+        public JsonResult GetVentaCliente()
+        {
+            int idProveedor = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+            string query = "SELECT vPedidos.Cliente, mClientes.Nombre	" +
+                "  FROM vPedidos LEFT JOIN" +
+                "  vProductos ON vProductos.IdProducto = vPedidos.IdProducto LEFT JOIN" +
+                "  mLaboratorios ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio LEFT JOIN" +
+                "  mClientes ON mClientes.IdPersona = vPedidos.Cliente" +
+                "  WHERE mLaboratorios.Proveedor = @IdProveedor" +
+                "  GROUP BY vPedidos.Cliente, mClientes.Nombre" +
+                "  ORDER BY mClientes.Nombre";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            var jsonData = new
+            {
+                rows = (
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                       select new
+                       {
+                           IdPersona = row["Cliente"],
+                           Nombre = row["Nombre"]
+                       }).ToArray()
+            };
+
+            dB.Close();
+
+            return Json(jsonData.rows);
+        }
+
+        [HttpPost]
+        public JsonResult GetDetalleVentaCliente(int IdCliente = 0)
+        {
+            int idProveedor = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+            string query = "SELECT vPedidos.IdPedido, vProductos.Nombre,vProductos.Codigo, vPedidos.Cantidad, vPedidos.Total " +
+                " FROM  vPedidos LEFT OUTER JOIN " +
+                "vProductos ON vProductos.IdProducto = vPedidos.IdProducto LEFT OUTER JOIN " +
+                "mLaboratorios ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio " +
+                "WHERE vpedidos.Cliente = @IdCliente AND mLaboratorios.Proveedor = @IdProveedor";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+            parameters[1] = new SqlParameter("@IdProveedor", idProveedor);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            var jsonData = new
+            {
+                rows = (
+                       from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                       select new
+                       {
+                           IdPedido = row["IdPedido"],
+                           Nombre = row["Nombre"],
+                           Codigo = row["Codigo"],
+                           Cantidad = row["Cantidad"],
+                           Total = row["Total"]
+                       }).ToArray()
+            };
+
+            dB.Close();
+
+            return Json(jsonData.rows);
         }
 
         [HttpPost]

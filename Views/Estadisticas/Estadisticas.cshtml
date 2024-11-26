@@ -94,7 +94,11 @@
                     <table id="monedas__asignadas" class="display" style="width:100%"></table>
                 </div>
             </div>
-            <div class="tab-pane" id="Ventacliente"></div>
+            <div class="tab-pane" id="Ventacliente">
+                <div class="row">
+                    <table id="venta__cliente" class="display" style="width:100%"></table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -184,6 +188,26 @@
                 <hr />
                 <div class="row mt-4">
                     <table id="detalle__Producto" class="display" style="width:100%"></table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal producto detalle*@
+<div class="modal fade" id="VentaClienteDetail" tabindex="-1" aria-labelledby="productosDetaillLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Detalle Venta Cliente </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mt-4">
+                    <table id="detalle__VentaCliente" class="display" style="width:100%"></table>
                 </div>
             </div>
             <div class="modal-footer">
@@ -468,6 +492,38 @@
                 { "data": "hora", title: " Hora " }
             ]
         });
+
+        $('#venta__cliente').DataTable({
+            responsive: true,
+            bFilter: false,
+            lengthChange: false,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "ajax": {
+                url: path+ "Estadisticas/GetVentaCliente",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [                
+                { 
+                    "data": "idPersona",
+                    render: function (data, type) {
+                        if (type === 'display') {
+                            return '<a onclick="detalleVentaCliente(' + data + ')"class="btn btn-link"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
+                        }
+                        return data;
+                    },
+                    title: ""
+                },
+                { "data": "nombre", title: " Cliente " }
+            ],
+            "columnDefs": [
+                {
+                    targets: 0,
+                    width: "50px"
+                }
+            ]
+        });
     
         $('#productos__visitados').DataTable({
             responsive: true,
@@ -553,6 +609,7 @@
             }).error(function () {});
        
         GridDetalleProducto(0)
+        GridDetalleVentaCliente(0)
     });
 
     function modalShow(idProducto){
@@ -609,6 +666,43 @@
                 { "data": "carrito", title: " Carrito " },
                 { "data": "confirmado", title: " Confirmado " },
                 { "data": "ventaProv", title: " VentaProv " }
+            ]
+        });
+    }
+
+
+
+    function detalleVentaCliente(IdCliete) {
+        var myModal = new bootstrap.Modal(document.getElementById('VentaClienteDetail'), {
+            focus: true
+        })
+        var modalToggle = document.getElementById('VentaClienteDetail') // relatedTarget
+        myModal.show(modalToggle)
+        
+        $('#detalle__VentaCliente').dataTable().fnDestroy();
+
+        GridDetalleVentaCliente(IdCliete)
+    }
+    function GridDetalleVentaCliente(Cliente) {
+        $('#detalle__VentaCliente').DataTable({
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "ajax": {
+                url: path + "Estadisticas/GetDetalleVentaCliente?IdCliente=" + Cliente,
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                { "data": "nombre", title: " Nombre " },
+                { "data": "codigo", title: " Codigo " },
+                { "data": "cantidad", title: " Cantidad " },
+                {
+                    "data": "total", title: " Total ",
+                    "render": function (data, type, row) {
+                        return FormatoMoneda(data);
+                    }
+                }
             ]
         });
     }
