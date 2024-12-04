@@ -17,7 +17,7 @@ namespace ExpoMR.Models
 
         public int Proveedor { get; set; }
 
-        public Int16 Cantidad { get; set; }
+        public int Cantidad { get; set; }
 
         public byte NumFoto { get; set; }
     }
