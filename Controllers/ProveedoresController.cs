@@ -216,7 +216,7 @@ namespace ExpoMR.Controllers
                 DetalleArticulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
                 DetalleArticulo.Foto = (dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : Array.Empty<byte>());
                 DetalleArticulo.Proveedor = (int)dr["Proveedor"];
-                DetalleArticulo.Cantidad = (Int16)dr["Cantidad"];
+                DetalleArticulo.Cantidad = (int)dr["Cantidad"];
             }
 
 			dB.Close();
