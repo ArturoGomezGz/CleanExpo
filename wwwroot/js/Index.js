@@ -181,9 +181,9 @@ function Getpath()
 {
     var rutaRelativaCompleta = window.location.href;
 
-     if (rutaRelativaCompleta.includes("ExpoMRDev"))
+     if (rutaRelativaCompleta.includes("ExpoMRdev"))
     {
-        return "../../ExpoMRDev/";
+        return "../../ExpoMRdev/";
     }
     else
     {
