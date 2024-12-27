@@ -199,7 +199,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult ExpoPedidoAgregar()
+        public JsonResult ExpoPedidoAgregar(string Nombre)
         {
             ResponseModel rm = new();
 
@@ -210,11 +210,11 @@ namespace ExpoMR.Controllers
                     "Indigo.dbo.mEmpresas ON mPersonas.Persona = mEmpresas.Persona LEFT OUTER JOIN " +
                     "Indigo.dbo.mSatRegimenFiscal ON mPersonas.IdRegimenFiscal = mSatRegimenFiscal.IdRegimenFiscal LEFT OUTER JOIN " +
                     "Indigo.dbo.mSatUsoCFDI ON mPersonas.IdUsoCFDI = mSatUsoCFDI.IdUsoCFDI " +
-                    "where mPersonas.Persona = @IdPersona";
+                    "WHERE mPersonas.Nombre like '%'+@Nombre+'%'";
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
+                parameters[0] = new SqlParameter("@Nombre", Nombre);
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
@@ -245,7 +245,7 @@ namespace ExpoMR.Controllers
 
                 bool ret = Convert.ToBoolean(dB.ExecuteReturnValue("ExpoPedidoAgregar", ref parameters));
 
-                rm.Response = ret;
+                rm.Response = (int)parameters[2].Value > 0 ? true : false;
                 rm.Message = "El pedido ha sido colocado correctamente.";
                 rm.Result = parameters[2].Value;
             }

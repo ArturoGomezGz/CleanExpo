@@ -274,10 +274,11 @@
     }
 
     function TerminarOrden() {
+        const objetoJSON = JSON.parse(ddlClientes.value);
         if( $("#confirmar_CFDI").html() === ""){
             ShowAlert("El usuario no tiene un Uso de CFDI asignado", false, "ModalStep3");
         }else{
-            $.post(path + "Carrito/ExpoPedidoAgregar",
+            $.post(path + "Carrito/ExpoPedidoAgregar?Nombre='"+objetoJSON.Nombre+"'",
                 function (data) {                    
                     
                     //Animacion de monedas
