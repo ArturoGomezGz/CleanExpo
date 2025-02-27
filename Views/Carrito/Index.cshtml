@@ -273,13 +273,13 @@
         callback();
     }
 
-    function TerminarOrden() {
-        const objetoJSON = JSON.parse(ddlClientes.value);
+    function TerminarOrden()
+    {
         if( $("#confirmar_CFDI").html() === ""){
             ShowAlert("El usuario no tiene un Uso de CFDI asignado", false, "ModalStep3");
         }else{
-            $.post(path + "Carrito/ExpoPedidoAgregar?Nombre='"+objetoJSON.Nombre+"'",
-                function (data) {                    
+            $.post(path + "Carrito/ExpoPedidoAgregar",
+                function (data) {
                     
                     //Animacion de monedas
                     if (data.response) 
@@ -395,8 +395,8 @@
         }
     }
 
-    function seleccionarTodos(Confirmado) {     
-
+    function seleccionarTodos(Confirmado)
+    {     
          $.post(path + "Carrito/PorConfirmar",
          {
             IdProducto: 0,
@@ -408,8 +408,8 @@
          });              
     }
 
-
-    function Checked(IdProducto) {
+    function Checked(IdProducto)
+    {
         let Cliente = @Model.IdCliente;
 
         $.post(path + "Carrito/PorConfirmar",
@@ -427,14 +427,18 @@
             });
     }
 
-    function ShowTotalesPedidos(IdPedido){
-        if(IdPedido === "0"){
+    function ShowTotalesPedidos(IdPedido)
+    {
+        if(IdPedido === "0")
+        {
             $("#txt_Credito_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.Credito))
             $("#txt_Subtotal_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.Subtotal))
             $("#txt_IVA_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.IVA))
             $("#txt_Total_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.Total))
             $("#txt_TotalProd_divPedido").html(@Model.TotalesPedidos.Productos)
-        }else{
+        }
+        else
+        {
             $.post(path + "Carrito/GetTotalByPedido",
             {
                 IdPedido: IdPedido

@@ -199,38 +199,38 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult ExpoPedidoAgregar(string Nombre)
+        public JsonResult ExpoPedidoAgregar()
         {
             ResponseModel rm = new();
 
             try {
-                string usoCFDI = HttpContext.Session.GetString("ClienteSel");
-                string query = "SELECT mPersonas.Persona, mPersonas.Nombre, mSatUsoCFDI.UsoCFDI " +
-                    "FROM Indigo.dbo.mPersonas LEFT OUTER JOIN " +
-                    "Indigo.dbo.mEmpresas ON mPersonas.Persona = mEmpresas.Persona LEFT OUTER JOIN " +
-                    "Indigo.dbo.mSatRegimenFiscal ON mPersonas.IdRegimenFiscal = mSatRegimenFiscal.IdRegimenFiscal LEFT OUTER JOIN " +
-                    "Indigo.dbo.mSatUsoCFDI ON mPersonas.IdUsoCFDI = mSatUsoCFDI.IdUsoCFDI " +
-                    "WHERE mPersonas.Nombre like '%'+@Nombre+'%'";
+                string usoCFDI = "";
+                string query = "SELECT mPerEmp.IdPersona, mPersonas.Persona, mPersonas.IdUsoCFDI " +
+                    "FROM Indigo.dbo.mPerEmp AS mPerEmp INNER JOIN " +
+                    "Indigo.dbo.mPersonas AS mPersonas ON mPerEmp.Persona = mPersonas.Persona " +
+                    "WHERE mPerEmp.IdPersona = @IdCliente";
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@Nombre", Nombre);
+                parameters[0] = new SqlParameter("@IdCliente", HttpContext.Session.GetString("ClienteSel"));
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
                 {
-                   usoCFDI = dr["UsoCFDI"] == DBNull.Value ? "": (string)dr["UsoCFDI"];
+                   usoCFDI = dr["IdUsoCFDI"] == DBNull.Value ? "": dr["IdUsoCFDI"].ToString();
                 }
 
                 dB.Close();
 
-                if (usoCFDI == "") {
+                if (usoCFDI == "") 
+                {
                     rm.Message = "El usuario no tiene un uso de CFDI en Indigo";
                     return Json(rm);
                 }
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 rm.Message=ex.Message;
                 return Json(rm);
             }
@@ -292,14 +292,14 @@ namespace ExpoMR.Controllers
             ResumenPedido Pedido = new();
 
             string query = "SELECT mPedidos.IdPedido, COUNT(dbo.dPedidos.IdProducto) AS Productos, " +
-                " CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) AS DECIMAL(18, 2)) AS Subtotal, " +
-                " CAST(SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18, 2)) AS IvaMonto," +
-                " CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) + SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0)  ELSE 0 END) AS DECIMAL(18, 2)) AS Total" +
-                " FROM dbo.mPedidos " +
-                " INNER JOIN dbo.dPedidos ON dbo.mPedidos.IdPedido = dbo.dPedidos.IdPedido " +
-                " INNER JOIN dbo.mProductos ON dbo.dPedidos.IdProducto = dbo.mProductos.IdProducto" +
-                " WHERE mPedidos.IdPedido = @IdPedido" +
-                " GROUP BY mPedidos.IdPedido";
+                "CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) AS DECIMAL(18, 2)) AS Subtotal, " +
+                "CAST(SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18, 2)) AS IvaMonto, " +
+                "CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) + SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0)  ELSE 0 END) AS DECIMAL(18, 2)) AS Total " +
+                "FROM dbo.mPedidos INNER JOIN " +
+                "dbo.dPedidos ON dbo.mPedidos.IdPedido = dbo.dPedidos.IdPedido INNER JOIN " +
+                "dbo.mProductos ON dbo.dPedidos.IdProducto = dbo.mProductos.IdProducto " +
+                "WHERE mPedidos.IdPedido = @IdPedido " +
+                "GROUP BY mPedidos.IdPedido";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -678,7 +678,7 @@ namespace ExpoMR.Controllers
                 parameters[0] = new SqlParameter("@cliente", IdCliente);
                 parameters[1] = new SqlParameter("@usuario", IdUsuario);
 
-                rm.Result = 2;//s (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters);
+                rm.Result = (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters);
                 rm.Response = true;
             }
             catch (Exception e)
