@@ -649,7 +649,8 @@
         GridDetalleProducto(idProducto)
     }
 
-    function GridDetalleProducto(idProducto) {
+    function GridDetalleProducto(idProducto)
+    {
         $('#detalle__Producto').DataTable({
             responsive: true,
             "info": false,
@@ -669,9 +670,8 @@
         });
     }
 
-
-
-    function detalleVentaCliente(IdCliete) {
+    function detalleVentaCliente(IdCliete)
+    {
         var myModal = new bootstrap.Modal(document.getElementById('VentaClienteDetail'), {
             focus: true
         })
@@ -682,7 +682,9 @@
 
         GridDetalleVentaCliente(IdCliete)
     }
-    function GridDetalleVentaCliente(Cliente) {
+
+    function GridDetalleVentaCliente(Cliente)
+    {
         $('#detalle__VentaCliente').DataTable({
             responsive: true,
             bFilter: false,
@@ -707,7 +709,8 @@
         });
     }
 
-    function GetPrecios(idCliente){
+    function GetPrecios(idCliente)
+    {
         document.location = '@Url.Action("Precios","Proveedores")' + '?idCliente=' + idCliente;
     }
 </script>

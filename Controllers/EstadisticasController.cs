@@ -271,14 +271,14 @@ namespace ExpoMR.Controllers
         public JsonResult GetVentaCliente()
         {
             int idProveedor = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-            string query = "SELECT vPedidos.Cliente, mClientes.Nombre	" +
-                "  FROM vPedidos LEFT JOIN" +
-                "  vProductos ON vProductos.IdProducto = vPedidos.IdProducto LEFT JOIN" +
-                "  mLaboratorios ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio LEFT JOIN" +
-                "  mClientes ON mClientes.IdPersona = vPedidos.Cliente" +
-                "  WHERE mLaboratorios.Proveedor = @IdProveedor" +
-                "  GROUP BY vPedidos.Cliente, mClientes.Nombre" +
-                "  ORDER BY mClientes.Nombre";
+            string query = "SELECT mClientes.IdPersona, mClientes.Nombre " +
+                "FROM vPedidos INNER JOIN " +
+                "mProductos ON vPedidos.IdProducto = mProductos.IdProducto INNER JOIN " +
+                "mLaboratorios ON mProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
+                "mClientes ON vPedidos.Cliente = mClientes.IdPersona " +
+                "WHERE mLaboratorios.Proveedor = @IdProveedor " +
+                "GROUP BY mClientes.IdPersona, mClientes.Nombre " +
+                "ORDER BY mClientes.Nombre";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -292,7 +292,7 @@ namespace ExpoMR.Controllers
                        from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           IdPersona = row["Cliente"],
+                           IdPersona = row["IdPersona"],
                            Nombre = row["Nombre"]
                        }).ToArray()
             };
@@ -306,11 +306,13 @@ namespace ExpoMR.Controllers
         public JsonResult GetDetalleVentaCliente(int IdCliente = 0)
         {
             int idProveedor = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-            string query = "SELECT vPedidos.IdPedido, vProductos.Nombre,vProductos.Codigo, vPedidos.Cantidad, vPedidos.Total " +
-                " FROM  vPedidos LEFT OUTER JOIN " +
-                "vProductos ON vProductos.IdProducto = vPedidos.IdProducto LEFT OUTER JOIN " +
-                "mLaboratorios ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio " +
-                "WHERE vpedidos.Cliente = @IdCliente AND mLaboratorios.Proveedor = @IdProveedor";
+            string query = "SELECT vPedidos.IdPedido, vProductos.Nombre + ' ' + vProductos.Presentacion AS Nombre, vProductos.Codigo, vPedidos.Cantidad, vPedidos.Total " +
+                "FROM vPedidos INNER JOIN " +
+                "VProductos ON vPedidos.IdProducto = VProductos.IdProducto INNER JOIN " +
+                "mLaboratorios ON VProductos.IdLaboratorio = mLaboratorios.IdLaboratorio " +
+                "WHERE mLaboratorios.Proveedor = @IdProveedor " +
+                "AND vPedidos.Cliente = @IdCliente " +
+                "ORDER BY vProductos.Nombre, vPedidos.IdPedido";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
