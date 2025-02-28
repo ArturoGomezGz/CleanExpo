@@ -919,38 +919,38 @@ a {
     padding: 0;
 }
 
-    .paginationPedido li, .paginationCarrito li {
-        margin: 0 5px;
-    }
+.paginationPedido li, .paginationCarrito li {
+    margin: 0 5px;
+}
 
-        .paginationPedido li a, .paginationCarrito li a {
-            text-decoration: none;
-            color: #007bff;
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
+.paginationPedido li a, .paginationCarrito li a {
+    text-decoration: none;
+    color: #007bff;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
 
-            .paginationPedido li a.active, .paginationCarrito li a.active {
-                background-color: #007bff;
-                color: white;
-                border-color: #007bff;
-            }
+.paginationPedido li a.active, .paginationCarrito li a.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
 
-            .paginationPedido li a:hover, .paginationCarrito li a:hover {
-                background-color: #ddd;
-            }
+.paginationPedido li a:hover, .paginationCarrito li a:hover {
+    background-color: #ddd;
+}
 
-            .paginationPedido li a.disabled, .paginationCarrito li a.disabled {
-                color: #ccc;
-                pointer-events: none;
-                border-color: #ccc;
-            }
+.paginationPedido li a.disabled, .paginationCarrito li a.disabled {
+    color: #ccc;
+    pointer-events: none;
+    border-color: #ccc;
+}
 
-            .paginationPedido li a.hidden, .paginationCarrito li a.hidden {
-                display: none;
-            }
+.paginationPedido li a.hidden, .paginationCarrito li a.hidden {
+    display: none;
+}
 
 .resumen_producto {
     font-size: 0.9em;
