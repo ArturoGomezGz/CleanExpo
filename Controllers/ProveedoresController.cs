@@ -117,6 +117,7 @@ namespace ExpoMR.Controllers
         {
             return View(idCliente);
         }
+
         public IActionResult DetallePrecios(int idCliente = 0)
         {
             return View(idCliente);
@@ -200,7 +201,9 @@ namespace ExpoMR.Controllers
         {
             ArticulosProveedores DetalleArticulo = new ArticulosProveedores();
 
-            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto FROM GetArticuloProv(@IdArticulo) AS Articulo";
+            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, " +
+                "Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto " +
+                "FROM GetArticuloProv(@IdArticulo) AS Articulo";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -243,7 +246,8 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult ddlLisCliente()
         {
-            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre " +
+                "FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
@@ -296,9 +300,10 @@ namespace ExpoMR.Controllers
         {
             mAnuncios anuncio = new mAnuncios();
 
-            string query = "SELECT mAnuncios.IdAnuncio, mAnuncios.Proveedor, mAnuncios.Anuncio, mAnuncios.FeInicio, mAnuncios.FeTermino, mAnuncios.Rank " +
-                           "FROM mAnuncios " +
-                           "WHERE mAnuncios.IdAnuncio = @IdAnuncio";
+            string query = "SELECT mAnuncios.IdAnuncio, mAnuncios.Proveedor, mAnuncios.Anuncio, " +
+                "mAnuncios.FeInicio, mAnuncios.FeTermino, mAnuncios.Rank " +
+                "FROM mAnuncios " +
+                "WHERE mAnuncios.IdAnuncio = @IdAnuncio";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -326,10 +331,11 @@ namespace ExpoMR.Controllers
         {
             List<mAnuncios> Anuncios = new();
 
-            string query = "SELECT mAnuncios.IdAnuncio, mAnuncios.Proveedor, mAnuncios.Anuncio, mAnuncios.FeInicio, mAnuncios.FeTermino, mAnuncios.Rank " +
-                           "FROM mAnuncios " +
-                           "WHERE mAnuncios.Proveedor = @IdProveedor " +
-                           "ORDER BY IdAnuncio DESC";
+            string query = "SELECT mAnuncios.IdAnuncio, mAnuncios.Proveedor, mAnuncios.Anuncio, " +
+                "mAnuncios.FeInicio, mAnuncios.FeTermino, mAnuncios.Rank " +
+                "FROM mAnuncios " +
+                "WHERE mAnuncios.Proveedor = @IdProveedor " +
+                "ORDER BY IdAnuncio DESC";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -361,7 +367,9 @@ namespace ExpoMR.Controllers
         {
             List<ArticulosProveedores> Articulos = new();
 
-            string query = "SELECT Articulos.IdArticulo, Articulos.Nombre, Articulos.Descripcion, Articulos.IDdArticulos, Articulos.Foto, Articulos.NumFoto FROM GetArticulosProv (@IdProveedor) AS Articulos";
+            string query = "SELECT Articulos.IdArticulo, Articulos.Nombre, Articulos.Descripcion, Articulos.IDdArticulos, " +
+                "Articulos.Foto, Articulos.NumFoto " +
+                "FROM GetArticulosProv (@IdProveedor) AS Articulos";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -393,7 +401,8 @@ namespace ExpoMR.Controllers
         {
             Clientes Visita = new Clientes();
 
-            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
+            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre " +
+                "FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
@@ -418,9 +427,13 @@ namespace ExpoMR.Controllers
         {
             List<Clientes> Visitas = new();
 
-            string query = "SELECT Vitisas.IdPersona, Vitisas.Nombre, ISNULL((SELECT SUM(monedas) FROM mTransacciones " +
-                "Where Destino = Vitisas.IdPersona AND (IdMotivo = 12 OR IdMotivo=6) AND Usuario = @IdProveedor),0 ) Monedas " +
-                "FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Vitisas";
+            string query = "SELECT Visitas.IdPersona, Visitas.Nombre, " +
+                "(SELECT ISNULL(SUM(monedas),0) " +
+                "FROM mTransacciones " +
+                "WHERE Usuario = @IdProveedor " +
+                "AND IdMotivo IN (12,6) " +
+                "AND Destino = Visitas.IdPersona) AS Monedas " +
+                "FROM GetVisitasStandProv(@IdProveedor, @Cliente) AS Visitas";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
@@ -444,7 +457,6 @@ namespace ExpoMR.Controllers
 
 			return Json(Visitas);
         }
-
 
         [HttpPost]
         public JsonResult getMonedasContacto(int idCliente)
@@ -556,7 +568,9 @@ namespace ExpoMR.Controllers
         {
             List<ArticulosProveedores> Articulo = new();
 
-            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto FROM GetArticuloProv(@IdArticulo) AS Articulo";
+            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, " +
+                "Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto " +
+                "FROM GetArticuloProv(@IdArticulo) AS Articulo";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];

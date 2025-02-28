@@ -12,35 +12,6 @@
 <script>
     $(document).ready(function ()
     {
-        //$.ajax({
-        //    url: path + "Proveedores/ddlLisCliente",
-        //    contentType: "application/json; charset=utf-8",
-        //    type: 'POST',
-        //    dataType: 'json',
-        //    success: function (data)
-        //    {
-        //        // Cargar los datos en el select
-        //        var select = $('#ddlLisClientes');
-        //        select.empty();
-        //        $.each(data, function (index, item)
-        //        {
-        //            select.append($('<option></option>').val(item.cliente).text(item.nombre));
-        //        });
-
-        //        if (@Model > 0)
-        //            $('#ddlLisClientes').val(@Model);
-
-        //        PreciosDt()
-        //    }
-        //});
-
-        //$('#ddlLisClientes').change(function ()
-        //{
-        //    $('#PrecioClientes').dataTable().fnDestroy();
-        //    var ddlLisClientes = $('#ddlLisClientes').val();
-        
-        //    PreciosDt()
-        //});
         $('#Clientes').DataTable({
             responsive: true,
             "info": false,
