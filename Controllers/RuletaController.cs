@@ -165,7 +165,9 @@ namespace ExpoMR.Controllers
         {
             List<PremioRuleta> PremiosRuleta = new();
 
-            string query = "SELECT Ruleta.IdPremio, Ruleta.Premio, Ruleta.Descripcion, Ruleta.IdRuleta, Ruleta.Seccion, Ruleta.Foto, Ruleta.Cantidad FROM GetPremiosRuleta(@IdRuleta) AS Ruleta";
+            string query = "SELECT Ruleta.IdPremio, Ruleta.Premio, Ruleta.Descripcion, Ruleta.IdRuleta, Ruleta.Seccion, " +
+                "Ruleta.Foto, Ruleta.Cantidad " +
+                "FROM GetPremiosRuleta(@IdRuleta) AS Ruleta";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -197,7 +199,9 @@ namespace ExpoMR.Controllers
         {
             List<PremioRuleta> PremiosRuleta = new();
 
-            string query = "SELECT Ruleta.IdPremio, Ruleta.Premio, Ruleta.Descripcion, Ruleta.IdRuleta, Ruleta.Seccion, Ruleta.Foto, Ruleta.Cantidad FROM GetPremiosRuleta(@IdRuleta) AS Ruleta";
+            string query = "SELECT Ruleta.IdPremio, Ruleta.Premio, Ruleta.Descripcion, Ruleta.IdRuleta, Ruleta.Seccion, " +
+                "Ruleta.Foto, Ruleta.Cantidad " +
+                "FROM GetPremiosRuleta(@IdRuleta) AS Ruleta";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];

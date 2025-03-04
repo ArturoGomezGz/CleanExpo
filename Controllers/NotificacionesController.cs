@@ -124,10 +124,10 @@ namespace ExpoMR.Controllers
             string body = string.Empty;
             string query = "SELECT dPromoCliente.IdPromocion, vPersonas.Nombre AS Cliente, "+ 
                             "CAST(dPromoCliente.Cantidad AS NVARCHAR(12)) + ' ' + mArticulos.Nombre AS Articulo, "+ 
-                            "mArticulos.Descripcion, LOWER(vPersonas.Email) AS Email "+ 
-                            "FROM dPromoCliente INNER JOIN "+ 
-                            "dPromociones ON dPromociones.IdPromocion = dPromoCliente.IdPromocion INNER JOIN "+ 
-                            "mArticulos ON mArticulos.IdArticulo = dPromociones.IdArticulo INNER JOIN "+ 
+                            "mArticulos.Descripcion, LOWER(vPersonas.Email) AS Email "+
+                            "FROM dPromoCliente WITH(INDEX(IXdPromoCliente)) INNER JOIN " + 
+                            "dPromociones ON dPromociones.IdPromocion = dPromoCliente.IdPromocion INNER JOIN "+
+                            "mArticulos WITH(INDEX(IXmArticulos)) ON mArticulos.IdArticulo = dPromociones.IdArticulo INNER JOIN " + 
                             "vPersonas ON vPersonas.IdPersona = dPromoCliente.Cliente "+
                             "WHERE dPromoCliente.Cliente = @IdCliente " + 
                             "AND vPersonas.IdEmail = @IdEmail"; 

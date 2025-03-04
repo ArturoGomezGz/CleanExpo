@@ -31,7 +31,9 @@ namespace ExpoMR.Controllers
         {
             ConfiguracionViewModel ConfiguracionStand = new();
 
-            string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background FROM GetStandProv(@IdProveedor) AS Stand";
+            string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, " +
+                "Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background " +
+                "FROM GetStandProv(@IdProveedor) AS Stand";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];

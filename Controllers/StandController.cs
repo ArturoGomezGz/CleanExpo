@@ -71,7 +71,9 @@ namespace ExpoMR.Controllers
 
                 StandVIewModel Stand = new StandVIewModel();
 
-                string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background FROM GetStandProv(@IdProveedor) AS Stand";
+                string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, " +
+                    "Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background " +
+                    "FROM GetStandProv(@IdProveedor) AS Stand";
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
@@ -149,7 +151,9 @@ namespace ExpoMR.Controllers
 
                 StandVIewModel Stand = new StandVIewModel();
 
-                string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background FROM GetStandProv(@IdProveedor) AS Stand";
+                string query = "SELECT Stand.Proveedor, Stand.Nombre, Stand.Descripcion, Stand.Template, Stand.Rank, " +
+                    "Stand.Chat, Stand.Paleta, Stand.Logo, Stand.Background " +
+                    "FROM GetStandProv(@IdProveedor) AS Stand";
 
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[1];
@@ -174,7 +178,8 @@ namespace ExpoMR.Controllers
 
 				dB.Close();
 
-				string query2 = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado FROM GetSales(@IdSal, @letra, @sal) AS Sal";
+				string query2 = "SELECT Sal.IdSal, Sal.Sal, Sal.Habilitado " +
+                    "FROM GetSales(@IdSal, @letra, @sal) AS Sal";
 
                 DB dB2 = new();
                 SqlParameter[] parameters2 = new SqlParameter[3];
@@ -223,7 +228,8 @@ namespace ExpoMR.Controllers
         {
             FotosViewModel FotoProducto = new FotosViewModel();
 
-            string query = "SELECT Foto.IdFoto, Foto.IdProducto, Foto.Foto FROM GetFotoProd(@IdProducto) AS Foto";
+            string query = "SELECT Foto.IdFoto, Foto.IdProducto, Foto.Foto " +
+                "FROM GetFotoProd(@IdProducto) AS Foto";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -370,7 +376,9 @@ namespace ExpoMR.Controllers
         {
             List<ArticulosProveedores> ArticulosProveedor = new();
 
-            string query = "SELECT Articulos.IdArticulo, Articulos.Nombre, Articulos.Descripcion, Articulos.IDdArticulos, Articulos.Foto, Articulos.NumFoto FROM GetArticulosProv (@IdProveedor) AS Articulos";
+            string query = "SELECT Articulos.IdArticulo, Articulos.Nombre, Articulos.Descripcion, Articulos.IDdArticulos, " +
+                "Articulos.Foto, Articulos.NumFoto " +
+                "FROM GetArticulosProv (@IdProveedor) AS Articulos";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -575,7 +583,9 @@ namespace ExpoMR.Controllers
         {
             List<ArticulosProveedores> Articulos = new();
 
-            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto FROM GetArticuloProv(@IdArticulo) AS Articulo";
+            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, " +
+                "Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto " +
+                "FROM GetArticuloProv(@IdArticulo) AS Articulo";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];

@@ -127,6 +127,7 @@ namespace ExpoMR.Controllers
 
             return listaCarrito;
         }
+
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {
             List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>();
@@ -263,7 +264,9 @@ namespace ExpoMR.Controllers
         {
             ArticulosProveedores Articulo = new ArticulosProveedores();
 
-            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, Articulo.Cantidad, Articulo.NumFoto FROM GetArticuloProv(@IdArticulo) AS Articulo";
+            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, " +
+                "Articulo.Cantidad, Articulo.NumFoto " +
+                "FROM GetArticuloProv(@IdArticulo) AS Articulo";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -297,7 +300,7 @@ namespace ExpoMR.Controllers
                 "CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) + SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0)  ELSE 0 END) AS DECIMAL(18, 2)) AS Total " +
                 "FROM dbo.mPedidos INNER JOIN " +
                 "dbo.dPedidos ON dbo.mPedidos.IdPedido = dbo.dPedidos.IdPedido INNER JOIN " +
-                "dbo.mProductos ON dbo.dPedidos.IdProducto = dbo.mProductos.IdProducto " +
+                "dbo.mProductos WITH (INDEX(IXmProductos)) ON dbo.dPedidos.IdProducto = dbo.mProductos.IdProducto " +
                 "WHERE mPedidos.IdPedido = @IdPedido " +
                 "GROUP BY mPedidos.IdPedido";
 
@@ -514,14 +517,14 @@ namespace ExpoMR.Controllers
                 List<Premios> premios = new List<Premios>();
 
                 string query = "SELECT CAST(dPromociones.IdArticulo AS INT) as IdArticulo, mProveedores.Nombre AS Proveedor, "
-                             + " SUM(dPromociones.Cantidad * dPromoCliente.Cantidad) As Cantidad, mArticulos.Nombre"
-                             + " FROM dPromoCliente INNER JOIN"
-                             + " dPromociones ON dPromoCliente.IdPromocion = dPromociones.IdPromocion INNER JOIN"
-                             + " mPromociones ON dPromoCliente.IdPromocion = mPromociones.IdPromocion INNER JOIN"
-                             + " mArticulos ON dPromociones.IdArticulo = mArticulos.IdArticulo INNER JOIN"
-                             + " mProveedores ON mArticulos.Proveedor = mProveedores.IdPersona"
-                             + " WHERE dPromoCliente.Cliente = @IdCliente"
-                             + " GROUP BY dPromociones.IdArticulo, mProveedores.Nombre,mArticulos.Nombre";
+                             + "SUM(dPromociones.Cantidad * dPromoCliente.Cantidad) As Cantidad, mArticulos.Nombre "
+                             + "FROM dPromoCliente WITH(INDEX(IXdPromoCliente)) INNER JOIN "
+                             + "dPromociones ON dPromoCliente.IdPromocion = dPromociones.IdPromocion INNER JOIN "
+                             + "mPromociones ON dPromoCliente.IdPromocion = mPromociones.IdPromocion INNER JOIN "
+                             + "mArticulos WITH(INDEX(IXmArticulos)) ON dPromociones.IdArticulo = mArticulos.IdArticulo INNER JOIN "
+                             + "mProveedores ON mArticulos.Proveedor = mProveedores.IdPersona "
+                             + "WHERE dPromoCliente.Cliente = @IdCliente "
+                             + "GROUP BY dPromociones.IdArticulo, mProveedores.Nombre,mArticulos.Nombre";
                 
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
@@ -586,11 +589,11 @@ namespace ExpoMR.Controllers
                 List<CotizacionDatos> Cotizaciones = new List<CotizacionDatos>();
 
                 string query = "DECLARE @idcotizacion INT EXEC @idcotizacion = dbo.CotizarGetCotizacion @IdCliente, @IdUsuario " +
-                " SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, vCotizacionDatos.Documento," +
-                " vCotizacionDatos.UsoCFDI, vCotizacionDatos.DirEntrega, vCotizacionDatos.TipoVenta, vCotizacionDatos.Transportista," +
-                " vCotizacionDatos.Porte, vCotizacionDatos.Obsv " +
-                " FROM vCotizacionDatos " +
-                " WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
+                "SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, vCotizacionDatos.Documento, " +
+                "vCotizacionDatos.UsoCFDI, vCotizacionDatos.DirEntrega, vCotizacionDatos.TipoVenta, vCotizacionDatos.Transportista, " +
+                "vCotizacionDatos.Porte, vCotizacionDatos.Obsv " +
+                "FROM vCotizacionDatos " +
+                "WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
                 
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
