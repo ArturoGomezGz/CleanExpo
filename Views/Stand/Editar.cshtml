@@ -429,7 +429,7 @@ Promociones">
                     CloseModal("ModalProducto")
                     ShowAlert(data.message, data.response, "liveAlertPlaceholderProductos")
                     GetCarrito();
-                    GetMonedas()
+                    //GetMonedas()
                 }).error(function ()
                 {
                     CloseModal("ModalProducto")
@@ -457,7 +457,8 @@ Promociones">
            toggleCollapse()
         }
 
-        AsignarMonedasProducto(IdProducto);
+        //Asignacion de monedas por visita de producto del proveedor
+        //AsignarMonedasProducto(IdProducto);
         
         OpenModal("ModalProducto");
 
@@ -741,56 +742,9 @@ Promociones">
             ]
         });       
         
-        AsignarMonedas();
+        //Asignacion de monedas por visita de stand de proveedor
+        //AsignarMonedas();
     });
-
-    //Asignacion de monedas por visita de stand de proveedor
-    function AsignarMonedas() {
-        if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
-            $.post(path + "Generales/AsignarMonedasVisitaStand",
-                {
-                    Origen: @Model.Proveedor,
-                    Destino: sessionStorage.getItem('SelValue'),
-                    Usuario: sessionStorage.getItem('SelValue')
-                },
-                function (data) 
-                {
-                    //Animacion de monedas
-                    if (data == true) 
-                    {                        
-                        initCanvas();
-                        setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
-                    }
-                }).error(function (textStatus) 
-                {
-                    alert(false, "No fue posible asignar sus monedas por visitar el stand de Proveedor");
-                }
-            );
-        }
-    }
-
-    //Asignacion de monedas por visita de producto del proveedor
-    function AsignarMonedasProducto(idProducto) {
-        if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
-            $.post(path + "Generales/AsignarMonedasVisitaProducto",
-                {
-                    Origen: @Model.Proveedor,
-                    Destino: sessionStorage.getItem('SelValue'),
-                    IdProducto: idProducto,
-                    Usuario: sessionStorage.getItem('SelValue')
-                },
-                function (data) {
-                    //Animacion de monedas
-                    if (data == true) {
-                        initCanvas();
-                        setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
-                    }
-                }).error(function (textStatus) {
-                    alert(false, "No fue posible asignar sus monedas por visitar el Producto del Proveedor");
-                }
-             );
-        }
-    }
 
     //funciones para el zoom de las imagenes en productos.
     $(document).on('mousemove', '.frame', function () {
@@ -818,6 +772,54 @@ Promociones">
     $(document).on('mouseleave', '.frame', function () {
         $(this).children(".zoom").css("transform", "none");
     });
+
+    //Asignacion de monedas por visita de stand de proveedor
+    // function AsignarMonedas() {
+    //     if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
+    //         $.post(path + "Generales/AsignarMonedasVisitaStand",
+    //             {
+    //                 Origen: @Model.Proveedor,
+    //                 Destino: sessionStorage.getItem('SelValue'),
+    //                 Usuario: sessionStorage.getItem('SelValue')
+    //             },
+    //             function (data)
+    //             {
+    //                 //Animacion de monedas
+    //                 if (data == true)
+    //                 {
+    //                     initCanvas();
+    //                     setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
+    //                 }
+    //             }).error(function (textStatus)
+    //             {
+    //                 alert(false, "No fue posible asignar sus monedas por visitar el stand de Proveedor");
+    //             }
+    //         );
+    //     }
+    // }
+
+    //Asignacion de monedas por visita de producto del proveedor
+    // function AsignarMonedasProducto(idProducto) {
+    //     if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
+    //         $.post(path + "Generales/AsignarMonedasVisitaProducto",
+    //             {
+    //                 Origen: @Model.Proveedor,
+    //                 Destino: sessionStorage.getItem('SelValue'),
+    //                 IdProducto: idProducto,
+    //                 Usuario: sessionStorage.getItem('SelValue')
+    //             },
+    //             function (data) {
+    //                 //Animacion de monedas
+    //                 if (data == true) {
+    //                     initCanvas();
+    //                     setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
+    //                 }
+    //             }).error(function (textStatus) {
+    //                 alert(false, "No fue posible asignar sus monedas por visitar el Producto del Proveedor");
+    //             }
+    //          );
+    //     }
+    // }
 </script>
 
 <script type="text/javascript">

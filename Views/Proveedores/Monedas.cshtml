@@ -17,7 +17,9 @@
 
 <script>
     var idCliente = '';
-    $(document).ready(function () {       
+
+    $(document).ready(function ()
+    {       
         $('#Clientes').DataTable({
             responsive: true,
             "info": false,
@@ -38,15 +40,16 @@
                 { "data": "monedas", title: "Monedas asignadas" }
             ]
         });
-        $.ajax({
-            type: "POST",
-            url: path + "Generales/GetMonedas",
-            success: function (resultado) {
-                document.getElementById('monedas').innerHTML = " " + resultado;
-            },
-            error: function (xhr, status, error) {
-                console.log(error);
-            }
-        });
+
+        // $.ajax({
+        //     type: "POST",
+        //     url: path + "Generales/GetMonedas",
+        //     success: function (resultado) {
+        //         document.getElementById('monedas').innerHTML = " " + resultado;
+        //     },
+        //     error: function (xhr, status, error) {
+        //         console.log(error);
+        //     }
+        // });
     });
 </script>

@@ -153,7 +153,7 @@
             {
                 ShowAlert(data.message, data.response)
                 GetCarrito();
-                GetMonedas()
+                //GetMonedas()
                 setTimeout(function () 
                 {
                         window.location.href = path + "Stand/Editar?idProveedor=" + @Model.IdProveedor;
@@ -216,33 +216,33 @@
             $(".contenedor__Producto__Total").html(FormatoMoneda(Total))
         })
         
-        AsignarMonedasProducto();
+        //Asignacion de monedas por visita de producto del proveedor
+        //AsignarMonedasProducto();
     });
 
     //Asignacion de monedas por visita de producto del proveedor
-    function AsignarMonedasProducto() 
-    {
-        if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
-            $.post(path + "Generales/AsignarMonedasVisitaProducto",
-                {
-                    Origen: @Model.IdProveedor,
-                    Destino: sessionStorage.getItem('SelValue'),
-                    IdProducto: @Model.IdProducto,
-                    Usuario: sessionStorage.getItem('SelValue')
-                },
-                function (data) {
-                    //Animacion de monedas
-                    if (data == true) 
-                    {
-                        initCanvas();
-                        setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
-                    }
-                }).error(function (textStatus) 
-                {
-                    alert(false, "No fue posible asignar sus monedas por visitar el Producto del Proveedor");
-                }
-            );
-        }
-    }
-
+    // function AsignarMonedasProducto() 
+    // {
+    //     if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
+    //         $.post(path + "Generales/AsignarMonedasVisitaProducto",
+    //             {
+    //                 Origen: @Model.IdProveedor,
+    //                 Destino: sessionStorage.getItem('SelValue'),
+    //                 IdProducto: @Model.IdProducto,
+    //                 Usuario: sessionStorage.getItem('SelValue')
+    //             },
+    //             function (data) {
+    //                 //Animacion de monedas
+    //                 if (data == true) 
+    //                 {
+    //                     initCanvas();
+    //                     setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
+    //                 }
+    //             }).error(function (textStatus) 
+    //             {
+    //                 alert(false, "No fue posible asignar sus monedas por visitar el Producto del Proveedor");
+    //             }
+    //         );
+    //     }
+    // }
 </script>

@@ -18,9 +18,9 @@
                 <li class="nav-item">
                     <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#ventas"> Ventas</a>
                 </li>
-                <li class="nav-item">
+@*                 <li class="nav-item">
                     <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#monedas"> Monedas</a>
-                </li>
+                </li> *@
                 <li class="nav-item">
                     <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#Ventacliente"> Venta Cliente</a>
                 </li>
@@ -406,26 +406,27 @@
         });
 
         //Grafica Moneas
-        $.ajax({
-            type: "POST",
-            url: path + "Estadisticas/GetDatosGraficaMonedas",
-            success: function (resultado) {
-                cdMonedas.labels = resultado.map(item => item.fecha);
-                cdMonedas.datasets[0].data = resultado.map(item => item.monedas);
+        // $.ajax({
+        //     type: "POST",
+        //     url: path + "Estadisticas/GetDatosGraficaMonedas",
+        //     success: function (resultado) {
+        //         cdMonedas.labels = resultado.map(item => item.fecha);
+        //         cdMonedas.datasets[0].data = resultado.map(item => item.monedas);
 
-                var ctx = document.getElementById("canvasMonedas").getContext("2d");
-                window.myBar = new Chart(ctx, {
-                    type: "bar",
-                    data: cdMonedas,
-                    options: chartOptions
-                });
-            },
-            error: function (xhr, status, error) {
-                console.log(error);
-            }
-        });
+        //         var ctx = document.getElementById("canvasMonedas").getContext("2d");
+        //         window.myBar = new Chart(ctx, {
+        //             type: "bar",
+        //             data: cdMonedas,
+        //             options: chartOptions
+        //         });
+        //     },
+        //     error: function (xhr, status, error) {
+        //         console.log(error);
+        //     }
+        // });
 
         //Grafica Ventas
+
         $.ajax({
             type: "POST",
             url: path + "Estadisticas/GetDatosGraficaVenta",
@@ -585,27 +586,27 @@
             ]
         });
 
-        $.post("/Estadisticas/GetMonedasAsignadas",
-            function (data) {
-                $('#monedas__asignadas').DataTable({
-                    bFilter: false,
-                    lengthChange: false,
-                    data: data.monedasAsignadas,
-                    columns:
-                        [
-                            { "data": "cliente", title: " Cliente " },
-                            { "data": "monedas", title: " Monedas " },
-                            { "data": "fecha", title: " Fecha " },
-                            { "data": "motivo", title: " Motivo " }
-                        ]
-                });
-                $("#MonedasAdquiridas").html(data.monedasAdquiridas);
-                $("#MonedasRepartidas").html(data.monedasRepartidas);
-                $("#Saldo").html(data.saldo);
-                $("#visitaStand").html(data.monedasVisitaStand);
-                $("#VisitasProductos").html(data.monedasVisitaProd);
+        // $.post("/Estadisticas/GetMonedasAsignadas",
+        //     function (data) {
+        //         $('#monedas__asignadas').DataTable({
+        //             bFilter: false,
+        //             lengthChange: false,
+        //             data: data.monedasAsignadas,
+        //             columns:
+        //                 [
+        //                     { "data": "cliente", title: " Cliente " },
+        //                     { "data": "monedas", title: " Monedas " },
+        //                     { "data": "fecha", title: " Fecha " },
+        //                     { "data": "motivo", title: " Motivo " }
+        //                 ]
+        //         });
+        //         $("#MonedasAdquiridas").html(data.monedasAdquiridas);
+        //         $("#MonedasRepartidas").html(data.monedasRepartidas);
+        //         $("#Saldo").html(data.saldo);
+        //         $("#visitaStand").html(data.monedasVisitaStand);
+        //         $("#VisitasProductos").html(data.monedasVisitaProd);
 
-            }).error(function () {});
+        //     }).error(function () {});
        
         GridDetalleProducto(0)
         GridDetalleVentaCliente(0)

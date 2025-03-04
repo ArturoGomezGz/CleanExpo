@@ -37,16 +37,16 @@
             ]
         });
 
-        $.post(path + "Generales/GetMonedas",
-            function (data) 
-            {               
-                var dia = FormatoFecha();              
+        // $.post(path + "Generales/GetMonedas",
+        //     function (data) 
+        //     {               
+        //         var dia = FormatoFecha();              
                
-                $("#Saldo_monedas").html("Saldo al "+dia+" " + data + " Monedas")
-            }).error(function () 
-            {
-                ShowAlert("No fue posible cargar sus monedas", false)
-            }
-        );
+        //         $("#Saldo_monedas").html("Saldo al "+dia+" " + data + " Monedas")
+        //     }).error(function () 
+        //     {
+        //         ShowAlert("No fue posible cargar sus monedas", false)
+        //     }
+        // );
     });
 </script>

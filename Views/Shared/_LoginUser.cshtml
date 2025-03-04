@@ -80,9 +80,9 @@
                 <li>
                     <a class="dropdown-item" asp-controller="Proveedores" asp-action="Articulos"> Artículos</a>
                 </li>
-                <li>
+@*                 <li>
                     <a class="dropdown-item" asp-controller="Proveedores" asp-action="Monedas"> Entregar Monedas</a>
-                </li>
+                </li> *@
                 <li>
                     <a class="dropdown-item" asp-controller="Configuracion" asp-action="Configuracion"> Configuración</a>
                 </li>
@@ -110,7 +110,6 @@ else
 }
 
 <script type="text/javascript">
-
     $(window).on('load', function ()
     {
         var lasValue = sessionStorage.getItem('SelValue');
@@ -126,7 +125,8 @@ else
             if (clienteObjeto.IdPersona == lasValue) {
                 element.selectedIndex = i;
 
-                AsignarMonedas();
+                //Asignacion de monedas por primer visita a la expo
+                //AsignarMonedas();
                 break;
             }
         }
@@ -160,34 +160,6 @@ else
         });
     });
 
-    //Asignacion de monedas por primer visita a la expo
-    function AsignarMonedas(){
-        if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
-            $.post(path + "Generales/AsignarMonedas",
-                {
-                    Origen: 0, //MR
-                    Destino: sessionStorage.getItem('SelValue'),
-                    IdMotivo: 3, //Bienvenida Expo
-                    Monedas: 0,
-                    IdProducto: 0,
-                    Usuario: sessionStorage.getItem('SelValue')
-                },
-                function (data) 
-                {
-                    //Animacion de monedas
-                    if (data == true) 
-                    {
-                        initCanvas();
-                        setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
-                    }
-                }).error(function (textStatus) 
-                {
-                    alert(false, "No fue posible asignar sus monedas por ingresar por primera vez a ExpoMR");
-                }
-            );
-        }
-    }
-
     //Se ejecuta la funcion para asignar el valor de idpersona en la variable de session "ClienteSel"
     function SetClienteSel(IdPersona)
     {
@@ -195,7 +167,7 @@ else
             function (data) 
             {
                 //Se ejecutan las funciones de java script del index.js para inicilizar las opciones del cliente
-                GetMonedas();
+                //GetMonedas();
                 GetRuleta(data);               
                 GetCarrito();
             }).error(function ()
@@ -204,5 +176,32 @@ else
             }
         );
     }
-   
+
+    //Asignacion de monedas por primer visita a la expo
+    // function AsignarMonedas(){
+    //     if (sessionStorage.getItem('SelTipoUsuario') == 11) { //11 = Acesso ExpoCliente
+    //         $.post(path + "Generales/AsignarMonedas",
+    //             {
+    //                 Origen: 0, //MR
+    //                 Destino: sessionStorage.getItem('SelValue'),
+    //                 IdMotivo: 3, //Bienvenida Expo
+    //                 Monedas: 0,
+    //                 IdProducto: 0,
+    //                 Usuario: sessionStorage.getItem('SelValue')
+    //             },
+    //             function (data)
+    //             {
+    //                 //Animacion de monedas
+    //                 if (data == true)
+    //                 {
+    //                     initCanvas();
+    //                     setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
+    //                 }
+    //             }).error(function (textStatus)
+    //             {
+    //                 alert(false, "No fue posible asignar sus monedas por ingresar por primera vez a ExpoMR");
+    //             }
+    //         );
+    //     }
+    // }   
 </script>

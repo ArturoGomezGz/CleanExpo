@@ -9,9 +9,9 @@
                 <li class="nav-item">
                     <a class="nav-link active link-item-titulo " aria-current="true" data-bs-toggle="tab" href="#configuracion"> Configuración del Stand</a>
                 </li>
-                <li class="nav-item">
+@*                 <li class="nav-item">
                     <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#interactividad"> Interactividad </a>
-                </li>
+                </li> *@
             </ul>
         </div>
         <div class="card-body tab-content">
@@ -146,12 +146,11 @@
     </div>
 </div>
 
-
 <script>
 
     $(document).ready(function ()
     {
-        tableUsuarios()
+        //tableUsuarios()
 
         const miSelect = document.getElementById('ddlColores');
         miSelect.value = @Model.Color;
@@ -183,34 +182,34 @@
         });
     });
 
-    function tableUsuarios()
-    {
-        $('#productos__info').DataTable({
-            bFilter: false,
-            lengthChange: false,
-            responsive: true,
-            pageLength: 7,
-            "info": false,
-            "bDestroy": true,
-            "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
-            "ajax":
-            {
-                url: path + "Configuracion/GetfechasMoneda",
-                type: 'POST',
-                dataSrc: ""
-            },
-            "columns":
-                [
-                    { "data": "fecha", title: " Fechas " },
-                    { "data": "visitas", title: " Visitas a premiar " },
-                    { "data": "monedas", title: " Monedas " }
-                ]
-        });
-    }
+    // function tableUsuarios()
+    // {
+    //     $('#productos__info').DataTable({
+    //         bFilter: false,
+    //         lengthChange: false,
+    //         responsive: true,
+    //         pageLength: 7,
+    //         "info": false,
+    //         "bDestroy": true,
+    //         "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+    //         "ajax":
+    //         {
+    //             url: path + "Configuracion/GetfechasMoneda",
+    //             type: 'POST',
+    //             dataSrc: ""
+    //         },
+    //         "columns":
+    //             [
+    //                 { "data": "fecha", title: " Fechas " },
+    //                 { "data": "visitas", title: " Visitas a premiar " },
+    //                 { "data": "monedas", title: " Monedas " }
+    //             ]
+    //     });
+    // }
 
     function Reload() {
         $('#productos__info').dataTable().fnDestroy();
-        tableUsuarios()
+        //tableUsuarios()
     }
 
     function guardarConfiguracion() {
@@ -284,7 +283,7 @@
                 fecha: fecha.split(',')[0]
             },
             success: function (response) {
-                tableUsuarios();
+                //tableUsuarios();
             },
             error: function () {
                 alert('Error al subir la imagen');

@@ -48,8 +48,8 @@
             <a class="" asp-controller="Home" asp-action="">
                 <img src="~/Imagenes/logoMR.png" alt="Expo MR">
             </a>
-            
-            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
+            <!--Control de Monedas-->
+            <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
             {
                 @* Control para animacion de monedas *@
                 <canvas id="animaCoin" width="60px" height="60px"></canvas>
@@ -60,7 +60,7 @@
                         <span class="visually-hidden">unread messages</span>
                     </span>
                 </a>
-            }
+            }-->
             @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
             {
                 <a asp-controller="Ruleta" asp-action="" class="btn btn-ruleta-inactiva position-relative" id="Ruleta">
