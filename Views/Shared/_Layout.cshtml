@@ -61,17 +61,21 @@
                     </span>
                 </a>
             }-->
-            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+
+            <!--Control de la Ruleta-->
+            <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
             {
                 <a asp-controller="Ruleta" asp-action="" class="btn btn-ruleta-inactiva position-relative" id="Ruleta">
                     <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/ruleta.svg" /></i> Ruleta
                 </a>
-            }
+            }-->
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
                 <span class="fas fa-bars"></span>
             </button>
+
             <div  class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <partial name="_LoginUser" />
@@ -106,9 +110,9 @@
                     <div class="col-12 col-lg">
                         <a asp-area="" asp-controller="Ayuda" asp-action="Preguntas">Preguntas Frecuentes</a>
                     </div>
-                    <div class="col-12 col-lg">
+@*                     <div class="col-12 col-lg">
                         <a asp-area="" asp-controller="Ayuda" asp-action="CondicionesRuleta">Condiciones Ruleta</a>
-                    </div>
+                    </div> *@
                     <div class="col-12 col-lg">
                         <a asp-area="" asp-controller="Ayuda" asp-action="TerminosyCondiciones">Términos y Condiciones</a>
                     </div>
