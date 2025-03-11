@@ -66,7 +66,7 @@ namespace ExpoMR.Controllers
                     || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
                 {
                     Log.SaveVisita(Cliente, idProveedor, 0);
-                    GivePromotions(idProveedor);
+                    //GivePromotions(idProveedor);
 				}
 
                 StandVIewModel Stand = new StandVIewModel();

@@ -102,7 +102,9 @@
                                     @if (Model.Logo.Length <= 0)
                                     {
                                         <img class="card-img-top" src="~/Imagenes/noimage.png" alt="image">
-                                    }else{
+                                    }
+                                    else
+                                    {
                                         <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.Logo))" alt="@Model.Logo.Length">
                                     }                                    
                                     <div class="card-block text-center">
@@ -112,10 +114,7 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-9 col-xl-10">
-                                <div class="
-
-
-Promociones">
+                                <div class="Promociones">
                                     <div class="carrousel">
                                         <div class="grande" id="divAnuncios"></div>
                                         <ul class="puntos" id="puntosLista"></ul>
@@ -139,9 +138,9 @@ Promociones">
                                         <li class="nav-item">
                                             <a class="nav-link txt-azul @Model.Activestatic" data-bs-toggle="tab" href="#static">Búsqueda</a>
                                         </li>
-                                        <li class="nav-item">
+                                        @*<li class="nav-item">
                                             <a class="nav-link txt-azul" data-bs-toggle="tab" href="#static2">Promociones</a>
-                                        </li>
+                                        </li>*@
                                     </ul>
                                 </div>
                                 <div class="card-body tab-content">
@@ -168,7 +167,7 @@ Promociones">
                                         <div id="busqueda__Result" class="card-text"></div>
                                     </div>
                                     @*Promociones*@
-                                    <div class="tab-pane" id="static2">
+                                    @*<div class="tab-pane" id="static2">
                                         <div class="row">
                                             <h4>Promociones</h4>
                                             @{
@@ -243,7 +242,7 @@ Promociones">
                                                 List<Promocion> ModeloPromocionEscalonada = ExpoMR.Controllers.StandController.GetPromocionesEscalonadas(Model.Proveedor, Model.IdUsuario);
                                                 if (ModeloPromocionEscalonada.Count == 0)
                                                 {
-                                                            <p>Este Stand no tiene Promociones todavía...</p>
+                                                    <p>Este Stand no tiene Promociones todavía...</p>
                                                 }
                                                 foreach (ExpoMR.Models.Promocion modelo in ModeloPromocionEscalonada)
                                                 {
@@ -319,7 +318,6 @@ Promociones">
                                                 }
                                             }
                                         </div>
-
                                         <hr />
                                         <div class="row">
                                             <h4>Artículos</h4>
@@ -351,7 +349,7 @@ Promociones">
                                                 }
                                             }
                                         </div>
-                                    </div>
+                                    </div>*@
                                 </div>
                             </div>
                         </div>
