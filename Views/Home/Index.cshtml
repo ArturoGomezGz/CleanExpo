@@ -4,11 +4,9 @@
 }
 <div id="liveAlertPlaceholder"></div>
 <div class="row">
-    <div class="row mb-5">
+@*     <div class="row mb-5">
         <div class="titulo_div col-md-12">
-            <h2>
-                Bienvenido a Expo Medicinas Rosario 2024
-            </h2>
+            <h2>Bienvenido a Expo Medicinas Rosario 2024</h2>
         </div> 
         <div class="col-sm-12">
             <div class="card-box ">
@@ -54,12 +52,16 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
     <div class="row mb-3" style="max-width:1400px; margin:auto">
+        <div class="titulo_div col-md-12">
+            <h2>Bienvenido a Expo Medicinas Rosario 2024</h2>
+        </div>
         <div class="titulo_div col-md-12">
             <h3>Visita el stand de los Laboratorios Participantes</h3>
         </div>        
         @{
+            List<StandVIewModel> ModeloImagenes = ExpoMR.Controllers.HomeController.GetImage();
             foreach (ExpoMR.Models.StandVIewModel model in ModeloImagenes)
             {
                 <div class="col-md-4 col-lg-3 mt-4">
