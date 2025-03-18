@@ -47,14 +47,16 @@
             <a class="" asp-controller="Home" asp-action="">
                 <img src="~/Imagenes/logoMR.png" alt="Expo MR">
             </a>
+
             <!--Buscador General de Productos-->
             @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
             {
                 <input type="text" class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-secondary" class="btn btn-azul col-md-55" value="Buscar" onclick="ValidarBusqueda()">Buscar</button>
+                    <button type="button" class="btn btn-outline-secondary" value="Buscar" onclick="ValidarBusqueda()" class="btn btn-azul col-md-55">Buscar</button>
                 </div>
             }
+
             <!--Control de Monedas-->
             <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
             {
@@ -336,12 +338,6 @@
                     });
                 }
             }
-
-            $('#exampleModal').on('hidden.bs.modal', function ()
-            {
-                console.log('El modal ha sido cerrado');
-                // Aquí puedes ejecutar cualquier código que desees al cerrar el modal
-            });
         });
 
         function ValidarBusqueda()
