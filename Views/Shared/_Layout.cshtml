@@ -336,6 +336,12 @@
                     });
                 }
             }
+
+            $('#exampleModal').on('hidden.bs.modal', function ()
+            {
+                console.log('El modal ha sido cerrado');
+                // Aquí puedes ejecutar cualquier código que desees al cerrar el modal
+            });
         });
 
         function ValidarBusqueda()
@@ -503,11 +509,8 @@
             // Muestra la tabla de productos
             $('#divMostrarProductos').show();
 
-            // Oculta la descripción del producto
-            $('#descripcionProducto').hide();
-
             // Recarga la tabla de productos
-            BuscarListaProductoGeneral();
+            BuscarProductoGeneral();
         }
 
         function AgregarProductoGeneral() 
