@@ -373,7 +373,13 @@
 
         function BuscarProductoGeneral() 
         {
+            // Muestra la tabla de productos
+            $('#divMostrarProductos').show();
+            
+            // Ocutal el detalle del producto
             $('#descripcionProducto').hide();
+
+            //Destrulle la tabla para mostrar los nuevos registros de productos
             $('#BuscarProductoGeneral').dataTable().fnDestroy();
             let Busqueda = $("#txtBuscarProdGeneral").val();
 
