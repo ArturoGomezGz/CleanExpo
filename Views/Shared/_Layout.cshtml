@@ -39,8 +39,7 @@
     <link rel="stylesheet" href="~/css/mobile.blocks/mobile.css" media="screen and (max-width: 600px)" />
     <link rel="stylesheet" href="~/css/desktop.blocks/desktop.css" media="(min-width: 601px) and (max-width: 800px)" />    
 </head>
-<body>
-    
+<body>   
     <!--Header
     <nav id="header" class="fixed-top navbar navbar-expand-lg navbar-dark  bg-body-tertiary">-->
     <nav id="header" class="fixed-top navbar navbar-expand-lg">
@@ -48,6 +47,14 @@
             <a class="" asp-controller="Home" asp-action="">
                 <img src="~/Imagenes/logoMR.png" alt="Expo MR">
             </a>
+            <!--Buscador General de Productos-->
+            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+            {
+                <input type="text" class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-secondary" class="btn btn-azul col-md-55" value="Buscar" onclick="ValidarBusqueda()">Buscar</button>
+                </div>
+            }
             <!--Control de Monedas-->
             <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
             {
@@ -89,6 +96,146 @@
     <!--Cuerpo de la pagina-->
     <div id="main" @*class="container"*@ style="margin:0px; padding:20px;">
         @RenderBody()
+    </div>
+
+    <!-- Modal captura de productos -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalProductoLabel">Captura de Productos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="divMostrarProductos" class="col-12">
+                        <div id="liveAlertPlaceholderProductos"></div>
+                        <table id="BuscarProductoGeneral" class="display nowrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Presentación</th>
+                                    <th scope="col">Fórmula</th>
+                                    <th scope="col">Laboratorio</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="descripcionProducto" class="col-md-12">
+                        <div id="liveAlertPlaceholderModal"></div>
+                        <div class="card card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-7 md-55 text-justify">
+                                    <div class="row">
+                                        <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImageGeneral()">
+                                            <label id="lbl_nombre_general"></label><i class="fas fa-chevron-down mx-2"></i></a></h5>
+                                        <div class="collapse" id="collapseImage">
+                                            <div id="imgModalOndemandGeneral" class="card card-body frame"></div>
+                                        </div>
+                                        <label class="label__Presentacion" id="presentacion_general"></label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>No. Producto: </strong> <label class="label__producto" id="idproducto_general"></label>
+                                    </div>
+                                    <div id="div_restringido" class="mb-3">
+                                        <strong>Restringido a:  </strong> <label class="label__producto" id="restringido_general"></label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico_general"></label>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Precio MR: </strong><label class="label__PrecioMR" id="precioMR_general"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Precio Neto: </strong><label class="label__Neto" id="neto_general"></label>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo_general"></label>
+                                            <img id="imgDescuento_general" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <h6>
+                                            <strong></strong><label class="label__DescuentoExpo" id="iva_general"></label>
+                                            <label id="getiva_general"> </label>
+                                        </h6>
+                                    </div>
+                                    <div>
+                                        <strong>Formula: </strong> <label class="label__Formula" id="formula_general"></label>
+                                    </div>
+                                    <div>
+                                        <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio_general"></label>
+                                    </div>
+                                    <div>
+                                        <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja_general"></label>
+                                    </div>
+                                    <div class="mt-3">
+                                        <strong>Código: </strong> <label class="label__Caja" id="codigo_general"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-lg-5 md-55">
+                                    <input type="hidden" id="IdProducto_general" />
+                                    <input type="hidden" id="PrecioMR_general" />
+                                    <div class="contenedor__Producto">
+                                        <div class="row w-100 mb-2">
+                                            <div class="col-6 totalLabel">
+                                                <label>Precio Final:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="contenedor__Producto__PrecioFinal" id="preciofinal_general"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row w-100">
+                                            <div class="col-6 totalLabel">
+                                                <label>Cantidad:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <input id="cantidad_general" type="number" min="0" value="0" placeholder="0" style="width:75%" />
+                                            </div>
+                                        </div>
+                                        <div class="row w-100 mt-5">
+                                            <div class="col-6 totalLabel">
+                                                <label>Subtotal:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="contenedor__Producto__subtotal" id="subtotal_general"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row w-100 mb-3">
+                                            <div class="col-6 totalLabel">
+                                                <label>Iva:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="contenedor__Producto__iva" id="valoriva_general"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="width:90%">
+                                            <hr />
+                                            <div class="col-6 totalLabel">
+                                                <label>Total:</label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="contenedor__Producto__Total" id="total_general"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row m-auto mt-3 mb-3">
+                                            <button id="liveAlertBtn" onclick="AgregarProductoGeneral()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="button" id="CancelarAgregarProductoGeneral" onclick="CancelarAgregarProductoGeneral()" class="btn btn-rojo">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!--/ Cuerpo de la pagina-->
 
@@ -152,7 +299,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.js"></script>
     
     <script>
-        $(document).ready(function () {
+        $(document).ready(function () 
+        {
             if ($('.bbb_viewed_slider').length) {
                 var viewedSlider = $('.bbb_viewed_slider');
 
@@ -189,8 +337,210 @@
                 }
             }
         });
+
+        function ValidarBusqueda()
+        {
+            var textoBusqueda = document.getElementById('txtBuscarProdGeneral').value;
+
+            // Si el texto ingresado es mayor o igual a 3 caracteres, ejecuta la búsqueda
+            if (textoBusqueda.length >= 3) 
+            {
+                // Obtener el modal por su id
+                var modalElement = document.getElementById('exampleModal');
+
+                // Crear una instancia del modal
+                var modal = new bootstrap.Modal(modalElement);
+
+                // Mostrar el modal
+                modal.show();
+
+                BuscarProductoGeneral();
+            }
+            else 
+            {
+                // Si no pasa la validación, muestra una alerta y no ejecuta la búsqueda
+                alert("Por favor, ingrese al menos 3 caracteres para realizar la búsqueda.");
+
+                return; // Evita que se ejecute cualquier código posterior
+            }
+        }
+
+        function BuscarProductoGeneral() 
+        {
+            $('#descripcionProducto').hide();
+            $('#BuscarProductoGeneral').dataTable().fnDestroy();
+            let Busqueda = $("#txtBuscarProdGeneral").val();
+
+            $('#BuscarProductoGeneral').DataTable({
+                responsive: true,
+                "info": false,
+                "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+                pageLength: 10,
+                "searching": false, // Esto oculta el control de búsqueda
+                "ajax": {
+                    "url": path + "Home/GetSearchGeneral?Filtro=" + Busqueda + "&IdUsuario=" + sessionStorage.getItem('SelValue'),
+                    type: 'POST',
+                    dataSrc: ""
+                },
+                "columns": [
+                    { "data": "nombre", title: "Nombre" },
+                    { "data": "presentacion", title: "Presentación" },
+                    { "data": "formula", title: "Fórmula" },
+                    {
+                        "data": "precioFinal", title: "Precio Final",
+                        "render": function (data, type, row) {
+                            return FormatoMoneda(data);
+                        }
+                    },
+                    {
+                        "data": "idProducto", title: "Agregar",
+                        render: function (data, type, row) {
+                            return '<button onClick="detalleProductoGeneral(' + data + ')" type="button" class="btn btn-outline-success mt-2 mb-2"><i class="fas fa-plus" aria-hidden="true"></i></button>'
+                        }
+
+                    }
+                ]
+            });
+        }
+
+        function detalleProductoGeneral(IdProducto)
+        {
+            var elemento = document.getElementById('collapseImage');
+            var precio = 0;
+            var iva = 0;
+            var subtotal = 0;
+            var ivatotal = 0;
+            var total = 0;
+
+            // Verifica si el elemento tiene la clase 'show'
+            if (elemento.classList.contains('show')) {
+                toggleCollapse()
+            }
+
+            //Asignacion de monedas por visita de producto del proveedor
+            //AsignarMonedasProducto(IdProducto);
+
+            $('#descripcionProducto').show();
+            $('#divMostrarProductos').hide();
+
+            $.ajax({
+                type: "POST",
+                url: path + "Stand/DetalleProducto?IdProducto=" + IdProducto + "&Idproveedor=" + sessionStorage.getItem('SelValue'),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (resultado) {
+                    document.getElementById('idproducto_general').innerHTML = " " + resultado.idProducto;
+                    document.getElementById('lbl_nombre_general').innerHTML = " " + resultado.nombre;
+                    document.getElementById('presentacion_general').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
+                    document.getElementById('neto_general').innerHTML = " " + FormatoMoneda(resultado.neto);
+                    document.getElementById('PrecioPublico_general').innerHTML = " " + FormatoMoneda(resultado.publico);
+                    document.getElementById('precioMR_general').innerHTML = " " + FormatoMoneda(resultado.precioMR);
+                    document.getElementById('preciofinal_general').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
+                    document.getElementById('descuentoExpo_general').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo);
+                    if (resultado.descuentoCliente == true) {
+                        document.getElementById(`imgDescuento_general`).style.display = 'block';
+                        document.getElementById('imgDescuento_general').src = "../Imagenes/descuentoExclusivo.png"
+                    }
+                    else {
+                        document.getElementById(`imgDescuento_general`).style.display = 'none';
+                    }
+                    document.getElementById('iva_general').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
+                    document.getElementById('getiva_general').innerHTML = " ";
+                    document.getElementById('laboratorio_general').innerHTML = " " + resultado.laboratorio;
+                    document.getElementById('caja_general').innerHTML = " " + resultado.caja;
+                    document.getElementById('codigo_general').innerHTML = " " + resultado.codigo;
+                    document.getElementById('restringido_general').innerHTML = " " + resultado.cantidad;
+                    document.getElementById('formula_general').innerHTML = " " + resultado.formula;
+                    document.getElementById('subtotal_general').innerHTML = " " + FormatoMoneda(0);
+                    document.getElementById('valoriva_general').innerHTML = " " + FormatoMoneda(0);
+                    document.getElementById('total_general').innerHTML = " " + FormatoMoneda(0);
+
+                    $("#IdProducto_general").val(IdProducto)
+                    $("#PrecioMR_general").val(resultado.precioMR)
+                    $("#cantidad_general").val(0)
+
+                    precio = resultado.precioFinal;
+                    iva = resultado.valorIva;
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+
+            cantidad_general.oninput = function () 
+            {
+                subtotal = cantidad_general.value * precio;
+                ivatotal = cantidad_general.value * precio * iva;
+                total = cantidad_general.value * precio * (1 + iva);
+
+                document.getElementById('subtotal_general').innerHTML = FormatoMoneda(subtotal);
+                document.getElementById('valoriva_general').innerHTML = FormatoMoneda(ivatotal);
+                document.getElementById('total_general').innerHTML = FormatoMoneda(total)
+            }
+        }
+
+        function OnDemandImageGeneral()
+        {
+            let IdProducto = $("#IdProducto_general").val()
+            $("#imgModalOndemandGeneral").html('')
+            $.post(path + "Stand/GetFotoProducto",
+                {
+                    idProducto: IdProducto
+                },
+                function (data) {
+                    if (data.length > 0)
+                        $("#imgModalOndemandGeneral").append('<img id="imgProduct" class="card-img-top zoom d-desktop" style="margin: auto;" src="data:image/png;base64,' + data + '" alt="image" /><img id="imgProduct_sm" class="card-img-top d-mobile" style="margin: auto;" src="data:image/png;base64,' + data + '" alt="image producto" />')
+                    else
+                        $("#imgModalOndemandGeneral").append('<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="../Imagenes/noimage.png" alt="image" />')
+                }).error(function () {
+                    CloseModal("ModalProductoGeneral")
+                    ShowAlert("No fue posible cargar sus datos", false, "liveAlertPlaceholderProductos");
+                });
+        }
+
+        function CancelarAgregarProductoGeneral() 
+        {
+            // Muestra la tabla de productos
+            $('#divMostrarProductos').show();
+
+            // Oculta la descripción del producto
+            $('#descripcionProducto').hide();
+
+            // Recarga la tabla de productos
+            BuscarListaProductoGeneral();
+        }
+
+        function AgregarProductoGeneral() 
+        {
+            let IdProducto = $("#IdProducto_general").val()
+            let Cantidad = $("#cantidad_general").val()
+            let PrecioMR = $("#PrecioMR_general").val()
+
+            if (Cantidad > 0) {
+                $.post(path + "Producto/AddCarrito",
+                    {
+                        idProducto: IdProducto,
+                        cantidad: Cantidad,
+                        unitario: PrecioMR
+                    },
+                    function (data) {
+                        CancelarAgregarProductoGeneral()
+                        ShowAlert(data.message, data.response, "liveAlertPlaceholderProductos")
+                        GetCarrito();
+                        //GetMonedas()
+                    }).error(function () {
+                        CloseModal("ModalProducto")
+                        ShowAlert("No fue posible cargar sus datos", false, "liveAlertPlaceholderProductos");
+                    });
+            }
+            else {
+                ShowAlert("La Cantidad debe ser mayor a Cero", false, "liveAlertPlaceholderModal");
+            }
+        }
     </script>
+
     <script src="~/js/index.js"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -71,6 +71,38 @@ namespace ExpoMR.Controllers
             }             
         }
 
+        public JsonResult GetSearchGeneral(string Filtro, int IdUsuario)
+        {
+            List<Producto> productos = new List<Producto>();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@Filtro", Filtro);
+            parameters[1] = new SqlParameter("@Cliente", IdUsuario);
+
+            SqlDataReader dr = dB.ExecuteReader("ExpoStandProductosGeneral", ref parameters, CommandType.StoredProcedure, "IndigoCS");
+
+            while (dr.Read())
+            {
+                Producto producto = new Producto();
+
+                producto.PrecioMR = (decimal)dr["PrecioMR"];
+                producto.IdProducto = (Int16)dr["IdProducto"];
+                producto.Nombre = (string)dr["Nombre"];
+                producto.Presentacion = (string)dr["Presentacion"];
+                producto.Formula = (dr["Formula"] != DBNull.Value ? (string)dr["Formula"] : "");
+                producto.Descuento = (decimal)dr["Descuento"];
+                producto.DescuentoCLiente = (int)(dr["DescuentoCLiente"]);
+                producto.PrecioFinal = (decimal)(dr["PrecioFinal"]);
+
+                productos.Add(producto);
+            }
+
+            dB.Close();
+
+            return Json(productos);
+        }
+
         [AllowAnonymous]
         public IActionResult Privacy()
         {
