@@ -1534,3 +1534,8 @@ div.fotoCarrito {
     font-weight: 700;
     color: #F1592B;
 }
+td.wrap-text {
+    white-space: normal !important; /* Permite saltos de línea */
+    word-wrap: break-word; /* Corta palabras largas si es necesario */
+    max-width: 200px; /* Ajusta el ancho máximo */
+}

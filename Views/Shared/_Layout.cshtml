@@ -48,8 +48,13 @@
                 <img src="~/Imagenes/logoMR.png" alt="Expo MR">
             </a>
 
+            @{
+                // Obtener el nombre de la vista actual
+                var nombreVistaActual = ViewContext.RouteData.Values["action"].ToString();
+            }
+
             <!--Buscador General de Productos-->
-            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+            @if ((User.IsInRole("Cliente") || User.IsInRole("ClienteVIP")) && nombreVistaActual != "Editar")
             {
                 <input type="text" class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                 <div class="input-group-append">
@@ -106,7 +111,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ModalProductoLabel">Captura de Productos</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="CerrarRecargar()"></button>
                 </div>
                 <div class="modal-body">
                     <div id="divMostrarProductos" class="col-12">
@@ -391,9 +396,9 @@
                     dataSrc: ""
                 },
                 "columns": [
-                    { "data": "nombre", title: "Nombre" },
-                    { "data": "presentacion", title: "Presentación" },
-                    { "data": "formula", title: "Fórmula" },
+                    { "data": "nombre", title: "Nombre", "className": "wrap-text" },
+                    { "data": "presentacion", title: "Presentación", "className": "wrap-text" },
+                    { "data": "formula", title: "Fórmula", "className": "wrap-text" },
                     {
                         "data": "precioFinal", title: "Precio Final",
                         "render": function (data, type, row) {
@@ -540,6 +545,17 @@
             }
             else {
                 ShowAlert("La Cantidad debe ser mayor a Cero", false, "liveAlertPlaceholderModal");
+            }
+        }
+
+        function CerrarRecargar() 
+        {
+            var vistaActual = "@ViewContext.RouteData.Values["action"]";
+            var controladorActual = "@ViewContext.RouteData.Values["controller"]";
+            
+            if (vistaActual === "Index" && controladorActual === "Carrito")
+            {
+                window.location.reload()
             }
         }
     </script>
