@@ -73,34 +73,67 @@ namespace ExpoMR.Controllers
 
         public JsonResult GetSearchGeneral(string Filtro, int IdUsuario)
         {
-            List<Producto> productos = new List<Producto>();
-
+            ResponseModel rm = new();
             DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@Filtro", Filtro);
-            parameters[1] = new SqlParameter("@Cliente", IdUsuario);
 
-            SqlDataReader dr = dB.ExecuteReader("ExpoStandProductosGeneral", ref parameters, CommandType.StoredProcedure, "IndigoCS");
+            string querySearhTerms = "";
+            string[] busqueda = Filtro.Split(' ');
+            int n = 1;
+            string[] fields = { "vProductos.Nombre", "vProductos.Presentacion", "vProductos.Formula" };
 
-            while (dr.Read())
+            foreach (string w in busqueda)
             {
-                Producto producto = new Producto();
+                querySearhTerms += string.IsNullOrEmpty(querySearhTerms) ? "(" : "And (";
 
-                producto.PrecioMR = (decimal)dr["PrecioMR"];
-                producto.IdProducto = (Int16)dr["IdProducto"];
-                producto.Nombre = (string)dr["Nombre"];
-                producto.Presentacion = (string)dr["Presentacion"];
-                producto.Formula = (dr["Formula"] != DBNull.Value ? (string)dr["Formula"] : "");
-                producto.Descuento = (decimal)dr["Descuento"];
-                producto.DescuentoCLiente = (int)(dr["DescuentoCLiente"]);
-                producto.PrecioFinal = (decimal)(dr["PrecioFinal"]);
+                foreach (string f in fields)
+                {
+                    querySearhTerms += f + " like '%" + w + "%' Or ";
+                }
+                querySearhTerms = querySearhTerms.Substring(0, querySearhTerms.Length - 3) + ")";
 
-                productos.Add(producto);
+                n++;
             }
 
-            dB.Close();
+            string query = "DECLARE @search TTCotizar "
+                            + "INSERT @search(IdPersona, IdProducto) "
+                            + "SELECT " + IdUsuario + ", vProductos.IdProducto "
+                            + "FROM ExpoMR.dbo.vProductos "
+                            + "WHERE "
+                            + querySearhTerms
+                            + "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, vProductos.Formula, mLaboratorios.Laboratorio, "
+                            + "CAST(Precios.Precio - (CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2)) + "
+                            + "CAST(((Precios.Precio - CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2))) * "
+                            + "ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2))) AS DECIMAL(9,2)) AS PrecioFinal "
+                            + "FROM ExpoMR.dbo.mLaboratorios INNER JOIN "
+                            + "ExpoMR.dbo.vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN "
+                            + "Indigo.dbo.GetMultiPrecioExpo(@search) AS Precios ON Precios.IdProducto = vProductos.IdProducto LEFT OUTER JOIN "
+                            + "ExpoMR.dbo.dProductosDescuento ON vProductos.IdProducto = dProductosDescuento.IdProducto AND dProductosDescuento.Cliente = " + IdUsuario + " "
+                            + "ORDER BY vProductos.Nombre ASC";
 
-            return Json(productos);
+            SqlParameter[] parameters = new SqlParameter[0];
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, CommandType.Text, "IndigoCS");
+
+            var jsonData = new
+            {
+                rows = (
+                   from row in dr.Cast<System.Data.Common.DbDataRecord>()
+                   select new
+                   {
+                       idProducto = row[0],
+                       nombre = row[1],
+                       presentacion = row[2],
+                       formula = row[3] == DBNull.Value ? "" : row[3],
+                       laboratorio = row[4],
+                       precioFinal = row[5]
+                   }).ToArray()
+            };
+
+            rm.Response = true;
+            rm.Message = "ok";
+            rm.Result = jsonData.rows;
+
+            dB.Close();
+            return Json(rm.Result);
         }
 
         [AllowAnonymous]
