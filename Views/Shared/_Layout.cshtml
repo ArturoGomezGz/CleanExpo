@@ -116,7 +116,7 @@
                 <div class="modal-body">
                     <div id="divMostrarProductos" class="col-12">
                         <div id="liveAlertPlaceholderProductos"></div>
-                        <table id="BuscarProductoGeneral" class="display nowrap" style="width:100%">
+                        <table id="BuscarProductoGeneral" class="display nowrap responsive" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
@@ -386,7 +386,13 @@
             let Busqueda = $("#txtBuscarProdGeneral").val();
 
             $('#BuscarProductoGeneral').DataTable({
-                responsive: true,
+                responsive: true, // Activa la responsividad
+                columnDefs: [
+                    { targets: [0, 1, 2], className: "text-wrap" }, // Ajusta nombre, presentación y fórmula
+                    { targets: 0, responsivePriority: 1 }, // Nombre (Prioridad alta)
+                    { targets: 4, responsivePriority: 2 }, // Precio (Prioridad media)
+                    { targets: 5, responsivePriority: 1, orderable: false } // Botón Agregar (Siempre visible)
+                ],
                 "info": false,
                 "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
                 pageLength: 10,
@@ -397,10 +403,10 @@
                     dataSrc: ""
                 },
                 "columns": [
-                    { "data": "nombre", title: "Nombre", "className": "wrap-text" },
-                    { "data": "presentacion", title: "Presentación", "className": "wrap-text" },
-                    { "data": "formula", title: "Fórmula", "className": "wrap-text" },
-                    { "data": "laboratorio", title: "Laboratorio", "className": "wrap-text" },
+                    { "data": "nombre", title: "Nombre" },
+                    { "data": "presentacion", title: "Presentación" },
+                    { "data": "formula", title: "Fórmula" },
+                    { "data": "laboratorio", title: "Laboratorio" },
                     {
                         "data": "precioFinal", title: "Precio Final",
                         "render": function (data, type, row) {

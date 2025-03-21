@@ -1534,8 +1534,12 @@ div.fotoCarrito {
     font-weight: 700;
     color: #F1592B;
 }
-td.wrap-text {
+
+.text-wrap {
     white-space: normal !important; /* Permite saltos de línea */
-    word-wrap: break-word; /* Corta palabras largas si es necesario */
+    word-wrap: break-word; /* Ajusta palabras largas */
     max-width: 200px; /* Ajusta el ancho máximo */
+}
+.dataTables_wrapper .dataTables_paginate {
+    white-space: nowrap;
 }
