@@ -93,26 +93,33 @@
 
     function save(IdProducto)
     {
+        let LimiteTiempo = 2000;
         let Cliente = @Model.IdCliente;
         let Cantidad = $("#number_" + IdProducto).val();
         let PrecioMR = $("#hdnPrecioFinal_" + IdProducto).val()
-
         var block = $('<div class="block-loading container" />');
         $("#divCarrito").prepend(block);
-
-        if (Cantidad > 0) {
+        var TotalCantidadSeleccionada = parseInt(Cantidad);
+        if (Number.isInteger(TotalCantidadSeleccionada) && TotalCantidadSeleccionada > 0) {
+            if(TotalCantidadSeleccionada==0){
+                ShowAlert("No es una cantidad valida para ingresar", false);
+                setTimeout(function() {
+                    window.location.reload();
+                }, LimiteTiempo);
+                return;
+            }
             $.post(path + "Carrito/AddCotizacion",
                 {
                     cliente: Cliente,
                     idProducto: IdProducto,
                     unitario: PrecioMR,
-                    cantidad: Cantidad
+                    cantidad: TotalCantidadSeleccionada
                 },
                 function (data) {
                     ShowAlert(data.message, data.response)
                     GetCarrito();
                     //GetMonedas();
-                    $("#hdn_" + IdProducto).val(Cantidad)
+                    $("#hdn_" + IdProducto).val(TotalCantidadSeleccionada)
                     cancel(IdProducto)
                     window.location.reload()
                 })
@@ -123,7 +130,10 @@
         }
         else
         {
-            ShowAlert("La Cantidad debe ser mayor a Cero", false);
+            ShowAlert("No es una cantidad valida para ingresar", false);
+            setTimeout(function() {
+                window.location.reload();
+            }, LimiteTiempo);
         }
     }
 
@@ -220,7 +230,7 @@
                 break;
             case 2:
                 var NextBoton = document.getElementById("next-btn-modal")
-                NextBoton.classList.add('d-none');
+                //NextBoton.classList.add('d-none');
                 $.ajax({
                     method: "POST",
                     url: path + "Carrito/GetSumary",
@@ -796,7 +806,8 @@
                                 <hr class="Separador_Carrito" />
                             }
                                 <div class="row" >
-                                    <div class="w-20px">
+                                <div class="w-20px" style="min-width: 24px; min-height: 24px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                    
                                         @if (model.PorConfirmar == true)
                                         {
                                             <input type="checkbox" class="chkSel" checked="checked" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
@@ -1131,9 +1142,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-azul-medio d-none mb-0 mt-0" id="prev-btn-modal"><i class="fas fa-chevron-circle-left"></i> Anterior</button>
-                <button class="btn btn-azul-medio mb-0 mt-0" id="next-btn-modal" disabled>Siguiente <i class="fas fa-chevron-circle-right"></i></button>
                 <button class="btn btn-rojo mb-0 mt-0" onclick="onCancel()">Cancelar</button>
+                <button class="btn btn-azul-medio mb-0 mt-0" id="prev-btn-modal"><i class="fas fa-chevron-circle-left"></i> Anterior</button>
+                <button class="btn btn-azul-medio mb-0 mt-0" id="next-btn-modal" disabled>Siguiente <i class="fas fa-chevron-circle-right"></i></button>
             </div>
         </div>
     </div>

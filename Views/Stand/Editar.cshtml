@@ -149,7 +149,10 @@
                                         <div class="form-group">
                                             <div id="liveAlertPlaceholderProductos"></div>
                                             <div class="row">
-                                                <table id="ProductoStand" class="display nowrap" style="width:100%"></table>
+                                                @*<table id="ProductoStand" class="display nowrap" style="width:100%"></table>*@
+                                                <div class="table-responsive">
+                                                    <table id="ProductoStand" class="display nowrap" style="width:100%"></table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -410,16 +413,23 @@
 <script>
     function AgregarProducto()
     {
+        let LimiteTiempo = 2000;
         let IdProducto = $("#IdProducto").val()
         let Cantidad = $("#cantidad").val()
         let PrecioMR = $("#PrecioMR").val()
-
-        if (Cantidad > 0)
-        {
+        var TotalCantidadSeleccionada = parseInt(Cantidad);
+        if (Number.isInteger(TotalCantidadSeleccionada) && TotalCantidadSeleccionada > 0) {
+            if(TotalCantidadSeleccionada==0){
+                ShowAlert("No es una cantidad valida para ingresar", false, "liveAlertPlaceholderModal");
+                setTimeout(function() {
+                    window.location.reload();
+                }, LimiteTiempo);
+                return;
+            }
             $.post(path + "Producto/AddCarrito",
                 {
                     idProducto: IdProducto,
-                    cantidad: Cantidad,
+                    cantidad: TotalCantidadSeleccionada,
                     unitario: PrecioMR
                 },
                 function (data)
