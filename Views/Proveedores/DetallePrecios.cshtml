@@ -167,7 +167,7 @@
     });
 
     $(document).on('click', '.acepteditprecio', function (event) {
-        var ddlLisClientes = $('#ddlLisClientes').val();
+        var ddlLisClientes = @Model;
         var row = $(this).closest("tr");
         var idproducto, DescClienteNew, Costo, PrecioExpo;
 

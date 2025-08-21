@@ -444,8 +444,9 @@
                 Cliente: Cliente,
                 Confirmado: 3 //Confirma o Desconfirma un producto especifico
             },
-            function () {
-                window.location.reload()
+            function (data) {
+                //window.location.reload()
+                //$("#boxSeleccionProducto").html(data);
             })
             .error(function () {
                 block.remove();
@@ -800,13 +801,13 @@
                 {
                     foreach (ExpoMR.Models.ListaCarrito model in Model.ListaCarrito)
                     {
-                        <div class="pagination__item">
+                        <div id="boxSeleccionProducto" class="pagination__item">
                             @if (model.Proveedor != IdProveedor)
                             {
                                 <hr class="Separador_Carrito" />
                             }
                                 <div class="row" >
-                                <div class="w-20px" style="min-width: 24px; min-height: 24px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                <div class="w-20px" style="min-width: 32px; min-height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                                     
                                         @if (model.PorConfirmar == true)
                                         {

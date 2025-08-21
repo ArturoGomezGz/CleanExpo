@@ -218,8 +218,32 @@
         let nombre = document.getElementById('NombreStand').value;
         let color = document.getElementById('ddlColores').value;
         let descripcion = document.getElementById('DescripcionStand').value;
-
         let formData = new FormData();
+
+        //Evaluacion de la imagen logo
+        if (logo) {
+            if (logo.size > 2000000) {
+                alert('El tamaño del logo no debe exceder 2MB');
+                return;
+            }
+            if (!['image/jpeg', 'image/png', 'image/gif'].includes(logo.type)) {
+                alert('El logo debe ser una imagen en formato JPG, PNG o GIF');
+                return;
+            }
+        }
+
+        //Evaluacion de la imagen fondo
+        if (fondo) {
+            if (fondo.size > 2000000) {
+                alert('El tamaño del fondo no debe exceder 2MB');
+                return;
+            }
+            if (!['image/jpeg', 'image/png', 'image/gif'].includes(fondo.type)) {
+                alert('El fondo debe ser una imagen en formato JPG, PNG o GIF');
+                return;
+            }
+        }
+
         formData.append('logo', logo);
         formData.append('fondo', fondo);
         formData.append('nombre', nombre);

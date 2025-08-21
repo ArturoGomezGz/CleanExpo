@@ -3,6 +3,7 @@
     ViewData["Title"] = "Usuarios";
 }
 
+
 <h1>Usuarios</h1>
 <br />
 <div id="liveAlertPlaceholder"></div>
@@ -16,10 +17,46 @@
 		@Html.DropDownListFor(model => model.Ruta, new SelectList(Model.Rutas, "IdRuta", "Descripcion"), new { id = "IdRuta", @class = "form-control text-left", name = "cmb-TipoRutaVenta",  title="cmb"})		
     </div>
 </div>
+
+<style>
+	table.dataTable.nowrap td {
+		white-space: break-spaces;
+		/*color: red !important;*/
+	}
+	a.paginate_button {
+		/*background-color: green !important;*/
+		border: 1px solid #aaa;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		padding: 2px 5px;
+		margin: 0 3px;
+		cursor: pointer;
+	}
+	.dataTables_wrapper .dataTables_paginate .paginate_button {
+		display: inline-block;
+	}
+	.dataTables_wrapper .dataTables_length select {
+		width: auto;
+		display: inline-block;
+	}
+	.dataTables_wrapper .dataTables_length {
+		float: left;
+		margin-right: 1em;
+	}
+	.dataTables_wrapper .dataTables_paginate {
+		float: right;
+	}
+</style>
+
 <div class="row mb-4 fontsize">
     <div class="row">
-		<table id="Usuarios" class="display nowrap" style="width:100%"></table>
-    </div>
+        @*<table id="Usuarios" class="display nowrap" style="width:100%"></table>*@
+		<div class="table-responsive">
+			<table id="Usuarios" class="display nowrap table-responsive w-100" style="width:100%">
+
+			</table>  
+		</div>
+	</div>
 </div>
 <div class="row mb-4">
 	<div class="col-md-3"><button id="InvitacionMasiva" type="button" class="btn btn-azul btn-large" onclick="InvitacionMasiva();"> Enviar <i class="fas fa-envelope" aria-hidden="true"></i></button></div>

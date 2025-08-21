@@ -57,6 +57,9 @@ namespace ExpoMR.Controllers
 
                 return RedirectToAction(nameof(CuentasController.ConfirmacionOlvidoPassword), "Cuentas");
             }
+            if (!ModelState.IsValid) { 
+                return RedirectToAction("Index", "Home");
+            }
 
             return View(opViewModel);
         }
