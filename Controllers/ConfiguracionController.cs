@@ -89,8 +89,8 @@ namespace ExpoMR.Controllers
             List<Fechas> Fechas = new();
 
             string query = "SELECT CONVERT(VARCHAR(20), mCalendario.Fecha, 111) AS Fecha, " +
-                             "CASE WHEN VIP = 1 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(MonedasVIP AS NVARCHAR(MAX)) + ',1' FROM mMotivos WHERE IdMotivo = 7) " +
-                             "	  WHEN VIP = 0 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(MonedasExpo AS NVARCHAR(MAX)) + ',0' FROM mMotivos WHERE IdMotivo = 7) " +
+                             "CASE WHEN VIP = 1 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(ISNULL(MonedasVIP,0) AS NVARCHAR(MAX)) + ',1' FROM mMotivos WHERE IdMotivo = 7) " +
+                             "	  WHEN VIP = 0 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(ISNULL(MonedasExpo,0) AS NVARCHAR(MAX)) + ',0' FROM mMotivos WHERE IdMotivo = 7) " +
                              "END AS Monedas " +
                              "FROM mCalendario";
 
