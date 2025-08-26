@@ -447,6 +447,9 @@
         else
         {
             ShowAlert("La Cantidad debe ser mayor a Cero", false, "liveAlertPlaceholderModal");
+            setTimeout(function() {
+                CloseAlert("liveAlertPlaceholderModal");
+            }, 3000);
         }
     }
 
