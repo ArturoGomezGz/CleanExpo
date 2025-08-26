@@ -43,8 +43,8 @@
     <!--Header
     <nav id="header" class="fixed-top navbar navbar-expand-lg navbar-dark  bg-body-tertiary">-->
     <nav id="header" class="fixed-top navbar navbar-expand-lg">
-          <div class="container">
-            <a class="" asp-controller="Home" asp-action="">
+        <div class="container">
+            <a class="mr-1" asp-controller="Home" asp-action="">
                 <img src="~/Imagenes/logoMR.png" alt="Expo MR">
             </a>
 
@@ -54,18 +54,22 @@
             }
 
             <!--Buscador General de Productos-->
+            <div class="col-lg-7 col-md-12" style="display:inline-flex; margin:0px 20px">
             @if ((User.IsInRole("Cliente") || User.IsInRole("ClienteVIP")) && nombreVistaActual != "Editar")
             {
-                <input type="text" class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
+                
+                <input type="text"  class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-secondary" value="Buscar" onclick="ValidarBusqueda()" class="btn btn-azul col-md-55">Buscar</button>
-                </div>
+                    <button type="button" class="btn btn-carrito" value="Buscar" onclick="ValidarBusqueda()"><i class="fas fa-search"></i></button>
+					</div>
+				
             }
-
+            </div>
             <!--Control de Monedas-->
             <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
             {
                 @* Control para animacion de monedas *@
+                @* se comenta linea de animacion de monedas candalon
                 <canvas id="animaCoin" width="60px" height="60px"></canvas>
                 <a asp-controller="Monedas" asp-action="" class="btn btn-moneda gradient-moneda position-relative" id="moneda">
                     <i class="fas fa-dollar-sign" aria-hidden="true"></i>
@@ -73,15 +77,16 @@
                         <span id="cantidad_monedas"></span>
                         <span class="visually-hidden">unread messages</span>
                     </span>
-                </a>
+                </a> *@
             }-->
 
             <!--Control de la Ruleta-->
             <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
             {
-                <a asp-controller="Ruleta" asp-action="" class="btn btn-ruleta-inactiva position-relative" id="Ruleta">
+               @* se comenta linea de ruleta candalon
+               <a asp-controller="Ruleta" asp-action="" class="btn btn-ruleta-inactiva position-relative" id="Ruleta">
                     <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/ruleta.svg" /></i> Ruleta
-                </a>
+                </a> *@
             }-->
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
