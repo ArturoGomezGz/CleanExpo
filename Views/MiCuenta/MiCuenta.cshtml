@@ -106,12 +106,59 @@
         }
     }
 
+    function ChangeTipoVenta(tipoDocumento) {
+        var Entrega = document.getElementById("cmb-Entrega")
+        var Transporte = document.getElementById("cmb-Transporte")
+        var Porte = document.getElementById("cmb-Porte")
+
+        switch (tipoDocumento) {
+            case "0":
+                break;
+            case "1":
+                Entrega.classList.add('d-none');
+                Transporte.classList.add('d-none');
+                Porte.classList.add('d-none');
+                Entrega.value = "";
+                Transporte.value = "";
+                Porte.value = "";
+
+                break;
+            case "2":
+                Entrega.classList.remove('d-none');
+                Transporte.classList.remove('d-none');
+                Porte.classList.remove('d-none');
+                break;
+            case "3":
+                Entrega.classList.remove('d-none');
+                Transporte.classList.add('d-none');
+                Porte.classList.add('d-none');
+                break;
+            case "4":
+                Entrega.classList.remove('d-none');
+                Transporte.classList.add('d-none');
+                Porte.classList.add('d-none');
+                break;
+        }
+    }
+
+
     $(document).ready(function()
     {
         $("#cmb-TipoDoc").change(function () 
         {
             ChangeTipoDocumento(this.value)
-        });        
+        });
+        
+        $("#cmb-TipoVenta").change(function () {
+            ChangeTipoVenta(this.value)
+        });
+        
+        if ($("#cmb-TipoVenta").val()!= "2")
+        {
+            document.getElementById("cmb-Entrega").classList.add('d-none');
+            document.getElementById("cmb-Transporte").classList.add('d-none');
+            document.getElementById("cmb-Porte").classList.add('d-none');
+        }
     });
 
     $("#btn_save_facturacion").on("click", function()

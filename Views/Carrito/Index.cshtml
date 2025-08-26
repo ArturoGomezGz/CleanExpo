@@ -221,6 +221,8 @@
                     if (res.response) {
                         $("#cmb-Entrega").val(res.result[0].entrega)
                         $("#cmb-TipoVenta").val(res.result[0].idTipoVenta)
+                        $("#colocar_Transportista").val(res.result[0].idTransporte)
+                        $("#colocar_Porte").val(res.result[0].idPorte)
                     }
                     ChangeTipoVenta(res.result[0].idTipoVenta.toString())
                     $('#smartwizard').smartWizard("loader", "hide");

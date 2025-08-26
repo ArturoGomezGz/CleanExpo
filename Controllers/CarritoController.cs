@@ -391,8 +391,6 @@ namespace ExpoMR.Controllers
                 Observaciones = ""
             };
 
-            ActualizaUsoCFDI(UpdCot, IdUsuario);
-
             ResponseModel rm = new();
             List<Transporte> transportes = new List<Transporte>();
 			DB dB = new();
@@ -435,6 +433,12 @@ namespace ExpoMR.Controllers
                 if (transportes.Count > 0)
                 {
                     rm.Result = transportes;
+
+                    UpdCot.IdTipoVenta = rm.Result[0].IdTipoVenta;
+                    UpdCot.IdTransporte = rm.Result[0].IdTransporte;
+                    UpdCot.IdPorte = rm.Result[0].IdPorte;
+                    UpdCot.Direccion = rm.Result[0].Entrega;
+                 
                     rm.Response = true;
                 }
                 else
@@ -442,6 +446,8 @@ namespace ExpoMR.Controllers
                     rm.Response = false;
                     rm.Message = "No hay Promociones Ganadas.";
                 }
+
+                ActualizaUsoCFDI(UpdCot, IdUsuario);
             }
             catch (Exception e)
             {
