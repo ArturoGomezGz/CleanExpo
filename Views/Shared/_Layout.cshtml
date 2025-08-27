@@ -43,26 +43,25 @@
     <!--Header
     <nav id="header" class="fixed-top navbar navbar-expand-lg navbar-dark  bg-body-tertiary">-->
     <nav id="header" class="fixed-top navbar navbar-expand-lg">
-        <div class="container">
-            <a class="mr-1" asp-controller="Home" asp-action="">
-                <img src="~/Imagenes/logoMR.png" alt="Expo MR">
-            </a>
-
+        <div class="container-fluid w-100 m-0">
+            <div class="col-xs-1 col-md-1 col-lg-1 col-xl-1">
+                <a class="mr-1" asp-controller="Home" asp-action="">
+                    <img src="~/Imagenes/logoMR.png" alt="Expo MR">
+			    </a>
+			</div>
             @{
                 // Obtener el nombre de la vista actual
                 var nombreVistaActual = ViewContext.RouteData.Values["action"].ToString();
             }
 
             <!--Buscador General de Productos-->
-            <div class="col-lg-7 col-md-12" style="display:inline-flex; margin:0px 20px">
+            <div class="col-md-6 col-lg-5 col-xl-6" style="display:inline-flex; margin:0px 20px">
             @if ((User.IsInRole("Cliente") || User.IsInRole("ClienteVIP")) && nombreVistaActual != "Editar")
             {
-                
                 <input type="text"  class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                 <div class="input-group-append">
                     <button type="button" class="btn btn-carrito" value="Buscar" onclick="ValidarBusqueda()"><i class="fas fa-search"></i></button>
-					</div>
-				
+				</div>
             }
             </div>
             <!--Control de Monedas-->
@@ -88,19 +87,19 @@
                     <i aria-hidden="true"><img class="img-ruleta" src="~/imagenes/ruleta.svg" /></i> Ruleta
                 </a> *@
             }-->
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            <div class="" style="padding-right:50px">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
-                <span class="fas fa-bars"></span>
-            </button>
-
-            <div  class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <partial name="_LoginUser" />
-                    <partial name="_LoginRegistroVistaParcial" />
-                </ul>
-            </div>
+                    <span class="fas fa-bars"></span>
+                 </button>
+                <div class="collapse navbar-collapse col-md-3 col-lg-4 col-xl-4" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <partial name="_LoginUser" />
+                        <partial name="_LoginRegistroVistaParcial" />
+                    </ul>
+				</div>
+			</div>
         </div>
     </nav>
     <!--/ Header-->
