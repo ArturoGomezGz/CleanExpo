@@ -446,9 +446,8 @@
                 Cliente: Cliente,
                 Confirmado: 3 //Confirma o Desconfirma un producto especifico
             },
-            function (data) {
-                //window.location.reload()
-                //$("#boxSeleccionProducto").html(data);
+            function () {
+                window.location.reload()
             })
             .error(function () {
                 block.remove();
@@ -821,7 +820,7 @@
                                         </div>
                                         <div class="col-xs-0 col-sm-0 col-md-1 col-lg-1 col-xl-2"></div>
                                         <div class="col-xs-6 col-sm-6 col-md-5 col-lg-5 col-xl-4" style="max-height:30px; border-radius:5px; border:solid; border-color: #fff; text-align:right; background-color:#ededed"><label style="color:#626262"><strong>Total Productos:</strong><font class="font_moneda"> @TotalProductos</font></label></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-5 col-lg-5 col-xl-4" style="max-height:30px; border-radius:5px; border:solid; border-color: #fff; text-align:right; background-color:#ededed"><label style="color:#626262"><strong>Total Laboratorio:</strong><font class="font_moneda">$ @Total</font></label></div>
+                                        <div class="col-xs-6 col-sm-6 col-md-5 col-lg-5 col-xl-4" style="max-height:30px; border-radius:5px; border:solid; border-color: #fff; text-align:right; background-color:#ededed"><label style="color:#626262"><strong>SubTotal Laboratorio:</strong><font class="font_moneda">$ @Total</font></label></div>
                                         IdProveedor = model.Proveedor;
                                     }
                                 </div>
@@ -847,7 +846,6 @@
                                         <p class="mb-0"><label>@string.Format(model.Presentacion.ToString())</label></p>
                                     </div>
                                     <div class="col-sm-5 col-lg-4 text-end">
-                                        <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.cantidad.ToString())</p>
                                         <input id="hdnPrecioFinal_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.PrecioFinal.ToString())">
                                         <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
                                         <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">$@string.Format(model.total.ToString())</font></p>

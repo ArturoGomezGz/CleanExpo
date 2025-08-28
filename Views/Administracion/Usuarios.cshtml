@@ -200,33 +200,42 @@
 
 		const cb = document.querySelectorAll('input[type="checkbox"].chkSel:checked'); //Se seleccionan todos los controles de tipo checkbox y su id= chkSel NO DEBE DE HABER ID´REPETIDOS POR ALGO SON ID
 
-		if (cb.length < 1) { //Se valida que debe existir al menos 1 checkbox seleccionado para el envio de invitacion
-			alert('Debes selecionar un email para enviar invitacion')
-		}else //faltaba el else
-		{
-			$('input[type="checkbox"].chkSel:checked').each(function () {
+			if (cb.length < 1) { //Se valida que debe existir al menos 1 checkbox seleccionado para el envio de invitacion
+				alert('Debes selecionar un email para enviar invitacion')
+			}else //faltaba el else
+			{
+				let total = cb.length;   // total de check seleccionados
+				let procesados = 0;      // contador de procesados
 
-				if ($(this).prop('checked') && $(this).val() > 0) {
+				$('input[type="checkbox"].chkSel:checked').each(function () {
+
+					if ($(this).prop('checked') && $(this).val() > 0) {
 
 
-					const IdEmail = $(this).val();
-					const UserName = $(this).closest('tr').find('td:eq(3)').text();
-					const Vip = $(this).closest('tr').find('.hdn').val();
+						const IdEmail = $(this).val();
+						const UserName = $(this).closest('tr').find('td:eq(3)').text();
+						const Vip = $(this).closest('tr').find('.hdn').val();
 
-					$.post(path + "Administracion/InvitacionMasivaClientes",
-						{
-							IdEmail: IdEmail,
-							UserName: UserName,
-							Vip: Vip
-						},
-						function (data) {
-							ShowAlert(data.message, data.response);
-						}).error(function () {
-							ShowAlert("No fue posible cargar sus datos", false);
-						});
-				};
-			});
-		}
+						$.post(path + "Administracion/InvitacionMasivaClientes",
+							{
+								IdEmail: IdEmail,
+								UserName: UserName,
+								Vip: Vip
+							},
+							function (data) {
+								ShowAlert(data.message, data.response);
+							}).error(function () {
+								ShowAlert("No fue posible cargar sus datos", false);
+							}).always(function () {
+								procesados++;
+								if (procesados === total) {
+									alert("Se han procesado todas las invitaciones.");
+									Reload(); // recarga la página
+								}
+							});
+					};
+				});
+			}
 	}
 
 	function Reload(){
