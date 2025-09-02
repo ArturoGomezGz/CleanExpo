@@ -475,7 +475,7 @@
             ChangeTipoVenta(this.value)
         })
 
-        $('#Productos').DataTable({
+        var tabla = $('#Productos').DataTable({
             "bFilter": false,
             order: [[1, 'asc']],
             responsive: true,
@@ -494,7 +494,6 @@
                         {
                             return '<input class="hdn" type="hidden" value="' + data + '"/>';
                         }
-
                         return data;
                     },
                 },
@@ -506,8 +505,8 @@
                     {
                         if (type === 'display') 
                         {
-                            return '<input class="text" type="number" value="' + data + '" disabled style="width:60px; heigth:70px"/>'
-                                  + '<button class="btn btn-naranja-ch fas fa-pencil-alt Edit"></button>'
+                            return '<input name="cantidadComprada" class="text" type="number" value="' + data + '" disabled style="width:60px; heigth:70px"/>'
+                                  + '<button class="btn btn-naranja-ch fas fa-pencil-alt Edit" data-cantidad="' + data + '" data-idproducto="' + row.idProducto + '"></button>'
                                   + '<div class="d-block">'
                                   + '<a class="btn btn-outline-success Update" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
                                   + '<a class="btn btn-outline-danger Cancel" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>'
@@ -537,33 +536,93 @@
                         {
                             return '<button class="btn btn-outline-danger Borrar far fa-trash-alt" onclick="BorrarProducto(' + data + ')">';
                         }
-
                         return data;
                     },
                 },
             ]
         });
 
-        var pzas;
-
-        $('#Productos').on('click','.Edit', function () {
-
-            var row = $(this).closest("tr");
-
-            $('#Productos tr').each(function () { // Buscar y deshabilitar los botones con la clase 'edit'
-                $(this).find('.Edit').prop('disabled', true); 
-                $(this).find('.Borrar').prop('disabled', true);
+        // recarga para asegurar que los botones Edit existan
+        tabla.on('draw', function() {
+            // Evento para mostrar el modal al hacer click en Edit
+            $('#Productos').off('click', '.Edit').on('click', '.Edit', function (e) {
+                e.preventDefault();
+                var cantidad = $(this).data('cantidad');
+                var idProducto = $(this).data('idproducto');
+                $('#inputNuevaCantidad').val(cantidad);
+                $('#inputIdProductoModal').val(idProducto);
+                var modalElement = document.getElementById('modalEditarCantidad');
+                if (modalElement && typeof bootstrap !== 'undefined') {
+                    var modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                    modal.show();
+                }
             });
-            
-            row.find(".Update").show();
-            row.find(".Cancel").show();
-            row.find(".Borrar").hide();
-            
-            var inputElement  = row.find('.text');
-            pzas = inputElement.val();
-            inputElement.prop('disabled', false);
-            
-            $(this).hide();
+        });
+        tabla.draw();
+
+
+        // Modal para editar cantidad (siempre se agrega al DOM) creo que razor esta un poco desactualizado y proboca errores muy raros
+        // No es como caso de DetallesPrecios
+        if ($('#modalEditarCantidad').length === 0) {
+            var modalHtml = `
+            <div class="modal fade" id="modalEditarCantidad" tabindex="-1" aria-labelledby="modalEditarCantidadLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalEditarCantidadLabel">Editar Cantidad</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="number" id="inputNuevaCantidad" class="form-control" min="1" />
+                            <input type="hidden" id="inputIdProductoModal" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="btnGuardarCantidadModal">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            $('body').append(modalHtml);
+        }
+
+        // Funcion botón Edit
+        $(document).off('click', '.Edit').on('click', '.Edit', function (e) {
+            e.preventDefault();
+            var cantidad = $(this).data('cantidad');
+            var idProducto = $(this).data('idproducto');
+            $('#inputNuevaCantidad').val(cantidad);
+            $('#inputIdProductoModal').val(idProducto);
+            var modalElement = document.getElementById('modalEditarCantidad');
+            if (modalElement && typeof bootstrap !== 'undefined') {
+                var modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                modal.show();
+            } else {
+                alert('No se pudo abrir el modal. Verifica que Bootstrap JS esté cargado.');
+            }
+        });
+
+        // Guardar nueva cantidad desde el modal
+        $(document).on('click', '#btnGuardarCantidadModal', function () {
+            var nuevaCantidad = $('#inputNuevaCantidad').val();
+            var idProducto = $('#inputIdProductoModal').val();
+            if (nuevaCantidad > 0) {
+                $.post(path + "Empleados/CotizacionEditarCantidadProducto",
+                    {
+                        idproducto: idProducto,
+                        cantidad: nuevaCantidad,
+                        idcotizacion: @Model.IdCotizacion
+                    },
+                    function (data) {
+                        window.location.reload();
+                    }).error(function () {
+                        ShowAlert("No fue posible cargar sus datos", false);
+                    });
+                var modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarCantidad'));
+                modal.hide();
+            } else {
+                ShowAlert("La cantidad debe ser mayor a cero", false);
+            }
         });
         
         $('#Productos').on('click', '.Cancel', function () {
