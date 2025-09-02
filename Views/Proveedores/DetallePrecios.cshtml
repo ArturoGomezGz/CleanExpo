@@ -3,6 +3,28 @@
     ViewData["Title"] = "Precios Proveedor";
 }
 <div id="liveAlertPlaceholder"></div>
+
+<!-- Modal para editar Descuento Adicional -->
+<div class="modal fade" id="modalEditarDescuento" tabindex="-1" aria-labelledby="modalEditarDescuentoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarDescuentoLabel">Editar Descuento Adicional</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="nombreProductoModal" style="font-weight:bold; margin-bottom:10px;"></div>
+                <label for="inputNuevoDescuento">Nuevo porcentaje de descuento:</label>
+                <input type="number" id="inputNuevoDescuento" class="form-control" min="0" max="100" />
+                <input type="hidden" id="inputRowIndex" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarDescuento">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="col-md-12">    
     <div class="d-flex flex-column align-items-center">
         <strong id="lblCliente"></strong>
@@ -124,7 +146,7 @@
                         title: "Descuento Adicional",
                         render: function (data, type, row) {
                             if (type === 'display') {
-                                return '<input class="text" type="number" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
+                                return '<input name="DescuentoAdicional" class="text" type="number" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
                                     + '<input class="hdfCosto" type="hidden" value="' + row.costo + '" style="display:none"/>'
                                     + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>';
                             }
@@ -149,28 +171,52 @@
                 ]
             })
     }
+
+    // Nuevo: Al hacer clic en editar, abrir modal para editar descuento
     $(document).on('click', '.editprecio', function (event) {
         var row = $(this).closest("tr");
-
-        $("td", row).each(function () {
-            if ($(this).find(".text").length > 0) {
-                $(this).find(".text").show();
-            }
-        });
-
         var inputElement = row.find('.text');
-        inputElement.prop('disabled', false);
+        var valorActual = inputElement.val();
+        var rowIndex = row.index();
 
-        row.find(".acepteditprecio").show();
-        row.find(".canceleditprecio").show();
-        $(this).hide();
+        // Obtener el nombre del producto de la columna correspondiente
+        var nombreProducto = row.find('td').eq(1).text();
+        $('#nombreProductoModal').text(nombreProducto);
+
+        // Guardar el valor actual y el índice de la fila en el modal
+        $('#inputNuevoDescuento').val(valorActual);
+        $('#inputRowIndex').val(rowIndex);
+
+        var modal = new bootstrap.Modal(document.getElementById('modalEditarDescuento'));
+        modal.show();
     });
 
-    $(document).on('click', '.acepteditprecio', function (event) {
-        var ddlLisClientes = @Model;
-        var row = $(this).closest("tr");
-        var idproducto, DescClienteNew, Costo, PrecioExpo;
+    // Guardar el nuevo descuento desde el modal
+    $(document).on('click', '#btnGuardarDescuento', function () {
+        var nuevoDescuento = $('#inputNuevoDescuento').val();
+        var rowIndex = $('#inputRowIndex').val();
+        var row = $('#PrecioClientes tbody tr').eq(rowIndex);
+        var inputElement = row.find('.text');
+        inputElement.val(nuevoDescuento);
+        inputElement.prop('disabled', false);
 
+        // Mostrar botones de aceptar/cancelar
+        row.find(".acepteditprecio").show();
+        row.find(".canceleditprecio").show();
+        row.find(".editprecio").hide();
+
+        // Cerrar el modal
+        var modal = bootstrap.Modal.getInstance(document.getElementById('modalEditarDescuento'));
+        modal.hide();
+
+        // Llamar directamente a la lógica de aceptar descuento
+        aceptarDescuentoFila(row);
+    });
+
+    // Nueva función: lógica de aceptar descuento para una fila
+    function aceptarDescuentoFila(row) {
+        var ddlLisClientes = @Model;
+        var idproducto, DescClienteNew, Costo, PrecioExpo;
         $("td", row).each(function () {
             if ($(this).find(".text").length > 0) {
                 DescClienteNew = row.find('.text').val();
@@ -182,7 +228,7 @@
 
         row.find(".editprecio").show();
         row.find(".canceleditprecio").hide();
-        $(this).hide();
+        row.find(".acepteditprecio").hide();
 
         var inputElement = row.find('.text');
 
@@ -195,7 +241,7 @@
             function (data) {
                 if (data == 0) {
                     alert("El descuento del cliente ingresado debe ser mayor a 0.", false);
-                    DescClienteNew = row.find('.text').val(0);
+                    inputElement.val(0);
                     inputElement.prop('disabled', true);
                 }
                 else {
@@ -214,7 +260,7 @@
                     const myModal = new bootstrap.Modal(document.getElementById('exampleModalToggle'));
                     myModal.show();
 
-                    $('#exampleModalToggle').on('click', '.btn-success', function () {
+                    $('#exampleModalToggle').off('click', '.btn-success').on('click', '.btn-success', function () {
                         const miCheckbox = document.getElementById("miCheckbox");
 
                         if (miCheckbox.checked && inputElement.val() > 0) {
@@ -222,7 +268,7 @@
                                 {
                                     IdCliente: ddlLisClientes,
                                     IdProducto: idproducto,
-                                    PorcentajeDescuento: DescClienteNew
+                                    PorcentajeDescuento: inputElement.val()
                                 },
                                 function (data) // Esta función se ejecutará cuando la solicitud sea exitosa
                                 {
@@ -237,21 +283,21 @@
                         }
                         else {
                             myModal.hide();
+                            //aquí, solo deja los botones visibles para la funcionalidad
                             row.find(".editprecio").hide();
                             row.find(".acepteditprecio").show();
                             row.find(".canceleditprecio").show();
                         }
                     });
 
-                    $('#exampleModalToggle').on('click', '.btn-cancelar', function () {
+                    $('#exampleModalToggle').off('click', '.btn-cancelar').on('click', '.btn-cancelar', function () {
                         row.find(".editprecio").show();
                         row.find(".acepteditprecio").hide();
                         row.find(".canceleditprecio").hide();
 
                         var inputElement = row.find('.text');
                         inputElement.prop('disabled', true);
-                        inputElement.val(0);
-
+                        
                         $('#PrecioClientes').dataTable().fnDestroy();
                         PreciosDt()
                     });
@@ -259,7 +305,12 @@
             }).error(function () {
                 ShowAlert("No fue posible cargar sus datos", false);
             }
-            );
+        );
+    }
+
+    $(document).on('click', '.acepteditprecio', function (event) {
+        var row = $(this).closest("tr");
+        aceptarDescuentoFila(row);
     });
 
     $(document).on('click', '.canceleditprecio', function (event) {
