@@ -475,6 +475,10 @@
             ChangeTipoVenta(this.value)
         })
 
+        $("#txtDocumento").change(function () {
+            ChangeTipoDocumento(this.value)
+        });
+
         var tabla = $('#Productos').DataTable({
             "bFilter": false,
             order: [[1, 'asc']],
@@ -714,7 +718,25 @@
                 break;
         }
     }
+    
+    function ChangeTipoDocumento(tipoDocumento) {
+        var cmbCFDI = document.getElementById("txtUsoCFDI")
 
+        switch (tipoDocumento) {
+            case "0":
+                cmbCFDI.value = "23";
+                cmbCFDI.setAttribute("disabled", "");
+                break;
+            case "1":
+                cmbCFDI.value = "23"
+                cmbCFDI.removeAttribute("disabled");
+                break;
+            case "2":
+                cmbCFDI.value = "23"
+                cmbCFDI.setAttribute("disabled", "");
+                break;
+        }
+    }
     function BorrarProducto(data)
         {
             let IdProducto = data;
