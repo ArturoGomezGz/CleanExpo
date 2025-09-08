@@ -27,5 +27,7 @@ namespace ExpoMR.Models
         public decimal Total { get; set; }
 
         public string Laboratorio { get; set; }
+
+        public bool Iva { get; set; }
     }
 }

@@ -84,13 +84,13 @@ namespace ExpoMR.Controllers
             {
                 string query = "SELECT CAST(ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS int)AS Registro, " +
                                 "mLaboratorios.Proveedor, mLaboratorios.Laboratorio, vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, " +
-                                "vCotizaciones.Cantidad, vCotizaciones.PrecioFinal, vCotizaciones.Total, vCotizaciones.PorConfirmar " +
-                                "FROM vCotizaciones INNER JOIN  " +
-                                "vProductos ON vCotizaciones.IdProducto = vProductos.IdProducto INNER JOIN  " +
-                                "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN  " +
-                                "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona  " +
-                                "WHERE vCotizaciones.Cliente =  @IdCliente " +
-                                "AND vCotizaciones.Usuario =  @IdUsuario " +
+								"vCotizaciones.Cantidad, vCotizaciones.PrecioFinal, vCotizaciones.Total, vCotizaciones.PorConfirmar, vProductos.Iva " +
+                                "FROM vCotizaciones INNER JOIN " +
+                                "vProductos ON vCotizaciones.IdProducto = vProductos.IdProducto INNER JOIN " +
+                                "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
+                                "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
+                                "WHERE vCotizaciones.Cliente = @IdCliente " +
+                                "AND vCotizaciones.Usuario = @IdUsuario " +
                                 "AND vCotizaciones.Solicitado = 1 " +
                                 "ORDER BY mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
                
@@ -114,8 +114,9 @@ namespace ExpoMR.Controllers
                     lcarrito.PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]);
                     lcarrito.total = Convert.ToDecimal(dr["Total"]);
                     lcarrito.PorConfirmar = Convert.ToBoolean(dr["PorConfirmar"]);
+					lcarrito.Iva = Convert.ToBoolean((dr["Iva"]));
 
-                    listaCarrito.Add(lcarrito);
+					listaCarrito.Add(lcarrito);
                 }
 			}
             catch (Exception ex)
@@ -468,7 +469,7 @@ namespace ExpoMR.Controllers
                             "ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS RegistroProveedor, mLaboratorios.Proveedor, " +
                             "ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio, vPedidos.IdPedido ORDER BY mProveedores.Nombre, " +
                             "vProductos.Nombre ASC) AS RegistroPedido, vPedidos.IdPedido, vProductos.IdProducto, vProductos.Nombre, " +
-                            "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio " +
+                            "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio, vProductos.Iva " +
                             "FROM vPedidos INNER JOIN " +
                             "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
                             "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
@@ -501,8 +502,9 @@ namespace ExpoMR.Controllers
                     Cantidad = Convert.ToInt32(dr["Cantidad"]),
                     PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
                     Total = Convert.ToDecimal(dr["Total"]),
-                    Laboratorio = dr["Laboratorio"].ToString()
-                };
+                    Laboratorio = dr["Laboratorio"].ToString(),
+                    Iva = Convert.ToBoolean((dr["Iva"]))
+            };
 
                 pedidos.Add(pedidoCarrito);
             }

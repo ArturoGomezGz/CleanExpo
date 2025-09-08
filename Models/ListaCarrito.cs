@@ -24,6 +24,8 @@ namespace ExpoMR.Models
         public decimal total { get; set; }
 
         public bool PorConfirmar { get; set; }
-    }
+
+		public bool Iva { get; set; }
+	}
 
 }

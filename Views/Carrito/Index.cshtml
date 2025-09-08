@@ -847,7 +847,17 @@
                                     <div class="col-sm-5 col-lg-4 text-end">
                                         <input id="hdnPrecioFinal_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.PrecioFinal.ToString())">
                                         <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
-                                        <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">$@string.Format(model.total.ToString())</font></p>
+                                        <p class="mb-1"><strong>SubTotal: </strong> <font class="font_moneda">$@string.Format(model.total.ToString())</font></p>
+                                        <p class="mb-1">
+                                            @if (model.Iva == false)
+                                            {
+                                                <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                            }
+                                            else
+                                            {
+                                                <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                            }
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="col-sm-2 col-md-4 col-lg-2 mw-100px">
@@ -950,7 +960,17 @@
                                             <div class="col-sm-6 resumen_producto">
                                                 <p class="mb-0 pb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
                                                 <p class="mb-0 pb-0"><strong>Precio Expo: </strong><font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
-                                                <p class="mb-0"><strong>Total: </strong><font class="font_moneda">$@string.Format(model.Total.ToString())</font></p> 
+                                                <p class="mb-0"><strong>SupTotal: </strong><font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                                <p class="mb-0">
+                                                    @if (model.Iva == false)
+                                                    {
+                                                        <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                    }
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -972,7 +992,17 @@
                                             <div class="col-sm-6 resumen_producto">
                                                 <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
                                                 <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
-                                                <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                                <p class="mb-1"><strong>SubTotal: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                                <p class="mb-0">
+                                                    @if (model.Iva == false)
+                                                    {
+                                                        <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                    }
+                                                </p>
                                             </div>
                                         </div>
                                         <hr />
@@ -1002,7 +1032,17 @@
                                         <div class="col-sm-6 resumen_producto">
                                             <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
                                             <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
-                                            <p class="mb-1"><strong>Total: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                            <p class="mb-1"><strong>SubTotal: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                            <p class="mb-0">
+                                                @if (model.Iva == false)
+                                                {
+                                                    <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                }
+                                            </p>
                                         </div>
                                     </div>
                                     <hr />
