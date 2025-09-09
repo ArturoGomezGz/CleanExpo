@@ -246,17 +246,27 @@
                 }
                 else {
                     //Se muestra el mensaje al proveedor de que su descuento es mayor
-                    if (data == 2) {
+                    //if (data == 2) {
+                    //    document.getElementById("lblMensaje").style.visibility = "visible";
+                    //    document.getElementById("lblMensaje").style.color = "red";
+                    //    document.getElementById("TerminosCondiciones").style.visibility = "hidden";
+                    //    document.getElementById("success").style.visibility = "hidden";
+                    //}
+                    //else {
+                    //    document.getElementById("lblMensaje").style.visibility = "hidden";
+                    //    document.getElementById("TerminosCondiciones").style.visibility = "visible";
+                    //    document.getElementById("success").style.visibility = "visible";
+                    //}
+                    if (data == 2)
+                    {
                         document.getElementById("lblMensaje").style.visibility = "visible";
                         document.getElementById("lblMensaje").style.color = "red";
-                        document.getElementById("TerminosCondiciones").style.visibility = "hidden";
-                        document.getElementById("success").style.visibility = "hidden";
                     }
-                    else {
+                    else
+                    {
                         document.getElementById("lblMensaje").style.visibility = "hidden";
-                        document.getElementById("TerminosCondiciones").style.visibility = "visible";
-                        document.getElementById("success").style.visibility = "visible";
                     }
+                        
                     const myModal = new bootstrap.Modal(document.getElementById('exampleModalToggle'));
                     myModal.show();
 

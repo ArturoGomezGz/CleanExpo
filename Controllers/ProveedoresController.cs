@@ -686,7 +686,7 @@ namespace ExpoMR.Controllers
             Int16 res = 1; //El descuento otorgado es valido
 						   
 
-			if (MontoDescuento > Costo)
+			if ((PrecioExpo - MontoDescuento) <= Costo)
                 res = 2; //El descuento otorgado es mayor al costo, mostrar aviso al proveedor
 
 			return res;
