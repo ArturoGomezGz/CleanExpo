@@ -41,7 +41,7 @@ namespace ExpoMR.Servicios
                 emailSend.Body = new TextPart(TextFormat.Html) { Text = htmlMessage };
 
                 using var smtp = new SmtpClient();
-                smtp.Connect(_opcionesMailKit.Server, _opcionesMailKit.Port, SecureSocketOptions.StartTls);
+                smtp.Connect(_opcionesMailKit.Server, _opcionesMailKit.Port, SecureSocketOptions.Auto);
                 smtp.Authenticate(_opcionesMailKit.UserName, _opcionesMailKit.Password);
                 smtp.Send(emailSend);
                 smtp.Disconnect(true);
