@@ -26,6 +26,8 @@ namespace ExpoMR.Models
         public string Ruta { get; set; }
 
         public string Invitacion { get; set; }
+
+        public bool InvMasiva { get; set; }
     }
 
     public class UsuariosNotificacion

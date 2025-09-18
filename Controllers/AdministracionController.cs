@@ -548,8 +548,9 @@ namespace ExpoMR.Controllers
                     Usuario.Sucursal = (string)dr["Sucursal"];
                     Usuario.Ruta = (string)dr["Ruta"];
                     Usuario.Invitacion = (string)dr["Invitacion"];
+                    Usuario.InvMasiva = (bool)dr["InvMasiva"];
 
-                    Usuarios.Add(Usuario);
+                Usuarios.Add(Usuario);
                 }
 
 			    dB.Close();

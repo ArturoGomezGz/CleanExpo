@@ -132,7 +132,7 @@
 					targets: 0,
 					orderable: false,
 					render: function (data, type, row, meta) {
-						if (row.idEmail != 0 && row.usuario == false && idTipoUsuario == 1 && type === 'display') {
+						if (row.idEmail != 0 && row.invMasiva == true && idTipoUsuario == 1 && type === 'display') {
 							return data = '<div class="checkbox"><input type="checkbox" id="chkSel_'+row.idEmail+'" class="dt-checkboxes chkSel" value="' + row.idEmail + '"></div>';
 						}
 
@@ -185,7 +185,7 @@
 					"data": "invitacion",
 					orderable: false,
 					render: function (data, type, row) {
-						if (!row.invitacion && row.usuario == false ) {
+						if (row.usuario == false && row.invMasiva == false ) {
 							return '<button onClick="DarDeAlta(&apos;' + row.email + '&apos;, ' + row.idEmail + ')" type="button" class="btn btn-outline-success"><i class="fas fa-plus" aria-hidden="true"></i></button>'
 						}
 
