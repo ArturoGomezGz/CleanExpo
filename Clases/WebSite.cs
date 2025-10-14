@@ -323,18 +323,6 @@ namespace ExpoMR.Clases
             return CssClass;
         }
 
-        public static string GetLockEndUsers() 
-        {
-
-            DB dB = new DB();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@variable", "LockEndUsers");         
-
-            string ret = dB.ExecuteScalar("SELECT mSysVar.Valor FROM mSysVar WHERE mSysVar.Variable = @Variable", ref parameters, System.Data.CommandType.Text).ToString();
-
-            return ret;
-        }
-
         public static int CountProducts(int cliente, int usuario)
         {
             DB dB = new DB();

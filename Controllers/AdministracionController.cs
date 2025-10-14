@@ -320,30 +320,28 @@ namespace ExpoMR.Controllers
             public async Task<JsonResult> Bloquear(string Email)
             {
                 var rm = new ResponseModel();
+                rm.Response = true;
+
                 var user = await _userManager.FindByNameAsync(Email);
 
                 if (user != null)
                 {
-                    rm.Response = true;
-                    var isBlocked = await _userManager.IsLockedOutAsync(user);
-
-                    if (isBlocked) // Usuario bloqueado
+                    if (await _userManager.IsLockedOutAsync(user)) //Usuario bloqueado
                     {
-                        rm.Result = true;
                         await _userManager.SetLockoutEndDateAsync(user, null);
                         rm.Message = "El usuario ha sido desbloqueado.";
                     }
-                    else // Usuario no bloqueado
+                    else
                     {
-                        rm.Result = false;
-                        await _userManager.SetLockoutEndDateAsync(user, DateTime.Parse(WebSite.GetLockEndUsers()));
+                        await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddDays(1)); //Se bloquea al usuario por 1 dia
                         rm.Message = "El usuario ha sido bloqueado.";
+                        rm.Result = false;
                     }
                 }
                 else
                 {
-                    rm.Response = false;
                     rm.Message = "No se encontro el usuario en el sistema";
+                    rm.Response = false;
                 }
 
                 return Json(rm);
