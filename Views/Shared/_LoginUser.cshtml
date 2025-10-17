@@ -113,8 +113,9 @@ else
     $(window).on('load', function ()
     {
         var lasValue = sessionStorage.getItem('SelValue');
+        var lasIdEmail = sessionStorage.getItem('SelIdEmail');
 
-        SetClienteSel(lasValue);
+        SetClienteSel(lasValue, lasIdEmail);
 
         let element = document.getElementById("ddlClientes");
 
@@ -143,6 +144,7 @@ else
             var clienteObjeto = JSON.parse(select.value);
 
             sessionStorage.setItem('SelValue', clienteObjeto.IdPersona);
+            sessionStorage.setItem('SelIdEmail', clienteObjeto.IdEmail);
             sessionStorage.setItem('SelTipoUsuario', clienteObjeto.IdTipoUsuario);
             sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
         }
@@ -152,18 +154,19 @@ else
             var clienteObjeto = JSON.parse(select.value);
 
             sessionStorage.setItem('SelValue', clienteObjeto.IdPersona);
+            sessionStorage.setItem('SelIdEmail', clienteObjeto.IdEmail);
             sessionStorage.setItem('SelTipoUsuario', clienteObjeto.IdTipoUsuario);
             sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
 
-            SetClienteSel(clienteObjeto.IdPersona);
+            SetClienteSel(clienteObjeto.IdPersona, clienteObjeto.IdEmail);
             location.reload();
         });
     });
 
     //Se ejecuta la funcion para asignar el valor de idpersona en la variable de session "ClienteSel"
-    function SetClienteSel(IdPersona)
+    function SetClienteSel(IdPersona, IdEmail)
     {
-        $.post(path + "Generales/SetSessionClienteSel?IdPersona=" + IdPersona,
+        $.post(path + "Generales/SetSessionClienteSel?IdPersona=" + IdPersona + "&IdEmail=" + IdEmail,
             function (data) 
             {
                 //Se ejecutan las funciones de java script del index.js para inicilizar las opciones del cliente

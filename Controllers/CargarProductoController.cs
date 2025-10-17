@@ -52,7 +52,6 @@ namespace ExpoMR.Controllers
                     else //1 = Expo VIP; 2 = El dia no es de expo
                     {
                         return RedirectToAction("Index", "MiCuenta");
-                        
                     }
                 }
             }
@@ -83,7 +82,7 @@ namespace ExpoMR.Controllers
                     DB dB = new();
                     SqlParameter[] parameters = new SqlParameter[2];
                     parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
-                    parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+                    parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
                     if (borrarCarrito)
                     {
@@ -93,7 +92,7 @@ namespace ExpoMR.Controllers
                     dB = new();
                     parameters = new SqlParameter[2];
                     parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
-                    parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+                    parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
                     int cotizacion = dB.ExecuteReturnValue("CotizarGetCotizacion", ref parameters);
 
@@ -109,11 +108,12 @@ namespace ExpoMR.Controllers
                             if (values.Count() >= 2 && int.TryParse(values[0], out v) && (int.TryParse(values[1], out v)))
                             {
                                 dB = new DB();
-                                parameters = new SqlParameter[4];
+                                parameters = new SqlParameter[5];
                                 parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
                                 parameters[1] = new SqlParameter("@cotizacion", cotizacion);
                                 parameters[2] = new SqlParameter("@producto", values[0]);
                                 parameters[3] = new SqlParameter("@cantidad", values[1]);
+                                parameters[4] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
                                 dB.ExecuteNonQuery("CotizarAgregarMasivo", ref parameters);
                             }

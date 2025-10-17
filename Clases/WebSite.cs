@@ -323,12 +323,12 @@ namespace ExpoMR.Clases
             return CssClass;
         }
 
-        public static int CountProducts(int cliente, int usuario)
+        public static int CountProducts(int cliente, int idEmail)
         {
             DB dB = new DB();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", cliente);
-            parameters[1] = new SqlParameter("@usuario", usuario);
+            parameters[1] = new SqlParameter("@idEmail", idEmail);
             int ret = (int)dB.ExecuteScalar("ExpoCountProducts", ref parameters);
 
             return ret;

@@ -148,18 +148,6 @@
 				{ "data": "sucursal", title: "Sucursal" },
 				{ "data": "invitacion", title: "Invitación" },
 				{
-					"data": "vip",
-					title: "VIP",
-					render: function (data, type) {
-						if (!data) {
-								
-							return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="far fa-square" aria-hidden="true"></i>';
-						}
-							
-						return '<input class="hdn" type="hidden" value="' + data + '" style="display:none"/><i class="far fa-check-square" aria-hidden="true"></i>';
-					},
-				},
-				{
 					"data": "usuario",
 					title: "Usuario",
 					render: function (data, type) {

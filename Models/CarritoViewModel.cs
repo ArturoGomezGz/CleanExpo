@@ -8,8 +8,8 @@ namespace ExpoMR.Models
     {
         public int CantidadCarrito { get; set; }
 
-        public int IdUsuario { get; set; }
-        
+        public int IdEmail { get; set; }
+
         public int IdCliente { get; set; }
         
         public Totales TotalesCotizacion { get; set; }

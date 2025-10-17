@@ -197,22 +197,20 @@ namespace ExpoMR.Controllers
             string obsv = "";
             string body = string.Empty;
             string query = "SELECT vPedidoDatos.IdPedido, vPedidoDatos.Cliente, vPedidoDatos.RFC, vPedidoDatos.Documento, " +
-                            "vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Porte, vPedidoDatos.Transportista, " +
-                            "vProductos.IdProducto, vProductos.Codigo, vProductos.Producto, vPedidos.Unitario, vPedidos.Descuento, vPedidos.Cantidad, " +
-                            "(vPedidos.PrecioIva * vPedidos.Cantidad) AS Total, vPedidos.PrecioIva, CASE WHEN vProductos.Iva = 1 THEN  Indigo.dbo.GetIva(0) * 100 ELSE 0 END AS Iva, mEmails.Email, " +
-                            "vPedidoDatos.Obsv " +
-                            "FROM vPedidoDatos INNER JOIN " +
-                            "mUsuarios ON vPedidoDatos.IdPersona = mUsuarios.IdPersona INNER JOIN " +
-                            "Indigo.dbo.mEmails ON mUsuarios.IdEmail = mEmails.IdEmail INNER JOIN " +
-                            "vPedidos ON vPedidoDatos.IdPedido = vPedidos.IdPedido INNER JOIN " +
-                            "vProductos ON vProductos.IdProducto = vPedidos.IdProducto " +
-                            "WHERE vPedidoDatos.IdPersona = @IdPersona " +
-                            "AND vPedidos.IdPedido =  @IdPedido";
+                           "vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Porte, vPedidoDatos.Transportista, " +
+                           "vProductos.IdProducto, vProductos.Codigo, vProductos.Producto, vPedidos.Unitario, vPedidos.Descuento, vPedidos.Cantidad, " +
+                           "(vPedidos.PrecioIva * vPedidos.Cantidad) AS Total, vPedidos.PrecioIva, CASE WHEN vProductos.Iva = 1 THEN  Indigo.dbo.GetIva(0) * 100 ELSE 0 END AS Iva, " +
+                           "(SELECT Email FROM Indigo.dbo.mEmails WHERE IdEmail = vPedidos.IdEmail) AS Email, " +
+                           "vPedidoDatos.Obsv " +
+                           "FROM vPedidos INNER JOIN " +
+                           "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
+                           "vPedidoDatos ON vPedidos.IdPedido = vPedidoDatos.IdPedido " +
+                           "WHERE vPedidos.IdPedido = @IdPedido " +
+                           "ORDER BY vProductos.Nombre";
 
             DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
-            parameters[1] = new SqlParameter("@IdPedido", IdPedido);
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdPedido", IdPedido);
 
             SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 

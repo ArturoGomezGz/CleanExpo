@@ -15,7 +15,6 @@ namespace ExpoMR.Models
 
         public string TipoPersona { get; set; }
 
-        public bool Vip { get; set; }
 
         public bool Usuario { get; set; }
 

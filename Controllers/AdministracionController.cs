@@ -540,7 +540,6 @@ namespace ExpoMR.Controllers
                     Usuario.Email = (string)dr["Email"];
                     Usuario.IdTipoPersona = (int)dr["IdTipoPersona"];
                     Usuario.TipoPersona = (string)dr["TipoPersona"];
-                    Usuario.Vip = (bool)dr["Vip"];
                     Usuario.Usuario = (bool)dr["Usuario"];
                     Usuario.Lock = (bool)dr["Lock"];
                     Usuario.Sucursal = (string)dr["Sucursal"];

@@ -425,7 +425,7 @@ namespace ExpoMR.Controllers
 
         public void GetClientes(string UserName)
         {
-            string query = "SELECT Persona.IdPersona, Persona.Nombre FROM GetPersonasByEmail(@UserName) AS Persona";
+            string query = "SELECT Persona.IdPersona, Persona.Nombre, Persona.IdEmail FROM GetPersonasByEmail(@UserName) AS Persona";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -438,6 +438,7 @@ namespace ExpoMR.Controllers
                 if (HttpContext.Session.GetString("ClienteSel") == null)
                 {
                     HttpContext.Session.SetString("ClienteSel", dr["IdPersona"].ToString());
+                    HttpContext.Session.SetString("Session_IdEmail", dr["IdEmail"].ToString());
 
                     break;
                 }

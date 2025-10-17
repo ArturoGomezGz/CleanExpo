@@ -40,7 +40,7 @@ namespace ExpoMR.Controllers
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
-            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@idEmail", HttpContext.Session.GetString("Session_IdEmail"));
 
             return (int)dB.ExecuteScalar("ExpoCountProducts", ref parameters);
         }
@@ -100,9 +100,10 @@ namespace ExpoMR.Controllers
 			return fotos;
         }
 
-        public int SetSessionClienteSel(int IdPersona)
+        public int SetSessionClienteSel(int IdPersona, int IdEmail)
         {
             HttpContext.Session.SetString("ClienteSel", IdPersona.ToString());
+            HttpContext.Session.SetString("Session_IdEmail", IdEmail.ToString());
 
             return Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
         }
@@ -111,7 +112,7 @@ namespace ExpoMR.Controllers
         {
             List<Clientes> ClientesSeleccion = new();
 
-            string query = "SELECT Persona.IdPersona, UPPER(Persona.Nombre) AS Nombre, Persona.IdEmailFuncion FROM GetPersonasByEmail(@UserName) AS Persona";
+            string query = "SELECT Persona.IdPersona, UPPER(Persona.Nombre) AS Nombre, Persona.IdEmailFuncion, Persona.IdEmail FROM GetPersonasByEmail(@UserName) AS Persona";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -126,6 +127,7 @@ namespace ExpoMR.Controllers
                 Cliente.IdPersona = (int)dr["IdPersona"];
                 Cliente.Nombre = (string)dr["Nombre"];
                 Cliente.IdTipoUsuario = (byte)dr["IdEmailFuncion"];
+                Cliente.IdEmail = (int)dr["IdEmail"];
 
                 ClientesSeleccion.Add(Cliente);
             }

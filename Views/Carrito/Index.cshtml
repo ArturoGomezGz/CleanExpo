@@ -75,12 +75,15 @@
     function Delete(IdProducto)
     {
         let Cliente = @Model.IdCliente;
+        let IdEmail = @Model.IdEmail;
         var block = $('<div class="block-loading container" />');
+
         $("#divCarrito").prepend(block);
         $.post(path + "Carrito/ProductoDelete",
             {
                 idproducto: IdProducto,
-                cliente: Cliente
+                cliente: Cliente,
+                idEmail: IdEmail
             },
             function (data) {
                 ShowAlert(data.message, data.response)
@@ -95,9 +98,11 @@
     {
         let LimiteTiempo = 2000;
         let Cliente = @Model.IdCliente;
+        let IdEmail = @Model.IdEmail;
         let Cantidad = $("#number_" + IdProducto).val();
         let PrecioMR = $("#hdnPrecioFinal_" + IdProducto).val()
         var block = $('<div class="block-loading container" />');
+
         $("#divCarrito").prepend(block);
         var TotalCantidadSeleccionada = parseInt(Cantidad);
         if (Number.isInteger(TotalCantidadSeleccionada) && TotalCantidadSeleccionada > 0) {
@@ -113,7 +118,8 @@
                     cliente: Cliente,
                     idProducto: IdProducto,
                     unitario: PrecioMR,
-                    cantidad: TotalCantidadSeleccionada
+                    cantidad: TotalCantidadSeleccionada,
+                    idEmail: IdEmail
                 },
                 function (data) {
                     ShowAlert(data.message, data.response)
@@ -173,7 +179,7 @@
         $.post(path + "Carrito/Validarcolocar",
             {
                 IdCliente: @Model.IdCliente,
-                IdUsuario: @Model.IdCliente
+                IdEmail: @Model.IdEmail
                 },
             function (data) {
                 if (data.response) {
@@ -210,7 +216,7 @@
                     data:
                     {
                         IdCliente: @Model.IdCliente,
-                        IdUsuario: @Model.IdCliente,
+                        IdEmail: @Model.IdEmail,
                         IdDocumento: $("#cmb-TipoDoc").val(),
                         IdUsoCFDI: $("#cmb-UsosCFDI").val()
                     },
@@ -239,7 +245,7 @@
                     data:
                     {
                         IdCliente: @Model.IdCliente,
-                        IdUsuario: @Model.IdCliente,
+                        IdEmail: @Model.IdEmail,
                         IdTipoVenta: $("#cmb-TipoVenta").val(),
                         IdTransporte: $("#colocar_Transportista").val(),
                         IdPorte: $("#colocar_Porte").val(),
@@ -271,7 +277,8 @@
                     method: "POST",
                     url: path + "Carrito/GetDatosFacturacion",
                     data: {
-                        IdCliente: @Model.IdCliente
+                        IdCliente: @Model.IdCliente,
+                        IdEmail: @Model.IdEmail
                         },
                     beforeSend: function (xhr) {
                         $('#smartwizard').smartWizard("loader", "show");
@@ -355,7 +362,8 @@
                 NextBoton.removeAttribute("disabled");
                 $.post(path + "Carrito/GetDatosFacturacion",
                 {
-                    IdCliente: @Model.IdCliente
+                    IdCliente: @Model.IdCliente,
+                    IdEmail: @Model.IdEmail
                 },
                 function (data) {
                    cmbCFDI.value = data.result[0].idUsoCFDI
@@ -429,7 +437,8 @@
          {
             IdProducto: 0,
             Cliente: @Model.IdCliente,
-            Confirmado: Confirmado //Confirma todos los productos
+            Confirmado: Confirmado, //Confirma todos los productos
+            IdEmail: @Model.IdEmail
          },
          function (data) {
             window.location.reload()
@@ -444,7 +453,8 @@
             {
                 IdProducto: IdProducto,
                 Cliente: Cliente,
-                Confirmado: 3 //Confirma o Desconfirma un producto especifico
+                Confirmado: 3, //Confirma o Desconfirma un producto especifico
+                IdEmail: @Model.IdEmail
             },
             function () {
                 //window.location.reload()
@@ -774,7 +784,7 @@
 
 <div class="row">
     <div id="liveAlertPlaceholder"></div>
-    @Html.HiddenFor(m => m.IdUsuario)
+    @Html.HiddenFor(m => m.IdEmail)
     <div class="col-xxl-1"></div>
     <div class="col-12 col-xxl-10 cart-container cart-container--fixed cart-container--fixed-in" data-id="cart_container1">
         <ul class="bf-ui-tab-container" data-js="tab-container" data-id="tab-container1" role="tablist">
@@ -929,7 +939,7 @@
             @{
                 int ProveedorActual = 0;
 
-                List<PedidosCarrito> ListPedido = ExpoMR.Controllers.CarritoController.GetPedidosCarrito(Model.IdCliente, Model.IdCliente, Model.IdPedido);
+                List<PedidosCarrito> ListPedido = ExpoMR.Controllers.CarritoController.GetPedidosCarrito(Model.IdCliente, Model.IdEmail, Model.IdPedido);
 
                 if (ListPedido.Count() > 0)
                 {
@@ -1196,4 +1206,3 @@
         </div>
     </div>
 </div>
-

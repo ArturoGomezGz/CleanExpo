@@ -40,7 +40,7 @@ namespace ExpoMR.Controllers
         public IActionResult CotizacionDetail(int IdCliente)
         {
             string query = "DECLARE @idcotizacion INT " +
-                            "EXECUTE @idcotizacion = CotizarGetCotizacion @cliente, @usuario " +
+                            "EXECUTE @idcotizacion = CotizarGetCotizacion @cliente, @idEmail " +
                             "SELECT vCotizacionDatos.IdPersona AS IdCliente, vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, " +
                             "vCotizacionDatos.IdDocumento, vCotizacionDatos.Documento, vCotizacionDatos.IdUsoCFDI, vCotizacionDatos.UsoCFDI, " +
                             "vCotizacionDatos.Entrega AS Direccion, vCotizacionDatos.DirEntrega, vCotizacionDatos.IdTipoVenta, vCotizacionDatos.TipoVenta, " +
@@ -52,7 +52,7 @@ namespace ExpoMR.Controllers
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
-            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@idEmail", HttpContext.Session.GetString("Session_IdEmail"));
 
             dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
             Cotizacion cotizacion = new();
@@ -360,7 +360,7 @@ namespace ExpoMR.Controllers
                             "vProductos ON vCotizaciones.IdProducto = vProductos.IdProducto INNER JOIN " +
                             "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio " +
                             "WHERE vCotizaciones.Cliente = @cliente " +
-                            "AND vCotizaciones.Usuario = @usuario " +
+                            "AND vCotizaciones.IdEmail = @idemail " +
                             "AND vCotizaciones.Solicitado = 1 " +
                             "ORDER BY mLaboratorios.Laboratorio, vProductos.Nombre";
 
@@ -368,7 +368,7 @@ namespace ExpoMR.Controllers
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
-            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
             dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
@@ -503,7 +503,7 @@ namespace ExpoMR.Controllers
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("@cliente", Cliente);
-            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
             parameters[2] = new SqlParameter("@IdProducto", IdProducto);
 
             ResponseModel rm = new();
@@ -561,7 +561,7 @@ namespace ExpoMR.Controllers
             parameters[1] = new SqlParameter("@idproducto", idProducto);
             parameters[2] = new SqlParameter("@unitario", unitario);
             parameters[3] = new SqlParameter("@cantidad", cantidad);
-            parameters[4] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[4] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
             ResponseModel rm = new();
             try
@@ -589,13 +589,13 @@ namespace ExpoMR.Controllers
                             "FROM vCotizacionPorConfirmar LEFT OUTER JOIN " +
                             "vPedido ON vCotizacionPorConfirmar.Cliente = vPedido.Cliente " +
                             "WHERE vCotizacionPorConfirmar.Cliente = @cliente " +
-                            "AND vCotizacionPorConfirmar.Usuario = @usuario";
+                            "AND vCotizacionPorConfirmar.IdEmail = @idemail";
 
             DB dB = new();
             SqlDataReader dr;
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
-            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
             dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
@@ -834,7 +834,7 @@ namespace ExpoMR.Controllers
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
-            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
             return (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters);
         }
@@ -845,7 +845,7 @@ namespace ExpoMR.Controllers
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
-            parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+            parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
             parameters[2] = new()
             {
                 ParameterName = "@Id_Inserted",

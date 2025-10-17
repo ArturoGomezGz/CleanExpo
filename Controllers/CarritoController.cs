@@ -38,16 +38,16 @@ namespace ExpoMR.Controllers
             }
 
             int IdCliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+            int IdEmail = Convert.ToInt32(HttpContext.Session.GetString("Session_IdEmail"));
             bool IsClienteVip = WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP");
             int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
 
             Carrito carrito = new Carrito(); 
-            carrito.CantidadCarrito = GetCantidadCarrito(IdUsuario, IdCliente);
-            carrito.IdUsuario = IdUsuario;
+            carrito.CantidadCarrito = GetCantidadCarrito(IdCliente, IdEmail);
+            carrito.IdEmail = IdEmail;
             carrito.IdCliente = IdCliente;
-            carrito.TotalesCotizacion = GetTotales(IdCliente, IdUsuario, false); //se inicializan los totales de la cotizacion
-            carrito.TotalesPedidos = GetTotales(IdCliente, IdUsuario, true); //se inicializan los totales de los pedidos
+            carrito.TotalesCotizacion = GetTotales(IdCliente, IdEmail, false); //se inicializan los totales de la cotizacion
+            carrito.TotalesPedidos = GetTotales(IdCliente, IdEmail, true); //se inicializan los totales de los pedidos
             carrito.IdPedido = 0;
             carrito.PedidosCliente = GetddlClientes(IdCliente);
             carrito.IdTipoDoc = 0;
@@ -62,7 +62,7 @@ namespace ExpoMR.Controllers
             carrito.Portes = WebSite.GetPortes(IdCliente);
             carrito.IdTipoVenta = 0;
             carrito.TiposVenta = WebSite.GetTiposVenta();
-            carrito.ListaCarrito = GetCarrito(IdCliente, IdUsuario);
+            carrito.ListaCarrito = GetCarrito(IdCliente, IdEmail);
 
             if ((IsClienteVip == true && isFechaExpoVIP == 1) //1 = Expo VIP
                 || (IsClienteVip == false && isFechaExpoVIP == 0)) // 0 = Expo Normal
@@ -75,7 +75,7 @@ namespace ExpoMR.Controllers
             }
         }
 
-        public static List<ListaCarrito> GetCarrito(int IdCliente, int IdUsuario)
+        public static List<ListaCarrito> GetCarrito(int IdCliente, int IdEmail)
         {
             List<ListaCarrito> listaCarrito = new List<ListaCarrito>();
 			DB dB = new();
@@ -90,13 +90,13 @@ namespace ExpoMR.Controllers
                                 "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
                                 "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
                                 "WHERE vCotizaciones.Cliente = @IdCliente " +
-                                "AND vCotizaciones.Usuario = @IdUsuario " +
+                                "AND vCotizaciones.IdEmail = @IdEmail " +
                                 "AND vCotizaciones.Solicitado = 1 " +
                                 "ORDER BY mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
                
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+                parameters[1] = new SqlParameter("@IdEmail", IdEmail);
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
@@ -131,20 +131,22 @@ namespace ExpoMR.Controllers
 
         public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
         {
+            int IdEmail = Convert.ToInt32(HttpContext.Session.GetString("Session_IdEmail"));
             List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>();
 			DB dB = new();
 
 			try
             {
-                SqlParameter[] parameters = new SqlParameter[1];
+                SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+                parameters[1] = new SqlParameter("@idemail", IdEmail);
 
                 string query = "SELECT 0 AS IdPedido, 'TODOS' AS Pedido " +
                                "UNION " +
                                "SELECT vPedidos.IdPedido, CAST(vPedidos.IdPedido AS NVARCHAR) AS Pedido " +
                                "FROM vPedidos " +
                                "WHERE vPedidos.Cliente = @IdCliente " +
-                               "AND vPedidos.Usuario = @IdCliente " +
+                               "AND vPedidos.IdEmail = @idemail " +
                                "GROUP BY vPedidos.IdPedido";
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
@@ -171,7 +173,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddCotizacion(int cliente, int idProducto, decimal unitario, int cantidad)
+        public JsonResult AddCotizacion(int cliente, int idProducto, decimal unitario, int cantidad, int idEmail)
         {
             ResponseModel rm = new();
 
@@ -184,13 +186,13 @@ namespace ExpoMR.Controllers
                 parameters[1] = new SqlParameter("@idproducto", idProducto);
                 parameters[2] = new SqlParameter("@unitario", unitario);
                 parameters[3] = new SqlParameter("@cantidad", cantidad);
-                parameters[4] = new SqlParameter("@usuario", cliente);
+                parameters[4] = new SqlParameter("@idemail", idEmail);
 
                 dB.ExecuteNonQuery("CotizarAgregar", ref parameters);
 
                 rm.Response = true;
                 rm.Message = "El producto se agrego al carrito";
-                rm.Result = GetCantidadCarrito(cliente, cliente);
+                rm.Result = GetCantidadCarrito(cliente, idEmail);
             }
             catch (Exception e)
             {
@@ -242,7 +244,7 @@ namespace ExpoMR.Controllers
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[3];
                 parameters[0] = new SqlParameter("@cliente", HttpContext.Session.GetString("ClienteSel"));
-                parameters[1] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+                parameters[1] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
                 parameters[2] = new SqlParameter() { ParameterName = "@Id_Inserted", Value = 0, Direction = ParameterDirection.Output };
 
                 bool ret = Convert.ToBoolean(dB.ExecuteReturnValue("ExpoPedidoAgregar", ref parameters));
@@ -326,7 +328,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetDatosFacturacion(int IdCliente)
+        public JsonResult GetDatosFacturacion(int IdCliente, int IdEmail)
         {
             ResponseModel rm = new();
             List<DatosFacturacion> Datos = new List<DatosFacturacion>();
@@ -335,15 +337,16 @@ namespace ExpoMR.Controllers
 			try
             {
                 string query = "DECLARE @idcotizacion INT " +
-                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion  @IdCliente,  @IdCliente " +
+                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion @IdCliente, @IdEmail " +
                                 "SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, " +
                                 "vCotizacionDatos.IdDocumento, vCotizacionDatos.Documento, " +
                                 "ISNULL(vCotizacionDatos.IdUsoCFDI, 0) AS IdUsoCFDI, vCotizacionDatos.UsoCFDI " +
                                 "FROM vCotizacionDatos " +
                                 "WHERE vCotizacionDatos.IdCotizacion = @idcotizacion";
 
-                SqlParameter[] parameters = new SqlParameter[1];
+                SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+                parameters[1] = new SqlParameter("@IdEmail", IdEmail);
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
                 while (dr.Read())
@@ -378,7 +381,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetDatosTransporte(int IdCliente, int IdUsuario, int IdDocumento, int IdUsoCFDI)
+        public JsonResult GetDatosTransporte(int IdCliente, int IdEmail, int IdDocumento, int IdUsoCFDI)
         {
             Cotizacion UpdCot = new Cotizacion()
             {
@@ -399,7 +402,7 @@ namespace ExpoMR.Controllers
 			try
             {
                 string query = "DECLARE @idcotizacion INT " +
-                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion  @IdCliente,  @IdUsuario " +
+                                "EXEC @idcotizacion = dbo.CotizarGetCotizacion @IdCliente, @IdEmail " +
                                 "SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.IdTipoVenta, vCotizacionDatos.TipoVenta, " +
                                 "vCotizacionDatos.Entrega, vCotizacionDatos.DirEntrega, ISNULL(vCotizacionDatos.IdTransporte,0) AS IdTransporte, ISNULL(vCotizacionDatos.Transportista,0) AS Transportista, " +
                                 "ISNULL(vCotizacionDatos.IdPorte,0) AS IdPorte, ISNULL(vCotizacionDatos.Porte,0) AS Porte, ISNULL(vCotizacionDatos.Obsv,'') AS Obsv " +
@@ -408,7 +411,7 @@ namespace ExpoMR.Controllers
 
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+                parameters[1] = new SqlParameter("@IdEmail", IdEmail);
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
@@ -448,7 +451,7 @@ namespace ExpoMR.Controllers
                     rm.Message = "No hay Promociones Ganadas.";
                 }
 
-                ActualizaUsoCFDI(UpdCot, IdUsuario);
+                ActualizaUsoCFDI(UpdCot, IdEmail);
             }
             catch (Exception e)
             {
@@ -461,10 +464,10 @@ namespace ExpoMR.Controllers
             return Json(rm);
         }
 
-        public static List<PedidosCarrito> GetPedidosCarrito(int IdCliente, int IdUsuario, int IdPedido = 0)
+        public static List<PedidosCarrito> GetPedidosCarrito(int IdCliente, int IdEmail, int IdPedido = 0)
         {
             List<PedidosCarrito> pedidos = new List<PedidosCarrito>();
-
+            
             string query = "SELECT ROW_NUMBER() OVER(PARTITION BY vPedidos.IdPedido,vProductos.IdLaboratorio " +
                             "ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS RegistroProveedor, mLaboratorios.Proveedor, " +
                             "ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio, vPedidos.IdPedido ORDER BY mProveedores.Nombre, " +
@@ -475,7 +478,7 @@ namespace ExpoMR.Controllers
                             "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
                             "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
                             "WHERE vPedidos.Cliente = @IdCliente " +
-                            "AND   vPedidos.Usuario = @IdUsuario " +
+                            "AND   vPedidos.IdEmail = @idemail " +
                             "AND ( vPedidos.IdPedido =  @IdPedido OR @IdPedido = 0) " +
                             "ORDER BY vPedidos.IdPedido, mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
 
@@ -483,7 +486,7 @@ namespace ExpoMR.Controllers
             SqlParameter[] parameters = new SqlParameter[3];
 
             parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-            parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+            parameters[1] = new SqlParameter("@idemail", IdEmail);
             parameters[2] = new SqlParameter("@IdPedido", IdPedido);
 
             SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
@@ -573,7 +576,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSumary(int IdCliente, int IdUsuario, int IdTipoVenta, int IdTransporte, int IdPorte, int IdDireccion, string Obsv)
+        public JsonResult GetSumary(int IdCliente, int IdEmail, int IdTipoVenta, int IdTransporte, int IdPorte, int IdDireccion, string Obsv)
         {
             Cotizacion UpdCot = new Cotizacion()
             {
@@ -587,7 +590,7 @@ namespace ExpoMR.Controllers
                 Observaciones = Obsv
             };
 
-            ActualizaUsoCFDI(UpdCot, IdUsuario);
+            ActualizaUsoCFDI(UpdCot, IdEmail);
 
             ResponseModel rm = new();
 			DB dB = new();
@@ -596,7 +599,7 @@ namespace ExpoMR.Controllers
             {
                 List<CotizacionDatos> Cotizaciones = new List<CotizacionDatos>();
 
-                string query = "DECLARE @idcotizacion INT EXEC @idcotizacion = dbo.CotizarGetCotizacion @IdCliente, @IdUsuario " +
+                string query = "DECLARE @idcotizacion INT EXEC @idcotizacion = dbo.CotizarGetCotizacion @IdCliente, @IdEmail " +
                 "SELECT vCotizacionDatos.IdCotizacion, vCotizacionDatos.Cliente, vCotizacionDatos.RFC, vCotizacionDatos.Documento, " +
                 "vCotizacionDatos.UsoCFDI, vCotizacionDatos.DirEntrega, vCotizacionDatos.TipoVenta, vCotizacionDatos.Transportista, " +
                 "vCotizacionDatos.Porte, vCotizacionDatos.Obsv " +
@@ -605,7 +608,7 @@ namespace ExpoMR.Controllers
                 
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+                parameters[1] = new SqlParameter("@IdEmail", IdEmail);
 
                 SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
@@ -651,7 +654,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult ProductoDelete(int IdProducto, int Cliente)
+        public JsonResult ProductoDelete(int IdProducto, int Cliente, int IdEmail)
         {
 			ResponseModel rm = new();
 
@@ -661,7 +664,7 @@ namespace ExpoMR.Controllers
 				SqlParameter[] parameters = new SqlParameter[3];
 			
 				parameters[0] = new SqlParameter("@cliente", Cliente);
-				parameters[1] = new SqlParameter("@usuario", Cliente);
+				parameters[1] = new SqlParameter("@idEmail", IdEmail);
 				parameters[2] = new SqlParameter("@IdProducto", IdProducto);
 
 				dB.ExecuteNonQuery("ExpoPedidoQuitar", ref parameters);
@@ -678,7 +681,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult Validarcolocar(int IdCliente, int IdUsuario)
+        public JsonResult Validarcolocar(int IdCliente, int IdEmail)
         {
             ResponseModel rm = new();
 
@@ -687,7 +690,7 @@ namespace ExpoMR.Controllers
                 DB dB = new();
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@cliente", IdCliente);
-                parameters[1] = new SqlParameter("@usuario", IdUsuario);
+                parameters[1] = new SqlParameter("@idEmail", IdEmail);
 
                 rm.Result = (int)dB.ExecuteScalar("ExpoPedidoValidar", ref parameters);
                 rm.Response = true;
@@ -701,7 +704,7 @@ namespace ExpoMR.Controllers
             return Json(rm);
         }
 
-        public bool ActualizaUsoCFDI(Cotizacion cotizacion, int IdUsuario)
+        public bool ActualizaUsoCFDI(Cotizacion cotizacion, int IdEmail)
         {
             bool result;
 
@@ -711,7 +714,7 @@ namespace ExpoMR.Controllers
                 SqlParameter[] parameters = new SqlParameter[9];
 
                 parameters[0] = new SqlParameter("@IdCliente", cotizacion.IdCliente);
-                parameters[1] = new SqlParameter("@IdUsuario", IdUsuario);
+                parameters[1] = new SqlParameter("@IdEmail", IdEmail);
                 parameters[2] = new SqlParameter("@IdDocumento", cotizacion.IdDocumento);
                 parameters[3] = new SqlParameter("@IdUsoCFDI", cotizacion.IdUsoCFDI);
                 parameters[4] = new SqlParameter("@IdTipoVenta", cotizacion.IdTipoVenta);
@@ -732,14 +735,14 @@ namespace ExpoMR.Controllers
             return result;
         }
 
-        public static Totales GetTotales(int IdCliente, int IdUsuario, bool Origen)
+        public static Totales GetTotales(int IdCliente, int IdEmail, bool Origen)
         {
             Totales totales = new Totales();
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("@cliente", IdCliente);
-            parameters[1] = new SqlParameter("@IdPersona", IdUsuario);
+            parameters[1] = new SqlParameter("@idEmail", IdEmail);
             parameters[2] = new SqlParameter("@Origen", Origen);
 
             SqlDataReader dr = dB.ExecuteReader("GetTotales", ref parameters);
@@ -759,7 +762,7 @@ namespace ExpoMR.Controllers
             return totales;
         }
 
-        public int GetCantidadCarrito(int IdPersona, int cliente)
+        public int GetCantidadCarrito(int cliente, int IdEmail)
         {
             int resultCantidad = 0;
 			DB dB = new();
@@ -768,7 +771,7 @@ namespace ExpoMR.Controllers
             {
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@cliente", cliente);
-                parameters[1] = new SqlParameter("@usuario", IdPersona);
+                parameters[1] = new SqlParameter("@idEmail", IdEmail);
 
                 SqlDataReader dr = dB.ExecuteReader("ExpoCountProducts", ref parameters);
 
@@ -808,7 +811,7 @@ namespace ExpoMR.Controllers
 			return logo;
         }
 
-        public JsonResult PorConfirmar(int IdProducto, int Cliente, int Confirmado) //Confirmado = 1 Marcar Todos // confirmado = 2 DesMarcar Todo
+        public JsonResult PorConfirmar(int IdProducto, int Cliente, int Confirmado, int IdEmail) //Confirmado = 1 Marcar Todos // confirmado = 2 DesMarcar Todo
         {
             var rm = new ResponseModel();
             DB dB = new();
@@ -818,7 +821,7 @@ namespace ExpoMR.Controllers
 
                 parameters[0] = new SqlParameter("@IdProducto", IdProducto);
                 parameters[1] = new SqlParameter("@cliente", Cliente);
-                parameters[2] = new SqlParameter("@usuario", Cliente);
+                parameters[2] = new SqlParameter("@idEmail", IdEmail);
                 parameters[3] = new SqlParameter("@Confirmado", Confirmado);
                 dB.ExecuteNonQuery("ConfirmarProducto", ref parameters);
                 dB.Close();

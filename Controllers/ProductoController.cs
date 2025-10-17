@@ -117,7 +117,7 @@ namespace ExpoMR.Controllers
                 parameters[1] = new SqlParameter("@idproducto", idProducto);
                 parameters[2] = new SqlParameter("@unitario", unitario);
                 parameters[3] = new SqlParameter("@cantidad", cantidad);
-                parameters[4] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+                parameters[4] = new SqlParameter("@idemail", HttpContext.Session.GetString("Session_IdEmail"));
 
                 dB.ExecuteNonQuery("CotizarAgregar", ref parameters);
 
