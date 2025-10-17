@@ -1,11 +1,12 @@
-﻿using ExpoMR.Models;
-using ExpoMR.Clases;
+﻿using ExpoMR.Clases;
+using ExpoMR.Datos;
+using ExpoMR.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ExpoMR.Datos;
 using Microsoft.Data.SqlClient;
 using Nancy.Session;
 
@@ -294,9 +295,10 @@ namespace ExpoMR.Controllers
 
 						HttpRequest request = HttpContext.Request;
 						Log.SaveSesion(request, accViewModel.Email, true);
-						var user = await _userManager.FindByNameAsync(accViewModel.Email);
+                        
+                        var user = await _userManager.FindByNameAsync(accViewModel.Email);
 
-                        if (await _userManager.IsInRoleAsync(user, "ClienteVIP") || await _userManager.IsInRoleAsync(user, "Cliente"))
+                        if (await _userManager.IsInRoleAsync(user, "Cliente"))
                         {
                             if (ExpoMR.Clases.WebSite.ValidaExpoVIP() == 2)  // 2 = El dia no es de Expo
                             {
@@ -439,6 +441,8 @@ namespace ExpoMR.Controllers
                 {
                     HttpContext.Session.SetString("ClienteSel", dr["IdPersona"].ToString());
                     HttpContext.Session.SetString("Session_IdEmail", dr["IdEmail"].ToString());
+                    
+                    Log.SaveVisita(Convert.ToInt32(dr["IdPersona"]), 0, 0); //Se guarda el registro de la visita general del cliente en la Expo
 
                     break;
                 }

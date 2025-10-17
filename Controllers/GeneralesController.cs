@@ -105,6 +105,8 @@ namespace ExpoMR.Controllers
             HttpContext.Session.SetString("ClienteSel", IdPersona.ToString());
             HttpContext.Session.SetString("Session_IdEmail", IdEmail.ToString());
 
+            Log.SaveVisita(IdPersona, 0, 0);  //Se guarda el registro de la visita general del cliente en la Expo
+
             return Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
         }
 
