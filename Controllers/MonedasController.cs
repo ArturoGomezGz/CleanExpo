@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP,Proveedor")]
+    [Authorize(Roles = "Cliente,Proveedor")]
     public class MonedasController : Controller
     {
         //Variables para verificar La sesión Y el Usuario
@@ -29,30 +29,16 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
 
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (isFechaExpo == 1) //1 = Dia Expo
                 {
-                    if (isFechaExpoVIP == 1) // Expo VIP
-                    {
-                        return View();
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View();
                 }
                 else
                 {
-                    if (isFechaExpoVIP == 0) //0 = Expo Normal
-                    {
-                        return View();
+                    return RedirectToAction("Index", "MiCuenta");                        
                     }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");                        
-                    }
-                }
             }
         }
     }

@@ -11,7 +11,7 @@ using System.Data;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente")]
     public class ProductoController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -35,8 +35,7 @@ namespace ExpoMR.Controllers
             else
             {
                 //Se guarda el registro de vista del cliente al stand
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
-                    || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true)
                 {
                     Log.SaveVisita(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")), Idproveedor, IdProducto);
                 }
@@ -77,30 +76,16 @@ namespace ExpoMR.Controllers
 
 				dB.Close();
 
-				int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
 
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (isFechaExpo == 1) //1 = DIa Expo
                 {
-                    if (isFechaExpoVIP == 1) //Expo VIP
-                    {
-                        return View(ProdCotizado);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View(ProdCotizado);
                 }
                 else
                 {
-                    if (isFechaExpoVIP == 0) //Expo Normal
-                    {
-                        return View(ProdCotizado);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
-                }                
+                    return RedirectToAction("Index", "MiCuenta");
+                }             
             }           
         }
 

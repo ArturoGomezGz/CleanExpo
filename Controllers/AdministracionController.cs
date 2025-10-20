@@ -59,7 +59,7 @@ namespace ExpoMR.Controllers
 
                 string query = "SELECT vPersonas.IdPersona, vPersonas.Nombre, vPersonas.IdEmail, vPersonas.Email, vPersonas.IdTipoUsuario, " +
                                 "(SELECT mTipoUsuario.TipoUsuario FROM mTipoUsuario WHERE mTipoUsuario.IdTipoUsuario = vPersonas.IdTipoUsuario) AS TipoUsuario, " +
-                                "vPersonas.VIP, CAST(vPersonas.Usuario AS BIT) AS Usuario, CAST(vPersonas.Lock AS BIT) AS Lock, " +
+                                "CAST(vPersonas.Usuario AS BIT) AS Usuario, CAST(vPersonas.Lock AS BIT) AS Lock, " +
                                 "CASE WHEN vPersonas.Sucursal = 0 THEN '' " +
                                 "	 ELSE CASE WHEN vPersonas.Sucursal = 1 THEN 'GUADALAJARA' " +
                                 "			   ELSE CASE WHEN vPersonas.Sucursal = 2  THEN 'QUERETARO' " +
@@ -87,7 +87,6 @@ namespace ExpoMR.Controllers
                     Usuario.Email = (string)dr["Email"];
                     Usuario.IdTipoUsuario = (int)dr["IdTipoUsuario"];
                     Usuario.TipoUsuario = (string)dr["TipoUsuario"];
-                    Usuario.VIP = (bool)dr["VIP"];
                     Usuario.Usuario = (bool)dr["Usuario"];
                     Usuario.Lock = (bool)dr["Lock"];
                     Usuario.Sucursal = (string)dr["Sucursal"];
@@ -210,14 +209,13 @@ namespace ExpoMR.Controllers
             }
 
             [HttpPost]
-            public async Task<JsonResult> AddUserAsync(int idEmail, string UserName, int TipoCliente, bool Vip, int Sucursal)
+            public async Task<JsonResult> AddUserAsync(int idEmail, string UserName, int TipoCliente, int Sucursal)
             {
                 DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[4];
+                SqlParameter[] parameters = new SqlParameter[3];
                 parameters[0] = new SqlParameter("@idemail", idEmail);
                 parameters[1] = new SqlParameter("@tipousuario", TipoCliente);
                 parameters[2] = new SqlParameter("@sucursal", Sucursal);
-                parameters[3] = new SqlParameter("@VIP", Vip);
 
                 SqlDataReader dr = dB.ExecuteReader("UsuariosAgregar", ref parameters);
 
@@ -247,7 +245,7 @@ namespace ExpoMR.Controllers
 
                             if (TipoCliente == 1) //Cliente
                             {
-                                Rol = Vip ? "ClienteVIP" : "Cliente";
+                                Rol = "Cliente";
 
                             }
                             else if (TipoCliente == 2) //Proveedor
@@ -263,7 +261,7 @@ namespace ExpoMR.Controllers
                             //Se asigna el rol del usuario en la tabla AspNetUserRoles
                             await _userManager.AddToRoleAsync(usuario, Rol);
 
-                            string linkExpo = Vip ? "https://expomr.online" : "https://expomr.online";
+                            string linkExpo = "https://expomr.online";
 
                             string body = "<br/>Hola " + UserName + "<br/><br/>"
                                     + "Bienvenido a Bordo expo Medicinas Rosario 2025<br/><br/>"
@@ -284,11 +282,11 @@ namespace ExpoMR.Controllers
                             //await _signInManager.SignInAsync(usuario, isPersistent: false);
 
                                 WebSite.InsertFeNotificacion(idEmail);
-                                WebSite.InsertIinvitacion(idEmail, Vip, "SUCCESS");
+                                WebSite.InsertIinvitacion(idEmail, "SUCCESS");
                             }
                             catch (Exception e)
                             {
-                                WebSite.InsertIinvitacion(idEmail, Vip, e.Message);
+                                WebSite.InsertIinvitacion(idEmail, e.Message);
                             }
 
                             rm.Message = "El usuario de: " + UserName + " se creo correctamente";
@@ -303,7 +301,7 @@ namespace ExpoMR.Controllers
                     else
                     {
                         WebSite.InsertFeNotificacion(idEmail);
-                        WebSite.InsertIinvitacion(idEmail, Vip, "SUCCESS");
+                        WebSite.InsertIinvitacion(idEmail, "SUCCESS");
                         rm.Response = true;
                         rm.Message = "El usuario de: " + UserName + " se creo correctamente";
                     }
@@ -385,12 +383,6 @@ namespace ExpoMR.Controllers
             }
 
             [HttpPost]
-            public void ChangeVip(int IdEmail, bool Vip)
-            {
-                WebSite.ChangeVIP(IdEmail, Vip);
-            }
-
-            [HttpPost]
             public async Task<JsonResult> EliminarUsuario(int IdEmail, string UserName)
             {
                 var Result = WebSite.UsuarioEliminar(IdEmail);
@@ -427,7 +419,7 @@ namespace ExpoMR.Controllers
             }
 
             [HttpPost]
-            public async Task<JsonResult> InvitacionMasivaClientes(int IdEmail, string UserName, bool Vip)
+            public async Task<JsonResult> InvitacionMasivaClientes(int IdEmail, string UserName)
             {
                 var rm = new ResponseModel();
 
@@ -449,7 +441,7 @@ namespace ExpoMR.Controllers
                         if (resultado.Succeeded)
                         {
                             string Rol = "";
-                            Rol = Vip ? "ClienteVIP" : "Cliente";
+                            Rol = "Cliente";
 
                             //Se asigna el rol del usuario en la tabla AspNetUserRoles
                             await _userManager.AddToRoleAsync(usuario, Rol);
@@ -478,12 +470,12 @@ namespace ExpoMR.Controllers
                         await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
 
                         WebSite.InsertFeNotificacion(IdEmail);
-                        WebSite.InsertIinvitacion(IdEmail, Vip, "SUCCESS");
+                        WebSite.InsertIinvitacion(IdEmail, "SUCCESS");
 
                     }
                     catch (Exception e)
                     {
-                        WebSite.InsertIinvitacion(IdEmail, Vip, e.Message);
+                        WebSite.InsertIinvitacion(IdEmail, e.Message);
                     }
 
                     rm.Response = true;

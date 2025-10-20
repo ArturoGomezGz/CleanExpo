@@ -56,7 +56,7 @@
 
             <!--Buscador General de Productos-->
             <div class="col-md-6 col-lg-5 col-xl-6" style="display:inline-flex; margin:0px 20px">
-                @if ((User.IsInRole("Cliente") || User.IsInRole("ClienteVIP")) && nombreVistaActual != "Editar" && ExpoMR.Clases.WebSite.ValidaExpoVIP() != 2)
+                @if (User.IsInRole("Cliente") && nombreVistaActual != "Editar" && ExpoMR.Clases.WebSite.ValidaDiaExpo() != 2)
             {
                 <input type="text"  class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                 <div class="input-group-append">
@@ -65,7 +65,7 @@
             }
             </div>
             <!--Control de Monedas-->
-            <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP") || User.IsInRole("Proveedor"))
+            <!--@if (User.IsInRole("Cliente") || User.IsInRole("Proveedor"))
             {
                 @* Control para animacion de monedas *@
                 @* se comenta linea de animacion de monedas candalon
@@ -80,7 +80,7 @@
             }-->
 
             <!--Control de la Ruleta-->
-            <!--@if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+            <!--@if (User.IsInRole("Cliente"))
             {
                @* se comenta linea de ruleta candalon
                <a asp-controller="Ruleta" asp-action="" class="btn btn-ruleta-inactiva position-relative" id="Ruleta">
@@ -252,7 +252,7 @@
     <!--/ Cuerpo de la pagina-->
 
     <!--Footer-->
-    @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+    @if (User.IsInRole("Cliente"))
     {
         <footer id="footer" class="pb-2 pt-2">
             <div class="container">

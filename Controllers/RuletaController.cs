@@ -14,7 +14,7 @@ using Org.BouncyCastle.Ocsp;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente")]
     public class RuletaController : Controller
     {
         //Variables para verificar La sesión Y el Usuario
@@ -67,40 +67,21 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
                 bool ruleta = RuletaGirada(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")));
 
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (isFechaExpo == 1) // 1 = Dia Expo
                 {
-                    if (isFechaExpoVIP == 1) //1 = Expo VIP
+                    if (ruleta)
                     {
-                        if (ruleta)
-                        {
-                            return RedirectToAction("PremioGanado", "Ruleta");
-                        }
+                        return RedirectToAction("PremioGanado", "Ruleta");
+                    }
 
-                        return View(ListaInforuletas);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View(ListaInforuletas);
                 }
                 else
                 {
-                    if (isFechaExpoVIP == 0) // 0 = Expo Normal
-                    {
-                        if (ruleta)
-                        {
-                            return RedirectToAction("PremioGanado", "Ruleta");
-                        }
-
-                        return View(ListaInforuletas);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return RedirectToAction("Index", "MiCuenta");
                 }
             }
         }
@@ -133,29 +114,15 @@ namespace ExpoMR.Controllers
                         IdRuleta = IdRuleta
                     };
 
-                    int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                    int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
 
-                    if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                    if (isFechaExpo == 1) //1 = Dia Expo
                     {
-                        if (isFechaExpoVIP == 1) // 1 = Expo VIP
-                        {
-                            return View(Ruleta);
-                        }
-                        else
-                        {
-                            return RedirectToAction("Index", "MiCuenta");
-                        }
+                        return View(Ruleta);
                     }
                     else
                     {
-                        if (isFechaExpoVIP == 0) //Expo Normal
-                        {
-                            return View(Ruleta);
-                        }
-                        else
-                        {
-                            return RedirectToAction("Index", "MiCuenta");
-                        }
+                        return RedirectToAction("Index", "MiCuenta");
                     }
                 }
             }

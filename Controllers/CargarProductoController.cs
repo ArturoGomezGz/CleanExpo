@@ -9,7 +9,7 @@ using System.Data;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente")]
     public class CargarProductoController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -30,30 +30,17 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                int isFechaExpoVIP = WebSite.ValidaExpoVIP();
+                int isFechaExpo = WebSite.ValidaDiaExpo();
 
-                if (WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (isFechaExpo == 1) //1 = Dia Expo
                 {
-                    if (isFechaExpoVIP == 1) //1 = Expo VIP
-                    {
-                        return View();
-                    }
-                    else //0 = Expo Normal; 2 = El dia no es de expo
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View();
                 }
-                else
+                else //0 = El dia no es de expo
                 {
-                    if (isFechaExpoVIP == 0) //0 = Expo Normal
-                    {
-                        return View();
-                    }
-                    else //1 = Expo VIP; 2 = El dia no es de expo
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return RedirectToAction("Index", "MiCuenta");
                 }
+                
             }
         }
 

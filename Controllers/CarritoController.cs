@@ -14,7 +14,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente")]
     public class CarritoController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -39,8 +39,7 @@ namespace ExpoMR.Controllers
 
             int IdCliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
             int IdEmail = Convert.ToInt32(HttpContext.Session.GetString("Session_IdEmail"));
-            bool IsClienteVip = WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP");
-            int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+            int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
 
             Carrito carrito = new Carrito(); 
             carrito.CantidadCarrito = GetCantidadCarrito(IdCliente, IdEmail);
@@ -64,8 +63,7 @@ namespace ExpoMR.Controllers
             carrito.TiposVenta = WebSite.GetTiposVenta();
             carrito.ListaCarrito = GetCarrito(IdCliente, IdEmail);
 
-            if ((IsClienteVip == true && isFechaExpoVIP == 1) //1 = Expo VIP
-                || (IsClienteVip == false && isFechaExpoVIP == 0)) // 0 = Expo Normal
+            if (isFechaExpo == 1) // 1 = Dia Expo
             {
                 return View(carrito);
             }

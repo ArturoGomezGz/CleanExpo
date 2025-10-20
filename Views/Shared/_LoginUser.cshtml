@@ -27,7 +27,7 @@
             Menu
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+            @if (User.IsInRole("Cliente"))
             {
                 <li>
                     <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="Index">Cambiar Contraseña</a>

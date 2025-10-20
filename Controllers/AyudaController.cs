@@ -9,7 +9,7 @@ using System.Data;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP")]
+    [Authorize(Roles = "Cliente")]
     public class AyudaController : Controller
     {        
         public IActionResult Index()

@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Cliente,ClienteVIP,Proveedor")]
+    [Authorize(Roles = "Cliente,Proveedor")]
 
     public class StandController : Controller
     {
@@ -62,8 +62,7 @@ namespace ExpoMR.Controllers
 				}
 
                 //Se guarda el registro de vista del cliente al stand
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
-                    || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true)
                 {
                     Log.SaveVisita(Cliente, idProveedor, 0);
                     //GivePromotions(idProveedor);
@@ -103,29 +102,15 @@ namespace ExpoMR.Controllers
                 }
                 else 
                 {
-					int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+					int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
 
-					if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+					if (isFechaExpo == 1) //1 = Dia Expo
 					{
-						if (isFechaExpoVIP == 1) //1 = Expo VIP
-						{
-							return View(Stand);
-						}
-						else
-						{
-							return RedirectToAction("Index", "MiCuenta");
-						}
+						return View(Stand);
 					}
 					else
 					{
-						if (isFechaExpoVIP == 0) //0 =  Expo normal
-						{
-							return View(Stand);
-						}
-						else
-						{
-							return RedirectToAction("Index", "MiCuenta");
-						}
+						return RedirectToAction("Index", "MiCuenta");
 					}
 				}
 				                
@@ -143,8 +128,7 @@ namespace ExpoMR.Controllers
             else
             {
                 //Se guarda el registro de vista del cliente al stand
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
-                    || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true)
                 {                    
                     Log.SaveVisita(Convert.ToInt32(HttpContext.Session.GetString("ClienteSel")), idProveedor, 0);
                 }
@@ -196,29 +180,15 @@ namespace ExpoMR.Controllers
 
 				dB2.Close();
 
-				int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+				int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
 
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (isFechaExpo == 1) // 1 = Dia Expo
                 {
-                    if (isFechaExpoVIP == 1) //1 = Expo VIP
-                    {
-                        return View("~/Views/Stand/Editar.cshtml", Stand);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View("~/Views/Stand/Editar.cshtml", Stand);
                 }
                 else
                 {
-                    if (isFechaExpoVIP == 0) // 0 = Expo Normal
-                    {
-                        return View("~/Views/Stand/Editar.cshtml", Stand);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return RedirectToAction("Index", "MiCuenta");
                 }
             }
         }
@@ -297,8 +267,7 @@ namespace ExpoMR.Controllers
                 string[] fields = { "vProductos.Nombre", "vProductos.Presentacion", "vProductos.Formula" };
 
                 //Se guarda el registro de vista del cliente al stand
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true
-                    || ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "Cliente") == true)
                 {
                     Log.SaveBusqueda(IdUsuario, IdProveedor, Busqueda);
                 }

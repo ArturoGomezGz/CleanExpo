@@ -33,13 +33,6 @@
                     @Html.LabelFor(m => m.TipoUsuario)                   
                     @Html.TextBoxFor(m => m.TipoUsuario, new { @class = "form-control", name = "cmb-TipoDoc", title = "user name", disabled = "disabled" })
                 </div>
-                @if (Model.IdTipoUsuario == 1)
-                {
-                    <div class="form-check form-switch">
-                        @Html.CheckBoxFor(m => m.VIP, new { id = "VipCheck", @class = "form-check-input", name = "flexSwitchCheckChecked", title="flexSwitchCheckChecked"})
-                        <label class="form-check-label" for="VipCheck">VIP</label>
-                    </div>
-                }
             </div>
             <div class="col-md-12 mb-3">
                 @Html.LabelFor(m => m.Sucursal)
@@ -140,48 +133,6 @@
             });
     }
 
-    //Evento para control checkbox VIP
-    const chkVip = document.getElementById('VipCheck')
-    chkVip.addEventListener('change', (event) => {
-
-        if (event.currentTarget.checked) 
-        {
-            ChangeVIP(true);
-        } 
-        else 
-        {
-            ChangeVIP(false);
-        }
-    })
-
-    function ChangeVIP(vip) 
-    {
-        const IdEmail = $("#IdEmail").val();
-
-        $.post(path + "Administracion/ChangeVip",
-            {
-                IdEmail: IdEmail,
-                Vip: vip
-            },
-            function (data) 
-            {
-                if (vip) 
-                {
-                    $("#lockButton").removeClass("fa-lock");
-                    $("#lockButton").addClass("fa-unlock-alt")
-                } 
-                else 
-                {
-                    $("#lockButton").removeClass("fa-unlock-alt");
-                    $("#lockButton").addClass("fa-lock")
-                }
-            }).error(function ()
-            {
-                ShowAlert("No fue posible cargar sus datos", false);
-            });
-    }
-
-
     function editar()
     {
         //se ocultan los botnes
@@ -279,25 +230,13 @@
 
     function reenviar()
     {
-        const ChkVIP = document.getElementById("VipCheck");
         const IdEmail = $("#IdEmail").val();
         const UserName = $("#Email").val();
-
-        let IsVip = false; //Esto aplica para usuarios que son empleados y proveedores
-
-        if (ChkVIP !== null) //Esto aplica para usuarios que son clientes 
-        {
-            if (ChkVIP.checked)
-                IsVip = true;
-            else
-                IsVip = false;
-        }
 
         $.post(path + "Notificaciones/SendWelcome",
             {
                 IdEmail: IdEmail,
-                UserName: UserName,
-                Vip: IsVip
+                UserName: UserName
             },
             function (data) 
             {

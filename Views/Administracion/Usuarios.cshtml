@@ -202,13 +202,11 @@
 
 						const IdEmail = $(this).val();
 						const UserName = $(this).closest('tr').find('td:eq(3)').text();
-						const Vip = $(this).closest('tr').find('.hdn').val();
 
 						$.post(path + "Administracion/InvitacionMasivaClientes",
 							{
 								IdEmail: IdEmail,
-								UserName: UserName,
-								Vip: Vip
+								UserName: UserName
 							},
 							function (data) {
 								ShowAlert(data.message, data.response);
@@ -251,8 +249,6 @@
 		let idEmail = $("#idEmail").val();
 		let UserName = $("#userName").val();
 		let TipoCliente = $("#IdTipoCliente").val()
-		var checkbox = document.getElementById("ChangeVIP");
-		var Vip = checkbox.checked;
 		let Sucursal = $("#cmb-Sucursal").val()
 
 		if (Sucursal === "" || Sucursal === "0")
@@ -265,8 +261,7 @@
 				{
 					idEmail: idEmail,
 					UserName: UserName,
-					TipoCliente: TipoCliente,				
-					Vip: Vip,
+					TipoCliente: TipoCliente,
 					Sucursal: Sucursal					
 				},
 				function (data) {
@@ -311,10 +306,6 @@
 			<div class="modal-body">
 				<input class="form-check-input" type="hidden" id="userName">
 				<input class="form-check-input" type="hidden" id="idEmail">
-				<div class="form-check form-switch checkBox" id="div_check">
-					<input class="form-check-input" type="checkbox" id="ChangeVIP">
-					<label class="form-check-label" for="ChangeVIP"> VIP</label>
-				</div>
 				<div class="row">
 					<div class="col-md-12 mb-4">
 						@Html.LabelFor(m => m.IdSucrsal, new { @class = "fw-bold" })

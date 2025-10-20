@@ -381,12 +381,11 @@ namespace ExpoMR.Clases
             dB.ExecuteNonQuery("UpdateFeUltimaNotificacion", ref parameters);
         }
 
-        public static void InsertIinvitacion(int IdEmail, bool Tipo, string Msg)
+        public static void InsertIinvitacion(int IdEmail, string Msg)
         {
             DB dB = new DB();
             SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("@IdEmail", IdEmail);
-            parameters[1] = new SqlParameter("@Tipo", Tipo);
             parameters[2] = new SqlParameter("@Msg", Msg);
 
             dB.ExecuteNonQuery("LogInvitacion", ref parameters);
@@ -474,16 +473,6 @@ namespace ExpoMR.Clases
             dB.Close();
 		}
 
-        public static void ChangeVIP(int idEmail, bool vip)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@IdEmail", idEmail);
-            parameters[1] = new SqlParameter("@VIP", vip);
-
-            DB dB = new DB();
-            dB.ExecuteNonQuery("ChangeUsuarioVIP", ref parameters);
-		}
-
         public static int UsuarioEliminar(int idEmail)
         {
             DB dB = new DB();
@@ -495,12 +484,12 @@ namespace ExpoMR.Clases
             return ret;
         }
 
-        public static int ValidaExpoVIP()
+        public static int ValidaDiaExpo()
         {
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[0];
 
-            int ret = Convert.ToInt16(dB.ExecuteReturnValue("ValidaExpoVIP", ref parameters));
+            int ret = Convert.ToInt16(dB.ExecuteReturnValue("ValidaDiaExpo", ref parameters));
 
             return ret;
         }

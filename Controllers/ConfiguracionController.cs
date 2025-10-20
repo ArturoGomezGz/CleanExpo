@@ -88,11 +88,10 @@ namespace ExpoMR.Controllers
         {
             List<Fechas> Fechas = new();
 
-            string query = "SELECT CONVERT(VARCHAR(20), mCalendario.Fecha, 111) AS Fecha, " +
-                             "CASE WHEN VIP = 1 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(ISNULL(MonedasVIP,0) AS NVARCHAR(MAX)) + ',1' FROM mMotivos WHERE IdMotivo = 7) " +
-                             "	  WHEN VIP = 0 THEN (SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(ISNULL(MonedasExpo,0) AS NVARCHAR(MAX)) + ',0' FROM mMotivos WHERE IdMotivo = 7) " +
-                             "END AS Monedas " +
-                             "FROM mCalendario";
+            string query = "SELECT CONVERT(VARCHAR(20), mCalendario.Fecha, 111) AS Fecha, " + 
+                           "(SELECT CAST(Fecha as NVARCHAR(MAX)) + ',' + CAST(ISNULL(MonedasExpo, 0) AS NVARCHAR(MAX)) + ',0' " +
+                           "FROM mMotivos WHERE IdMotivo = 7) AS Monedas " +
+                           "FROM mCalendario";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[0];
@@ -116,24 +115,18 @@ namespace ExpoMR.Controllers
 
         public JsonResult GetfechasMoneda()
         {
-            string query = "DECLARE @factor INT, @factorvip INT " +
-                            "SELECT @factor = MonedasExpo " +
-                            "FROM mMotivos " +
-                            "WHERE IdMotivo = 7 " +
-                            "SELECT @factorvip = MonedasVIP " +
-                            "FROM mMotivos " +
-                            "WHERE IdMotivo = 7 " +
-                            "SELECT @IdProveedor AS Proveedor, " +
-                            "ISNULL(CASE WHEN mCalendario.VIP = 1 " +
-                            "       THEN dStandsMax.Maximo /@factorvip " +
-                            "       ELSE dStandsMax.Maximo /@factor " +
-                            "	   END, 0) AS Visitas, " +
-                            "ISNULL(dStandsMax.Maximo, 0) AS Maximo, " +
-                            "mCalendario.Fecha, mCalendario.VIP " +
-                            "FROM dStandsMax RIGHT OUTER JOIN " +
-                            "mCalendario ON dStandsMax.Fecha = mCalendario.Fecha " +
-                            "WHERE Proveedor = @IdProveedor " +
-                            "OR Proveedor IS NULL";
+            string query = "DECLARE @factor INT " +
+                           "SELECT @factor = MonedasExpo " +
+                           "FROM mMotivos " +
+                           "WHERE IdMotivo = 7 " +
+                           "SELECT @IdProveedor AS Proveedor, " +
+                           "ISNULL(dStandsMax.Maximo /@factor, 0) AS Visitas, " +
+                           "ISNULL(dStandsMax.Maximo, 0) AS Maximo, " +
+                           "mCalendario.Fecha " +
+                           "FROM dStandsMax RIGHT OUTER JOIN " +
+                           "mCalendario ON dStandsMax.Fecha = mCalendario.Fecha " +
+                           "WHERE Proveedor = @IdProveedor " +
+                           "OR Proveedor IS NULL ";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[1];
@@ -173,8 +166,7 @@ namespace ExpoMR.Controllers
         public JsonResult GetProductosMax()
         {
             string query = "SELECT dProductosMax.IdProducto, dProductosMax.Fecha, vProductos.Nombre + ' ' + vProductos.Presentacion as Nombre, " +
-                            "CASE WHEN mCalendario.VIP = 0 THEN dProductosMax.Maximo / (SELECT MonedasExpo FROM mMotivos WHERE IdMotivo = 8) " +
-                            "WHEN mCalendario.VIP = 1 THEN dProductosMax.Maximo / (SELECT MonedasVIP FROM mMotivos WHERE IdMotivo = 8) END AS Visitas, " +
+							"(SELECT MonedasExpo FROM mMotivos WHERE IdMotivo = 8) AS Visitas, " +
                             "dProductosMax.Maximo " +
                             "FROM mLaboratorios INNER JOIN " +
                             "vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN " +

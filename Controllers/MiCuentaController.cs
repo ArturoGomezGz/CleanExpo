@@ -12,7 +12,7 @@ using System.Net;
 
 namespace ExpoMR.Controllers
 {
-    [Authorize(Roles = "Capturista,Cliente,ClienteVIP,Proveedor")]
+    [Authorize(Roles = "Capturista,Cliente,Proveedor")]
     public class MiCuentaController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -129,29 +129,15 @@ namespace ExpoMR.Controllers
             }
             else
             {
-                int isFechaExpoVIP = ExpoMR.Clases.WebSite.ValidaExpoVIP();
+                int isFechaExpo = ExpoMR.Clases.WebSite.ValidaDiaExpo();
 
-                if (ExpoMR.Clases.WebSite.ValidaRolUsuario(currentUser.Email, "ClienteVIP") == true)
+                if (isFechaExpo == 1) // 1 = Dia Expo
                 {
-                    if (isFechaExpoVIP == 1) //1 = Expo VIP
-                    {
-                        return View(MiCuenta);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");
-                    }
+                    return View(MiCuenta);
                 }
                 else
                 {
-                    if (isFechaExpoVIP == 0) // 0 = Expo Normal
-                    {
-                        return View(MiCuenta);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "MiCuenta");                        
-                    }
+                    return RedirectToAction("Index", "MiCuenta");                        
                 }
             }            
         }

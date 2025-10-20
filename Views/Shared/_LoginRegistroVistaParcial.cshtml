@@ -6,7 +6,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    @if (User.IsInRole("Cliente") || User.IsInRole("ClienteVIP"))
+    @if (User.IsInRole("Cliente"))
     {
         <li role="presentation" class="nav-item open" style="font-size: 24px">
             <a asp-controller="Carrito" asp-action="" class="btn btn-carrito position-relative" id="navbarDropdown1">

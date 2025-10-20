@@ -65,7 +65,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SendWelcome(int IdEmail, string UserName, bool Vip)
+        public async Task<JsonResult> SendWelcome(int IdEmail, string UserName)
         {
             var rm = new ResponseModel();
 
@@ -97,7 +97,7 @@ namespace ExpoMR.Controllers
                             await _emailSender.SendEmailAsync(UserName, "Bienvenido a Expo Virtual Medicinas Rosario", body);
 
                         WebSite.InsertFeNotificacion(IdEmail);
-                        WebSite.InsertIinvitacion(IdEmail, Vip, "SUCCESS");
+                        WebSite.InsertIinvitacion(IdEmail, "SUCCESS");
 
                         rm.Response = true;
                         rm.Message = "Se envio la invitacion correctamente";
@@ -111,7 +111,7 @@ namespace ExpoMR.Controllers
             }
             catch (Exception e)
             {
-                WebSite.InsertIinvitacion(IdEmail, Vip, e.Message);
+                WebSite.InsertIinvitacion(IdEmail, e.Message);
                 rm.Response = false;
                 rm.Message = e.Message;
             }

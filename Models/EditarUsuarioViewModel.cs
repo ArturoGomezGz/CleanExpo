@@ -20,8 +20,6 @@ namespace ExpoMR.Models
         [Display(Name ="Estado: ")]
         public string Estado { get; set; }
         
-        public bool VIP { get; set; }
-        
         public bool VIPvalue { get; set; }
 
         public bool Lock { get; set; }
