@@ -261,6 +261,11 @@ hr.new1 {
     font-weight: bold;
 }
 
+.label__PrecioRegular {
+    color: #082c47;
+    font-weight: bold;
+}
+
 .label__DescuentoExpo {
     color: #ff730b;
     font-size: 1.15em;

@@ -57,6 +57,8 @@ namespace ExpoMR.Models
 
         public bool Controlado { get; set; }
 
+        public decimal PrecioRegular { get; set; }
+
         public decimal PrecioMR { get; set; }
 
         public decimal DescuentoExpo { get; set; }

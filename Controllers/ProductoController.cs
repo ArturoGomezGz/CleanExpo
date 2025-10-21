@@ -58,6 +58,7 @@ namespace ExpoMR.Controllers
                     ProdCotizado.Neto = (decimal)dr["Neto"];
                     ProdCotizado.Publico = (decimal)dr["Publico"];                   
                     ProdCotizado.PrecioMR = (decimal)dr["PrecioMR"];
+                    ProdCotizado.PrecioRegular = (decimal)dr["PrecioRegular"];
                     ProdCotizado.PrecioFinal = (decimal)dr["PrecioFinal"];
                     ProdCotizado.DescuentoExpo = (decimal)dr["DescuentoExpo"];
                     ProdCotizado.DescuentoCliente = (bool)(dr["DescuentoCliente"]);

@@ -298,7 +298,8 @@ namespace ExpoMR.Controllers
                                + " CASE WHEN dProductosDescuento.Descuento IS NULL THEN 0 ELSE 1 END AS DescuentoCliente,"
                                + " CAST(Precios.Precio - (CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2)) +" //Precio menos Descuento General
                                + " CAST(((Precios.Precio - CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2))) *" //Precio del Cliente
-                               + " ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2))) AS DECIMAL(9,2)) AS PrecioFinal" //Descuento Especifico del Cliente
+                               + " ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2))) AS DECIMAL(9,2)) AS PrecioFinal," //Descuento Especifico del Cliente
+                               + " CAST(dbo.GetPrecio(Precios.IdPersona, Precios.IdProducto) AS DECIMAL(9,2)) AS PrecioRegular"
                                + " FROM dbo.GetMultiPrecioExpo(@search) AS Precios INNER JOIN"
                                + " ExpoMR.dbo.vProductos ON Precios.IdProducto = vProductos.IdProducto LEFT OUTER JOIN"
                                + " ExpoMR.dbo.dProductosDescuento ON vProductos.IdProducto = dProductosDescuento.IdProducto AND dProductosDescuento.Cliente =" + IdUsuario
@@ -321,6 +322,7 @@ namespace ExpoMR.Controllers
                            Descuento = row[5],
                            DescuentoCliente = row[6],
                            PrecioFinal = row[7],
+                           PrecioRegular = row[8],
                            imgProducto = GeneralesController.GetFoto(Convert.ToInt32(row[1]))
                        }).ToArray()
                 };
@@ -602,6 +604,7 @@ namespace ExpoMR.Controllers
                 ProdCotizado.Unidades = (string)dr["Unidades"];
                 ProdCotizado.Neto = (decimal)dr["Neto"];
                 ProdCotizado.Publico = (decimal)dr["Publico"];
+                ProdCotizado.PrecioRegular = (decimal)dr["PrecioRegular"];
                 ProdCotizado.PrecioMR = (decimal)dr["PrecioMR"];
                 ProdCotizado.PrecioFinal = (decimal)dr["PrecioFinal"];
                 ProdCotizado.DescuentoExpo = (decimal)dr["DescuentoExpo"];

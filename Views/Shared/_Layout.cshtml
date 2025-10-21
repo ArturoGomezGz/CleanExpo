@@ -155,10 +155,17 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-6">
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Precio Regular: </strong><label class="label__PrecioRegular" id="precioRegular_general"></label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
                                             <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico_general"></label>
                                         </div>
                                         <div class="col-6">
-                                            <strong>Precio MR: </strong><label class="label__PrecioMR" id="precioMR_general"></label>
+                                            <strong>Precio MR Expo: </strong><label class="label__PrecioMR" id="precioMR_general"></label>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -458,6 +465,7 @@
                     document.getElementById('presentacion_general').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
                     document.getElementById('neto_general').innerHTML = " " + FormatoMoneda(resultado.neto);
                     document.getElementById('PrecioPublico_general').innerHTML = " " + FormatoMoneda(resultado.publico);
+                    document.getElementById('precioRegular_general').innerHTML = " " + FormatoMoneda(resultado.precioRegular);
                     document.getElementById('precioMR_general').innerHTML = " " + FormatoMoneda(resultado.precioMR);
                     document.getElementById('preciofinal_general').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
                     document.getElementById('descuentoExpo_general').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo);

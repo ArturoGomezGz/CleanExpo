@@ -29,13 +29,21 @@
                        <div class="mb-3">
                            <strong>Restringido a:  </strong> <label class="label__producto">@Model.Cantidad</label>
                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                            </div>
+                            <div class="col-6">
+                                <strong>Precio Regular: </strong><label class="label__PrecioRegular">@Model.PrecioRegular</label>
+                                @Html.HiddenFor(m => m.PrecioRegular)
+                            </div>
+                        </div>
                        <div class="row">
                            <div class="col-6">
                                 <strong>Precio Publico: </strong> <label class="label__publico"> @Model.Publico</label>
                                 @Html.HiddenFor( m=> m.Publico)
                             </div>
                            <div class="col-6">
-                                <strong>Precio MR: </strong><label class="label__PrecioMR">@Model.PrecioMR</label> 
+                                <strong>Precio MR Expo: </strong><label class="label__PrecioMR">@Model.PrecioMR</label> 
                                 @Html.HiddenFor( m=> m.PrecioMR)
                            </div>
                        </div>

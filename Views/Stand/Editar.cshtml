@@ -485,6 +485,7 @@
                 document.getElementById('presentacion').innerHTML = " " + resultado.presentacion + " " + resultado.unidades;
                 document.getElementById('neto').innerHTML = " " + FormatoMoneda(resultado.neto);
                 document.getElementById('PrecioPublico').innerHTML = " " + FormatoMoneda(resultado.publico);
+                document.getElementById('precioRegular').innerHTML = " " + FormatoMoneda(resultado.precioRegular);
                 document.getElementById('precioMR').innerHTML = " " + FormatoMoneda(resultado.precioMR);
                 document.getElementById('preciofinal').innerHTML = " " + FormatoMoneda(resultado.precioFinal);
                 document.getElementById('descuentoExpo').innerHTML = " " + FormatoMoneda(resultado.descuentoExpo);
@@ -595,6 +596,7 @@
                                     + '            <label>' + value.formula + '</label>'
                                     + '      </div>'
                                     + '     <div class="listaStand_actions">'
+                                    + '           <p>Precio Regular: <label class="label_PrecioFinal_stnd"> ' + FormatoMoneda(value.precioRegular) + '</label></p>'
                                     + '           <p><strong>Descuento: </strong><label class="label_Descuento_stnd"> ' + FormatoMoneda(value.descuento) + '</label></p>'
                                     + '           <p>Precio Final: <label class="label_PrecioFinal_stnd"> ' + FormatoMoneda(value.precioFinal) + '</label></p>'
                                     + '           ' + ImgDescuentoCliente
@@ -992,12 +994,21 @@
                                 <div id="div_restringido" class="mb-3">
                                     <strong>Restringido a:  </strong> <label class="label__producto" id="restringido"></label>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Precio Regular: </strong><label class="label__PrecioMR" id="precioRegular"></label>
+                                    </div>
+                                </div>
+
                                 <div class="row" >
                                     <div class="col-6">
                                         <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
                                     </div>
                                     <div class="col-6">
-                                        <strong>Precio MR: </strong><label class="label__PrecioMR" id="precioMR"></label>
+                                        <strong>Precio MR Expo: </strong><label class="label__PrecioMR" id="precioMR"></label>
                                     </div>
                                 </div>
                                 <div class="row">
