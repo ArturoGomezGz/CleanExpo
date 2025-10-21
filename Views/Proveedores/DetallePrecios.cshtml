@@ -148,7 +148,8 @@
                             if (type === 'display') {
                                 return '<input name="DescuentoAdicional" class="text" type="number" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
                                     + '<input class="hdfCosto" type="hidden" value="' + row.costo + '" style="display:none"/>'
-                                    + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>';
+                                    + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>'
+                                    + '<input class="hdfDesActual" type="hidden" value="' + row.descuentoadicional + '" style="display:none"/>';
                             }
 
                             return data;
@@ -157,12 +158,12 @@
                     {
                         "data": "idproducto",
                         render: function (data, type, row) {
-                            if (row.descuentoadicional == 0) {
+                            
                                 return '<input class="hdfIdProducto" type="hidden" value="' + data + '" style="display:none"/>'
                                     + '<a class="btn btn-naranja-ch editprecio" ><i class="fas fa-pencil-alt"></i></a>'
                                     + '<a class="btn btn-outline-success acepteditprecio" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
                                     + '<a class="btn btn-outline-danger canceleditprecio" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>';
-                            }
+                            
 
                             return ''
                         }
@@ -216,47 +217,50 @@
     // Nueva función: lógica de aceptar descuento para una fila
     function aceptarDescuentoFila(row) {
         var ddlLisClientes = @Model;
-        var idproducto, DescClienteNew, Costo, PrecioExpo;
+        var idproducto, DescClienteNew, Costo, PrecioExpo, DescActual;
+
         $("td", row).each(function () {
-            if ($(this).find(".text").length > 0) {
+            if ($(this).find(".text").length > 0) 
+            {
                 DescClienteNew = row.find('.text').val();
                 Costo = row.find('.hdfCosto').val();
                 PrecioExpo = row.find('.hdfPrecioExpo').val();
                 idproducto = row.find('.hdfIdProducto').val();
+                DescActual = row.find('.hdfDesActual').val();
             }
         });
+
+        var inputElement = row.find('.text');
 
         row.find(".editprecio").show();
         row.find(".canceleditprecio").hide();
         row.find(".acepteditprecio").hide();
 
-        var inputElement = row.find('.text');
-
         $.post(path + "Proveedores/ValidaDescuento",
             {
-                PorcentajeDescuento: DescClienteNew,
+                DescuentoNuevo: DescClienteNew,
                 Costo: Costo,
-                PrecioExpo: PrecioExpo
+                PrecioExpo: PrecioExpo,
+                DescuentoActual: DescActual
             },
-            function (data) {
+            function (data)
+            {
                 if (data == 0) {
                     alert("El descuento del cliente ingresado debe ser mayor a 0.", false);
                     inputElement.val(0);
                     inputElement.prop('disabled', true);
                 }
-                else {
-                    //Se muestra el mensaje al proveedor de que su descuento es mayor
-                    //if (data == 2) {
-                    //    document.getElementById("lblMensaje").style.visibility = "visible";
-                    //    document.getElementById("lblMensaje").style.color = "red";
-                    //    document.getElementById("TerminosCondiciones").style.visibility = "hidden";
-                    //    document.getElementById("success").style.visibility = "hidden";
-                    //}
-                    //else {
-                    //    document.getElementById("lblMensaje").style.visibility = "hidden";
-                    //    document.getElementById("TerminosCondiciones").style.visibility = "visible";
-                    //    document.getElementById("success").style.visibility = "visible";
-                    //}
+                else if(data == 3)
+                {
+                    alert("El descuento ingresado debe ser mayor al descuento actual.", false);
+                    inputElement.prop('disabled', true);
+
+                    // Para refrescar los datos:
+                    var tabla = $('#PrecioClientes').DataTable();
+                    tabla.ajax.reload();
+                }
+                else 
+                {
                     if (data == 2)
                     {
                         document.getElementById("lblMensaje").style.visibility = "visible";

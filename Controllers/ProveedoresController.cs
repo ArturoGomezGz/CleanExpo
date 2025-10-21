@@ -669,19 +669,24 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public Int16 ValidaDescuento(decimal PorcentajeDescuento, decimal Costo, decimal PrecioExpo)
+        public Int16 ValidaDescuento(decimal DescuentoNuevo, decimal Costo, decimal PrecioExpo, decimal DescuentoActual)
         {
             Int16 res = 0; //El % de descuento debe ser mayor a 0
 
-            if (PorcentajeDescuento > 0)
-             res = ValidaDescuentovsCosto(PorcentajeDescuento, Costo, PrecioExpo);
+            if (DescuentoNuevo > 0)
+            {
+                if (DescuentoNuevo > DescuentoActual)
+                    res = ValidaDescuentovsCosto(DescuentoNuevo, Costo, PrecioExpo);
+                else
+                    res = 3; //El % de descuento nuevo debe ser mayor al % de descuento actual
+            }
 
-            return res;
+                return res;
         }
 
-        protected Int16 ValidaDescuentovsCosto(decimal PorcentajeDescuento, decimal Costo, decimal PrecioExpo)
+        protected Int16 ValidaDescuentovsCosto(decimal DescuentoNuevo, decimal Costo, decimal PrecioExpo)
         {
-            decimal MontoDescuento = PrecioExpo * PorcentajeDescuento / 100;
+            decimal MontoDescuento = PrecioExpo * DescuentoNuevo / 100;
 
             Int16 res = 1; //El descuento otorgado es valido
 						   
