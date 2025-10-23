@@ -148,8 +148,7 @@
                             if (type === 'display') {
                                 return '<input name="DescuentoAdicional" class="text" type="number" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
                                     + '<input class="hdfCosto" type="hidden" value="' + row.costo + '" style="display:none"/>'
-                                    + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>'
-                                    + '<input class="hdfDesActual" type="hidden" value="' + row.descuentoadicional + '" style="display:none"/>';
+                                    + '<input class="hdfPrecioExpo" type="hidden" value="' + row.precioexpo + '" style="display:none"/>';
                             }
 
                             return data;
@@ -217,7 +216,7 @@
     // Nueva función: lógica de aceptar descuento para una fila
     function aceptarDescuentoFila(row) {
         var ddlLisClientes = @Model;
-        var idproducto, DescClienteNew, Costo, PrecioExpo, DescActual;
+        var idproducto, DescClienteNew, Costo, PrecioExpo;
 
         $("td", row).each(function () {
             if ($(this).find(".text").length > 0) 
@@ -226,7 +225,6 @@
                 Costo = row.find('.hdfCosto').val();
                 PrecioExpo = row.find('.hdfPrecioExpo').val();
                 idproducto = row.find('.hdfIdProducto').val();
-                DescActual = row.find('.hdfDesActual').val();
             }
         });
 
@@ -240,22 +238,13 @@
             {
                 DescuentoNuevo: DescClienteNew,
                 Costo: Costo,
-                PrecioExpo: PrecioExpo,
-                DescuentoActual: DescActual
+                PrecioExpo: PrecioExpo
             },
             function (data)
             {
                 if (data == 0) {
                     alert("El descuento del cliente ingresado debe ser mayor a 0.", false);
-                    inputElement.val(0);
                     inputElement.prop('disabled', true);
-                }
-                else if(data == 3)
-                {
-                    alert("El descuento ingresado debe ser mayor al descuento actual.", false);
-                    inputElement.prop('disabled', true);
-
-                    // Para refrescar los datos:
                     var tabla = $('#PrecioClientes').DataTable();
                     tabla.ajax.reload();
                 }

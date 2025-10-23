@@ -68,9 +68,9 @@ namespace ExpoMR.Controllers
                                 "		  END " +
                                 "END AS Sucursal, " +
                                 "vPersonas.Sucursal AS IdSucursal, " +
-                                "CAST((SELECT TOP 1 lInvitaciones.Fecha FROM lInvitaciones WHERE lInvitaciones.IdEmail = @IdEmail ORDER BY Fecha DESC) AS VARCHAR) AS Invitacion " +
+                                "CAST(mUsuarios.FeUltimaNotificacion AS NVARCHAR) AS Invitacion " +
                                 "FROM vPersonas LEFT OUTER JOIN " +
-                                "lInvitaciones ON vPersonas.IdEmail = lInvitaciones.IdEmail " +
+                                "mUsuarios ON vPersonas.IdEmail = mUsuarios.IdEmail " +
                                 "WHERE vPersonas.IdEmail = @IdEmail";
 
                 DB dB = new();
