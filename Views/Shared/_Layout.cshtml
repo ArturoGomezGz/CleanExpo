@@ -56,7 +56,7 @@
 
             <!--Buscador General de Productos-->
             <div class="col-md-6 col-lg-5 col-xl-6" style="display:inline-flex; margin:0px 20px">
-                @if (User.IsInRole("Cliente") && nombreVistaActual != "Editar" && ExpoMR.Clases.WebSite.ValidaDiaExpo() != 2)
+                @if (User.IsInRole("Cliente") && nombreVistaActual != "Editar" && ExpoMR.Clases.WebSite.ValidaDiaExpo() != 0)
             {
                 <input type="text"  class="form-control" id="txtBuscarProdGeneral" placeholder="Nombre, Presentación, Fórmula" name="Busqueda" />
                 <div class="input-group-append">

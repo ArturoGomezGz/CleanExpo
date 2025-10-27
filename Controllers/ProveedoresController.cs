@@ -650,11 +650,12 @@ namespace ExpoMR.Controllers
             try
             {
                 DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[4];
+                SqlParameter[] parameters = new SqlParameter[5];
                 parameters[0] = new SqlParameter("@IdProveedor", HttpContext.Session.GetString("ClienteSel"));
                 parameters[1] = new SqlParameter("@IdProducto", IdProducto);
                 parameters[2] = new SqlParameter("@Descuento", PorcentajeDescuento);
                 parameters[3] = new SqlParameter("@Cliente", IdCliente);
+                parameters[4] = new SqlParameter("@IdEmailProv", HttpContext.Session.GetString("Session_IdEmail"));
 
                 dB.ExecuteNonQuery("AddDescuentoProv", ref parameters);
                 rm.Result = true;

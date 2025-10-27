@@ -300,7 +300,7 @@ namespace ExpoMR.Controllers
 
                         if (await _userManager.IsInRoleAsync(user, "Cliente"))
                         {
-                            if (ExpoMR.Clases.WebSite.ValidaDiaExpo() == 2)  // 2 = El dia no es de Expo
+                            if (ExpoMR.Clases.WebSite.ValidaDiaExpo() == 0)  // 0 = El dia no es de Expo
                             {
                                 return RedirectToAction("Index", "MiCuenta");
                             }
