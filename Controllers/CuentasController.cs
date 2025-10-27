@@ -276,6 +276,7 @@ namespace ExpoMR.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             returnUrl ??= Url.Content("~/");
             HttpContext.Session.Remove("ClienteSel"); //Se elimina la variable de session que almacena el idpersona del cliente seleccionado del control ddlClientes en la vista _loginUser
+            HttpContext.Session.Remove("Session_IdEmail"); //Se elimina la variable de session que almacena el idemail de la cuenta con la que se ingreso a la expo
 
             if (ModelState.IsValid)
             {
