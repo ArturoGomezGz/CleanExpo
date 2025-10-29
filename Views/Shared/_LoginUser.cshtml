@@ -30,6 +30,9 @@
             @if (User.IsInRole("Cliente"))
             {
                 <li>
+                    <a class="dropdown-item" asp-controller="MisPedidos" asp-action="Index">Mis Pedidos</a>
+                </li>
+                <li>
                     <a class="dropdown-item" asp-area="" asp-controller="MiCuenta" asp-action="Index">Cambiar Contraseña</a>
                 </li>
                 <li>

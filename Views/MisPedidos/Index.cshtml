@@ -1,0 +1,416 @@
+﻿@model Pedidos
+<link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="~/js/jquery.paginate.js"></script>
+<script>
+    function panel_active(active)
+    {
+        if (active == 2)
+        {
+            var element = document.getElementById("divPedidos");
+            element.classList.remove("display_panel_active");
+            element.classList.add('display_panel');
+
+            var element3 = document.getElementById("liPedido");
+            element3.classList.remove("bf-ui-tab--selected");
+            element3.classList.add('bf-ui-tab--unselected');
+
+            var element1 = document.getElementById("divResumenPedidos");
+            element1.classList.remove("display_panel");
+            element1.classList.add('display_panel_active');
+
+            var element2 = document.getElementById("liResumenPedidos");
+            element2.classList.remove("bf-ui-tab--unselected");
+            element2.classList.add('bf-ui-tab--selected');
+        }
+        else
+        {
+            var element1 = document.getElementById("divPedidos");
+            element1.classList.remove("display_panel");
+            element1.classList.add('display_panel_active');
+
+            var element2 = document.getElementById("liPedido");
+            element2.classList.remove("bf-ui-tab--unselected");
+            element2.classList.add('bf-ui-tab--selected');
+
+            var element = document.getElementById("divResumenPedidos");
+            element.classList.remove("display_panel_active");
+            element.classList.add('display_panel');
+
+            var element3 = document.getElementById("liResumenPedidos");
+            element3.classList.remove("bf-ui-tab--selected");
+            element3.classList.add('bf-ui-tab--unselected');
+        }
+    }
+
+    function Reload()
+    {
+        window.location.reload();
+    }
+
+    function ShowTotalesPedidos(IdPedido)
+    {
+        if(IdPedido === "0")
+        {
+            $("#txt_Credito_divPedidos").html(FormatoMoneda(@Model.TotalesPedidos.Credito))
+            $("#txt_Subtotal_divPedidos").html(FormatoMoneda(@Model.TotalesPedidos.Subtotal))
+            $("#txt_IVA_divPedidos").html(FormatoMoneda(@Model.TotalesPedidos.IVA))
+            $("#txt_Total_divPedidos").html(FormatoMoneda(@Model.TotalesPedidos.Total))
+            $("#txt_TotalProd_divPedidos").html(@Model.TotalesPedidos.Productos)
+        }
+        else
+        {
+            $.post(path + "MisPedidos/GetTotalByPedido",
+            {
+                IdPedido: IdPedido
+            },
+            function (data) {
+                $("#txt_Subtotal_divPedidos").html(FormatoMoneda(data.subtotal))
+                $("#txt_IVA_divPedidos").html(FormatoMoneda(data.iva))
+                $("#txt_Total_divPedidos").html(FormatoMoneda(data.total))
+                $("#txt_TotalProd_divPedidos").html(data.cantidad)
+            })
+            .error(function () {
+                block.remove();
+                ShowAlert("No fue posible cargar sus datos", false);
+            });
+        }
+    }
+
+    $(document).ready(function ()
+    {
+        $('#Show_Pedidos').paginate({
+            pagination_class: 'paginationPedido',
+            items_per_page: 20
+        });
+
+        //  $('#ShowCarrito').paginate({
+        //      pagination_class: 'paginationCarrito',
+        //     items_per_page: 20
+        // });
+
+        $("#cmb-pedidos").change(function () {
+            FiltroPedido($(this).val())
+            $('.pagination__controls').remove();
+            $('#Show_Pedidos').paginate({
+                pagination_class: 'paginationPedido',
+                items_per_page: 20,
+                numPedido:  $("#cmb-pedidos").val()
+            });
+            ShowTotalesPedidos($(this).val())
+        });
+
+        srcImg() //se cargaran las imagenes de logos de proveedores y fotos de productos en las secciones de Cotizacion y Pedidos
+    })
+
+    function FiltroPedido(NumPedido)
+    {
+        var divsPedido = $("#Show_Pedidos").children();
+
+        $.each(divsPedido, function (index, value) {
+            if ('Pedido_'+ NumPedido == value.id || NumPedido === "0" || value.classList[0] == "pagination__controls")
+            {
+                $(value).show();
+            }
+            else
+            {
+                $(value).hide();
+            }
+        });
+    }
+
+    function srcImg()
+    {
+        var logosProv = document.querySelectorAll('img.LogoProv');  //Se obtienen todos los controles que muestran el logo de proveedor mendiante la Clase
+        logosProv = removeDuplicatesIds(logosProv);
+
+        for (var i = 0; i < logosProv.length; i++)
+        {
+            var proveedorId = logosProv[i].getAttribute("data-id");
+            GetAsyncLogoProv(proveedorId)
+        }
+
+        var fotosProd = document.querySelectorAll('img.FotoProd'); //Se obtienen todos los controles que muestran la foto de producto mendiante la Clase
+        fotosProd = removeDuplicatesIds(fotosProd);
+    }
+
+    async function GetAsyncLogoProv(proveedorId)
+    {
+        try
+        {
+            const response = await fetch(`/imagenes/GetLogoProveedor?IdProveedor=${proveedorId}`);
+
+            if (!response.ok)
+            {
+                throw new Error('Ocurrió un error al hacer la solicitud.');
+            }
+
+            const data = await response.text() // Suponiendo que el controlador devuelve texto
+
+            var logosproveedor = document.querySelectorAll('#LogoProv_' + proveedorId);  //Se obtienen todos los controles que muestran el logo de proveedor mendiante su Id
+
+            if (data.length > 0)
+            {
+                $.each(logosproveedor, function (index, values) {
+                    values.src = "data:image/png;base64," + data;
+                });
+            }
+            else
+            {
+                $.each(logosproveedor, function (index, values) {
+                    values.src = "../Imagenes/noimage.png";
+                });
+            }
+
+        }
+        catch (error)
+        {
+            $.each(logosproveedor, function (index, values) {
+                values.src = "../Imagenes/noimage.png";
+            });
+        }
+    }
+
+    async function GetAsyncFotoProd(productoId)
+    {
+        try
+        {
+            const response = await fetch(`/imagenes/GetFotoProducto?IdProducto=${productoId}`);
+
+            if (!response.ok)
+            {
+                throw new Error('Ocurrió un error al hacer la solicitud.');
+            }
+
+            const data = await response.text() // Suponiendo que el controlador devuelve texto
+
+            var fotosProd = document.querySelectorAll('#FotoProd_' + productoId);  //Se obtienen todos los controles que muestran la foto de producto mendiante su Id
+
+            if (data.length > 0)
+            {
+                $.each(fotosProd, function (index, values) {
+                    values.src = "data:image/png;base64," + data;
+                });
+            }
+            else
+            {
+                $.each(fotosProd, function (index, values) {
+                    values.src = "../Imagenes/noimage.png";
+                });
+            }
+        }
+        catch (error)
+        {
+            $.each(fotosProd, function (index, values) {
+                values.src = "../Imagenes/noimage.png";
+            });
+        }
+    }
+
+    function removeDuplicatesIds(array)
+    {
+        // Crear un objeto para realizar un seguimiento de los IDs que ya han sido encontrados
+        const idsEncontrados = {};
+
+        // Convertir la NodeList a un array para facilitar el manejo
+        const arrayDeElementos = Array.from(array);
+
+        // Filtrar el array para eliminar elementos con IDs duplicados
+        const elementosSinDuplicados = arrayDeElementos.filter(array => {
+            const id = array.id;
+            if (!idsEncontrados[id]) {
+                // Si el ID no ha sido encontrado aún, lo marcamos como encontrado
+                idsEncontrados[id] = true;
+                return true; // Mantener este elemento en el array resultante
+            }
+            return false; // Descartar este elemento del array resultante
+        });
+
+        return elementosSinDuplicados;
+    }
+
+</script>
+
+@if (Model.TotalesPedidos.HasProduct == true)
+{
+    <script>
+        $(document).ready(function () {
+            $("#txt_Credito_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.Credito))
+            $("#txt_Subtotal_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.Subtotal))
+            $("#txt_IVA_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.IVA))
+            $("#txt_Total_divPedido").html(FormatoMoneda(@Model.TotalesPedidos.Total))
+            $("#txt_TotalProd_divPedido").html(@Model.TotalesPedidos.Productos)
+        })
+    </script>
+}
+
+<div class="row">
+    <div id="liveAlertPlaceholder"></div>
+    @Html.HiddenFor(m => m.IdEmail)
+    <div class="col-xxl-1"></div>
+    <div class="col-12 col-xxl-10 cart-container cart-container--fixed cart-container--fixed-in" data-id="cart_container1">
+        <ul class="bf-ui-tab-container" data-js="tab-container" data-id="tab-container1" role="tablist">
+            <li id="liPedidos" data-js="tab" role="tab" aria-selected="true" aria-controls="tab_active" data-id="tab_active" onclick="panel_active(1)" aria-label="Carrito (1)" class="bf-ui-tab bf-ui-tab--selected">
+                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text cantidad_carrito">Pedidos (1)</span>
+            </li>
+            <li id="liResumenPedidos" data-js="tab" role="tab" aria-selected="false" aria-controls="tab_saved_for_later" onclick="panel_active(2)" data-id="tab_saved_for_later" aria-label="Guardados (0)" class="bf-ui-tab bf-ui-tab--unselected">
+                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text">Resumen de Pedidos</span>
+            </li>
+        </ul>
+    </div>
+    <div class="col-xxl-1"></div>
+    <div class="col-sm-0 col-xxl-1"></div>
+    <div id="divPedidos" class="row display_panel col-xxl-10">
+        <div class="col-md-3 mb-3">
+            @Html.LabelFor(m => m.IdPedido, new { @class = "fw-bold" })
+            @Html.DropDownListFor(model => model.IdPedido, new SelectList(Model.PedidosCliente, "IdPedido", "Pedido"), new { id = "cmb-pedidos", @class = "form-control text-left", name = "cmb-pedidos", title = "cmb" })
+        </div>
+        <div id="alert_Pedido" class="col-md-12"></div>
+        <div id="Show_Pedidos" class="col-md-8 pagination_list">
+            @{
+                int ProveedorActual = 0;
+                List<PedidosCarrito> ListPedido = ExpoMR.Controllers.MisPedidos.GetPedidos(Model.IdCliente, Model.IdEmail, Model.IdPedido);
+
+                if (ListPedido.Count() > 0)
+                {
+                    int PedidoActual = ListPedido[0].IdPedido;
+
+                    foreach (ExpoMR.Models.PedidosCarrito model in ListPedido)
+                    {
+                        if (PedidoActual == model.IdPedido)
+                        {
+                            if (ProveedorActual != model.Proveedor)
+                            {
+                                ProveedorActual = model.Proveedor;
+
+                                <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
+                                    <hr class='Separador_Carrito' />
+                                    <h6 class='lblPedido'>Pedido: @string.Format(PedidoActual.ToString()) </h6>
+                                    <div class="row">
+                                        <div class="fotoCarrito">
+                                            <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
+                                                <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
+                                            </a>
+                                        </div>
+                                        <div class="row col-sm-12 col-md-8 col-lg-9">
+                                            <div class="col-sm-6">
+                                                <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
+                                                <p><label>@String.Format(model.Presentacion)</label></p>
+                                            </div>
+                                            <div class="col-sm-6 resumen_producto">
+                                                <p class="mb-0 pb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                                <p class="mb-0 pb-0"><strong>Precio Expo: </strong><font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
+                                                <p class="mb-0"><strong>SupTotal: </strong><font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                                <p class="mb-0">
+                                                    @if (model.Iva == false)
+                                                    {
+                                                        <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                </div>
+                            }
+                            else
+                            {
+                                <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
+                                    <div class="row">
+                                        <div class="fotoCarrito">
+                                            <a href="#" class="mx-auto"></a>
+                                        </div>
+                                        <div class="row col-sm-12 col-md-8 col-lg-9">
+                                            <div class="col-sm-6">
+                                                <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
+                                                <p><label>@String.Format(model.Presentacion)</label></p>
+                                            </div>
+                                            <div class="col-sm-6 resumen_producto">
+                                                <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                                <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
+                                                <p class="mb-1"><strong>SubTotal: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                                <p class="mb-0">
+                                                    @if (model.Iva == false)
+                                                    {
+                                                        <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            PedidoActual = model.IdPedido;
+                            ProveedorActual = model.Proveedor;
+
+                            <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
+                                <hr class="Separador_Carrito" />
+                                <h6 class="lblPedido">Pedido:@string.Format(PedidoActual.ToString()) </h6>
+                                <div class="row">
+                                    <div class="fotoCarrito">
+                                        <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
+                                            <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
+                                        </a>
+                                    </div>
+                                    <div class="row col-sm-12 col-md-8 col-lg-9">
+                                        <div class="col-sm-6">
+                                            <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
+                                            <p><label>@String.Format(model.Presentacion) </label></p>
+                                        </div>
+                                        <div class="col-sm-6 resumen_producto">
+                                            <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
+                                            <p class="mb-1"><strong>Precio Expo: </strong> <font class="font_moneda">$@string.Format(model.PrecioFinal.ToString())</font></p>
+                                            <p class="mb-1"><strong>SubTotal: </strong> <font class="font_moneda">$@string.Format(model.Total.ToString())</font></p>
+                                            <p class="mb-0">
+                                                @if (model.Iva == false)
+                                                {
+                                                    <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+                else
+                {
+                    <h5> No hay pedidos colocados.</h5>
+                }
+            }
+        </div>
+        <div class="tab-content_total col-sm-12 col-lg-4 col-xxl-3">
+            <div class="contenedor carritoTotal">
+                <div class="w-80">
+                    <p><strong>Subtotal: </strong><text id="txt_Subtotal_divPedido"></text></p>
+                    <p><strong>IVA: </strong><text id="txt_IVA_divPedido"></text></p>
+                    <hr />
+                    <p><strong>Total: </strong><text id="txt_Total_divPedido"></text></p>
+                    <p><strong>Total de Productos: </strong><text id="txt_TotalProd_divPedido"></text></p>
+                    <div id="liveAlertPlaceholderPedidos_premios"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divResumenPedidos" class="row display_panel col-xxl-10">
+    </div>
+    <div class="col-sm-0 col-xxl-1"></div>
+</div>
