@@ -16,11 +16,11 @@ namespace ExpoMR.Models
 
         public Totales TotalesPedidos { get; set; }
 
-        [Display(Name = "Seleccione un pedido para conocer el detalle: ")]
+        //[Display(Name = "Seleccione un pedido para conocer el detalle: ")]
         
-        public int IdPedido { get; set; }
+        //public int IdPedido { get; set; }
            
-        public List<ddlPedidosCliente> PedidosCliente { get; set; }
+        //public List<ddlPedidosCliente> PedidosCliente { get; set; }
         
         [Display(Name = "Tipo de Comprobante: ")]
         public int IdTipoDoc { get; set; }
@@ -57,12 +57,12 @@ namespace ExpoMR.Models
         public List<ListaCarrito> ListaCarrito { get; set; }
     }
 
-   public class ddlPedidosCliente 
-    { 
-        public int IdPedido { get; set; }
+   //public class ddlPedidosCliente 
+   // { 
+   //     public int IdPedido { get; set; }
     
-        public string Pedido { get; set; }
-    }
+   //     public string Pedido { get; set; }
+   // }
 
     public class Totales 
     {

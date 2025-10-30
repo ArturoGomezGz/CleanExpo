@@ -47,8 +47,8 @@ namespace ExpoMR.Controllers
             carrito.IdCliente = IdCliente;
             carrito.TotalesCotizacion = GetTotales(IdCliente, IdEmail, false); //se inicializan los totales de la cotizacion
             carrito.TotalesPedidos = GetTotales(IdCliente, IdEmail, true); //se inicializan los totales de los pedidos
-            carrito.IdPedido = 0;
-            carrito.PedidosCliente = GetddlClientes(IdCliente);
+            //carrito.IdPedido = 0;
+            //carrito.PedidosCliente = GetddlClientes(IdCliente);
             carrito.IdTipoDoc = 0;
             carrito.TipoDocumentos = WebSite.GetTiposDocumentos(IdCliente);
             carrito.IdUsoCFDI = 0;
@@ -127,48 +127,48 @@ namespace ExpoMR.Controllers
             return listaCarrito;
         }
 
-        public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
-        {
-            int IdEmail = Convert.ToInt32(HttpContext.Session.GetString("Session_IdEmail"));
-            List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>();
-			DB dB = new();
+   //     public List<ddlPedidosCliente> GetddlClientes(int IdCliente)
+   //     {
+   //         int IdEmail = Convert.ToInt32(HttpContext.Session.GetString("Session_IdEmail"));
+   //         List<ddlPedidosCliente> ddlPedidos = new List<ddlPedidosCliente>();
+			//DB dB = new();
 
-			try
-            {
-                SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                parameters[1] = new SqlParameter("@idemail", IdEmail);
+			//try
+   //         {
+   //             SqlParameter[] parameters = new SqlParameter[2];
+   //             parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+   //             parameters[1] = new SqlParameter("@idemail", IdEmail);
 
-                string query = "SELECT 0 AS IdPedido, 'TODOS' AS Pedido " +
-                               "UNION " +
-                               "SELECT vPedidos.IdPedido, CAST(vPedidos.IdPedido AS NVARCHAR) AS Pedido " +
-                               "FROM vPedidos " +
-                               "WHERE vPedidos.Cliente = @IdCliente " +
-                               "AND vPedidos.IdEmail = @idemail " +
-                               "GROUP BY vPedidos.IdPedido";
+   //             string query = "SELECT 0 AS IdPedido, 'TODOS' AS Pedido " +
+   //                            "UNION " +
+   //                            "SELECT vPedidos.IdPedido, CAST(vPedidos.IdPedido AS NVARCHAR) AS Pedido " +
+   //                            "FROM vPedidos " +
+   //                            "WHERE vPedidos.Cliente = @IdCliente " +
+   //                            "AND vPedidos.IdEmail = @idemail " +
+   //                            "GROUP BY vPedidos.IdPedido";
 
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+   //             SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
-                while (dr.Read())
-                {
-                    ddlPedidosCliente ddlPedidosCliente = new ddlPedidosCliente()
-                    {
-                        IdPedido = Convert.ToInt32(dr["IdPedido"]),
-                        Pedido = dr["Pedido"].ToString()
-                    };
+   //             while (dr.Read())
+   //             {
+   //                 ddlPedidosCliente ddlPedidosCliente = new ddlPedidosCliente()
+   //                 {
+   //                     IdPedido = Convert.ToInt32(dr["IdPedido"]),
+   //                     Pedido = dr["Pedido"].ToString()
+   //                 };
 
-                    ddlPedidos.Add(ddlPedidosCliente);
-                }
-            }
-            catch (Exception e)
-            {
-                return new List<ddlPedidosCliente>();
-            }
+   //                 ddlPedidos.Add(ddlPedidosCliente);
+   //             }
+   //         }
+   //         catch (Exception e)
+   //         {
+   //             return new List<ddlPedidosCliente>();
+   //         }
 
-            dB.Close();
+   //         dB.Close();
 
-            return ddlPedidos;
-        }
+   //         return ddlPedidos;
+   //     }
 
         [HttpPost]
         public JsonResult AddCotizacion(int cliente, int idProducto, decimal unitario, int cantidad, int idEmail)
@@ -260,70 +260,70 @@ namespace ExpoMR.Controllers
             return Json(rm);
         }
 
-        [HttpPost]
-        public JsonResult GetArticuloGanado(int IdArticulo)
-        {
-            ArticulosProveedores Articulo = new ArticulosProveedores();
+   //     [HttpPost]
+   //     public JsonResult GetArticuloGanado(int IdArticulo)
+   //     {
+   //         ArticulosProveedores Articulo = new ArticulosProveedores();
 
-            string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, " +
-                "Articulo.Cantidad, Articulo.NumFoto " +
-                "FROM GetArticuloProv(@IdArticulo) AS Articulo";
+   //         string query = "SELECT Articulo.IdArticulo, Articulo.Nombre, Articulo.Descripcion, Articulo.IDdArticulos, Articulo.Foto, Articulo.Proveedor, " +
+   //             "Articulo.Cantidad, Articulo.NumFoto " +
+   //             "FROM GetArticuloProv(@IdArticulo) AS Articulo";
 
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
+   //         DB dB = new();
+   //         SqlParameter[] parameters = new SqlParameter[1];
+   //         parameters[0] = new SqlParameter("@IdArticulo", IdArticulo);
 
-            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+   //         SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
-            while (dr.Read())
-            {
-                Articulo.IdArticulo = (Int16)dr["IdArticulo"];
-                Articulo.Nombre = (string)dr["Nombre"];
-                Articulo.Descripcion = (string)dr["Descripcion"];
-                Articulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
-                Articulo.Foto = dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : WebSite.GetImageDefault(webHostEnvironment, "noimage.png") ;
-            }
+   //         while (dr.Read())
+   //         {
+   //             Articulo.IdArticulo = (Int16)dr["IdArticulo"];
+   //             Articulo.Nombre = (string)dr["Nombre"];
+   //             Articulo.Descripcion = (string)dr["Descripcion"];
+   //             Articulo.IDdArticulos = (dr["IDdArticulos"] != DBNull.Value ? (int)dr["IDdArticulos"] : 0);
+   //             Articulo.Foto = dr["Foto"] != DBNull.Value ? (byte[])dr["Foto"] : WebSite.GetImageDefault(webHostEnvironment, "noimage.png") ;
+   //         }
 
-			dB.Close();
+			//dB.Close();
 
-			return Json(Articulo);
-        }
+			//return Json(Articulo);
+   //     }
 
 
-        [HttpPost]
-        public JsonResult GetTotalByPedido(int IdPedido)
-        {
-            ResumenPedido Pedido = new();
+   //     [HttpPost]
+   //     public JsonResult GetTotalByPedido(int IdPedido)
+   //     {
+   //         ResumenPedido Pedido = new();
 
-            string query = "SELECT mPedidos.IdPedido, COUNT(dbo.dPedidos.IdProducto) AS Productos, " +
-                "CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) AS DECIMAL(18, 2)) AS Subtotal, " +
-                "CAST(SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18, 2)) AS IvaMonto, " +
-                "CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) + SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0)  ELSE 0 END) AS DECIMAL(18, 2)) AS Total " +
-                "FROM dbo.mPedidos INNER JOIN " +
-                "dbo.dPedidos ON dbo.mPedidos.IdPedido = dbo.dPedidos.IdPedido INNER JOIN " +
-                "dbo.mProductos WITH (INDEX(IXmProductos)) ON dbo.dPedidos.IdProducto = dbo.mProductos.IdProducto " +
-                "WHERE mPedidos.IdPedido = @IdPedido " +
-                "GROUP BY mPedidos.IdPedido";
+   //         string query = "SELECT mPedidos.IdPedido, COUNT(dbo.dPedidos.IdProducto) AS Productos, " +
+   //             "CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) AS DECIMAL(18, 2)) AS Subtotal, " +
+   //             "CAST(SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0) ELSE 0 END) AS DECIMAL(18, 2)) AS IvaMonto, " +
+   //             "CAST(SUM(dbo.dPedidos.Cantidad * (dbo.dPedidos.Unitario - dbo.dPedidos.Descuento)) + SUM(CASE WHEN mProductos.Iva = 1 THEN dPedidos.Cantidad * (dPedidos.Unitario - dPedidos.Descuento) * Indigo.dbo.GetIva(0)  ELSE 0 END) AS DECIMAL(18, 2)) AS Total " +
+   //             "FROM dbo.mPedidos INNER JOIN " +
+   //             "dbo.dPedidos ON dbo.mPedidos.IdPedido = dbo.dPedidos.IdPedido INNER JOIN " +
+   //             "dbo.mProductos WITH (INDEX(IXmProductos)) ON dbo.dPedidos.IdProducto = dbo.mProductos.IdProducto " +
+   //             "WHERE mPedidos.IdPedido = @IdPedido " +
+   //             "GROUP BY mPedidos.IdPedido";
 
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@IdPedido", IdPedido);
+   //         DB dB = new();
+   //         SqlParameter[] parameters = new SqlParameter[1];
+   //         parameters[0] = new SqlParameter("@IdPedido", IdPedido);
 
-            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+   //         SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
-            while (dr.Read())
-            {
-                Pedido.Pedido = (int)dr["IdPedido"];
-                Pedido.Cantidad = (int)(dr["Productos"]);
-                Pedido.Subtotal = Convert.ToDecimal(dr["Subtotal"]);
-                Pedido.IVA = Convert.ToDecimal(dr["IvaMonto"]);
-                Pedido.Total = Convert.ToDecimal(dr["Total"]);
-            }
+   //         while (dr.Read())
+   //         {
+   //             Pedido.Pedido = (int)dr["IdPedido"];
+   //             Pedido.Cantidad = (int)(dr["Productos"]);
+   //             Pedido.Subtotal = Convert.ToDecimal(dr["Subtotal"]);
+   //             Pedido.IVA = Convert.ToDecimal(dr["IvaMonto"]);
+   //             Pedido.Total = Convert.ToDecimal(dr["Total"]);
+   //         }
 
-			dB.Close();
+			//dB.Close();
 
-			return Json(Pedido);
-        }
+			//return Json(Pedido);
+   //     }
 
         [HttpPost]
         public JsonResult GetDatosFacturacion(int IdCliente, int IdEmail)
@@ -462,116 +462,116 @@ namespace ExpoMR.Controllers
             return Json(rm);
         }
 
-        public static List<PedidosCarrito> GetPedidosCarrito(int IdCliente, int IdEmail, int IdPedido = 0)
-        {
-            List<PedidosCarrito> pedidos = new List<PedidosCarrito>();
+        //public static List<PedidosCarrito> GetPedidosCarrito(int IdCliente, int IdEmail, int IdPedido = 0)
+        //{
+        //    List<PedidosCarrito> pedidos = new List<PedidosCarrito>();
             
-            string query = "SELECT ROW_NUMBER() OVER(PARTITION BY vPedidos.IdPedido,vProductos.IdLaboratorio " +
-                            "ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS RegistroProveedor, mLaboratorios.Proveedor, " +
-                            "ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio, vPedidos.IdPedido ORDER BY mProveedores.Nombre, " +
-                            "vProductos.Nombre ASC) AS RegistroPedido, vPedidos.IdPedido, vProductos.IdProducto, vProductos.Nombre, " +
-                            "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio, vProductos.Iva " +
-                            "FROM vPedidos INNER JOIN " +
-                            "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
-                            "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
-                            "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
-                            "WHERE vPedidos.Cliente = @IdCliente " +
-                            "AND   vPedidos.IdEmail = @idemail " +
-                            "AND ( vPedidos.IdPedido =  @IdPedido OR @IdPedido = 0) " +
-                            "ORDER BY vPedidos.IdPedido, mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
+        //    string query = "SELECT ROW_NUMBER() OVER(PARTITION BY vPedidos.IdPedido,vProductos.IdLaboratorio " +
+        //                    "ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS RegistroProveedor, mLaboratorios.Proveedor, " +
+        //                    "ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio, vPedidos.IdPedido ORDER BY mProveedores.Nombre, " +
+        //                    "vProductos.Nombre ASC) AS RegistroPedido, vPedidos.IdPedido, vProductos.IdProducto, vProductos.Nombre, " +
+        //                    "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio, vProductos.Iva " +
+        //                    "FROM vPedidos INNER JOIN " +
+        //                    "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
+        //                    "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
+        //                    "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
+        //                    "WHERE vPedidos.Cliente = @IdCliente " +
+        //                    "AND   vPedidos.IdEmail = @idemail " +
+        //                    "AND ( vPedidos.IdPedido =  @IdPedido OR @IdPedido = 0) " +
+        //                    "ORDER BY vPedidos.IdPedido, mProveedores.Nombre, mLaboratorios.Laboratorio, vProductos.Nombre";
 
-            DB dB = new();
-            SqlParameter[] parameters = new SqlParameter[3];
+        //    DB dB = new();
+        //    SqlParameter[] parameters = new SqlParameter[3];
 
-            parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-            parameters[1] = new SqlParameter("@idemail", IdEmail);
-            parameters[2] = new SqlParameter("@IdPedido", IdPedido);
+        //    parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+        //    parameters[1] = new SqlParameter("@idemail", IdEmail);
+        //    parameters[2] = new SqlParameter("@IdPedido", IdPedido);
 
-            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+        //    SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
-            while (dr.Read())
-            {
-                PedidosCarrito pedidoCarrito = new PedidosCarrito()
-                {
-                    RegistroProveedor = Convert.ToInt32(dr["RegistroProveedor"]),
-                    Proveedor = Convert.ToInt32(dr["Proveedor"]),
-                    RegistroPedido = Convert.ToInt32(dr["RegistroPedido"]),
-                    IdPedido = Convert.ToInt32(dr["IdPedido"]),
-                    IdProducto = Convert.ToInt32(dr["IdProducto"]),
-                    Nombre = dr["Nombre"].ToString(),
-                    Presentacion = dr["Presentacion"].ToString(),
-                    Cantidad = Convert.ToInt32(dr["Cantidad"]),
-                    PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
-                    Total = Convert.ToDecimal(dr["Total"]),
-                    Laboratorio = dr["Laboratorio"].ToString(),
-                    Iva = Convert.ToBoolean((dr["Iva"]))
-            };
+        //    while (dr.Read())
+        //    {
+        //        PedidosCarrito pedidoCarrito = new PedidosCarrito()
+        //        {
+        //            RegistroProveedor = Convert.ToInt32(dr["RegistroProveedor"]),
+        //            Proveedor = Convert.ToInt32(dr["Proveedor"]),
+        //            RegistroPedido = Convert.ToInt32(dr["RegistroPedido"]),
+        //            IdPedido = Convert.ToInt32(dr["IdPedido"]),
+        //            IdProducto = Convert.ToInt32(dr["IdProducto"]),
+        //            Nombre = dr["Nombre"].ToString(),
+        //            Presentacion = dr["Presentacion"].ToString(),
+        //            Cantidad = Convert.ToInt32(dr["Cantidad"]),
+        //            PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
+        //            Total = Convert.ToDecimal(dr["Total"]),
+        //            Laboratorio = dr["Laboratorio"].ToString(),
+        //            Iva = Convert.ToBoolean((dr["Iva"]))
+        //    };
 
-                pedidos.Add(pedidoCarrito);
-            }
+        //        pedidos.Add(pedidoCarrito);
+        //    }
 
-            dB.Close();
+        //    dB.Close();
 
-            return pedidos;
-        }
+        //    return pedidos;
+        //}
 
-        [HttpPost]
-        public JsonResult GetPremios(int IdCliente)
-        {
-            ResponseModel rm = new();
-			DB dB = new();
+   //     [HttpPost]
+   //     public JsonResult GetPremios(int IdCliente)
+   //     {
+   //         ResponseModel rm = new();
+			//DB dB = new();
 
-			try
-            {
-                List<Premios> premios = new List<Premios>();
+			//try
+   //         {
+   //             List<Premios> premios = new List<Premios>();
 
-                string query = "SELECT CAST(dPromociones.IdArticulo AS INT) as IdArticulo, mProveedores.Nombre AS Proveedor, "
-                             + "SUM(dPromociones.Cantidad * dPromoCliente.Cantidad) As Cantidad, mArticulos.Nombre "
-                             + "FROM dPromoCliente WITH(INDEX(IXdPromoCliente)) INNER JOIN "
-                             + "dPromociones ON dPromoCliente.IdPromocion = dPromociones.IdPromocion INNER JOIN "
-                             + "mPromociones ON dPromoCliente.IdPromocion = mPromociones.IdPromocion INNER JOIN "
-                             + "mArticulos WITH(INDEX(IXmArticulos)) ON dPromociones.IdArticulo = mArticulos.IdArticulo INNER JOIN "
-                             + "mProveedores ON mArticulos.Proveedor = mProveedores.IdPersona "
-                             + "WHERE dPromoCliente.Cliente = @IdCliente "
-                             + "GROUP BY dPromociones.IdArticulo, mProveedores.Nombre,mArticulos.Nombre";
+   //             string query = "SELECT CAST(dPromociones.IdArticulo AS INT) as IdArticulo, mProveedores.Nombre AS Proveedor, "
+   //                          + "SUM(dPromociones.Cantidad * dPromoCliente.Cantidad) As Cantidad, mArticulos.Nombre "
+   //                          + "FROM dPromoCliente WITH(INDEX(IXdPromoCliente)) INNER JOIN "
+   //                          + "dPromociones ON dPromoCliente.IdPromocion = dPromociones.IdPromocion INNER JOIN "
+   //                          + "mPromociones ON dPromoCliente.IdPromocion = mPromociones.IdPromocion INNER JOIN "
+   //                          + "mArticulos WITH(INDEX(IXmArticulos)) ON dPromociones.IdArticulo = mArticulos.IdArticulo INNER JOIN "
+   //                          + "mProveedores ON mArticulos.Proveedor = mProveedores.IdPersona "
+   //                          + "WHERE dPromoCliente.Cliente = @IdCliente "
+   //                          + "GROUP BY dPromociones.IdArticulo, mProveedores.Nombre,mArticulos.Nombre";
                 
-                SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@IdCliente", IdCliente);
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+   //             SqlParameter[] parameters = new SqlParameter[1];
+   //             parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+   //             SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
-                while (dr.Read())
-                {
-                    Premios Premio = new Premios()
-                    {
-                        idArticulo = Convert.ToInt32(dr["IdArticulo"]),
-                        proveedor = dr["Proveedor"].ToString(),
-                        cantidad = Convert.ToInt32(dr["Cantidad"]),
-                        Nombre = dr["Nombre"].ToString()
-                    };
+   //             while (dr.Read())
+   //             {
+   //                 Premios Premio = new Premios()
+   //                 {
+   //                     idArticulo = Convert.ToInt32(dr["IdArticulo"]),
+   //                     proveedor = dr["Proveedor"].ToString(),
+   //                     cantidad = Convert.ToInt32(dr["Cantidad"]),
+   //                     Nombre = dr["Nombre"].ToString()
+   //                 };
 
-                    premios.Add(Premio);
-                }
-                if (premios.Count > 0)
-                {
-                    rm.Result = premios;
-                    rm.Response = true;
-                }
-                else
-                {
-                    rm.Response = false;
-                    rm.Message = "No hay Promociones Ganadas.";
-                }
-            }
-            catch (Exception e)
-            {
-                rm.Message = e.Message;
-                rm.Response = false;
-            }
+   //                 premios.Add(Premio);
+   //             }
+   //             if (premios.Count > 0)
+   //             {
+   //                 rm.Result = premios;
+   //                 rm.Response = true;
+   //             }
+   //             else
+   //             {
+   //                 rm.Response = false;
+   //                 rm.Message = "No hay Promociones Ganadas.";
+   //             }
+   //         }
+   //         catch (Exception e)
+   //         {
+   //             rm.Message = e.Message;
+   //             rm.Response = false;
+   //         }
 
-            dB.Close();
+   //         dB.Close();
 
-            return Json(rm);
-        }
+   //         return Json(rm);
+   //     }
 
         [HttpPost]
         public JsonResult GetSumary(int IdCliente, int IdEmail, int IdTipoVenta, int IdTransporte, int IdPorte, int IdDireccion, string Obsv)
