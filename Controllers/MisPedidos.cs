@@ -208,5 +208,35 @@ namespace ExpoMR.Controllers
 
             return Json(Pedido);
         }
+
+        public JsonResult GetResumenCompra(int IdCliente, bool TipoResumen)
+        {
+            var lista = new List<ResumenCompraCliente>();
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@IdCliente", IdCliente);
+            parameters[1] = new SqlParameter("@TipoDetalle", TipoResumen);
+            parameters[2] = new SqlParameter("@Filtro", "");
+
+            SqlDataReader dr = dB.ExecuteReader("GetDetailCompraCliente", ref parameters);
+
+            while (dr.Read())
+            {
+                lista.Add(new ResumenCompraCliente
+                {
+                    Proveedor = dr["Proveedor"]?.ToString(),
+                    Producto = dr["Producto"]?.ToString(),
+                    NumPedidos = dr["NumPedidos"] == DBNull.Value ? 0 : Convert.ToInt32(dr["NumPedidos"]),
+                    TotalProds = dr["TotalProds"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TotalProds"]),
+                    TotalPiezas = dr["TotalPiezas"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TotalPiezas"]),
+                    TotalCompra = dr["TotalCompra"] == DBNull.Value ? 0m : Convert.ToDecimal(dr["TotalCompra"])
+                });
+            }
+
+            dB.Close();
+
+            return Json(lista);
+        }
     }
 }

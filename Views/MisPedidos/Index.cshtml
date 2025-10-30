@@ -1,46 +1,40 @@
 ﻿@model Pedidos
-<link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
-<script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
+
 <script type="text/javascript" src="~/js/jquery.paginate.js"></script>
 <script>
     function panel_active(active)
     {
-        if (active == 2)
-        {
-            var element = document.getElementById("divPedidos");
-            element.classList.remove("display_panel_active");
-            element.classList.add('display_panel');
+      const divPedidos = document.getElementById("divPedidos");
+      const divResumen = document.getElementById("divSeleccionResumen");
+      const liPedidos = document.getElementById("liPedidos");
+      const liResumen = document.getElementById("liResumenPedidos");
 
-            var element3 = document.getElementById("liPedido");
-            element3.classList.remove("bf-ui-tab--selected");
-            element3.classList.add('bf-ui-tab--unselected');
+      const activar = (divOn, liOn, divOff, liOff) => 
+      {
+        divOn.classList.remove("display_panel");
+        divOn.classList.add("display_panel_active");
 
-            var element1 = document.getElementById("divResumenPedidos");
-            element1.classList.remove("display_panel");
-            element1.classList.add('display_panel_active');
+        divOff.classList.remove("display_panel_active");
+        divOff.classList.add("display_panel");
 
-            var element2 = document.getElementById("liResumenPedidos");
-            element2.classList.remove("bf-ui-tab--unselected");
-            element2.classList.add('bf-ui-tab--selected');
-        }
-        else
-        {
-            var element1 = document.getElementById("divPedidos");
-            element1.classList.remove("display_panel");
-            element1.classList.add('display_panel_active');
+        liOn.classList.remove("bf-ui-tab--unselected");
+        liOn.classList.add("bf-ui-tab--selected");
+        liOn.setAttribute("aria-selected", "true");
+        liOn.setAttribute("tabindex", "0");
 
-            var element2 = document.getElementById("liPedido");
-            element2.classList.remove("bf-ui-tab--unselected");
-            element2.classList.add('bf-ui-tab--selected');
+        liOff.classList.remove("bf-ui-tab--selected");
+        liOff.classList.add("bf-ui-tab--unselected");
+        liOff.setAttribute("aria-selected", "false");
+        liOff.setAttribute("tabindex", "-1");
+      };
 
-            var element = document.getElementById("divResumenPedidos");
-            element.classList.remove("display_panel_active");
-            element.classList.add('display_panel');
-
-            var element3 = document.getElementById("liResumenPedidos");
-            element3.classList.remove("bf-ui-tab--selected");
-            element3.classList.add('bf-ui-tab--unselected');
-        }
+      if (active === 2) 
+      {
+        activar(divResumen, liResumen, divPedidos, liPedidos);
+      } else 
+      {
+        activar(divPedidos, liPedidos, divResumen, liResumen);
+      }
     }
 
     function Reload()
@@ -84,11 +78,6 @@
             items_per_page: 20
         });
 
-        //  $('#ShowCarrito').paginate({
-        //      pagination_class: 'paginationCarrito',
-        //     items_per_page: 20
-        // });
-
         $("#cmb-pedidos").change(function () {
             FiltroPedido($(this).val())
             $('.pagination__controls').remove();
@@ -99,8 +88,17 @@
             });
             ShowTotalesPedidos($(this).val())
         });
+        
+        panel_active(1) //Se realiza por primera vez la carga de los pedidos del cliente
 
         srcImg() //se cargaran las imagenes de logos de proveedores y fotos de productos en las secciones de Cotizacion y Pedidos
+
+        getResumenCompra(false); //Se realiza por primera vez la carga del resumen de compra por proveedor
+
+        //Se detecta cual radio button esta seleccionado, para llamar a la funcion GetTipoResumen
+        document.querySelectorAll('input[name="TipoResumen"]').forEach(radio => {
+            radio.addEventListener('change', GetTipoResumen);
+        });
     })
 
     function FiltroPedido(NumPedido)
@@ -229,7 +227,60 @@
         return elementosSinDuplicados;
     }
 
+    function getResumenCompra(tipoResumen) 
+    {
+        let idPersona = sessionStorage.getItem('SelValue');
+
+        $('#ResumenCompra').DataTable({
+          responsive: true,
+          info: false,
+          bDestroy: true,
+          language: { url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+          ajax: {
+            url: path + "MisPedidos/GetResumenCompra?IdCliente=" + idPersona + "&TipoResumen=" + tipoResumen,
+            type: 'POST',
+            dataSrc: ""            // <- lista plana
+          },
+          columns: [
+            { data: "proveedor",   title: "Proveedor" },
+            { data: "producto",    title: "Producto" },
+            { data: "numPedidos",  title: "Total Pedidos" },
+            { data: "totalProds",  title: "Total Productos" },
+            { data: "totalPiezas", title: "Total Piezas" },
+            { data: "totalCompra", title: "Total Compra" }
+          ],
+          columnDefs: [
+            {
+                // Formato moneda para totalCompra (última columna, índice 5)
+                targets: 5,
+                render: function (data, type, row) {
+                    // Si el tipo es 'display', formatea; si no, deja el valor original (para ordenar bien)
+                    if (type === 'display' || type === 'filter') {
+                        let valor = parseFloat(data) || 0;
+                        return valor.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+                    }
+                    return data;
+                },
+                className: 'text-end' // Alineación a la derecha para montos
+            },
+            {
+                // Alineado centrado para totalProds, totalPiezas y totalCompra
+                targets: [2, 3, 4],
+                className: 'text-center'
+            }
+        ]
+        });
+    }
+
+    function GetTipoResumen() 
+    {
+        const seleccionado = document.querySelector('input[name="TipoResumen"]:checked');
+
+        getResumenCompra(seleccionado.value) //Se llena la tabla ResumenCompra
+    }
+
 </script>
+
 
 @if (Model.TotalesPedidos.HasProduct == true)
 {
@@ -251,10 +302,10 @@
     <div class="col-12 col-xxl-10 cart-container cart-container--fixed cart-container--fixed-in" data-id="cart_container1">
         <ul class="bf-ui-tab-container" data-js="tab-container" data-id="tab-container1" role="tablist">
             <li id="liPedidos" data-js="tab" role="tab" aria-selected="true" aria-controls="tab_active" data-id="tab_active" onclick="panel_active(1)" aria-label="Carrito (1)" class="bf-ui-tab bf-ui-tab--selected">
-                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text cantidad_carrito">Pedidos (1)</span>
+                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text cantidad_carrito">Mis Pedidos</span>
             </li>
             <li id="liResumenPedidos" data-js="tab" role="tab" aria-selected="false" aria-controls="tab_saved_for_later" onclick="panel_active(2)" data-id="tab_saved_for_later" aria-label="Guardados (0)" class="bf-ui-tab bf-ui-tab--unselected">
-                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text">Resumen de Pedidos</span>
+                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text">Resumen de Compra</span>
             </li>
         </ul>
     </div>
@@ -410,7 +461,22 @@
             </div>
         </div>
     </div>
-    <div id="divResumenPedidos" class="row display_panel col-xxl-10">
+    <div id="divSeleccionResumen" class="row display_panel col-xxl-10">
+        <p class="fw-bold mb-3">Selecciona un tipo de resumen</p>
+        <div id="tipoResumen" class="mb-2">
+            <input type="radio" class="btn-check" name="TipoResumen" id="optProv" value="false" autocomplete="off" checked>
+            <label class="btn btn-outline-primary me-2" for="optProv">
+                Por Proveedor
+            </label>
+            <input type="radio" class="btn-check" name="TipoResumen" id="optProd" value="true" autocomplete="off">
+            <label class="btn btn-outline-primary" for="optProd">
+                Por Producto
+            </label>
+        </div>
+        <div class="table-responsive mt-3">
+            <table id="ResumenCompra" class="display nowrap table-responsive w-100" style="width:100%" >
+            </table>
+        </div>
     </div>
     <div class="col-sm-0 col-xxl-1"></div>
 </div>

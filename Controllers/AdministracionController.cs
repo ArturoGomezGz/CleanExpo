@@ -539,7 +539,7 @@ namespace ExpoMR.Controllers
                     Usuario.Invitacion = (string)dr["Invitacion"];
                     Usuario.InvMasiva = (bool)dr["InvMasiva"];
 
-                Usuarios.Add(Usuario);
+                    Usuarios.Add(Usuario);
                 }
 
 			    dB.Close();
