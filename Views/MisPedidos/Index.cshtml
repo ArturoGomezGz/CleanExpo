@@ -93,7 +93,7 @@
 
         srcImg() //se cargaran las imagenes de logos de proveedores y fotos de productos en las secciones de Cotizacion y Pedidos
 
-        getResumenCompra(false); //Se realiza por primera vez la carga del resumen de compra por proveedor
+        getResumenCompra(0); //Se realiza por primera vez la carga del resumen de compra por proveedor
 
         //Se detecta cual radio button esta seleccionado, para llamar a la funcion GetTipoResumen
         document.querySelectorAll('input[name="TipoResumen"]').forEach(radio => {
@@ -229,6 +229,8 @@
 
     function getResumenCompra(tipoResumen) 
     {
+        console.log(tipoResumen);
+
         let idPersona = sessionStorage.getItem('SelValue');
 
         $('#ResumenCompra').DataTable({
@@ -242,12 +244,12 @@
             dataSrc: ""            // <- lista plana
           },
           columns: [
-            { data: "proveedor",   title: "Proveedor" },
-            { data: "producto",    title: "Producto" },
-            { data: "numPedidos",  title: "Total Pedidos" },
-            { data: "totalProds",  title: "Total Productos" },
-            { data: "totalPiezas", title: "Total Piezas" },
-            { data: "totalCompra", title: "Total Compra" }
+            { data: "proveedor",   title: "Proveedor" },        //Indice 0
+            { data: "producto",    title: "Producto" },         //Indice 1
+            { data: "numPedidos",  title: "Total Pedidos" },    //Indice 2
+            { data: "totalProds",  title: "Total Productos" },  //Indice 3
+            { data: "totalPiezas", title: "Total Piezas" },     //Indice 4
+            { data: "totalCompra", title: "Total Compra" }      //Indice 5
           ],
           columnDefs: [
             {
@@ -268,7 +270,27 @@
                 targets: [2, 3, 4],
                 className: 'text-center'
             }
-        ]
+          ],
+
+          // Ya que la tabla está inicializada, podemos manipular columnas
+          initComplete: function(settings, json) 
+          {            
+            let api = this.api();
+
+            if (tipoResumen == 0) // Por proveedor
+            {                
+                api.column(1).visible(false); //Producto
+                api.column(3).visible(true);  //Total Productos
+            } 
+            else // Por producto
+            {                
+                api.column(1).visible(true);  //Producto
+                api.column(3).visible(false); //Total Productos
+            }
+
+            // Ajusta el layout visual después del cambio
+            api.columns.adjust().draw(false);
+          }
         });
     }
 
@@ -301,10 +323,10 @@
     <div class="col-xxl-1"></div>
     <div class="col-12 col-xxl-10 cart-container cart-container--fixed cart-container--fixed-in" data-id="cart_container1">
         <ul class="bf-ui-tab-container" data-js="tab-container" data-id="tab-container1" role="tablist">
-            <li id="liPedidos" data-js="tab" role="tab" aria-selected="true" aria-controls="tab_active" data-id="tab_active" onclick="panel_active(1)" aria-label="Carrito (1)" class="bf-ui-tab bf-ui-tab--selected">
-                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text cantidad_carrito">Mis Pedidos</span>
+            <li id="liPedidos" data-js="tab" role="tab" aria-selected="true" aria-controls="tab_active" data-id="tab_active" onclick="panel_active(1)" class="bf-ui-tab bf-ui-tab--selected">
+                <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text">Mis Pedidos</span>
             </li>
-            <li id="liResumenPedidos" data-js="tab" role="tab" aria-selected="false" aria-controls="tab_saved_for_later" onclick="panel_active(2)" data-id="tab_saved_for_later" aria-label="Guardados (0)" class="bf-ui-tab bf-ui-tab--unselected">
+            <li id="liResumenPedidos" data-js="tab" role="tab" aria-selected="false" aria-controls="tab_saved_for_later" onclick="panel_active(2)" data-id="tab_saved_for_later" class="bf-ui-tab bf-ui-tab--unselected">
                 <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text">Resumen de Compra</span>
             </li>
         </ul>
@@ -464,11 +486,11 @@
     <div id="divSeleccionResumen" class="row display_panel col-xxl-10">
         <p class="fw-bold mb-3">Selecciona un tipo de resumen</p>
         <div id="tipoResumen" class="mb-2">
-            <input type="radio" class="btn-check" name="TipoResumen" id="optProv" value="false" autocomplete="off" checked>
+            <input type="radio" class="btn-check" name="TipoResumen" id="optProv" value="0" autocomplete="off" checked>
             <label class="btn btn-outline-primary me-2" for="optProv">
                 Por Proveedor
             </label>
-            <input type="radio" class="btn-check" name="TipoResumen" id="optProd" value="true" autocomplete="off">
+            <input type="radio" class="btn-check" name="TipoResumen" id="optProd" value="1" autocomplete="off">
             <label class="btn btn-outline-primary" for="optProd">
                 Por Producto
             </label>

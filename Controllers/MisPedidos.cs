@@ -209,7 +209,7 @@ namespace ExpoMR.Controllers
             return Json(Pedido);
         }
 
-        public JsonResult GetResumenCompra(int IdCliente, bool TipoResumen)
+        public JsonResult GetResumenCompra(int IdCliente, int TipoResumen)
         {
             var lista = new List<ResumenCompraCliente>();
 
