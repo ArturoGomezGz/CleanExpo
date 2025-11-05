@@ -1,11 +1,15 @@
 using ExpoMR.Clases;
 using ExpoMR.Datos;
+using ExpoMR.Models;
 using ExpoMR.Servicios;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Net;
+using System.Net.Http.Headers;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +47,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     //Máximo de intentos para bloquear
     options.Lockout.MaxFailedAccessAttempts = 5;
 });
+
+// Cargar opciones SSRS
+builder.Services.Configure<SSRSOptions>(builder.Configuration.GetSection("SSRS"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

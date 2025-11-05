@@ -11,6 +11,10 @@ using Nancy.Conventions;
 using Org.BouncyCastle.Utilities;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Extensions.Options;
+using System.Net.Http;
+using System.Net;
+
 
 namespace ExpoMR.Controllers
 {
@@ -20,12 +24,81 @@ namespace ExpoMR.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private static IConfiguration _configuration;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly SSRSOptions _ssrs;
 
-        public CarritoController(UserManager<IdentityUser> userManager, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public CarritoController(UserManager<IdentityUser> userManager, 
+                                IConfiguration configuration, 
+                                IWebHostEnvironment webHostEnvironment,
+                                IOptions<SSRSOptions> ssrsOptions)
         {
             _userManager = userManager;
             _configuration = configuration;
             this.webHostEnvironment = webHostEnvironment;
+            _ssrs = ssrsOptions.Value;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DescargarOfertas(string format)
+        {
+            int IdCliente = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+
+            // Validamos formato permitido
+            var fmt = (format ?? "").ToUpperInvariant();
+            if (fmt != "PDF" && fmt != "EXCELOPENXML")
+                return BadRequest("Formato no soportado.");
+
+            // Construimos URL de SSRS (URL Access)
+            var baseUrl = _ssrs.ReportServerUrl?.TrimEnd('/');
+            var path = _ssrs.ReportPath?.Trim();
+            if (string.IsNullOrWhiteSpace(baseUrl) || string.IsNullOrWhiteSpace(path))
+                return StatusCode(500, "Configuración SSRS incompleta.");
+
+            var reportUrl = $"{baseUrl}?{Uri.EscapeDataString(path)}" +
+                            $"&rs:Command=Render&rs:Format={Uri.EscapeDataString(fmt)}" +
+                            $"&Cliente={IdCliente}";
+
+            // Handler con credenciales de dominio (NTLM)
+            var handler = new HttpClientHandler
+            {
+                Credentials = new NetworkCredential(_ssrs.User, _ssrs.Password, _ssrs.Domain),
+                PreAuthenticate = true,
+                AllowAutoRedirect = true,
+                UseDefaultCredentials = false
+            };
+
+            byte[] bytes;
+            try
+            {
+                using var http = new HttpClient(handler, disposeHandler: true);
+
+                // SSRS puede tardar; si lo deseas, ajusta el timeout:
+                http.Timeout = TimeSpan.FromMinutes(1);
+
+                bytes = await http.GetByteArrayAsync(reportUrl);
+            }
+            catch (HttpRequestException ex)
+            {
+                // Loguea ex para diagnóstico
+                return StatusCode(502, "Error al comunicarse con SSRS.");
+            }
+
+            // Content-Type y nombre de archivo
+            string contentType, extension;
+            if (fmt == "PDF")
+            {
+                contentType = "application/pdf";
+                extension = "pdf";
+            }
+            else
+            {
+                contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                extension = "xlsx";
+            }
+
+            var fileName = $"OfertasMR_Expo_{DateTime.Now:yyyyMMdd}.{extension}";
+
+            return File(bytes, contentType, fileName);
         }
 
         public async Task<IActionResult> Index()
