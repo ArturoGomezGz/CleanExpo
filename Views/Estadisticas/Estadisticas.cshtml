@@ -24,6 +24,9 @@
                 <li class="nav-item">
                     <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#Ventacliente"> Venta Cliente</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#MisOfertas"> Mis Ofertas</a>
+                </li>
             </ul>
         </div>
         <div class="card-body tab-content">
@@ -97,6 +100,11 @@
             <div class="tab-pane" id="Ventacliente">
                 <div class="row">
                     <table id="venta__cliente" class="display" style="width:100%"></table>
+                </div>
+            </div>
+            <div class="tab-pane" id="MisOfertas">
+                <div class="row">
+                    <table id="Mis__Ofertas" class="display" style="width:100%"></table>
                 </div>
             </div>
         </div>
@@ -608,6 +616,31 @@
 
         //     }).error(function () {});
        
+
+        $('#Mis__Ofertas').DataTable({
+            responsive: true,
+            "info": false,
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "ajax": {
+                url: path + "Estadisticas/GetMisOfertas",
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [                
+                { data: "producto", title: "Producto"},
+                { data: "descuento", title: "Descuento",
+                    render: function (data, type, row) {
+                            return data + ' %';
+                        }
+                },
+                { data: "laboratorio", title: "Laboratorio" }
+            ],
+            order: [
+                [2, 'asc'], // primero laboratorio
+                [0, 'asc']  // luego producto
+            ]
+        });
+
         GridDetalleProducto(0)
         GridDetalleVentaCliente(0)
     });

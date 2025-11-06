@@ -444,5 +444,37 @@ namespace ExpoMR.Controllers
 
 			return Json(jsonData.rows);
         }
-    }
+
+		[HttpPost]
+		public JsonResult GetMisOfertas()
+		{
+            int idProveedor = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
+			List<OfertasProv> OfertasProv = new();
+
+			string query = "SELECT Ofertas.IdProducto, Ofertas.Producto, Ofertas.Descuento, Ofertas.Laboratorio FROM GetOfertasProv (@IdProveedor) AS Ofertas";
+
+			DB dB = new();
+			SqlParameter[] parameters = new SqlParameter[1];
+			parameters[0] = new SqlParameter("@IdProveedor", idProveedor);
+
+
+			SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+			while (dr.Read())
+			{
+				OfertasProv Oferta = new OfertasProv();
+
+				Oferta.IdProducto = (Int16)dr["IdProducto"];
+				Oferta.Producto = (string)dr["Producto"];
+				Oferta.Descuento = (decimal)dr["Descuento"];
+				Oferta.Laboratorio = (string)dr["Laboratorio"];
+
+				OfertasProv.Add(Oferta);
+			}
+
+			dB.Close();
+
+			return Json(OfertasProv);
+		}
+	}
 }
