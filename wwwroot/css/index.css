@@ -1549,3 +1549,13 @@ div.fotoCarrito {
     width: 50% !important;
 }
 
+
+/* ----------------------- Canvas Grafica de visitas de Proveedores --------------------
+------------------------------------------------------------------------*/
+
+#canvasVisitas {
+    width: 50% !important;
+    height: 70% !important;
+    display: block;
+    margin: 0 auto;
+}

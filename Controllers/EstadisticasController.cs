@@ -306,13 +306,15 @@ namespace ExpoMR.Controllers
         public JsonResult GetDetalleVentaCliente(int IdCliente = 0)
         {
             int idProveedor = Convert.ToInt32(HttpContext.Session.GetString("ClienteSel"));
-            string query = "SELECT vPedidos.IdPedido, vProductos.Nombre + ' ' + vProductos.Presentacion AS Nombre, vProductos.Codigo, vPedidos.Cantidad, vPedidos.Total " +
+
+            string query = "SELECT vPedidos.IdProducto, vProductos.Nombre + ' ' + vProductos.Presentacion AS Nombre, vProductos.Codigo, SUM(vPedidos.Cantidad) AS Cantidad, SUM(vPedidos.Total) AS Total " +
                 "FROM vPedidos INNER JOIN " +
                 "VProductos ON vPedidos.IdProducto = VProductos.IdProducto INNER JOIN " +
                 "mLaboratorios ON VProductos.IdLaboratorio = mLaboratorios.IdLaboratorio " +
                 "WHERE mLaboratorios.Proveedor = @IdProveedor " +
                 "AND vPedidos.Cliente = @IdCliente " +
-                "ORDER BY vProductos.Nombre, vPedidos.IdPedido";
+                "GROUP BY vPedidos.IdProducto, vProductos.Nombre, vProductos.Presentacion, vProductos.Codigo " +
+                "ORDER BY vProductos.Nombre";
 
             DB dB = new();
             SqlParameter[] parameters = new SqlParameter[2];
@@ -327,7 +329,7 @@ namespace ExpoMR.Controllers
                        from row in dr.Cast<System.Data.Common.DbDataRecord>()
                        select new
                        {
-                           IdPedido = row["IdPedido"],
+                           IdProducto = row["IdProducto"],
                            Nombre = row["Nombre"],
                            Codigo = row["Codigo"],
                            Cantidad = row["Cantidad"],

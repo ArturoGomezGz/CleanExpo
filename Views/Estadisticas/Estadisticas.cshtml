@@ -18,7 +18,7 @@
                 <li class="nav-item">
                     <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#ventas"> Ventas</a>
                 </li>
-@*                 <li class="nav-item">
+               @*<li class="nav-item">
                     <a class="nav-link link-item-titulo" data-bs-toggle="tab" href="#monedas"> Monedas</a>
                 </li> *@
                 <li class="nav-item">
@@ -34,8 +34,8 @@
                 <div class="form-group">
                     <div class="row">
                         <h4> Visitas </h4>
-                        <div class="col-md-12">
-                            <canvas id="canvasVisitas" width="300" height="200"></canvas>
+                        <div class="col-md-12 text-center">
+                            <canvas id="canvasVisitas"></canvas>
                         </div>
                     </div>
                     <hr />
@@ -214,6 +214,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <p class="mb-0"><strong>Total de Productos:</strong> <span id="totalProductos"></span></p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-0"><strong>Total de Piezas:</strong> <span id="totalPiezas"></span></p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-0"><strong>Total de Compra:</strong> <span id="totalCompra"></span></p>
+                    </div>
+                </div>
                 <div class="row mt-4">
                     <table id="detalle__VentaCliente" class="display" style="width:100%"></table>
                 </div>
@@ -405,7 +416,11 @@
                 window.myBar = new Chart(ctx4, {
                     type: "line",
                     data: cdVisitas,
-                    options: chartOptions
+                    options: {
+                    responsive: true, // Evita que Chart.js escale automáticamente
+                    maintainAspectRatio: false, // permite adaptar alto y ancho según el CSS
+                    chartOptions
+                    }
                 });
             },
             error: function (xhr, status, error) {
@@ -720,26 +735,62 @@
     function GridDetalleVentaCliente(Cliente)
     {
         $('#detalle__VentaCliente').DataTable({
+            destroy: true, // <- Importante si recargas el modal varias veces
             responsive: true,
             bFilter: false,
-            "info": false,
-            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
-            "ajax": {
+            info: false,
+            language: { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+            ajax: {
                 url: path + "Estadisticas/GetDetalleVentaCliente?IdCliente=" + Cliente,
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns": [
-                { "data": "nombre", title: " Nombre " },
-                { "data": "codigo", title: " Codigo " },
-                { "data": "cantidad", title: " Cantidad " },
+            columns: [
+                { data: "nombre", title: "Nombre" },
+                { data: "codigo", title: "Código" },
+                { data: "cantidad", title: "Cantidad" },
                 {
-                    "data": "total", title: " Total ",
-                    "render": function (data, type, row) {
+                    data: "total", title: "Total",
+                    render: function (data, type, row) {
                         return FormatoMoneda(data);
                     }
                 }
-            ]
+            ], //se calculan los totales de numero de productos, piezas y compra
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+
+                // Función auxiliar para convertir a número
+                var intVal = function (i) {
+                    return typeof i === 'string'
+                        ? parseFloat(i.replace(/[\$,]/g, '')) || 0
+                        : typeof i === 'number'
+                            ? i
+                            : 0;
+                };
+
+                // Total de piezas (columna Cantidad)
+                var totalPiezas = api
+                    .column(2, { page: 'all' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total de compra (columna Total)
+                var totalCompra = api
+                    .column(3, { page: 'all' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total de productos (número de registros)
+                var totalProductos = data.length;
+
+                $('#totalProductos').text(totalProductos);
+                $('#totalPiezas').text(totalPiezas);
+                $('#totalCompra').text(FormatoMoneda(totalCompra));
+            }
         });
     }
 
