@@ -72,11 +72,14 @@
     <div class="col-md-2">
     </div>
     <div class="col-md-3">
-        <button id="btn-Agregar" type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#ListaLaboratoriosModal" style="display: inline-table;"> Agregar </button>
+        <button id="btn-Agregar" type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#ListaLaboratoriosModal" style="display: inline-table;"> Agregar Laboratorio </button>       
     </div>
     <div class="col-md-3">
-        @* <button id="btn-AddMonedas" type="button" class="btn btn-azul" style="display: inline-table;"> Asignar Monedas </button> *@
-    </div>    
+        <button id="btn-AgregarProducto" type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#ListaProductosModal" style="display: inline-table;"> Agregar Producto </button>
+    </div>
+    @*<div class="col-md-3">
+         <button id="btn-AddMonedas" type="button" class="btn btn-azul" style="display: inline-table;"> Asignar Monedas </button> 
+    </div>*@    
 </div>
 <br>
 <div class="row mb-2">
@@ -115,6 +118,8 @@
         $('#Laboratorios').DataTable({
             responsive: true,
             "info": false,
+            pageLength: 5,
+            "lengthMenu": [5, 10, 20],
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Administracion/GetLaboratorios?IdPersona=" + $("#IdPersona").val(),
@@ -141,6 +146,7 @@
             responsive: true,
             "info": false,
             pageLength: 5,
+            "lengthMenu": [5, 10, 20],
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Administracion/GetAddLabs",
@@ -166,6 +172,8 @@
         $('#OfertasProveedor').DataTable({
             responsive: true,
             "info": false,
+            pageLength: 5,
+            "lengthMenu": [5, 10, 20],
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
             "ajax": {
                 url: path + "Administracion/GetOfertasProv?IdPersona=" + $("#IdPersona").val(),
@@ -185,6 +193,34 @@
                 [2, 'asc'], // primero laboratorio
                 [0, 'asc']  // luego producto
             ]
+        });
+
+        $('#AddProductos').DataTable({
+            responsive: true,
+            "info": false,
+            pageLength: 5,
+            "lengthMenu": [5, 10, 20],
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "ajax": {
+                url: path + "Administracion/GetAddProductosProv?IdProveedor=" + $("#IdPersona").val(),
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    "data": "idProducto",
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return '<button type="button" class="btn  btn-outline-success" onclick="addProdProv(' + row.idProducto + ',' + row.idLaboratorio + ',' + (row.iva ? 1 : 0) + ')" title="btn-cancel">'
+                                + ' <i class="fas fa-plus" aria-hidden="true"></i>'
+                                + ' </button>';
+                        }
+                        return data;
+                    },
+                },
+                { "data": "producto" }
+            ],
+            "order": [[1, "asc"]] // 1 = índice de la columna “producto”, “asc” = ascendente
         });
     });
 
@@ -317,9 +353,29 @@
                     element.setAttribute("placeholder", tablalab.rows().count() + 1);
                 }                
             }).error(function () {
-                ShowAlert("No fue posible cargar sus datos", false);
+                ShowAlert("No fue posible cargar los Laboratorios", false);
             });
     }
+
+    function addProdProv(idProducto, idLaboratorio, iva){
+            const IdPersona = $("#IdPersona").val()
+
+            $.post(path + "Administracion/AddProdProv",
+                {
+                    IdPersona: IdPersona,
+                    idProducto: idProducto,
+                    idLaboratorio: idLaboratorio,
+                    iva: iva
+                },
+                function (data) {
+                    if(data.response){
+                        var tabla = $('#AddProductos').DataTable();
+                        tabla.ajax.reload();
+                    }
+                }).error(function () {
+                    ShowAlert("No fue posible agregar el producto", false);
+                });
+        }
 
     function deleteLab(IdLaboratorio){
         $.post(path + "Administracion/DeleteLab",
@@ -421,6 +477,38 @@
                         </div>
                     </div>
                 </div>              
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-rojo" data-bs-dismiss="modal"> Salir </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ListaProductosModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLaboratorio">Asigna Productos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row label__bold">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <table id="AddProductos" class="display " style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Producto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-rojo" data-bs-dismiss="modal"> Salir </button>

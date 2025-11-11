@@ -73,4 +73,15 @@ namespace ExpoMR.Models
 
         public byte[] imgProductos { get; set; }
     }
+
+    public class AddProductoProv
+    {
+        public Int16 IdProducto { get; set; }
+
+        public string Producto { get; set; }
+
+        public Int16 IdLaboratorio { get; set; }
+
+        public bool Iva { get; set; }
+    }
 }

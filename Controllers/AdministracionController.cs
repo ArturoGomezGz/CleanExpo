@@ -623,8 +623,39 @@ namespace ExpoMR.Controllers
 
                 return Json(rm);
             }
-
+        
             [HttpPost]
+            public JsonResult addProdProv(int idProducto, int idLaboratorio, int iva)
+            {
+                var rm = new ResponseModel();
+
+                string query = "INSERT mProductos (IdProducto, IdLaboratorio, Iva) "
+                + "VALUES(@idProducto, @idLaboratorio, @iva)";
+
+            try
+                {
+                    DB dB = new();
+                    SqlParameter[] parameters = new SqlParameter[3];
+                    parameters[0] = new SqlParameter("@idProducto", idProducto);
+                    parameters[1] = new SqlParameter("@idLaboratorio", idLaboratorio);
+                    parameters[2] = new SqlParameter("@iva", iva);
+
+                    dB.ExecuteNonQuery(query, ref parameters, commandType: CommandType.Text);
+
+                    rm.Response = true;
+                    rm.Message = "Sus datos se guardaron correctamente";
+                }
+                catch (Exception e)
+                {
+                    rm.Response = false;
+                    rm.Message = e.Message;
+                }
+
+                return Json(rm);
+            }
+
+
+        [HttpPost]
             public JsonResult AddProveedor(int IdPersona)
             {
                 var rm = new ResponseModel();
@@ -738,6 +769,40 @@ namespace ExpoMR.Controllers
 			    dB.Close();
 
 			    return Json(laboratorios);
+            }
+
+            [HttpPost]
+            public JsonResult GetAddProductosProv(int IdProveedor)
+            {
+                List<AddProductoProv> addProductos = new();
+
+                string query = "SELECT IndigoProd.IdProducto, IndigoProd.Nombre + ' ' + IndigoProd.Presentacion + ' - ' + IndigoProd.Unidades AS Producto, IndigoProd.IdLaboratorio, IndigoProd.Iva "
+                               + "FROM Indigo.dbo.vProductos AS IndigoProd "
+                               + "WHERE IndigoProd.Status IN (0, 3, 4, 5) " // --0 = Activo, 3 = Nuevo, 4 = Liquidación, 5 = Pre Nuevo
+                               + "AND IndigoProd.IdLaboratorio IN (SELECT mLaboratorios.IdLaboratorio FROM ExpoMR.dbo.mLaboratorios WHERE Proveedor = @IdProveedor) "
+                               + "AND IndigoProd.IdProducto NOT IN (SELECT mProductos.IdProducto FROM ExpoMR.dbo.mProductos)";
+
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdProveedor", IdProveedor);
+
+                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+                while (dr.Read())
+                {
+                    AddProductoProv producto = new AddProductoProv();
+
+                    producto.IdProducto = (Int16)dr["IdProducto"];
+                    producto.Producto = (string)dr["Producto"];
+                    producto.IdLaboratorio = (Int16)dr["IdLaboratorio"];
+                    producto.Iva = (bool)dr["Iva"];
+
+                    addProductos.Add(producto);
+                }
+
+                dB.Close();
+
+                return Json(addProductos);
             }
 
             [HttpPost]
