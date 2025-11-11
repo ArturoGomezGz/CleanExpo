@@ -371,6 +371,8 @@
                     if(data.response){
                         var tabla = $('#AddProductos').DataTable();
                         tabla.ajax.reload();
+                        var tablalab = $('#OfertasProveedor').DataTable();
+                        tablalab.ajax.reload();
                     }
                 }).error(function () {
                     ShowAlert("No fue posible agregar el producto", false);
