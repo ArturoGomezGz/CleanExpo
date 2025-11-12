@@ -124,6 +124,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Presentación</th>
                                     <th scope="col">Fórmula</th>
@@ -175,6 +176,7 @@
                                         <div class="col-6">
                                             <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo_general"></label>
                                             <img id="imgDescuento_general" />
+                                            <img id="imgLiquidacion_general" src="../Imagenes/liquidacion.png" />
                                         </div>
                                     </div>
                                     <div class="row">
@@ -396,13 +398,15 @@
             $('#BuscarProductoGeneral').dataTable().fnDestroy();
             let Busqueda = $("#txtBuscarProdGeneral").val();
 
+            const liquidationImg = path + "../Imagenes/liquidacion.png";
+
             $('#BuscarProductoGeneral').DataTable({
                 responsive: true, // Activa la responsividad
                 columnDefs: [
-                    { targets: [0, 1, 2], className: "text-wrap" }, // Ajusta nombre, presentación y fórmula
-                    { targets: 0, responsivePriority: 1 }, // Nombre (Prioridad alta)
-                    { targets: 4, responsivePriority: 2 }, // Precio (Prioridad media)
-                    { targets: 5, responsivePriority: 1, orderable: false } // Botón Agregar (Siempre visible)
+                    { targets: [0, 1, 2, 3], className: "text-wrap" }, //Status, nombre, presentación y fórmula
+                    { targets: 0, responsivePriority: 1 }, // Status (Prioridad alta)
+                    { targets: 5, responsivePriority: 2 }, // Precio (Prioridad media)
+                    { targets: 6, responsivePriority: 1, orderable: false } // Botón Agregar (Siempre visible)
                 ],
                 "info": false,
                 "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
@@ -414,13 +418,33 @@
                     dataSrc: ""
                 },
                 "columns": [
-                    { "data": "nombre", title: "Nombre" },
+                    { "data": "status", title: "Estatus", visible:false },
+                    {
+                        data: "nombre",
+                        title: "Nombre",
+                        render: function (data, type, row) {
+                            // Si el status es 4, agregamos la imagen de liquidación junto al nombre
+                            if (row.status === 4) {
+                                return `
+                                    <div class="d-flex align-items-center">
+                                        <img src="${liquidationImg}"
+                                                alt="Liquidación"
+                                                title="Producto en liquidación"
+                                                style="margin-right:8px;">
+                                        <span>${data}</span>
+                                    </div>`;
+                            }
+                            // Si no está en estatus 4, solo mostramos el nombre
+                            return `<span>${data}</span>`;
+                        }
+                    },
                     { "data": "presentacion", title: "Presentación" },
                     { "data": "formula", title: "Fórmula" },
                     { "data": "laboratorio", title: "Laboratorio" },
                     {
                         "data": "precioFinal", title: "Precio Final S/I",
-                        "render": function (data, type, row) {
+                        "render": function (data, type, row) 
+                        {
                             return FormatoMoneda(data);
                         }
                     },
@@ -475,6 +499,12 @@
                     }
                     else {
                         document.getElementById(`imgDescuento_general`).style.display = 'none';
+                    }
+                    if (resultado.status === 4) {
+                        document.getElementById(`imgLiquidacion_general`).style.display = 'block';
+                    }
+                    else {
+                        document.getElementById(`imgLiquidacion_general`).style.display = 'none';
                     }
                     document.getElementById('iva_general').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
                     document.getElementById('getiva_general').innerHTML = " ";

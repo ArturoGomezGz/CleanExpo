@@ -73,6 +73,7 @@ namespace ExpoMR.Controllers
                     ProdCotizado.Controlado = (bool)(dr["Controlado"]);
                     ProdCotizado.IdProveedor = Idproveedor;
                     ProdCotizado.imgProductos = GeneralesController.GetFoto(IdProducto);
+                    ProdCotizado.Status = (byte)dr["Status"];
                 }
 
 				dB.Close();

@@ -26,6 +26,8 @@ namespace ExpoMR.Models
         public bool PorConfirmar { get; set; }
 
 		public bool Iva { get; set; }
-	}
+
+        public byte Status { get; set; }
+    }
 
 }

@@ -417,9 +417,10 @@ namespace ExpoMR.Controllers
                     querySearhTerms = querySearhTerms.Substring(0, querySearhTerms.Length - 3) + ") ";
                     n++;
                 }
-                string query = "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, vProductos.Formula, mLaboratorios.Laboratorio "
+                string query = "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, vProductos.Formula, mLaboratorios.Laboratorio, mProdEmp.Status "
                                + "FROM mLaboratorios INNER JOIN "
-                               + "vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio "
+                               + "vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN "
+                               + "Indigo.dbo.mProdEmp ON vProductos.IdProducto = mProdEmp.IdProducto "
                                + querySearhTerms
                                + " AND vProductos.IdProducto NOT IN (SELECT dCotizaciones.IdProducto FROM dCotizaciones WHERE dCotizaciones.IdCotizacion = " + IdCotizacion + " AND dCotizaciones.Solicitado = 1 AND dCotizaciones.PorConfirmar = 1) "
                                + " ORDER BY vProductos.Nombre ASC ";
@@ -438,7 +439,8 @@ namespace ExpoMR.Controllers
                            nombre = row[1],
                            presentacion = row[2],
                            formula = row[3] == DBNull.Value ? "" : row[3],
-                           laboratorio = row[4]
+                           laboratorio = row[4],
+                           status = row[5]
                         }).ToArray()
                 };
                 rm.Response = true;
@@ -488,7 +490,8 @@ namespace ExpoMR.Controllers
                             caja = row["Caja"],
                             codigo = row["Codigo"],
                             cantidad = row["Cantidad"],
-                            formula = (row["Formula"] != DBNull.Value ? row["Formula"] : "")
+                            formula = (row["Formula"] != DBNull.Value ? row["Formula"] : ""),
+                            status = row["Status"]
                 }).ToArray()
             };
 

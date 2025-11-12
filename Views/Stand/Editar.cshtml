@@ -498,6 +498,15 @@
                 {
                     document.getElementById(`imgDescuento`).style.display = 'none';
                 }
+
+                if(resultado.status === 4)
+                {
+                    document.getElementById(`imgLiquidacion`).style.display = 'block';
+                }
+                else
+                {
+                    document.getElementById(`imgLiquidacion`).style.display = 'none';
+                }
                 document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
                 document.getElementById('getiva').innerHTML = " ";
                 document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
@@ -560,7 +569,8 @@
                 },
                 function (data)
                 {
-                    var ImgDescuentoCliente;
+                    var ImgDescuentoCliente, ImgLiquidacionCliente;
+
                     if (data.response)
                     {
                         if (data.result.length > 0)
@@ -578,8 +588,19 @@
                                 }
                                 else
                                 {
-                                    ImgDescuentoCliente = '<img id="imgDescuento" class="d-none" alt="Desceuento" src = "../Imagenes/descuentoExclusivo.png"/>'                                  
+                                    ImgDescuentoCliente = '<img id="imgDescuento" class="d-none" alt="Desceuento" src = "../Imagenes/descuentoExclusivo.png"/>'
                                 }
+
+                                if (value.status === 4)
+                                {
+                                    ImgLiquidacionCliente = '<img id="imgLiquidacion" alt="Desceuento" src = "../Imagenes/liquidacion.png"/>'
+                                }
+                                else
+                                {
+                                    ImgLiquidacionCliente = '<img id="imgLiquidacion" class="d-none" alt="Desceuento" src = "../Imagenes/liquidacion.png"/>'
+                                }
+
+
                                 lista += '<div class="tab-content_productos mb-4">'
                                     + '    <div class="lista__busqueda_stand">'
                                     + '        <div class="listaStand_article">'
@@ -600,6 +621,7 @@
                                     + '           <p><strong>Descuento: </strong><label class="label_Descuento_stnd"> ' + FormatoMoneda(value.descuento) + '</label></p>'
                                     + '           <p>Precio Final: <label class="label_PrecioFinal_stnd"> ' + FormatoMoneda(value.precioFinal) + '</label></p>'
                                     + '           ' + ImgDescuentoCliente
+                                    + '           ' + ImgLiquidacionCliente
                                     + '     </div>'
                                     + '    </div>'
                                     + '     <hr />'
@@ -722,7 +744,10 @@
             }
         });
 
-        const table = $('#ProductoStand').DataTable({
+        const liquidationImg = path + "../Imagenes/liquidacion.png";
+
+        const table = $('#ProductoStand').DataTable
+        ({
             responsive: true,
             "info": false,
             "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
@@ -733,8 +758,37 @@
                 type: 'POST',
                 dataSrc: ""
             },
-            "columns": [                                
-                { "data": "nombre", title: "Nombre" },
+            "columns": 
+            [
+                { // 0 - status (oculto) pero con "clave de orden"
+                  data: "status",
+                  title: "Estatus",
+                  visible: false,
+                  render: function (data, type, row) {
+                    // Para ordenar: 4 -> 0 (arriba), el resto -> 1
+                    if (type === 'sort') return (data === 4 ? 0 : 1);
+                    return data;
+                  }
+                },
+                {
+                    data: "nombre",
+                    title: "Nombre",
+                    render: function (data, type, row) {
+                        // Si el status es 4, agregamos la imagen de liquidación junto al nombre
+                        if (row.status === 4) {
+                            return `
+                                <div class="d-flex align-items-center">
+                                    <img src="${liquidationImg}"
+                                            alt="Liquidación"
+                                            title="Producto en liquidación"
+                                            style="margin-right:8px;">
+                                    <span>${data}</span>
+                                </div>`;
+                        } 
+                        // Si no está en estatus 4, solo mostramos el nombre
+                        return `<span>${data}</span>`;
+                    }
+                },
                 { "data": "presentacion", title: "Presentación" },
                 { "data": "formula", title: "Fórmula" },
                 {
@@ -752,7 +806,9 @@
 					}
 
                 }
-            ]
+            ],
+            // orden inicial: primero status (4 al frente), luego nombre
+            order: [[0, 'asc'], [1, 'asc']]
         });       
         
         //Asignacion de monedas por visita de stand de proveedor
@@ -982,7 +1038,12 @@
                         <div class="row">
                             <div class="col-md-12 col-lg-7 md-55 text-justify">
                                 <div class="row">
-                                    <h5 class="card-title "><a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()"><label id="lbl_nombre"></label><i class="fas fa-chevron-down mx-2"></i></a></h5>
+                                    <h5 class="card-title ">
+                                        <a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()">
+                                            <label id="lbl_nombre"></label>
+                                            <i class="fas fa-chevron-down mx-2"></i>
+                                        </a>
+                                    </h5>
                                     <div class="collapse" id="collapseImage">
                                         <div id="imgModalOndemand" class="card card-body frame"></div>
                                     </div>
@@ -994,7 +1055,6 @@
                                 <div id="div_restringido" class="mb-3">
                                     <strong>Restringido a:  </strong> <label class="label__producto" id="restringido"></label>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-6">
                                     </div>
@@ -1002,7 +1062,6 @@
                                         <strong>Precio Regular: </strong><label class="label__PrecioMR" id="precioRegular"></label>
                                     </div>
                                 </div>
-
                                 <div class="row" >
                                     <div class="col-6">
                                         <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
@@ -1018,6 +1077,7 @@
                                     <div class="col-6">
                                         <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo"></label>
                                         <img id="imgDescuento" />
+                                        <img id="imgLiquidacion" src="../Imagenes/liquidacion.png" />
                                     </div>
                                 </div>
                                 <div class="row">

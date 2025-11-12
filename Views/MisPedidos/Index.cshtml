@@ -369,6 +369,10 @@
                                             <div class="col-sm-6">
                                                 <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
                                                 <p><label>@String.Format(model.Presentacion)</label></p>
+                                                @if (model.Status == 4)
+                                                {
+                                                    <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
+                                                }
                                             </div>
                                             <div class="col-sm-6 resumen_producto">
                                                 <p class="mb-0 pb-0"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
@@ -401,6 +405,10 @@
                                             <div class="col-sm-6">
                                                 <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
                                                 <p><label>@String.Format(model.Presentacion)</label></p>
+                                                @if (model.Status == 4)
+                                                {
+                                                    <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
+                                                }
                                             </div>
                                             <div class="col-sm-6 resumen_producto">
                                                 <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>
@@ -441,6 +449,10 @@
                                         <div class="col-sm-6">
                                             <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
                                             <p><label>@String.Format(model.Presentacion) </label></p>
+                                            @if (model.Status == 4)
+                                            {
+                                                <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
+                                            }
                                         </div>
                                         <div class="col-sm-6 resumen_producto">
                                             <p class="mb-1"><strong>Cantidad: </strong>@string.Format(model.Cantidad.ToString())</p>

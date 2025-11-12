@@ -155,8 +155,9 @@ namespace ExpoMR.Controllers
             {
                 string query = "SELECT CAST(ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS int)AS Registro, " +
                                 "mLaboratorios.Proveedor, mLaboratorios.Laboratorio, vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, " +
-								"vCotizaciones.Cantidad, vCotizaciones.PrecioFinal, vCotizaciones.Total, vCotizaciones.PorConfirmar, vProductos.Iva " +
+								"vCotizaciones.Cantidad, vCotizaciones.PrecioFinal, vCotizaciones.Total, vCotizaciones.PorConfirmar, vProductos.Iva, mProdEmp.Status " +
                                 "FROM vCotizaciones INNER JOIN " +
+                                "Indigo.dbo.mProdEmp ON vCotizaciones.IdProducto = mProdEmp.IdProducto INNER JOIN " +
                                 "vProductos ON vCotizaciones.IdProducto = vProductos.IdProducto INNER JOIN " +
                                 "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
                                 "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
@@ -185,7 +186,8 @@ namespace ExpoMR.Controllers
                     lcarrito.PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]);
                     lcarrito.total = Convert.ToDecimal(dr["Total"]);
                     lcarrito.PorConfirmar = Convert.ToBoolean(dr["PorConfirmar"]);
-					lcarrito.Iva = Convert.ToBoolean((dr["Iva"]));
+					lcarrito.Iva = Convert.ToBoolean(dr["Iva"]);
+                    lcarrito.Status = Convert.ToByte(dr["Status"]);
 
 					listaCarrito.Add(lcarrito);
                 }

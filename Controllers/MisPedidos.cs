@@ -103,9 +103,10 @@ namespace ExpoMR.Controllers
                             "ORDER BY mProveedores.Nombre, vProductos.Nombre ASC) AS RegistroProveedor, mLaboratorios.Proveedor, " +
                             "ROW_NUMBER() OVER(PARTITION BY vProductos.IdLaboratorio, vPedidos.IdPedido ORDER BY mProveedores.Nombre, " +
                             "vProductos.Nombre ASC) AS RegistroPedido, vPedidos.IdPedido, vProductos.IdProducto, vProductos.Nombre, " +
-                            "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio, vProductos.Iva " +
+                            "vProductos.Presentacion, vPedidos.Cantidad, vPedidos.PrecioFinal, vPedidos.Total, mLaboratorios.Laboratorio, vProductos.Iva, mProdEmp.Status " +
                             "FROM vPedidos INNER JOIN " +
                             "vProductos ON vPedidos.IdProducto = vProductos.IdProducto INNER JOIN " +
+                            "Indigo.dbo.mProdEmp ON vProductos.IdProducto = mProdEmp.IdProducto INNER JOIN " +
                             "mLaboratorios ON vProductos.IdLaboratorio = mLaboratorios.IdLaboratorio INNER JOIN " +
                             "mProveedores ON mLaboratorios.Proveedor = mProveedores.IdPersona " +
                             "WHERE vPedidos.Cliente = @IdCliente " +
@@ -137,7 +138,8 @@ namespace ExpoMR.Controllers
                     PrecioFinal = Convert.ToDecimal(dr["PrecioFinal"]),
                     Total = Convert.ToDecimal(dr["Total"]),
                     Laboratorio = dr["Laboratorio"].ToString(),
-                    Iva = Convert.ToBoolean((dr["Iva"]))
+                    Iva = Convert.ToBoolean(dr["Iva"]),
+                    Status = Convert.ToByte(dr["Status"])
                 };
 
                 pedidos.Add(pedidoCarrito);

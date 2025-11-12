@@ -242,6 +242,7 @@ namespace ExpoMR.Controllers
                 producto.Descuento = (decimal)dr["Descuento"];
                 producto.DescuentoCLiente = (int)(dr["DescuentoCLiente"]);
                 producto.PrecioFinal = (decimal)(dr["PrecioFinal"]);
+                producto.Status = (byte)dr["Status"];
 
                 productos.Add(producto);
             }
@@ -299,8 +300,10 @@ namespace ExpoMR.Controllers
                                + " CAST(Precios.Precio - (CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2)) +" //Precio menos Descuento General
                                + " CAST(((Precios.Precio - CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2))) *" //Precio del Cliente
                                + " ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2))) AS DECIMAL(9,2)) AS PrecioFinal," //Descuento Especifico del Cliente
-                               + " CAST(dbo.GetPrecio(Precios.IdPersona, Precios.IdProducto) AS DECIMAL(9,2)) AS PrecioRegular"
+                               + " CAST(dbo.GetPrecio(Precios.IdPersona, Precios.IdProducto) AS DECIMAL(9,2)) AS PrecioRegular,"
+                               + " mProdEmp.Status"
                                + " FROM dbo.GetMultiPrecioExpo(@search) AS Precios INNER JOIN"
+                               + " mProdEmp ON Precios.IdProducto = mProdEmp.IdProducto INNER JOIN"
                                + " ExpoMR.dbo.vProductos ON Precios.IdProducto = vProductos.IdProducto LEFT OUTER JOIN"
                                + " ExpoMR.dbo.dProductosDescuento ON vProductos.IdProducto = dProductosDescuento.IdProducto AND dProductosDescuento.Cliente =" + IdUsuario
                                + " ORDER BY vProductos.Nombre, vProductos.Presentacion";
@@ -323,7 +326,8 @@ namespace ExpoMR.Controllers
                            DescuentoCliente = row[6],
                            PrecioFinal = row[7],
                            PrecioRegular = row[8],
-                           imgProducto = GeneralesController.GetFoto(Convert.ToInt32(row[1]))
+                           imgProducto = GeneralesController.GetFoto(Convert.ToInt32(row[1])),
+                           Status = row[9]
                        }).ToArray()
                 };
 
@@ -618,6 +622,7 @@ namespace ExpoMR.Controllers
                 ProdCotizado.Cantidad = (int)dr["Cantidad"];
                 ProdCotizado.Formula = (dr["Formula"] != DBNull.Value ? (string)dr["Formula"] : "");
                 ProdCotizado.Controlado = (bool)(dr["Controlado"]);
+                ProdCotizado.Status = (byte)dr["Status"];
             }
 
 			dB.Close();

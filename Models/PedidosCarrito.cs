@@ -29,5 +29,7 @@ namespace ExpoMR.Models
         public string Laboratorio { get; set; }
 
         public bool Iva { get; set; }
+
+        public byte Status { get; set; }
     }
 }

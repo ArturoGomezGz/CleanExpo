@@ -935,6 +935,10 @@
                                             @String.Format(model.Nombre)
                                         </a>
                                         <p class="mb-0"><label>@string.Format(model.Presentacion.ToString())</label></p>
+                                        @if (model.Status == 4)
+                                        {
+                                            <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
+                                        }
                                     </div>
                                     <div class="col-sm-5 col-lg-4 text-end">
                                         <input id="hdnPrecioFinal_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.PrecioFinal.ToString())">

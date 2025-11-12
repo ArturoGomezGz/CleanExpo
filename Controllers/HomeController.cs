@@ -88,10 +88,12 @@ namespace ExpoMR.Controllers
                             + "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, vProductos.Formula, mLaboratorios.Laboratorio, "
                             + "CAST(Precios.Precio - (CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2)) + "
                             + "CAST(((Precios.Precio - CAST(Precios.Precio * vProductos.Descuento / 100.0 AS DECIMAL(9, 2))) * "
-                            + "ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2))) AS DECIMAL(9,2)) AS PrecioFinal "
+                            + "ISNULL(dProductosDescuento.Descuento,0)) / 100.0 AS DECIMAL(9,2))) AS DECIMAL(9,2)) AS PrecioFinal, "
+                            + "mProdEmp.Status "
                             + "FROM ExpoMR.dbo.mLaboratorios INNER JOIN "
                             + "ExpoMR.dbo.vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN "
                             + "Indigo.dbo.GetMultiPrecioExpo(@search) AS Precios ON Precios.IdProducto = vProductos.IdProducto LEFT OUTER JOIN "
+                            + "Indigo.dbo.mProdEmp ON Precios.IdProducto = mProdEmp.IdProducto LEFT OUTER JOIN "
                             + "ExpoMR.dbo.dProductosDescuento ON vProductos.IdProducto = dProductosDescuento.IdProducto AND dProductosDescuento.Cliente = " + IdUsuario + " "
                             + "ORDER BY vProductos.Nombre ASC";
 
@@ -109,7 +111,8 @@ namespace ExpoMR.Controllers
                        presentacion = row[2],
                        formula = row[3] == DBNull.Value ? "" : row[3],
                        laboratorio = row[4],
-                       precioFinal = row[5]
+                       precioFinal = row[5],
+                       status = row[6]
                    }).ToArray()
             };
 

@@ -25,6 +25,8 @@ namespace ExpoMR.Models
         public Int16 imgProducto { get; set; }
         
         public byte[] imgProductos { get; set; }
+
+        public byte Status { get; set; }
     }
 
     public class CotizaProducto
@@ -72,6 +74,8 @@ namespace ExpoMR.Models
         public int IdProveedor { get; set; }
 
         public byte[] imgProductos { get; set; }
+
+        public byte Status { get; set; }
     }
 
     public class AddProductoProv
