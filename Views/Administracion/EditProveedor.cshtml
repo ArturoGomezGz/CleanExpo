@@ -1,4 +1,8 @@
-﻿@model EditarProveedorViewModel;
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@model EditarProveedorViewModel;
 @{
     ViewData["Title"] = "EditProveedor";
 }
@@ -169,32 +173,6 @@
             ]
         });
 
-        $('#OfertasProveedor').DataTable({
-            responsive: true,
-            "info": false,
-            pageLength: 5,
-            "lengthMenu": [5, 10, 20],
-            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
-            "ajax": {
-                url: path + "Administracion/GetOfertasProv?IdPersona=" + $("#IdPersona").val(),
-                type: 'POST',
-                dataSrc: ""
-            },
-            "columns": [
-                { data: "producto", title: "Producto"},
-                { data: "descuento", title: "Descuento",
-                    render: function (data, type, row) {
-                            return data + ' %';
-                        }
-                },
-                { data: "laboratorio", title: "Laboratorio" }
-            ],
-            order: [
-                [2, 'asc'], // primero laboratorio
-                [0, 'asc']  // luego producto
-            ]
-        });
-
         $('#AddProductos').DataTable({
             responsive: true,
             "info": false,
@@ -222,7 +200,145 @@
             ],
             "order": [[1, "asc"]] // 1 = índice de la columna “producto”, “asc” = ascendente
         });
+
+        DescuentosProveedorDt(); //Se realiza la carga de las ofertas del proveedor
     });
+
+    //Al hacer clic en editar un descuento de proveedor
+    $(document).on('click', '.editDescuento', function (event) 
+    {
+        var row = $(this).closest("tr");
+
+        $("td", row).each(function () {
+            if ($(this).find(".text").length > 0) {
+                $(this).find(".text").show();
+            }
+        });
+
+        var inputElement = row.find('.text');
+        inputElement.prop('disabled', false);
+
+        row.find(".acepteditdescuento").show();
+        row.find(".canceleditdescuento").show();
+        $(this).hide();
+    });
+
+    //Al hacer clic en el cancelar de edicion de un descuento de proveedor
+    $(document).on('click', '.canceleditdescuento', function (event)
+    {
+        var row = $(this).closest("tr");
+
+        $("td", row).each(function () {
+            if ($(this).find(".text").length > 0) {
+                $(this).find(".text").show();
+            }
+        });
+
+        var inputElement = row.find('.text');
+        inputElement.prop('disabled', true);
+        inputElement.val(0);
+
+        row.find(".acepteditdescuento").hide();
+        row.find(".editDescuento").show();
+        $(this).hide();
+    });
+
+    //Al hacer clic en el aceptar de edicion de un descuento de proveedor
+    $(document).on('click', '.acepteditdescuento', function (event)
+    {
+        var idproducto, DescProveedorNew;
+        var row = $(this).closest("tr");
+
+        $("td", row).each(function () 
+        {
+            if ($(this).find(".text").length > 0) {
+                DescProveedorNew = row.find('.text').val();
+                idproducto = row.find('.hdfIdProducto').val();
+            }
+        });
+
+        row.find(".editDescuento").show();
+        row.find(".canceleditdescuento").hide();
+        $(this).hide();
+
+        var inputElement = row.find('.text');
+
+        if(DescProveedorNew >= 0)
+        {
+            $.post(path + "Administracion/ActualizaDescProv",
+            {
+                IdProducto: idproducto,
+                DescProvNew: DescProveedorNew
+            },
+            function (data)
+            {  
+                inputElement.prop('disabled', true);
+                row.find(".editDescuento").hide()
+                $('#OfertasProveedor').dataTable().fnDestroy();
+                DescuentosProveedorDt(); //Se realiza la carga de las ofertas del proveedor
+            }).error(function () 
+            {
+                ShowAlert("No fue posible cargar las ofertas del proveedor", false);
+            });
+        }
+        else
+        {
+            alert("El descuento ingresado no puede ser menor que 0.", false);
+            inputElement.prop('disabled', true);
+            var tabla = $('#OfertasProveedor').DataTable();
+            tabla.ajax.reload();
+        }
+    });
+
+    function DescuentosProveedorDt()
+    {
+        $('#OfertasProveedor').DataTable({
+            responsive: true,
+            "info": false,
+            pageLength: 5,
+            "lengthMenu": [5, 10, 20],
+            "language": {"url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"},
+            "ajax": {
+                url: path + "Administracion/GetOfertasProv?IdPersona=" + $("#IdPersona").val(),
+                type: 'POST',
+                dataSrc: ""
+            },
+            "columns": [
+                {
+                    data: "idProducto",
+                    render: function (data, type, row)
+                    {
+                        if (@User.IsInRole("DescuentosProveedor").ToString().ToLower())
+                        {
+                            return '<input class="hdfIdProducto" type="hidden" value="' + data + '" style="display:none"/>'
+                                + '<a class="btn btn-naranja-ch editDescuento" ><i class="fas fa-pencil-alt"></i></a>'
+                                + '<a class="btn btn-outline-success acepteditdescuento" style="display:none"><i class="fas fa-check" aria-hidden="true"></i></a>'
+                                + '<a class="btn btn-outline-danger canceleditdescuento" style="display:none"><i class="fas fa-ban" aria-hidden="true"></i></a>';
+                        }
+                        else
+                        {
+                            return ''
+                        }  
+                    }
+                },
+                { data: "producto", title: "Producto"},
+                { data: "descuento", title: "Descuento",
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return '<input name="Descuento" class="text" type="number" value="' + data + '" disabled style="width:70px; heigth:70px"/> %'
+                        }
+
+                        return data;
+                    },
+                },
+                { data: "laboratorio", title: "Laboratorio" }
+            ],
+            order: [
+                [2, 'asc'], // primero laboratorio
+                [0, 'asc']  // luego producto
+            ]
+        });
+    }
 
     function save() {
         const nombre = $("#txt_box_Proveedor").val();

@@ -19,6 +19,7 @@ namespace ExpoMR.Controllers
     public class AdministracionController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _rolManager;
         private readonly IEmailSender _emailSender;
         private static IConfiguration _configuration;
 
@@ -551,429 +552,454 @@ namespace ExpoMR.Controllers
 
         #region PROVEEDORES
 
-		    public IActionResult EditProveedor(int IdProveedor = 0)
-		    {
-                EditarProveedorViewModel Proveedor = new EditarProveedorViewModel();
+		public IActionResult EditProveedor(int IdProveedor = 0)
+		{
+            EditarProveedorViewModel Proveedor = new EditarProveedorViewModel();
 
-                string query = "SELECT mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, ISNULL(mMonedero.Saldo,0) AS Saldo, COUNT(mLaboratorios.IdLaboratorio) AS NumLabAsignados " +
-                                "FROM mProveedores LEFT OUTER JOIN " +
-                                "mMonedero ON mProveedores.IdPersona = mMonedero.IdPersona LEFT OUTER JOIN " +
-                                "mLaboratorios ON mProveedores.IdPersona = mLaboratorios.Proveedor " +
-                                "WHERE mProveedores.IdPersona = @IdProveedor " +
-                                "GROUP BY mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, mMonedero.Saldo";
-
-                DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@IdProveedor", IdProveedor);
-
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
-
-                while (dr.Read())
-                {
-                    if (dr["IdPersona"] != null)
-                    {
-                        Proveedor.IdPersona = (int)dr["IdPersona"];
-                        Proveedor.Nombre = (string)dr["Nombre"];
-                        Proveedor.Descripcion = (string)dr["Descripcion"];
-                        Proveedor.Saldo = (int)dr["Saldo"];
-                        Proveedor.NumLabAsignados = (int)dr["NumLabAsignados"];
-                    }
-                    else
-                    {
-                        Proveedor = new EditarProveedorViewModel();
-                        Proveedor.IdPersona = IdProveedor;
-                        Proveedor.Nombre = "";
-                        Proveedor.Descripcion = "";
-                        Proveedor.Saldo = 0;
-                    }
-                }
-			    
-                dB.Close();
-			
-                return View(Proveedor);
-		    }
-
-            public IActionResult Proveedor()
-            {
-                return View();
-            }
-
-            [HttpPost]
-            public JsonResult AddLab(int IdPersona, int idLaboratorio)
-            {
-                var rm = new ResponseModel();
-
-                try
-                {
-                    DB dB = new();
-                    SqlParameter[] parameters = new SqlParameter[2];
-                    parameters[0] = new SqlParameter("@proveedor", IdPersona);
-                    parameters[1] = new SqlParameter("@laboratorio", idLaboratorio);
-
-                    dB.ExecuteNonQuery("InicializaLaboratorio", ref parameters);
-
-                    rm.Response = true;
-                    rm.Message = "Sus datos se guardaron correctamente";
-                }
-                catch (Exception e)
-                {
-                    rm.Response = false;
-                    rm.Message = e.Message;
-                }
-
-                return Json(rm);
-            }
-        
-            [HttpPost]
-            public JsonResult addProdProv(int idProducto, int idLaboratorio, int iva)
-            {
-                var rm = new ResponseModel();
-
-                string query = "INSERT mProductos (IdProducto, IdLaboratorio, Iva) "
-                + "VALUES(@idProducto, @idLaboratorio, @iva)";
-
-            try
-                {
-                    DB dB = new();
-                    SqlParameter[] parameters = new SqlParameter[3];
-                    parameters[0] = new SqlParameter("@idProducto", idProducto);
-                    parameters[1] = new SqlParameter("@idLaboratorio", idLaboratorio);
-                    parameters[2] = new SqlParameter("@iva", iva);
-
-                    dB.ExecuteNonQuery(query, ref parameters, commandType: CommandType.Text);
-
-                    rm.Response = true;
-                    rm.Message = "Sus datos se guardaron correctamente";
-                }
-                catch (Exception e)
-                {
-                    rm.Response = false;
-                    rm.Message = e.Message;
-                }
-
-                return Json(rm);
-            }
-
-
-        [HttpPost]
-            public JsonResult AddProveedor(int IdPersona)
-            {
-                var rm = new ResponseModel();
-
-                try
-                {
-                    DB dB = new();
-                    SqlParameter[] parameters = new SqlParameter[1];
-                    parameters[0] = new SqlParameter("@IdPersona", IdPersona);
-
-                    dB.ExecuteNonQuery("AddProv", ref parameters);
-
-                    rm.Response = true;
-                    rm.Message = "El Proveedor se dio de alta correctamente";
-                }
-                catch (Exception e)
-                {
-                    rm.Response = false;
-                    rm.Message = e.Message;
-                }
-
-                return Json(rm);
-            }
-
-            [HttpPost]
-            public JsonResult DeleteLab(int idLaboratorio)
-            {
-                var rm = new ResponseModel();
-
-                try
-                {
-                    DB dB = new();
-                    SqlParameter[] parameters = new SqlParameter[1];
-                    parameters[0] = new SqlParameter("@idLaboratorio", idLaboratorio);
-
-                    if (Convert.ToBoolean(dB.ExecuteReturnValue("DeleteLabProv", ref parameters)))
-                    {
-                        rm.Response = true;
-                        rm.Message = "El laboratorio fue eliminado correctamente";
-                    }
-                    else
-                    {
-                        rm.Response = false;
-                        rm.Message = "El Laboratorio no fue eliminado, debido a que tiene producto(s) usados en otros procesos";
-                    }
-                }
-                catch (Exception e)
-                {
-                    rm.Response = false;
-                    rm.Message = e.Message;
-                }
-
-                return Json(rm);
-            }
-
-            [HttpPost]
-            public JsonResult DeleteProveedor(int IdPersona)
-            {
-                var rm = new ResponseModel();
-
-                try
-                {
-                    DB dB = new();
-                    SqlParameter[] parameters = new SqlParameter[1];
-                    parameters[0] = new SqlParameter("@proveedor", IdPersona);
-
-                    if (Convert.ToBoolean(dB.ExecuteReturnValue("DeleteProv", ref parameters)))
-                    {
-                        rm.Response = true;
-                        rm.Message = "BAJA CORRECTA";
-                    }
-                    else
-                    {
-                        rm.Response = false;
-                        rm.Message = "EL PROVEEDOR TIENE USUARIO PARA INGREAR AL SISTEMA O TIENE LABORATORIOS ASIGNADOS";
-                    }
-                }
-                catch (Exception e)
-                {
-                    rm.Response = false;
-                    rm.Message = e.Message;
-                }
-
-                return Json(rm);
-            }
-
-            [HttpPost]
-            public JsonResult GetAddLabs()
-            {
-                List<mLaboratorio> laboratorios = new();
-                
-                string query = "SELECT Lab.IdLaboratorio, Lab.Laboratorio FROM GetLaboratoriosProv(@IdLaboratorio, @Asignados) AS Lab";
-
-                DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@IdLaboratorio", "0");
-                parameters[1] = new SqlParameter("@Asignados", false);
-
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
-
-                while (dr.Read())
-                {
-                    mLaboratorio laboratorio = new mLaboratorio();
-
-                    laboratorio.IdLaboratorio = (Int16)dr["IdLaboratorio"];
-                    laboratorio.Laboratorio = (string)dr["Laboratorio"];
-
-                    laboratorios.Add(laboratorio);
-                }
-
-			    dB.Close();
-
-			    return Json(laboratorios);
-            }
-
-            [HttpPost]
-            public JsonResult GetAddProductosProv(int IdProveedor)
-            {
-                List<AddProductoProv> addProductos = new();
-
-                string query = "SELECT IndigoProd.IdProducto, IndigoProd.Nombre + ' ' + IndigoProd.Presentacion + ' - ' + IndigoProd.Unidades AS Producto, IndigoProd.IdLaboratorio, IndigoProd.Iva "
-                               + "FROM Indigo.dbo.vProductos AS IndigoProd "
-                               + "WHERE IndigoProd.Status IN (0, 3, 4, 5) " // --0 = Activo, 3 = Nuevo, 4 = Liquidación, 5 = Pre Nuevo
-                               + "AND IndigoProd.IdLaboratorio IN (SELECT mLaboratorios.IdLaboratorio FROM ExpoMR.dbo.mLaboratorios WHERE Proveedor = @IdProveedor) "
-                               + "AND IndigoProd.IdProducto NOT IN (SELECT mProductos.IdProducto FROM ExpoMR.dbo.mProductos)";
-
-                DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@IdProveedor", IdProveedor);
-
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
-
-                while (dr.Read())
-                {
-                    AddProductoProv producto = new AddProductoProv();
-
-                    producto.IdProducto = (Int16)dr["IdProducto"];
-                    producto.Producto = (string)dr["Producto"];
-                    producto.IdLaboratorio = (Int16)dr["IdLaboratorio"];
-                    producto.Iva = (bool)dr["Iva"];
-
-                    addProductos.Add(producto);
-                }
-
-                dB.Close();
-
-                return Json(addProductos);
-            }
-
-            [HttpPost]
-            public JsonResult GetLaboratorios(int IdPersona)
-            {
-                List<mLaboratorio> laboratorios = new();
-
-                string query = "SELECT Lab.IdLaboratorio, Lab.Laboratorio FROM GetLaboratoriosProv(@IdLaboratorio, @Asignados) AS Lab";
-
-                DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@IdLaboratorio", IdPersona);
-                parameters[1] = new SqlParameter("@Asignados", true);
-
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
-
-                while (dr.Read())
-                {
-                    mLaboratorio laboratorio = new mLaboratorio();
-
-                    laboratorio.IdLaboratorio = (Int16)dr["IdLaboratorio"];
-                    laboratorio.Laboratorio = (string)dr["Laboratorio"];
-
-                    laboratorios.Add(laboratorio);
-                }
-
-			    dB.Close();
-
-			    return Json(laboratorios);
-            }
-
-            [HttpPost]
-            public JsonResult GetProveedores()
-            {
-                List<mProveedores> Proveedores = new();
-
-                string query = "SELECT Proveedores.IdPersona, UPPER(Proveedores.Nombre) AS Nombre, UPPER(Proveedores.Descripcion) AS Descripcion, Proveedores.Alta " +
-                                "FROM ( " +
-                                "		SELECT mPerEmp.IdPersona, LTRIM(mPersonas.Paterno + ' ' + mPersonas.Materno + ' ' + mPersonas.Nombre) AS Nombre, ISNULL(mPersonas.Descripcion, '') AS Descripcion, CAST(0 AS BIT) AS Alta " +
-                                "		FROM Indigo.dbo.mPersonas AS mPersonas INNER JOIN " +
-                                "		Indigo.dbo.mPerEmp AS mPerEmp on mPersonas.Persona = mPerEmp.Persona INNER JOIN " +
-                                "		Indigo.dbo.vRoles AS vRoles on mPerEmp.IdPersona = vRoles.IdPersona " +
-                                "		WHERE mPerEmp.IdEmpresa = @IdEmpresa " +
-                                "		AND vRoles.Proveedor = 1 " +
-                                "		AND mPerEmp.IdPersona NOT IN (SELECT mProveedores.IdPersona FROM mProveedores) " +
-                                "		UNION " +
-                                "		SELECT mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, CAST(1 AS BIT) AS Alta " +
-                                "		FROM ExpoMR.dbo.mProveedores " +
-                                "	)Proveedores " +
-                                "ORDER BY Proveedores.Alta DESC, Proveedores.Nombre";
+            string query = "SELECT mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, ISNULL(mMonedero.Saldo,0) AS Saldo, COUNT(mLaboratorios.IdLaboratorio) AS NumLabAsignados " +
+                            "FROM mProveedores LEFT OUTER JOIN " +
+                            "mMonedero ON mProveedores.IdPersona = mMonedero.IdPersona LEFT OUTER JOIN " +
+                            "mLaboratorios ON mProveedores.IdPersona = mLaboratorios.Proveedor " +
+                            "WHERE mProveedores.IdPersona = @IdProveedor " +
+                            "GROUP BY mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, mMonedero.Saldo";
 
             DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@IdEmpresa", 1);
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", IdProveedor);
 
-                SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
 
-                while (dr.Read())
+            while (dr.Read())
+            {
+                if (dr["IdPersona"] != null)
                 {
-                    mProveedores Proveedor = new mProveedores();
-
                     Proveedor.IdPersona = (int)dr["IdPersona"];
                     Proveedor.Nombre = (string)dr["Nombre"];
                     Proveedor.Descripcion = (string)dr["Descripcion"];
-                    Proveedor.Alta = (bool)dr["Alta"];
-
-                    Proveedores.Add(Proveedor);
+                    Proveedor.Saldo = (int)dr["Saldo"];
+                    Proveedor.NumLabAsignados = (int)dr["NumLabAsignados"];
                 }
+                else
+                {
+                    Proveedor = new EditarProveedorViewModel();
+                    Proveedor.IdPersona = IdProveedor;
+                    Proveedor.Nombre = "";
+                    Proveedor.Descripcion = "";
+                    Proveedor.Saldo = 0;
+                }
+            }
+			    
+            dB.Close();
+			
+            return View(Proveedor);
+		}
 
-			    dB.Close();
+        public IActionResult Proveedor()
+        {
+            return View();
+        }
 
-			    return Json(Proveedores);
+        [HttpPost]
+        public JsonResult AddLab(int IdPersona, int idLaboratorio)
+        {
+            var rm = new ResponseModel();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("@proveedor", IdPersona);
+                parameters[1] = new SqlParameter("@laboratorio", idLaboratorio);
+
+                dB.ExecuteNonQuery("InicializaLaboratorio", ref parameters);
+
+                rm.Response = true;
+                rm.Message = "Sus datos se guardaron correctamente";
+            }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
             }
 
-		    [HttpPost]
-		    public JsonResult GetOfertasProv(int IdPersona)
-		    {
-			    List<OfertasProv> OfertasProv = new();
+            return Json(rm);
+        }
+        
+        [HttpPost]
+        public JsonResult addProdProv(int idProducto, int idLaboratorio, int iva)
+        {
+            var rm = new ResponseModel();
 
-			    string query = "SELECT Ofertas.IdProducto, Ofertas.Producto, Ofertas.Descuento, Ofertas.Laboratorio FROM GetOfertasProv (@IdProveedor) AS Ofertas";
+            string query = "INSERT mProductos (IdProducto, IdLaboratorio, Iva) "
+            + "VALUES(@idProducto, @idLaboratorio, @iva)";
 
-			    DB dB = new();
-			    SqlParameter[] parameters = new SqlParameter[1];
-			    parameters[0] = new SqlParameter("@IdProveedor", IdPersona);
-
-
-			    SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
-
-			    while (dr.Read())
-			    {
-				    OfertasProv Oferta = new OfertasProv();
-
-                    Oferta.IdProducto = (Int16)dr["IdProducto"];
-                    Oferta.Producto = (string)dr["Producto"];
-                    Oferta.Descuento = (decimal)dr["Descuento"];
-                    Oferta.Laboratorio = (string)dr["Laboratorio"];
-
-				    OfertasProv.Add(Oferta);
-			    }
-
-			    dB.Close();
-
-			    return Json(OfertasProv);
-		    }
-
-		    [HttpPost]
-            public JsonResult SaveMonedas(int IdPersona, int monedas)
+        try
             {
-                var rm = new ResponseModel();
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("@idProducto", idProducto);
+                parameters[1] = new SqlParameter("@idLaboratorio", idLaboratorio);
+                parameters[2] = new SqlParameter("@iva", iva);
 
-                try
+                dB.ExecuteNonQuery(query, ref parameters, commandType: CommandType.Text);
+
+                rm.Response = true;
+                rm.Message = "Sus datos se guardaron correctamente";
+            }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
+            }
+
+            return Json(rm);
+        }
+
+
+        [HttpPost]
+        public JsonResult AddProveedor(int IdPersona)
+        {
+            var rm = new ResponseModel();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@IdPersona", IdPersona);
+
+                dB.ExecuteNonQuery("AddProv", ref parameters);
+
+                rm.Response = true;
+                rm.Message = "El Proveedor se dio de alta correctamente";
+            }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
+            }
+
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteLab(int idLaboratorio)
+        {
+            var rm = new ResponseModel();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@idLaboratorio", idLaboratorio);
+
+                if (Convert.ToBoolean(dB.ExecuteReturnValue("DeleteLabProv", ref parameters)))
                 {
-                    DB dB = new();
-                    SqlParameter[] parameters = new SqlParameter[5];
-                    parameters[0] = new SqlParameter("@origen", "0"); //0 = MR
-                    parameters[1] = new SqlParameter("@destino", IdPersona);
-                    parameters[2] = new SqlParameter("@idmotivo", 11); //11 = Compra Monedas
-                    parameters[3] = new SqlParameter("@monedas", monedas);
-                    parameters[4] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
-
-                    if (Convert.ToBoolean(dB.ExecuteReturnValue("MonedasAsignar", ref parameters)))
-                    {
-                        DB dB2 = new();
-                        SqlParameter[] parameters2 = new SqlParameter[1];
-                        parameters2[0] = new SqlParameter("@IdProveedor", IdPersona);
-
-                        rm.Result = dB2.ExecuteReturnValue("GetMonedasProv", ref parameters2);
-                        rm.Response = true;
-                        rm.Message = "Sus datos se guardaron correctamente";
-                    }
-                    else
-                    {
-                        rm.Response = false;
-                        rm.Message = "Ocurrió un error al ejecutar el procedimiento almacenado.";
-                    }
+                    rm.Response = true;
+                    rm.Message = "El laboratorio fue eliminado correctamente";
                 }
-                catch (Exception e)
+                else
                 {
                     rm.Response = false;
-                    rm.Message = e.Message;
+                    rm.Message = "El Laboratorio no fue eliminado, debido a que tiene producto(s) usados en otros procesos";
                 }
-
-                return Json(rm);
+            }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
             }
 
-            [HttpPost]
-            public JsonResult SaveProvedor(string nombre, string descripcion, int IdPersona)
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteProveedor(int IdPersona)
+        {
+            var rm = new ResponseModel();
+
+            try
             {
-                var rm = new ResponseModel();
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@proveedor", IdPersona);
 
-                try
+                if (Convert.ToBoolean(dB.ExecuteReturnValue("DeleteProv", ref parameters)))
                 {
-                    DB dB = new();
-                    SqlParameter[] parameters = new SqlParameter[3];
-                    parameters[0] = new SqlParameter("@IdProveedor", IdPersona);
-                    parameters[1] = new SqlParameter("@Nombre", nombre);
-                    parameters[2] = new SqlParameter("@Descripcion", descripcion);
+                    rm.Response = true;
+                    rm.Message = "BAJA CORRECTA";
+                }
+                else
+                {
+                    rm.Response = false;
+                    rm.Message = "EL PROVEEDOR TIENE USUARIO PARA INGREAR AL SISTEMA O TIENE LABORATORIOS ASIGNADOS";
+                }
+            }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
+            }
 
-                    dB.ExecuteNonQuery("EditProv", ref parameters);
+            return Json(rm);
+        }
 
+        [HttpPost]
+        public JsonResult GetAddLabs()
+        {
+            List<mLaboratorio> laboratorios = new();
+                
+            string query = "SELECT Lab.IdLaboratorio, Lab.Laboratorio FROM GetLaboratoriosProv(@IdLaboratorio, @Asignados) AS Lab";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdLaboratorio", "0");
+            parameters[1] = new SqlParameter("@Asignados", false);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            while (dr.Read())
+            {
+                mLaboratorio laboratorio = new mLaboratorio();
+
+                laboratorio.IdLaboratorio = (Int16)dr["IdLaboratorio"];
+                laboratorio.Laboratorio = (string)dr["Laboratorio"];
+
+                laboratorios.Add(laboratorio);
+            }
+
+			dB.Close();
+
+			return Json(laboratorios);
+        }
+
+        [HttpPost]
+        public JsonResult GetAddProductosProv(int IdProveedor)
+        {
+            List<AddProductoProv> addProductos = new();
+
+            string query = "SELECT IndigoProd.IdProducto, IndigoProd.Nombre + ' ' + IndigoProd.Presentacion + ' - ' + IndigoProd.Unidades AS Producto, IndigoProd.IdLaboratorio, IndigoProd.Iva "
+                            + "FROM Indigo.dbo.vProductos AS IndigoProd "
+                            + "WHERE IndigoProd.Status IN (0, 3, 4, 5) " // --0 = Activo, 3 = Nuevo, 4 = Liquidación, 5 = Pre Nuevo
+                            + "AND IndigoProd.IdLaboratorio IN (SELECT mLaboratorios.IdLaboratorio FROM ExpoMR.dbo.mLaboratorios WHERE Proveedor = @IdProveedor) "
+                            + "AND IndigoProd.IdProducto NOT IN (SELECT mProductos.IdProducto FROM ExpoMR.dbo.mProductos)";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdProveedor", IdProveedor);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            while (dr.Read())
+            {
+                AddProductoProv producto = new AddProductoProv();
+
+                producto.IdProducto = (Int16)dr["IdProducto"];
+                producto.Producto = (string)dr["Producto"];
+                producto.IdLaboratorio = (Int16)dr["IdLaboratorio"];
+                producto.Iva = (bool)dr["Iva"];
+
+                addProductos.Add(producto);
+            }
+
+            dB.Close();
+
+            return Json(addProductos);
+        }
+
+        [HttpPost]
+        public JsonResult GetLaboratorios(int IdPersona)
+        {
+            List<mLaboratorio> laboratorios = new();
+
+            string query = "SELECT Lab.IdLaboratorio, Lab.Laboratorio FROM GetLaboratoriosProv(@IdLaboratorio, @Asignados) AS Lab";
+
+            DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@IdLaboratorio", IdPersona);
+            parameters[1] = new SqlParameter("@Asignados", true);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            while (dr.Read())
+            {
+                mLaboratorio laboratorio = new mLaboratorio();
+
+                laboratorio.IdLaboratorio = (Int16)dr["IdLaboratorio"];
+                laboratorio.Laboratorio = (string)dr["Laboratorio"];
+
+                laboratorios.Add(laboratorio);
+            }
+
+			dB.Close();
+
+			return Json(laboratorios);
+        }
+
+        [HttpPost]
+        public JsonResult GetProveedores()
+        {
+            List<mProveedores> Proveedores = new();
+
+            string query = "SELECT Proveedores.IdPersona, UPPER(Proveedores.Nombre) AS Nombre, UPPER(Proveedores.Descripcion) AS Descripcion, Proveedores.Alta " +
+                            "FROM ( " +
+                            "		SELECT mPerEmp.IdPersona, LTRIM(mPersonas.Paterno + ' ' + mPersonas.Materno + ' ' + mPersonas.Nombre) AS Nombre, ISNULL(mPersonas.Descripcion, '') AS Descripcion, CAST(0 AS BIT) AS Alta " +
+                            "		FROM Indigo.dbo.mPersonas AS mPersonas INNER JOIN " +
+                            "		Indigo.dbo.mPerEmp AS mPerEmp on mPersonas.Persona = mPerEmp.Persona INNER JOIN " +
+                            "		Indigo.dbo.vRoles AS vRoles on mPerEmp.IdPersona = vRoles.IdPersona " +
+                            "		WHERE mPerEmp.IdEmpresa = @IdEmpresa " +
+                            "		AND vRoles.Proveedor = 1 " +
+                            "		AND mPerEmp.IdPersona NOT IN (SELECT mProveedores.IdPersona FROM mProveedores) " +
+                            "		UNION " +
+                            "		SELECT mProveedores.IdPersona, mProveedores.Nombre, mProveedores.Descripcion, CAST(1 AS BIT) AS Alta " +
+                            "		FROM ExpoMR.dbo.mProveedores " +
+                            "	)Proveedores " +
+                            "ORDER BY Proveedores.Alta DESC, Proveedores.Nombre";
+
+        DB dB = new();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("@IdEmpresa", 1);
+
+            SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+            while (dr.Read())
+            {
+                mProveedores Proveedor = new mProveedores();
+
+                Proveedor.IdPersona = (int)dr["IdPersona"];
+                Proveedor.Nombre = (string)dr["Nombre"];
+                Proveedor.Descripcion = (string)dr["Descripcion"];
+                Proveedor.Alta = (bool)dr["Alta"];
+
+                Proveedores.Add(Proveedor);
+            }
+
+			dB.Close();
+
+			return Json(Proveedores);
+        }
+
+		[HttpPost]
+		public JsonResult GetOfertasProv(int IdPersona)
+		{
+			List<OfertasProv> OfertasProv = new();
+
+			string query = "SELECT Ofertas.IdProducto, Ofertas.Producto, Ofertas.Descuento, Ofertas.Laboratorio FROM GetOfertasProv (@IdProveedor) AS Ofertas";
+
+			DB dB = new();
+			SqlParameter[] parameters = new SqlParameter[1];
+			parameters[0] = new SqlParameter("@IdProveedor", IdPersona);
+
+
+			SqlDataReader dr = dB.ExecuteReader(query, ref parameters, commandType: CommandType.Text);
+
+			while (dr.Read())
+			{
+				OfertasProv Oferta = new OfertasProv();
+
+                Oferta.IdProducto = (Int16)dr["IdProducto"];
+                Oferta.Producto = (string)dr["Producto"];
+                Oferta.Descuento = (decimal)dr["Descuento"];
+                Oferta.Laboratorio = (string)dr["Laboratorio"];
+
+				OfertasProv.Add(Oferta);
+			}
+
+			dB.Close();
+
+			return Json(OfertasProv);
+		}
+
+        [HttpPost]
+        public JsonResult ActualizaDescProv(int IdProducto, decimal DescProvNew) 
+        {
+            var rm = new ResponseModel();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("@IdProducto", IdProducto);
+                parameters[1] = new SqlParameter("@Descuento", DescProvNew);
+                parameters[2] = new SqlParameter("@IdEmail", HttpContext.Session.GetString("Session_IdEmail"));
+
+                dB.ExecuteNonQuery("ActualizaDescProv", ref parameters);
+                rm.Result = true;
+                rm.Message = "Descuento agregado con exito";
+            }
+            catch (Exception ex)
+            {
+                rm.Message = ex.Message;
+            }
+
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult SaveMonedas(int IdPersona, int monedas)
+        {
+            var rm = new ResponseModel();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[5];
+                parameters[0] = new SqlParameter("@origen", "0"); //0 = MR
+                parameters[1] = new SqlParameter("@destino", IdPersona);
+                parameters[2] = new SqlParameter("@idmotivo", 11); //11 = Compra Monedas
+                parameters[3] = new SqlParameter("@monedas", monedas);
+                parameters[4] = new SqlParameter("@usuario", HttpContext.Session.GetString("ClienteSel"));
+
+                if (Convert.ToBoolean(dB.ExecuteReturnValue("MonedasAsignar", ref parameters)))
+                {
+                    DB dB2 = new();
+                    SqlParameter[] parameters2 = new SqlParameter[1];
+                    parameters2[0] = new SqlParameter("@IdProveedor", IdPersona);
+
+                    rm.Result = dB2.ExecuteReturnValue("GetMonedasProv", ref parameters2);
                     rm.Response = true;
                     rm.Message = "Sus datos se guardaron correctamente";
                 }
-                catch (Exception e)
+                else
                 {
                     rm.Response = false;
-                    rm.Message = e.Message;
+                    rm.Message = "Ocurrió un error al ejecutar el procedimiento almacenado.";
                 }
-
-                return Json(rm);
             }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
+            }
+
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult SaveProvedor(string nombre, string descripcion, int IdPersona)
+        {
+            var rm = new ResponseModel();
+
+            try
+            {
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("@IdProveedor", IdPersona);
+                parameters[1] = new SqlParameter("@Nombre", nombre);
+                parameters[2] = new SqlParameter("@Descripcion", descripcion);
+
+                dB.ExecuteNonQuery("EditProv", ref parameters);
+
+                rm.Response = true;
+                rm.Message = "Sus datos se guardaron correctamente";
+            }
+            catch (Exception e)
+            {
+                rm.Response = false;
+                rm.Message = e.Message;
+            }
+
+            return Json(rm);
+        }
 
         #endregion
 

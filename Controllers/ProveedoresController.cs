@@ -647,6 +647,7 @@ namespace ExpoMR.Controllers
         public JsonResult productoAgregarDescuento(int IdCliente, int IdProducto, decimal PorcentajeDescuento)
         {
             var rm = new ResponseModel();
+
             try
             {
                 DB dB = new();
@@ -665,7 +666,7 @@ namespace ExpoMR.Controllers
             {
                 rm.Message = ex.Message;
             }
-            
+
             return Json(rm);
         }
 
