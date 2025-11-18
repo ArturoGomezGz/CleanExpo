@@ -395,7 +395,7 @@ namespace ExpoMR.Controllers
         }
 
         [HttpPost]
-        public JsonResult ProductoBusqueda(string Busqueda, int IdCotizacion)                               
+        public JsonResult ProductoBusqueda(string Busqueda, int IdCotizacion)
         {
             ResponseModel rm = new();
 			DB dB = new DB();
@@ -417,6 +417,9 @@ namespace ExpoMR.Controllers
                     querySearhTerms = querySearhTerms.Substring(0, querySearhTerms.Length - 3) + ") ";
                     n++;
                 }
+
+                querySearhTerms += "AND vProductos.Habilitar = 1";
+
                 string query = "SELECT vProductos.IdProducto, vProductos.Nombre, vProductos.Presentacion, vProductos.Formula, mLaboratorios.Laboratorio, mProdEmp.Status "
                                + "FROM mLaboratorios INNER JOIN "
                                + "vProductos ON mLaboratorios.IdLaboratorio = vProductos.IdLaboratorio INNER JOIN "

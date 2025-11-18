@@ -79,6 +79,8 @@ namespace ExpoMR.Controllers
                 n++;
             }
 
+            querySearhTerms += " AND vProductos.Habilitar = 1";
+
             string query = "DECLARE @search TTCotizar "
                             + "INSERT @search(IdPersona, IdProducto) "
                             + "SELECT " + IdUsuario + ", vProductos.IdProducto "

@@ -420,11 +420,21 @@ namespace ExpoMR.Controllers
             }
 
             [HttpPost]
-            public async Task<JsonResult> InvitacionMasivaClientes(int IdEmail, string UserName)
+            public async Task<JsonResult> InvitacionMasivaClientes(int IdEmail, string UserName, int idTipoUsuario)
             {
                 var rm = new ResponseModel();
 
-                try
+                DB dB = new();
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("@idemail", IdEmail);
+                parameters[1] = new SqlParameter("@tipousuario", idTipoUsuario);
+                parameters[2] = new SqlParameter("@sucursal", 1);
+
+                SqlDataReader dr = dB.ExecuteReader("UsuariosAgregar", ref parameters);
+
+                dB.Close();
+
+            try
                 {
                     var usuario = new AppUsuario
                     {
@@ -438,12 +448,12 @@ namespace ExpoMR.Controllers
                     {
                         //Se crea el usuario en la tabla AspNetUsers
                         var resultado = await _userManager.CreateAsync(usuario, "Expo2025");
+                        
+                        //Se asigna el rol dependiendo del tipo del usuario
+                        string Rol = (idTipoUsuario == 1 ? "Cliente" : "Proveedor");
 
                         if (resultado.Succeeded)
                         {
-                            string Rol = "";
-                            Rol = "Cliente";
-
                             //Se asigna el rol del usuario en la tabla AspNetUserRoles
                             await _userManager.AddToRoleAsync(usuario, Rol);
                         }
