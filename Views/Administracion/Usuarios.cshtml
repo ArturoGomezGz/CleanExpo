@@ -74,7 +74,6 @@
 		showControls(lasValue);									//se muestran o ocultan controles dependiendo del tipoUsuario seleccionado
 	})
 
-
 	$(document).ready(function () 
 	{
 		var lasValue = sessionStorage.getItem('SelTipoUsuario'); 
@@ -98,6 +97,7 @@
 
 			showControls(this.value);							  //se muestran o ocultan controles dependiendo del tipoUsuario seleccionado
 		});
+
 	});
 
 	function tableUsuarios() {
@@ -246,37 +246,66 @@
 		}		
 	}
 
-	function addUsuario(){		
+	function addUsuario() 
+	{
 		let idEmail = $("#idEmail").val();
 		let UserName = $("#userName").val();
 		let TipoCliente = $("#IdTipoCliente").val()
 		let Sucursal = $("#cmb-Sucursal").val()
 
+		const btn = document.getElementById("btnAceptar");
+
+		// Guardamos el texto original por si después quieres restaurarlo
+		const originalText = btn.innerHTML;
+
+		// Deshabilitar y mostrar mensaje
+		btn.disabled = true;
+		btn.innerHTML = `Creando Usuario...<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`;
+
 		if (Sucursal === "" || Sucursal === "0")
 		{
 			ShowAlert("Seleccione una Sucursal para Continuar", false)
+			btn.disabled = false;
+			btn.innerHTML = originalText;
 		}
 		else
 		{
-			$.post(path + "Administracion/AddUser",
+			// Simulación de tu lógica o llamada AJAX
+			$.ajax({
+				url: path + "Administracion/AddUser",
+				type: "POST",
+				data:
 				{
 					idEmail: idEmail,
 					UserName: UserName,
 					TipoCliente: TipoCliente,
-					Sucursal: Sucursal					
+					Sucursal: Sucursal
 				},
-				function (data) {
+				success: function (data)
+				{
+					//Aquí va la lógica de éxito
 					var myModalEl = document.getElementById('exampleModal');
 					var modal = bootstrap.Modal.getInstance(myModalEl)
 					modal.hide()
-					ShowAlert(data.message, data.response)					
+					ShowAlert(data.message, data.response)
 					$("#btn-close").click();
 					Reload()
-				}).error(function () {
-					ShowAlert("No fue posible cargar sus datos", false);
-				});
-		}
+				},
+				error: function (err)
+				{
+					// Manejo de error si corresponde
+					ShowAlert("No fue posible generar el usuario de la persona", false);
+				},
+				complete: function ()
+				{
+					// El complete SIEMPRE se ejecuta, falle o no falle
+					btn.disabled = false;
+					btn.innerHTML = originalText;
+				}
+			});
+		}		
 	}
+
 
 	function showControls(tipoUsuario) 
 	{
@@ -295,6 +324,7 @@
 
 		Reload()
 	}
+
 </script>
 
 <!-- Modal -->
@@ -316,7 +346,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" onclick="addUsuario()" class="btn btn-verde-medio">Aceptar</button>
+				<button id="btnAceptar" type="button" onclick="addUsuario()" class="btn btn-verde-medio">Aceptar</button>
 				<button type="button" class="btn btn-rojo" data-bs-dismiss="modal">Cancelar</button>
 			</div>
 		</div>
