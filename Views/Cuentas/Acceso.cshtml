@@ -38,9 +38,17 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-large btn-grad-sesion w-100 btn-lg">Iniciar Sesión</button>
+
                             @*<p class="link-acceso"><a asp-action="Registro">Regístrate como nuevo Usuario</a></p>*@
                             <p class="link-acceso"><a asp-action="OlvidoPassword">¿Olvidaste tu Contraseña?</a></p>
-                        </form>                     
+                        </form>
+
+                        <a class="btn btn-sm btn-outline-secondary"
+                           style="position: fixed; right: 12px; bottom: 12px; opacity: 0.6; z-index: 1050;"
+                           asp-controller="Generales" asp-action="ApiAdminLogin"
+                           title="API Admin Panel">
+                            Admin
+                        </a>
                     </div>
                 </div>
             </div>

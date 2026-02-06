@@ -1,0 +1,63 @@
+@model ExpoMR.Models.ApiAdminPanelViewModel
+
+@{
+    ViewData["Title"] = "API Admin - Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="container py-5" style="max-width: 520px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="h5 mb-3">API Admin Panel</h1>
+            <p class="text-muted mb-4">Inicia sesión para obtener token y acceder al panel.</p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+            {
+                <div class="alert alert-info">@Model.Mensaje</div>
+            }
+
+            <form asp-controller="Generales" asp-action="ApiAdminPanelLogin" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+
+                <div class="col-12">
+                    <label asp-for="Entorno" class="form-label"></label>
+                    <select asp-for="Entorno" class="form-select">
+                        <option value="">(Selecciona)</option>
+                        <option value="Dev">Desarrollo</option>
+                        <option value="Test">Pruebas</option>
+                        <option value="GDL">Guadalajara</option>
+                        <option value="QRO">Querétaro</option>
+                        <option value="MX">México</option>
+                    </select>
+                    <span asp-validation-for="Entorno" class="text-danger"></span>
+                    <div class="form-text">La URL base se construye automáticamente con el origen actual (ej. https://expomr.online) + /apidev, /apitest, etc.</div>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Usuario" class="form-label"></label>
+                    <input asp-for="Usuario" class="form-control" autocomplete="username" />
+                    <span asp-validation-for="Usuario" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" type="password" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 d-grid">
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+
+                <div class="col-12">
+                    <a class="btn btn-link p-0" asp-controller="Cuentas" asp-action="Acceso">Volver al login principal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
