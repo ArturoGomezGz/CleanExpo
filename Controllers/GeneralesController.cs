@@ -202,6 +202,7 @@ namespace ExpoMR.Controllers
                 Mensaje = TempData["ApiAdmin_AlertMessage"] as string
             };
 
+            ViewBag.ApiEnvironments = GetApiEnvironmentOptions();
             return View(vm);
         }
 
@@ -286,9 +287,22 @@ namespace ExpoMR.Controllers
                 ModelState.AddModelError(nameof(vm.Password), "Contraseña es requerida");
 
             if (!ModelState.IsValid)
+            {
+                ViewBag.ApiEnvironments = GetApiEnvironmentOptions();
                 return View("ApiAdminLogin", vm);
+            }
 
-            var baseUrl = BuildApiBaseUrl(vm.Entorno);
+            string baseUrl;
+            try
+            {
+                baseUrl = BuildApiBaseUrl(vm.Entorno);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(nameof(vm.Entorno), ex.Message);
+                ViewBag.ApiEnvironments = GetApiEnvironmentOptions();
+                return View("ApiAdminLogin", vm);
+            }
 
             try
             {
@@ -316,7 +330,35 @@ namespace ExpoMR.Controllers
 
             // Volver al login del panel
             vm.Password = null;
+            ViewBag.ApiEnvironments = GetApiEnvironmentOptions();
             return View("ApiAdminLogin", vm);
+        }
+
+        private List<ApiEnvironmentOption> GetApiEnvironmentOptions()
+        {
+            var options = new List<ApiEnvironmentOption>();
+
+            var section = _configuration.GetSection("ApiUrls");
+            foreach (var child in section.GetChildren())
+            {
+                var key = child.Key?.Trim();
+                if (string.IsNullOrWhiteSpace(key)) continue;
+
+                var displayName = child["DisplayName"];
+                var baseUrl = child["BaseUrl"];
+
+                if (string.IsNullOrWhiteSpace(displayName) || string.IsNullOrWhiteSpace(baseUrl))
+                    continue;
+
+                options.Add(new ApiEnvironmentOption
+                {
+                    Key = key,
+                    DisplayName = displayName,
+                    BaseUrl = baseUrl.TrimEnd('/')
+                });
+            }
+
+            return options;
         }
 
         private static bool TryGetJwtClaim(string jwt, string claimName, out string? value)
@@ -482,19 +524,18 @@ namespace ExpoMR.Controllers
 
         private string BuildApiBaseUrl(string entorno)
         {
-            const string origin = "https://expomr.online";
+            if (string.IsNullOrWhiteSpace(entorno))
+                throw new InvalidOperationException("Entorno no válido.");
 
-            var suffix = entorno.Trim().ToUpperInvariant() switch
-            {
-                "DEV" => "/apidev",
-                "TEST" => "/apitest",
-                "GDL" => "/apigdl",
-                "QRO" => "/apiqro",
-                "MX" => "/apimx",
-                _ => throw new InvalidOperationException("Entorno no válido.")
-            };
+            var key = entorno.Trim().ToUpperInvariant();
 
-            return origin.TrimEnd('/') + suffix;
+            // appsettings.json:
+            // "ApiUrls": { "DEV": { "DisplayName": "...", "BaseUrl": "https://..." }, ... }
+            var url = _configuration.GetSection($"ApiUrls:{key}")["BaseUrl"];
+            if (string.IsNullOrWhiteSpace(url))
+                throw new InvalidOperationException($"No hay URL configurada para el entorno '{key}'.");
+
+            return url.TrimEnd('/');
         }
 
         private static string? ExtractMensaje(string? body)

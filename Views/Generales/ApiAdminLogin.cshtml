@@ -1,8 +1,11 @@
 @model ExpoMR.Models.ApiAdminPanelViewModel
+@using ExpoMR.Models
 
 @{
     ViewData["Title"] = "API Admin - Login";
     Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+
+    var envs = ViewBag.ApiEnvironments as List<ApiEnvironmentOption> ?? new();
 }
 
 <div class="container py-5" style="max-width: 520px;">
@@ -13,7 +16,10 @@
 
             @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
             {
-                <div class="alert alert-info">@Model.Mensaje</div>
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    @Model.Mensaje
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             }
 
             <form asp-controller="Generales" asp-action="ApiAdminPanelLogin" method="post" class="row g-3">
@@ -21,16 +27,14 @@
 
                 <div class="col-12">
                     <label asp-for="Entorno" class="form-label"></label>
-                    <select asp-for="Entorno" class="form-select">
+                    <select asp-for="Entorno" class="form-select" style="min-height: 46px;">
                         <option value="">(Selecciona)</option>
-                        <option value="Dev">Desarrollo</option>
-                        <option value="Test">Pruebas</option>
-                        <option value="GDL">Guadalajara</option>
-                        <option value="QRO">Querétaro</option>
-                        <option value="MX">México</option>
+                        @foreach (var e in envs)
+                        {
+                            <option value="@e.Key">@e.DisplayName</option>
+                        }
                     </select>
                     <span asp-validation-for="Entorno" class="text-danger"></span>
-                    <div class="form-text">La URL base se construye automáticamente con el origen actual (ej. https://expomr.online) + /apidev, /apitest, etc.</div>
                 </div>
 
                 <div class="col-12">
