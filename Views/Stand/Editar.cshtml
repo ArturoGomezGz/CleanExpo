@@ -359,7 +359,9 @@
                     </div>
                 </div>
             </div>
-            <div id="chat" style="min-height:10px">
+
+
+@*             <div id="chat" style="min-height:10px">
                 <script type="text/javascript">
                     var tag = "";
                     var Tawk_API = Tawk_API || {};
@@ -384,7 +386,25 @@
                         Tawk_API.addTags([tag], function (error) { });
                     };
                 </script>
-            </div>
+            </div> *@
+
+
+            <script>
+                (function(d,t) {
+                  var BASE_URL="http://192.168.1.16:3000";
+                  var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+                  g.src=BASE_URL+"/packs/js/sdk.js";
+                  g.async = true;
+                  s.parentNode.insertBefore(g,s);
+                  g.onload=function(){
+                    window.chatwootSDK.run({
+                      websiteToken: "@Model.Chat",
+                      baseUrl: BASE_URL
+                    })
+                  }
+                })(document,"script");
+            </script>
+
         </div>
     </div>
 </div>
