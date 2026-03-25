@@ -6,9 +6,9 @@
 <div class="container py-4" style="max-width: 980px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h4 mb-0">API Admin Panel</h1>
-        <form asp-controller="Generales" asp-action="ApiAdminPanelLogout" method="post" class="m-0" style="min-width: 220px;">
+        <form asp-controller="MrApiAdmin" asp-action="ApiAdminPanelLogout" method="post" class="m-0" style="min-width: 220px;">
             @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-sm btn-outline-danger w-100" style="white-space: nowrap;">Cerrar sesión (panel)</button>
+            <button type="submit" class="btn btn-sm btn-outline-danger w-100" style="white-space: nowrap;">Cerrar sesiï¿½n (panel)</button>
         </form>
     </div>
 
@@ -22,7 +22,7 @@
 
     <div class="row g-3">
         <div class="col-12 col-md-6">
-            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="Generales" asp-action="ApiAdminCrearUsuario">
+            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="MrApiAdmin" asp-action="ApiAdminCrearUsuario">
                 <div class="card-body">
                     <h2 class="h6 mb-1">Crear usuario</h2>
                     <div class="text-muted" style="font-size: 0.9rem;">Crear un usuario y asignar rol.</div>
@@ -31,16 +31,16 @@
         </div>
 
         <div class="col-12 col-md-6">
-            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="Generales" asp-action="ApiAdminCambiarContrasena">
+            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="MrApiAdmin" asp-action="ApiAdminCambiarContrasena">
                 <div class="card-body">
-                    <h2 class="h6 mb-1">Cambiar contraseña</h2>
+                    <h2 class="h6 mb-1">Cambiar contraseï¿½a</h2>
                     <div class="text-muted" style="font-size: 0.9rem;">Actualizar credenciales del usuario.</div>
                 </div>
             </a>
         </div>
 
         <div class="col-12 col-md-6">
-            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="Generales" asp-action="ApiAdminCambiarStatus">
+            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="MrApiAdmin" asp-action="ApiAdminCambiarStatus">
                 <div class="card-body">
                     <h2 class="h6 mb-1">Cambiar status</h2>
                     <div class="text-muted" style="font-size: 0.9rem;">Activar / desactivar usuario.</div>
@@ -49,7 +49,7 @@
         </div>
 
         <div class="col-12 col-md-6">
-            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="Generales" asp-action="ApiAdminCambiarRol">
+            <a class="card shadow-sm text-decoration-none h-100 d-block" asp-controller="MrApiAdmin" asp-action="ApiAdminCambiarRol">
                 <div class="card-body">
                     <h2 class="h6 mb-1">Cambiar rol</h2>
                     <div class="text-muted" style="font-size: 0.9rem;">Asignar rol Admin/Usuario.</div>
@@ -58,10 +58,10 @@
         </div>
 
         <div class="col-12">
-            <a class="card shadow-sm border-danger text-decoration-none h-100 d-block" asp-controller="Generales" asp-action="ApiAdminEliminarUsuario">
+            <a class="card shadow-sm border-danger text-decoration-none h-100 d-block" asp-controller="MrApiAdmin" asp-action="ApiAdminEliminarUsuario">
                 <div class="card-body">
                     <h2 class="h6 mb-1 text-danger">Eliminar usuario</h2>
-                    <div class="text-muted" style="font-size: 0.9rem;">Operación destructiva. Úsala con cuidado.</div>
+                    <div class="text-muted" style="font-size: 0.9rem;">Operaciï¿½n destructiva. ï¿½sala con cuidado.</div>
                 </div>
             </a>
         </div>

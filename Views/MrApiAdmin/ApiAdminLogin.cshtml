@@ -12,7 +12,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <h1 class="h5 mb-3">API Admin Panel</h1>
-            <p class="text-muted mb-4">Inicia sesión para obtener token y acceder al panel.</p>
+            <p class="text-muted mb-4">Inicia sesiï¿½n para obtener token y acceder al panel.</p>
 
             @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
             {
@@ -22,7 +22,7 @@
                 </div>
             }
 
-            <form asp-controller="Generales" asp-action="ApiAdminPanelLogin" method="post" class="row g-3">
+            <form asp-controller="MrApiAdmin" asp-action="ApiAdminPanelLogin" method="post" class="row g-3">
                 @Html.AntiForgeryToken()
 
                 <div class="col-12">
