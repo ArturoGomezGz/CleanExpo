@@ -1,0 +1,48 @@
+@model ExpoMR.Models.ApiAdminPanelViewModel
+@{
+    ViewData["Title"] = "Cambiar rol";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    const string primaryBtnStyle = "min-width: 140px;";
+}
+
+<div class="container py-4" style="max-width: 720px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h5 mb-0">Cambiar rol</h1>
+        <a class="btn btn-link" asp-controller="MrApiAdmin" asp-action="ApiAdminDashboard">Volver</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @Model.Mensaje
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-controller="MrApiAdmin" asp-action="ApiAdminPanelOperacion" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Operacion" value="cambiar-rol" />
+
+                <div class="col-12">
+                    <label class="form-label" for="correo">Correo</label>
+                    <input id="correo" name="TargetEmail" class="form-control" placeholder="usuario@dominio.com" />
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label" for="rol">Nuevo rol</label>
+                    <select id="rol" name="TargetRole" class="form-select" style="min-height: 46px;">
+                        <option value="">Selecciona un rol</option>
+                        <option value="1">Admin - Rol con permisos completos para usar la API</option>
+                        <option value="2">Usuario - Rol con permisos limitados para usar la API</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" style="@primaryBtnStyle">Cambiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

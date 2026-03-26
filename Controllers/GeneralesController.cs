@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpoMR.Controllers
 {

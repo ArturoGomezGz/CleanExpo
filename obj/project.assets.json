@@ -11553,23 +11553,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\cjimenez\\.nuget\\packages\\": {},
+    "C:\\Users\\Arturo Gómez Gómez\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\ExpoMR.csproj",
+      "projectUniqueName": "C:\\Rosario\\Proyectos\\Expo-Blazor\\ExpoMR.csproj",
       "projectName": "ExpoMR",
-      "projectPath": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\ExpoMR.csproj",
-      "packagesPath": "C:\\Users\\cjimenez\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\cjimenez\\Documents\\ROSARIO\\PROYECTOS\\EXPOMR MVC\\obj\\",
+      "projectPath": "C:\\Rosario\\Proyectos\\Expo-Blazor\\ExpoMR.csproj",
+      "packagesPath": "C:\\Users\\Arturo Gómez Gómez\\.nuget\\packages\\",
+      "outputPath": "C:\\Rosario\\Proyectos\\Expo-Blazor\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\cjimenez\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Arturo Gómez Gómez\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -11578,8 +11578,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
-        "C:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -11592,7 +11590,13 @@
         "warnAsError": [
           "NU1605"
         ]
-      }
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net6.0": {
@@ -11656,7 +11660,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304\\RuntimeIdentifierGraph.json"
       }
     }
   }

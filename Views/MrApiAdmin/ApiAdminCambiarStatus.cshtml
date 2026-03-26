@@ -1,0 +1,47 @@
+@model ExpoMR.Models.ApiAdminPanelViewModel
+@{
+    ViewData["Title"] = "Cambiar status";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    const string primaryBtnStyle = "min-width: 140px;";
+}
+
+<div class="container py-4" style="max-width: 720px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h5 mb-0">Cambiar status</h1>
+        <a class="btn btn-link" asp-controller="MrApiAdmin" asp-action="ApiAdminDashboard">Volver</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @Model.Mensaje
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-controller="MrApiAdmin" asp-action="ApiAdminPanelOperacion" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Operacion" value="cambiar-status" />
+
+                <div class="col-12">
+                    <label class="form-label" for="correo">Correo</label>
+                    <input id="correo" name="TargetEmail" class="form-control" placeholder="usuario@dominio.com" />
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label" for="status">Status</label>
+                    <select id="status" name="TargetStatus" class="form-select" style="min-height: 46px;">
+                        <option value="true">Activo (1)</option>
+                        <option value="false">Inactivo (0)</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" style="@primaryBtnStyle">Aplicar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

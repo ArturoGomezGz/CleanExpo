@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ExpoMR")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30f53d3cf3f20bc6f5485fcca4c964e7bd5c8dda")]
 [assembly: System.Reflection.AssemblyProductAttribute("ExpoMR")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ExpoMR")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

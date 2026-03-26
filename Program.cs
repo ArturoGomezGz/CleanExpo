@@ -68,6 +68,10 @@ builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
 builder.Services.AddTransient<DB>();
 var config1 = builder.Configuration["ConnectionStrings:ExpoMRCS"];
 
+// Servicio para consumir API MR Admin
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<MrAdminApiService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
