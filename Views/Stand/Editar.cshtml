@@ -1,8 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using System.Text.Json
 
 @model StandVIewModel
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var chatUserId = currentUser?.Id ?? "";
+    var chatUserEmail = currentUser?.Email ?? UserManager.GetUserName(User) ?? "";
+    var chatUserName = currentUser?.UserName ?? "";
+}
+
 
 <head>
     <link rel="stylesheet" href="~/css/ZoomPhoto.css">
@@ -389,7 +398,7 @@
             </div> *@
 
 
-            <script>
+@*             <script>
                 (function(d,t) {
                   // var BASE_URL="http://189.206.160.158:3000";
                    var BASE_URL="https://chat.expomr.online";
@@ -405,6 +414,46 @@
                     });
                   }
                 })(document,"script");
+            </script> *@
+
+            <script>
+                (function (d, t) {
+                    var BASE_URL = "https://chat.expomr.online";
+                    var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+
+                    g.src = BASE_URL + "/packs/js/sdk.js";
+                    g.defer = true;
+                    g.async = true;
+                    s.parentNode.insertBefore(g, s);
+
+                    g.onload = function () {
+                        window.chatwootSDK.run({
+                            websiteToken: "@Model.Chat",
+                            baseUrl: BASE_URL
+                        });
+
+                        var intentos = 0;
+                        var maxIntentos = 20;
+
+                        var timer = setInterval(function () {
+                            intentos++;
+
+                            if (window.$chatwoot) {
+                                clearInterval(timer);
+
+                                window.$chatwoot.setUser("@UserManager.GetUserName(User)", {
+                                    name: sessionStorage.getItem('SelName') || "@UserManager.GetUserName(User)",
+                                    email: "@UserManager.GetUserName(User)"
+                                });
+                            }
+
+                            if (intentos >= maxIntentos) {
+                                clearInterval(timer);
+                                console.log("No se pudo inicializar Chatwoot a tiempo.");
+                            }
+                        }, 500);
+                    };
+                })(document, "script");
             </script>
 
         </div>
