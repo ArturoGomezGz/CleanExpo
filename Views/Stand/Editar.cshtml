@@ -1,17 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using System.Text.Json
 
 @model StandVIewModel
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
-@{
-    var currentUser = await UserManager.GetUserAsync(User);
-    var chatUserId = currentUser?.Id ?? "";
-    var chatUserEmail = currentUser?.Email ?? UserManager.GetUserName(User) ?? "";
-    var chatUserName = currentUser?.UserName ?? "";
-}
-
 
 <head>
     <link rel="stylesheet" href="~/css/ZoomPhoto.css">
