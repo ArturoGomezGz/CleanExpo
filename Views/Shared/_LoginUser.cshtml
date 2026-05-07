@@ -162,7 +162,12 @@ else
             sessionStorage.setItem('SelName', $('#ddlClientes option:selected').text());
 
             SetClienteSel(clienteObjeto.IdPersona, clienteObjeto.IdEmail);
-            location.reload();
+
+            if (window.cambiarPersonaChatwoot) {
+                window.cambiarPersonaChatwoot();
+            }
+
+            //location.reload();
         });
     });
 

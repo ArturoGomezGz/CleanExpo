@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Newtonsoft.Json
 
 @model StandVIewModel
 @inject SignInManager<IdentityUser> SignInManager
@@ -359,8 +360,6 @@
                     </div>
                 </div>
             </div>
-
-
 @*             <div id="chat" style="min-height:10px">
                 <script type="text/javascript">
                     var tag = "";
@@ -388,26 +387,7 @@
                 </script>
             </div> *@
 
-
 @*             <script>
-                (function(d,t) {
-                  // var BASE_URL="http://189.206.160.158:3000";
-                   var BASE_URL="https://chat.expomr.online";
-                  var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-                  g.src=BASE_URL+"/packs/js/sdk.js";
-                  g.defer = true;
-                  g.async = true;
-                  s.parentNode.insertBefore(g,s);
-                  g.onload=function(){
-                    window.chatwootSDK.run({
-                      websiteToken: "@Model.Chat",
-                      baseUrl: BASE_URL
-                    });
-                  }
-                })(document,"script");
-            </script> *@
-
-            <script>
                 (function (d, t) {
                     var BASE_URL = "https://chat.expomr.online";
                     var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -445,6 +425,215 @@
                         }, 500);
                     };
                 })(document, "script");
+            </script> *@
+
+
+            <script>
+                (function () {
+
+                    // URL de tu instancia de Chatwoot.
+                    const BASE_URL = "https://chat.expomr.online";
+
+                    // Token del inbox de Chatwoot.
+                    const WEBSITE_TOKEN = @Html.Raw(JsonConvert.SerializeObject(Model.Chat));
+
+                    // Email con el que el usuario inició sesión.
+                    const EMAIL_LOGIN = @Html.Raw(JsonConvert.SerializeObject(UserManager.GetUserName(User)));
+
+                    // Evita cargar Chatwoot muchas veces seguidas.
+                    const MIN_TIEMPO_ENTRE_CARGAS = 5000;
+
+                    // Id del script del SDK para no insertarlo varias veces.
+                    const SDK_ID = "chatwoot-sdk-script";
+
+                    // Guarda qué persona tiene cargado actualmente el widget.
+                    let personaChatActual = null;
+
+                    // Timer para evitar recargas rápidas del widget.
+                    let timerCargaChat = null;
+
+                    // Lee una cookie por nombre.
+                    function getCookie(nombre) {
+                        const cookies = document.cookie.split("; ");
+
+                        const cookie = cookies.find(x => x.startsWith(nombre + "="));
+
+                        return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+                    }
+
+                    // Crea o actualiza una cookie.
+                    function setCookie(nombre, valor, dias) {
+                        const fecha = new Date();
+
+                        fecha.setTime(fecha.getTime() + dias * 24 * 60 * 60 * 1000);
+
+                        document.cookie =
+                            nombre + "=" + encodeURIComponent(valor) +
+                            "; expires=" + fecha.toUTCString() +
+                            "; path=/; SameSite=Lax";
+                    }
+
+                    // Elimina una cookie.
+                    function deleteCookie(nombre) {
+                        document.cookie = nombre + "=; Max-Age=0; path=/; SameSite=Lax";
+                    }
+
+                    // Obtiene la persona seleccionada actualmente.
+                    function getPersonaSeleccionada() {
+                        return {
+                            idPersona: sessionStorage.getItem("SelValue"),
+                            nombre: sessionStorage.getItem("SelName") || EMAIL_LOGIN,
+                            email: EMAIL_LOGIN
+                        };
+                    }
+
+                    // Llave donde se guarda la conversación de una persona.
+                    function getStorageKey(idPersona) {
+                        return "chatwoot_conversation_persona_" + idPersona;
+                    }
+
+                    // Guarda la conversación actual de Chatwoot para la persona actual.
+                    function guardarConversacionActual() {
+                        if (!personaChatActual) return;
+
+                        const conversacion = getCookie("cw_conversation");
+
+                        if (!conversacion) return;
+
+                        localStorage.setItem(getStorageKey(personaChatActual), conversacion);
+                    }
+
+                    // Restaura la conversación guardada de la persona seleccionada.
+                    function restaurarConversacionPersona(idPersona) {
+                        const conversacionGuardada = localStorage.getItem(getStorageKey(idPersona));
+
+                        if (conversacionGuardada) {
+                            setCookie("cw_conversation", conversacionGuardada, 365);
+                        } else {
+                            deleteCookie("cw_conversation");
+                        }
+                    }
+
+                    // Quita visualmente el widget actual sin llamar chatwoot.reset().
+                    function quitarWidgetActual() {
+                        const elementos = document.querySelectorAll(
+                            "#chatwoot_live_chat_widget, " +
+                            ".woot-widget-holder, " +
+                            ".woot--bubble-holder, " +
+                            "iframe[src*='/widget'], " +
+                            "iframe[src*='chat.expomr.online']"
+                        );
+
+                        elementos.forEach(x => x.remove());
+
+                        window.$chatwoot = null;
+                    }
+
+                    // Inserta el SDK una sola vez.
+                    function cargarSdkSiHaceFalta(callback) {
+                        const sdkExistente = document.getElementById(SDK_ID);
+
+                        if (window.chatwootSDK) {
+                            callback();
+                            return;
+                        }
+
+                        if (sdkExistente) {
+                            sdkExistente.addEventListener("load", callback);
+                            return;
+                        }
+
+                        const script = document.createElement("script");
+
+                        script.id = SDK_ID;
+                        script.src = BASE_URL + "/packs/js/sdk.js";
+                        script.defer = true;
+                        script.async = true;
+                        script.onload = callback;
+
+                        document.body.appendChild(script);
+                    }
+
+                    // Carga Chatwoot para la persona seleccionada.
+                    function cargarChatwootPorPersona() {
+                        const persona = getPersonaSeleccionada();
+
+                        if (!persona.idPersona) return;
+
+                        if (personaChatActual === persona.idPersona && window.$chatwoot) return;
+
+                        guardarConversacionActual();
+
+                        restaurarConversacionPersona(persona.idPersona);
+
+                        quitarWidgetActual();
+
+                        cargarSdkSiHaceFalta(function () {
+                            window.chatwootSDK.run({
+                                websiteToken: WEBSITE_TOKEN,
+                                baseUrl: BASE_URL
+                            });
+                        });
+                    }
+
+                    // Carga el widget con protección anti-429.
+                    function cargarChatwootSeguro() {
+                        clearTimeout(timerCargaChat);
+
+                        const ultimaCarga = Number(sessionStorage.getItem("chatwoot_ultima_carga") || 0);
+
+                        const ahora = Date.now();
+
+                        const espera = Math.max(0, MIN_TIEMPO_ENTRE_CARGAS - (ahora - ultimaCarga));
+
+                        timerCargaChat = setTimeout(function () {
+                            sessionStorage.setItem("chatwoot_ultima_carga", Date.now().toString());
+
+                            cargarChatwootPorPersona();
+                        }, espera);
+                    }
+
+                    // Cuando Chatwoot ya está listo, identifica correctamente a la persona.
+                    window.addEventListener("chatwoot:ready", function () {
+                        const persona = getPersonaSeleccionada();
+
+                        if (!persona.idPersona) return;
+
+                        personaChatActual = persona.idPersona;
+
+                        window.$chatwoot.setUser("persona_" + persona.idPersona, {
+                            name: persona.nombre,
+                            email: persona.email
+                        });
+
+                        window.$chatwoot.setCustomAttributes({
+                            idPersona: persona.idPersona,
+                            nombrePersona: persona.nombre,
+                            emailLogin: persona.email
+                        });
+
+                        setTimeout(guardarConversacionActual, 1000);
+                    });
+
+                    // Guarda la sesión cuando hay mensajes.
+                    window.addEventListener("chatwoot:on-message", function () {
+                        guardarConversacionActual();
+                    });
+
+                    // Guarda la sesión antes de salir de la página.
+                    window.addEventListener("beforeunload", function () {
+                        guardarConversacionActual();
+                    });
+
+                    // Expone función global para usarla desde _LoginUser.cshtml.
+                    window.cambiarPersonaChatwoot = function () {
+                        cargarChatwootSeguro();
+                    };
+
+                    // Primera carga del widget.
+                    cargarChatwootSeguro();
+
+                })();
             </script>
 
         </div>
