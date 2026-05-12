@@ -487,9 +487,9 @@
                         };
                     }
 
-                    // Llave donde se guarda la conversación de una persona.
+                    // Llave donde se guarda la conversación de una persona en este inbox.
                     function getStorageKey(idPersona) {
-                        return "chatwoot_conversation_persona_" + idPersona;
+                        return "chatwoot_conversation_persona_" + idPersona + "_" + WEBSITE_TOKEN;
                     }
 
                     // Guarda la conversación actual de Chatwoot para la persona actual.
