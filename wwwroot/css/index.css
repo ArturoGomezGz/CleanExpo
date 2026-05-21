@@ -1420,6 +1420,9 @@ div.fontsize {
         margin: auto;
         padding: auto;
     }
+    .imgCapProducto {
+        width: 100% !important;
+    }
 }
 
 
@@ -1429,6 +1432,13 @@ div.fontsize {
         margin: auto;
         padding: auto;
     }
+    .imgCapProducto {
+        width: 100% !important;
+    }
+}
+
+.imgCapProducto {
+    width: 50%;
 }
 
 .border-primary {

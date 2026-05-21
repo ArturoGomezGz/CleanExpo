@@ -86,6 +86,12 @@
     {
         white-space: break-spaces;
     }
+
+    /* Cambia el tamaño solo para la tabla con id "ProductoStand" */
+    #ProductoStand thead th {
+        font-size: 13px !important;
+    }
+
 </style>
 
 @Html.HiddenFor(m => m.Proveedor)
@@ -127,8 +133,8 @@
             </div>
             <div class="row">
                 <div class="col-sm-12 col-md-12 margin_auto">
-                    <div class="container shadow min-vh-100 py-2">
-                        <div class="container network_wrapper col-sm p-2 ">
+                   @* <div class="container shadow min-vh-100 py-2">*@
+                        <div class="container network_wrapper col-sm " style="padding:0px">
                             <div class="card">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
@@ -149,7 +155,6 @@
                                         <div class="form-group">
                                             <div id="liveAlertPlaceholderProductos"></div>
                                             <div class="row">
-                                                @*<table id="ProductoStand" class="display nowrap" style="width:100%"></table>*@
                                                 <div class="table-responsive">
                                                     <table id="ProductoStand" class="display nowrap" style="width:100%"></table>
                                                 </div>
@@ -356,7 +361,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @*</div>*@
                 </div>
             </div>
             <div id="chat" style="min-height:10px">
@@ -512,7 +517,7 @@
                 document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
                 document.getElementById('caja').innerHTML = " " + resultado.caja;
                 document.getElementById('codigo').innerHTML = " " + resultado.codigo;
-                document.getElementById('restringido').innerHTML = " " + resultado.cantidad;
+                // document.getElementById('restringido').innerHTML = " " + resultado.cantidad;
                 document.getElementById('formula').innerHTML = " " + resultado.formula;
                 document.getElementById('subtotal').innerHTML = " " + FormatoMoneda(0);
                 document.getElementById('valoriva').innerHTML = " " + FormatoMoneda(0);
@@ -773,6 +778,7 @@
                 {
                     data: "nombre",
                     title: "Nombre",
+                    responsivePriority: 1,
                     render: function (data, type, row) {
                         // Si el status es 4, agregamos la imagen de liquidación junto al nombre
                         if (row.status === 4) {
@@ -789,17 +795,17 @@
                         return `<span>${data}</span>`;
                     }
                 },
-                { "data": "presentacion", title: "Presentación" },
+                { "data": "presentacion", title: "Presentación"},
                 { "data": "formula", title: "Fórmula" },
                 {
-                    "data": "precioFinal", title: "Precio Final S/I",
+                    "data": "precioFinal", title: "Precio Final S/I", responsivePriority: 2,
                     "render": function (data, type, row) 
                     {
                         return FormatoMoneda(data);
                     }
                 },
                 {
-                    "data": "idProducto", title: "Agregar",
+                    "data": "idProducto", title: "Agregar", responsivePriority: 3,
 					render: function (data, type, row) 
                     {
                         return '<button onClick="detalleProducto(' + data + ')" type="button" class="btn btn-outline-success mt-2 mb-2"><i class="fas fa-plus" aria-hidden="true"></i></button>'
@@ -1049,14 +1055,9 @@
                                     </div>
                                     <label class="label__Presentacion" id="presentacion"></label>
                                 </div>
-                                <div class="mb-3">
-                                    <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
-                                </div>
-                                <div id="div_restringido" class="mb-3">
-                                    <strong>Restringido a:  </strong> <label class="label__producto" id="restringido"></label>
-                                </div>
                                 <div class="row">
                                     <div class="col-6">
+                                        <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
                                     </div>
                                     <div class="col-6">
                                         <strong>Precio Regular: </strong><label class="label__PrecioMR" id="precioRegular"></label>
@@ -1064,7 +1065,7 @@
                                 </div>
                                 <div class="row" >
                                     <div class="col-6">
-                                        <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico"></label>
+                                        <strong>Precio Neto sin Iva: </strong><label class="label__Neto" id="neto"></label>
                                     </div>
                                     <div class="col-6">
                                         <strong>Precio MR Expo: </strong><label class="label__PrecioMR" id="precioMR"></label>
@@ -1072,7 +1073,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <strong>Precio Neto sin Iva: </strong><label class="label__Neto" id="neto" ></label>
+                                        <strong></strong><label class="label__DescuentoExpo" id="iva"></label>
+                                        <label id="getiva"> </label>
                                     </div>
                                     <div class="col-6">
                                         <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo"></label>
@@ -1080,23 +1082,33 @@
                                         <img id="imgLiquidacion" src="../Imagenes/liquidacion.png" />
                                     </div>
                                 </div>
+                                <div class="row"></div>
                                 <div class="row">
-                                    <h6>
-                                        <strong></strong><label class="label__DescuentoExpo" id="iva"></label>
-                                        <label id="getiva"> </label>
-                                    </h6>
-                                </div>
-                                <div>
-                                    <strong>Formula: </strong> <label class="label__Formula" id="formula"></label>
-                                </div>
-                                <div>
-                                    <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio"></label>
-                                </div>
-                                <div>
-                                    <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja"></label>
-                                </div>
-                                <div class="mt-3">
-                                    <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
+                                    <h5 class="card-title ">
+                                        <a class="btn btn-link" data-bs-toggle="collapse" href="#collapseInformacion" role="button" aria-expanded="false" aria-controls="collapseImage">
+                                            <label id="lblMasInformacion">Mas Información</label>
+                                            <i class="fas fa-chevron-down mx-2"></i>
+                                        </a>
+                                    </h5>
+                                <div class="collapse" id="collapseInformacion">
+                                        <div id="imgModalOndemand" class="card card-body frame">
+                                            <div>
+                                                <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
+                                            </div>
+                                        <div>
+                                            <strong>Formula: </strong> <label class="label__Formula" id="formula"></label>
+                                        </div>
+                                        <div>
+                                            <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio"></label>
+                                        </div>
+                                        <div>
+                                            <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja"></label>
+                                        </div>
+                                        <div class="mt-3">
+                                            <strong>Código: </strong> <label class="label__Caja" id="codigo"></label>
+                                        </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12 col-lg-5 md-55">
@@ -1119,7 +1131,7 @@
                                             <input id="cantidad" type="number" min="0" value="0" placeholder="0" style="width:75%"/>
                                         </div>
                                     </div>
-                                    <div class="row w-100 mt-5">
+                                    <div class="row w-100">
                                         <div class="col-6 totalLabel">
                                             <label>Subtotal:</label>
                                         </div>

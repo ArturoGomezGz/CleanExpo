@@ -229,8 +229,6 @@
 
     function getResumenCompra(tipoResumen) 
     {
-        console.log(tipoResumen);
-
         let idPersona = sessionStorage.getItem('SelValue');
 
         $('#ResumenCompra').DataTable({
@@ -270,6 +268,7 @@
                 targets: [2, 3, 4],
                 className: 'text-center'
             }
+
           ],
 
           // Ya que la tabla está inicializada, podemos manipular columnas
@@ -284,8 +283,9 @@
             } 
             else // Por producto
             {                
-                api.column(1).visible(true);  //Producto
-                api.column(3).visible(false); //Total Productos
+                api.column(0).visible(false);  //Proveedor
+                api.column(1).visible(true); //Producto
+                api.column(3).visible(false);  //Total Productos
             }
 
             // Ajusta el layout visual después del cambio
@@ -507,8 +507,8 @@
                 Por Producto
             </label>
         </div>
-        <div class="table-responsive mt-3">
-            <table id="ResumenCompra" class="display nowrap table-responsive w-100" style="width:100%" >
+        <div class="table-responsive">
+            <table id="ResumenCompra" class="display nowrap" style="width:100%">
             </table>
         </div>
     </div>

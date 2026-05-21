@@ -148,14 +148,9 @@
                                         </div>
                                         <label class="label__Presentacion" id="presentacion_general"></label>
                                     </div>
-                                    <div class="mb-3">
-                                        <strong>No. Producto: </strong> <label class="label__producto" id="idproducto_general"></label>
-                                    </div>
-                                    <div id="div_restringido" class="mb-3">
-                                        <strong>Restringido a:  </strong> <label class="label__producto" id="restringido_general"></label>
-                                    </div>
                                     <div class="row">
                                         <div class="col-6">
+                                            <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico_general"></label>
                                         </div>
                                         <div class="col-6">
                                             <strong>Precio Regular: </strong><label class="label__PrecioRegular" id="precioRegular_general"></label>
@@ -163,7 +158,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-6">
-                                            <strong>Precio Publico: </strong> <label class="label__publico" id="PrecioPublico_general"></label>
+                                            <strong>Precio Neto sin Iva: </strong><label class="label__Neto" id="neto_general"></label>
                                         </div>
                                         <div class="col-6">
                                             <strong>Precio MR Expo: </strong><label class="label__PrecioMR" id="precioMR_general"></label>
@@ -171,7 +166,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-6">
-                                            <strong>Precio Neto: </strong><label class="label__Neto" id="neto_general"></label>
+                                            <strong></strong><label class="label__DescuentoExpo" id="iva_general"></label>
+                                            <label id="getiva_general"> </label>
                                         </div>
                                         <div class="col-6">
                                             <strong>Descuento Expo: </strong><label class="label__DescuentoExpo" id="descuentoExpo_general"></label>
@@ -179,24 +175,29 @@
                                             <img id="imgLiquidacion_general" src="../Imagenes/liquidacion.png" />
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <h6>
-                                            <strong></strong><label class="label__DescuentoExpo" id="iva_general"></label>
-                                            <label id="getiva_general"> </label>
-                                        </h6>
-                                    </div>
-                                    <div>
-                                        <strong>Formula: </strong> <label class="label__Formula" id="formula_general"></label>
-                                    </div>
-                                    <div>
-                                        <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio_general"></label>
-                                    </div>
-                                    <div>
-                                        <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja_general"></label>
-                                    </div>
-                                    <div class="mt-3">
-                                        <strong>Código: </strong> <label class="label__Caja" id="codigo_general"></label>
-                                    </div>
+                                        <a class="btn btn-link" data-bs-toggle="collapse" href="#MasInformacion" role="button" aria-expanded="false" aria-controls="collapseImage">
+                                            <label id="lblMasInformacion">Mas Información</label>
+                                            <i class="fas fa-chevron-down mx-2"></i>
+                                        </a>
+                                        <div class="collapse" id="MasInformacion">
+                                            <div id="imgModal" class="card card-body frame">
+                                                <div>
+                                                    <strong>No. Producto: </strong> <label class="label__producto" id="idproducto_general"></label>
+                                                </div>
+                                                <div>
+                                                    <strong>Formula: </strong> <label class="label__Formula" id="formula_general"></label>
+                                                </div>
+                                                <div>
+                                                    <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio_general"></label>
+                                                </div>
+                                                <div>
+                                                    <strong>Caja Colectiva: </strong> <label class="label__Caja" id="caja_general"></label>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <strong>Código: </strong> <label class="label__Caja" id="codigo_general"></label>
+                                                </div>
+                                            </div>
+                                        </div>
                                 </div>
                                 <div class="col-md-12 col-lg-5 md-55">
                                     <input type="hidden" id="IdProducto_general" />
@@ -218,7 +219,7 @@
                                                 <input id="cantidad_general" type="number" min="0" value="0" placeholder="0" style="width:75%" />
                                             </div>
                                         </div>
-                                        <div class="row w-100 mt-5">
+                                        <div class="row w-100">
                                             <div class="col-6 totalLabel">
                                                 <label>Subtotal:</label>
                                             </div>
@@ -511,7 +512,7 @@
                     document.getElementById('laboratorio_general').innerHTML = " " + resultado.laboratorio;
                     document.getElementById('caja_general').innerHTML = " " + resultado.caja;
                     document.getElementById('codigo_general').innerHTML = " " + resultado.codigo;
-                    document.getElementById('restringido_general').innerHTML = " " + resultado.cantidad;
+                    // document.getElementById('restringido_general').innerHTML = " " + resultado.cantidad;
                     document.getElementById('formula_general').innerHTML = " " + resultado.formula;
                     document.getElementById('subtotal_general').innerHTML = " " + FormatoMoneda(0);
                     document.getElementById('valoriva_general').innerHTML = " " + FormatoMoneda(0);

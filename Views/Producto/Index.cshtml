@@ -5,145 +5,161 @@
 
 <div id="liveAlertPlaceholder"></div>
 
-<div class="col-md-12">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                   <div class="col-sm-12 col-md-3 col-lg-3">
-                       @if(Model.imgProductos.Length>0){
-                            <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.imgProductos))" alt="image">
-                       }else{
-                            <img class="card-img-top m-auto" src="~/Imagenes/noimage.png" alt="image">
-                       }
-                   </div>
-                    <div class="col-sm-12 col-md-5 col-lg-6 text-justify">
-                       <div class="row">
-                            <h5 class="card-title "> @Model.Nombre</h5>
-                            <label class="label__Presentacion">@Model.Presentacion @Model.Unidades</label>
-                       </div>
-                       <div class="mt-2">
-                           <strong>No. Producto: </strong> <label class="label__producto">@Model.IdProducto</label>
-                           @Html.HiddenFor(m=>m.IdProducto)
-                       </div>
-                       <div class="mb-3">
-                           <strong>Restringido a:  </strong> <label class="label__producto">@Model.Cantidad</label>
-                       </div>
-                        <div class="row">
-                            <div class="col-6">
-                            </div>
-                            <div class="col-6">
-                                <strong>Precio Regular: </strong><label class="label__PrecioRegular">@Model.PrecioRegular</label>
-                                @Html.HiddenFor(m => m.PrecioRegular)
-                            </div>
-                        </div>
-                       <div class="row">
-                           <div class="col-6">
-                                <strong>Precio Publico: </strong> <label class="label__publico"> @Model.Publico</label>
-                                @Html.HiddenFor( m=> m.Publico)
-                            </div>
-                           <div class="col-6">
-                                <strong>Precio MR Expo: </strong><label class="label__PrecioMR">@Model.PrecioMR</label> 
-                                @Html.HiddenFor( m=> m.PrecioMR)
-                           </div>
-                       </div>
-                       <div class="row">
-                           <div class="col-6">
-                                <strong>Precio Neto sin Iva: </strong><label class="label__Neto"> @Model.Neto</label>
-                                @Html.HiddenFor( m=> m.Neto)
-                           </div>
-                           <div class="col-6">
-                                <strong>Descuento Expo: </strong><label class="label__DescuentoExpo"> @Model.DescuentoExpo</label>
-                                @Html.HiddenFor( m=> m.DescuentoExpo) <br />
-                                @{
-                                    if (Model.DescuentoCliente == true)
-                                    {
-                                        <img id="imgDescuento" alt="Desceuento" src="../Imagenes/descuentoExclusivo.png" />
-                                    }
-                                    if (Model.Status == 4)
-                                    {
-                                        <img id="imgLiquidacion" alt="Desceuento" src="../Imagenes/liquidacion.png" />
-                                    }
-                                }
-                           </div>
-                       </div>
-                       <div class="row mb-4">
-                            <h6>@{
-                                    if (Model.Iva) {
-                                        <span style="color:#0fa200;">Con Iva</span>
-                                    } else {
-                                        <span style="color:#808080;">Sin Iva</span>
-                                    }
-                                }</h6>
-
-                             @Html.HiddenFor(m => m.ValorIva)
-                        </div>
-                       <div>
-                            <strong>Formula: </strong> <label class="label__Formula"> @Model.Formula</label>
-                       </div>
-                       <div>
-                            <strong>Laboratorio: </strong> <label class="label__Laboratorio"> @Model.Laboratorio</label>
-                       </div>
-                       <div>
-                            <strong>Caja Colectiva: </strong> <label class="label__Caja"> @Model.Caja</label>
-                       </div>
-                       <div>
-                            <strong>Código: </strong> <label class="label__Caja"> @Model.Codigo</label>
-                       </div>
-                   </div>
-                    <div class="col-sm-12 col-md-4 col-lg-3">
-                        <div class="contenedor__Producto">
-                            <div class="row w-100 mb-2">
-                                <div class="col-6 totalLabel">
-                                        <label>Precio Final: </label>
-                                </div>
-                                <div class="col-6">
-                                    <label class="contenedor__Producto__PrecioFinal"> @Model.PrecioFinal</label>
-                                        @Html.HiddenFor(m => m.PrecioFinal)
-                                 </div>
-                            </div>
-                            <div class="row w-100">
-                                <div class="col-6 totalLabel">
-                                    <label>Cantidad:</label>
-                                </div>
-                                <div class="col-6">
-                                    <input id="txtCantidad" onkeyup="actualizaTotal(this)" type="number" min="0" value="0" placeholder="0" style="width:75%" />
-                                </div>
-                            </div>
-                            <div class="row w-100 mt-5">
-                                <div class="col-6 totalLabel">
-                                    <label>Subtotal: </label>
-                                </div>
-                                <div class="col-6">
-                                    <label class="contenedor__Producto__subtotal"></label>
-                                </div>
-                            </div>
-                            <div class="row w-100 mb-3">
-                                <div class="col-6 totalLabel">
-                                <label>Iva: </label>
-                                </div>
-                                <div class="col-6">
-                                <label class="contenedor__Producto__iva"></label>
-                                </div>
-                            </div>
-                            <div class="row" style="width:90%">
-                                <hr />
-                                <div class="col-6 totalLabel">    
-                                <label>Total: </label>
-                                </div>
-                                <div class="col-6">
-                                <label class="contenedor__Producto__Total"></label>
-                                </div>
-                            </div>
-                            <div class="row" style="width:90%">
-                                <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
-                            </div>
-                        </div>
-                   </div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-sm-12 col-md-5 md-55 text-justify">
+        <div class="row">
+            <h5 class="card-title">
+                <a class="btn btn-link nameProducto" data-bs-toggle="collapse" href="#collapseImage" role="button" aria-expanded="false" aria-controls="collapseImage" onclick="OnDemandImage()">
+                    <label id="lbl_nombre">@Model.Nombre</label>
+                    <i class="fas fa-chevron-down mx-2"></i>
+                </a>
+            </h5>
+            <div class="collapse imgCapProducto" id="collapseImage">
+                <div id="imgModalOndemand" class="card card-body frame">
+                    @if (Model.imgProductos.Length > 0)
+                    {
+                        <img class="card-img-top" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(Model.imgProductos))" alt="image">
+                    }
+                    else
+                    {
+                        <img class="card-img-top" src="~/Imagenes/noimage.png" alt="image">
+                    }
+                </div>
+            </div>
+            <label class="label__Presentacion">@Model.Presentacion @Model.Unidades</label>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <strong>Precio Publico: </strong> <label class="label__publico"> @Model.Publico</label>
+                @Html.HiddenFor(m => m.Publico)
+            </div>
+            <div class="col-6">
+                <strong>Precio Regular: </strong><label class="label__PrecioRegular">@Model.PrecioRegular</label>
+                @Html.HiddenFor(m => m.PrecioRegular)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <strong>Precio Neto sin Iva: </strong><label class="label__Neto"> @Model.Neto</label>
+                @Html.HiddenFor(m => m.Neto)
+            </div>
+            <div class="col-6">
+                <strong>Precio MR Expo: </strong><label class="label__PrecioMR">@Model.PrecioMR</label>
+                @Html.HiddenFor(m => m.PrecioMR)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <h6>
+                    @{
+                        if (Model.Iva)
+                        {
+                            <span style="color:#0fa200;">Con Iva</span>
+                        }
+                        else
+                        {
+                            <span style="color:#808080;">Sin Iva</span>
+                        }
+                    }
+                </h6>
+                @Html.HiddenFor(m => m.ValorIva)
+            </div>
+            <div class="col-6">
+                <strong>Descuento Expo: </strong><label class="label__DescuentoExpo"> @Model.DescuentoExpo</label>
+                @Html.HiddenFor(m => m.DescuentoExpo) <br />
+                @{
+                    if (Model.DescuentoCliente == true)
+                    {
+                        <img id="imgDescuento" alt="Desceuento" src="../Imagenes/descuentoExclusivo.png" />
+                    }
+                    if (Model.Status == 4)
+                    {
+                        <img id="imgLiquidacion" alt="Desceuento" src="../Imagenes/liquidacion.png" />
+                    }
+                }
+            </div>
+        </div>
+        <div class="row"></div>
+        <div class="row">
+            <h5 class="card-title ">
+                <a class="btn btn-link" data-bs-toggle="collapse" href="#collapseInformacion" role="button" aria-expanded="false" aria-controls="collapseImage">
+                    <label id="lblMasInformacion">Mas Información</label>
+                    <i class="fas fa-chevron-down mx-2"></i>
+                </a>
+            </h5>
+            <div class="collapse" id="collapseInformacion">
+                <div id="imgModalOndemand" class="card card-body frame">
+                    <div>
+                        <strong>No. Producto: </strong> <label class="label__producto">@Model.IdProducto</label>
+                        @Html.HiddenFor(m => m.IdProducto)
+                    </div>
+                    <div>
+                        <strong>Formula: </strong> <label class="label__Formula"> @Model.Formula</label>
+                    </div>
+                    <div>
+                        <strong>Laboratorio: </strong> <label class="label__Laboratorio"> @Model.Laboratorio</label>
+                    </div>
+                    <div>
+                        <strong>Caja Colectiva: </strong> <label class="label__Caja"> @Model.Caja</label>
+                    </div>
+                    <div class="mt-3">
+                        <strong>Código: </strong> <label class="label__Caja"> @Model.Codigo</label>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+        <div class="col-sm-12 col-md-3 md-55">
+            <div class="contenedor__Producto">
+                <div class="row w-100 mb-2">
+                    <div class="col-6 totalLabel">
+                        <label>Precio Final: </label>
+                    </div>
+                    <div class="col-6">
+                        <label class="contenedor__Producto__PrecioFinal"> @Model.PrecioFinal</label>
+                        @Html.HiddenFor(m => m.PrecioFinal)
+                    </div>
+                </div>
+                <div class="row w-100">
+                    <div class="col-6 totalLabel">
+                        <label>Cantidad:</label>
+                    </div>
+                    <div class="col-6">
+                        <input id="txtCantidad" onkeyup="actualizaTotal(this)" type="number" min="0" value="0" placeholder="0" style="width:75%" />
+                    </div>
+                </div>
+                <div class="row w-100">
+                    <div class="col-6 totalLabel">
+                        <label>Subtotal: </label>
+                    </div>
+                    <div class="col-6">
+                        <label class="contenedor__Producto__subtotal"></label>
+                    </div>
+                </div>
+                <div class="row w-100 mb-3">
+                    <div class="col-6 totalLabel">
+                        <label>Iva: </label>
+                    </div>
+                    <div class="col-6">
+                        <label class="contenedor__Producto__iva"></label>
+                    </div>
+                </div>
+                <div class="row" style="width:90%">
+                    <hr />
+                    <div class="col-6 totalLabel">
+                        <label>Total: </label>
+                    </div>
+                    <div class="col-6">
+                        <label class="contenedor__Producto__Total"></label>
+                    </div>
+                </div>
+                <div class="row" style="width:90%">
+                    <button id="liveAlertBtn" onclick="AgregarProducto()" type="button" class="contenedor_btn btn btn-naranja mb-3">Añadir a Carrito</button>
+                </div>
+            </div>
+        </div>
+    <div class="col-md-2"></div>
 </div>
 
 <script>
