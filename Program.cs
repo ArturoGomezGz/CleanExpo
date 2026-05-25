@@ -14,7 +14,7 @@ using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Configuración de Base de datos
+//Configuraciï¿½n de Base de datos
 builder.Services.AddDbContext<ApplicationDbContext>(opciones => 
     opciones.UseSqlServer(builder.Configuration.GetConnectionString("ExpoMRCS"))
 );
@@ -31,12 +31,12 @@ builder.Services.ConfigureApplicationCookie(option =>
     option.SlidingExpiration = true;
 });
 
-//Configuración de indentity
+//Configuraciï¿½n de indentity
 builder.Services.Configure<IdentityOptions>(options =>
 {
     //Minimo de caraacteres
     //options.Password.RequiredLength = 5;
-    // Configurar la política de contraseñas
+    // Configurar la polï¿½tica de contraseï¿½as
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
@@ -44,7 +44,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 6;
     //tiempo de bloqueo
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
-    //Máximo de intentos para bloquear
+    //Mï¿½ximo de intentos para bloquear
     options.Lockout.MaxFailedAccessAttempts = 5;
 });
 
@@ -58,7 +58,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tiempo de vida de la sesión
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tiempo de vida de la sesiï¿½n
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -82,13 +82,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseSession(); // Habilita el uso de sesiones
+// WebSockets debe estar antes de UseRouting para que IIS/Kestrel
+// procese el HTTP Upgrade antes de que el router tome el request.
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+};
+app.UseWebSockets(webSocketOptions);
 
 app.UseRouting();
-//se agrega la autenticación
+app.UseSession();
+
+//se agrega la autenticaciï¿½n
 app.UseAuthentication();
 app.UseAuthorization();
 
