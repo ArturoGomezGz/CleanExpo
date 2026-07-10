@@ -221,14 +221,15 @@ namespace ExpoMR.Controllers
             try
             {
                 DB dB = new();
-                SqlParameter[] parameters = new SqlParameter[7];
+                SqlParameter[] parameters = new SqlParameter[8];
                 parameters[0] = new SqlParameter("@IdPersona", HttpContext.Session.GetString("ClienteSel"));
-                parameters[1] = new SqlParameter("@TipoDoc", TipoDoc);
-                parameters[2] = new SqlParameter("@IdUsoCFDI", UsoCFDI);
-                parameters[3] = new SqlParameter("@IdTipoVenta", "");
-                parameters[4] = new SqlParameter("@IdDirEntrega", "");
-                parameters[5] = new SqlParameter("@IdTransporte", "");
-                parameters[6] = new SqlParameter("@IdPorte", "");
+                parameters[1] = new SqlParameter("@IdEmail", HttpContext.Session.GetString("Session_IdEmail"));
+                parameters[2] = new SqlParameter("@TipoDoc", TipoDoc);
+                parameters[3] = new SqlParameter("@IdUsoCFDI", UsoCFDI);
+                parameters[4] = new SqlParameter("@IdTipoVenta", "");
+                parameters[5] = new SqlParameter("@IdDirEntrega", "");
+                parameters[6] = new SqlParameter("@IdTransporte", "");
+                parameters[7] = new SqlParameter("@IdPorte", "");
 
                 dB.ExecuteNonQuery("EditCliente", ref parameters);
 
