@@ -55,11 +55,11 @@
                     @{
                         if (Model.Iva)
                         {
-                            <span style="color:#0fa200;">Con Iva</span>
+                            <span style="color:#0fa200;">más IVA</span>
                         }
                         else
                         {
-                            <span style="color:#808080;">Sin Iva</span>
+                            <span style="color:#FFF;">Sin Iva</span>
                         }
                     }
                 </h6>
@@ -84,7 +84,7 @@
         <div class="row">
             <h5 class="card-title ">
                 <a class="btn btn-link" data-bs-toggle="collapse" href="#collapseInformacion" role="button" aria-expanded="false" aria-controls="collapseImage">
-                    <label id="lblMasInformacion">Mas Información</label>
+                    <label id="lblMasInformacion" style="font-style: italic; font-size:0.9em">más información</label>
                     <i class="fas fa-chevron-down mx-2"></i>
                 </a>
             </h5>
@@ -95,7 +95,7 @@
                         @Html.HiddenFor(m => m.IdProducto)
                     </div>
                     <div>
-                        <strong>Formula: </strong> <label class="label__Formula"> @Model.Formula</label>
+                        <strong>Fórmula: </strong> <label class="label__Formula"> @Model.Formula</label>
                     </div>
                     <div>
                         <strong>Laboratorio: </strong> <label class="label__Laboratorio"> @Model.Laboratorio</label>

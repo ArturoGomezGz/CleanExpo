@@ -10,6 +10,7 @@
     --cfdi-done: #95c3e3;
 }
 
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -193,6 +194,22 @@ a {
     background-position: center center;
 }
 
+.expoPrincipal {
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    padding: 0px 5px;
+}
+
+/* En pantallas grandes (cuando supera los 1400px de ancho): se centra automáticamente */
+@media (min-width: 900px) {
+    .expoPrincipal {
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
 
 /* BOTONES */
 
@@ -271,6 +288,36 @@ a {
 
     .btn-azul-medio:focus {
         color: var(--blanco);
+    }
+
+
+.btn-outline-azul-medio {
+    color: #0575E6;
+    background-color: transparent;
+    border: 1px solid #0575E6;
+    border-radius: 5px;
+    text-align: center;
+    background-size: 200% auto;
+    padding: 4px 15px; /* Reducido (antes era 7px 45px) */
+    font-size: 0.875rem; /* Equivale al tamaño de un botón chico (btn-sm) */
+    display: inline-block;
+}
+
+    .btn-outline-azul-medio:hover {
+        color: #021B79;
+        border-color: #021B79;
+        background-color: rgba(5, 117, 230, 0.05); /* Un sutil fondo azul claro */
+    }
+
+.btn-check:checked + .btn.btn-outline-azul-medio {
+    background-image: linear-gradient(to right, #0575E6 0%, #021B79 51%, #0575E6 100%) !important;
+    color: #fff;
+    border-color: transparent;
+}
+
+      .btn-check:checked + .btn-outline-azul-medio:hover {
+        background-position: right center;
+        color: var(--blanco, #fff);
     }
 
 .btn-verde {
@@ -1014,8 +1061,8 @@ a {
 }
 
 .input-number {
-    width: 80px;
-    padding: 0 12px;
+    width: 100px;
+    padding: 0 6px;
     vertical-align: top;
     text-align: center;
     outline: none;
@@ -1187,14 +1234,15 @@ a {
     margin: auto;
 }
 
-./*img_articulo
+. /*img_articulo
 {
     width: 250px;
     margin: auto;
 }*/
-
-.Separador_Carrito{
-    border: 2px solid var(--azul-oscuro);
+.Separador_Carrito {
+    border: none;
+    height: 5px; /* Grosor de la línea */
+    background-color: red;
 }
 /*
 .credito_show {
@@ -1470,10 +1518,35 @@ div.fontsize {
     margin-bottom: 10px;
 }
 
-.card-img-top{
+.card-img-top {
     /*max-width:95%;*/
-    margin:auto;
+    margin: auto;
 }
+
+.contenedor-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+    .contenedor-logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+/* En pantallas medianas o más grandes (Tablets/PC): Subimos a 150px x 150px */
+@media (min-width: 768px) {
+    .contenedor-logo {
+        width: 150px;
+        height: 150px;
+    }
+}
+
 
 a.nombrePromo{
     text-decoration:none !important;
@@ -1569,3 +1642,24 @@ div.fotoCarrito {
     display: block;
     margin: 0 auto;
 }
+
+.campoPedidos{
+    width:200px !important;
+}
+
+
+/*#ResumenCompra td {
+    white-space: normal !important;
+    word-wrap: break-word;
+    word-break: break-word;
+}*/
+
+#ResumenCompra th,
+#ResumenCompra td {
+    white-space: normal !important;
+    word-break: normal !important; /* Evita romper palabras a la mitad */
+    overflow-wrap: normal !important; /* Respeta la integridad de las palabras */
+    vertical-align: middle;
+}
+
+

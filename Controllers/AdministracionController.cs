@@ -265,7 +265,7 @@ namespace ExpoMR.Controllers
                             string linkExpo = "https://expomr.online";
 
                             string body = "<br/>Hola " + UserName + "<br/><br/>"
-                                    + "Bienvenido a Bordo expo Medicinas Rosario 2025<br/><br/>"
+                                    + "El partido de las grandes oportunidades comienza aquí. Expo Medicinas Rosario 2026<br/><br/>"
                                     + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
                                     + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
                                     + "Usuario: " + UserName + "<br/>"
@@ -466,7 +466,7 @@ namespace ExpoMR.Controllers
                     string linkExpo = "https://expomr.online";
 
                     string body = "<br/>Hola " + UserName + "<br/><br/>"
-                            + "Bienvenido a Bordo expo Medicinas Rosario 2025<br/><br/>"
+                            + "El partido de las grandes oportunidades comienza aquí. Expo Medicinas Rosario 2026<br/><br/>"
                             + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
                             + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
                             + "Usuario: " + UserName + "<br/>"

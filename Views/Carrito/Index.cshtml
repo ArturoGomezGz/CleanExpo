@@ -784,12 +784,11 @@
     </script>
 } *@
 
-<div class="row">
+<div class=" w-100">
     <div id="liveAlertPlaceholder"></div>
     @Html.HiddenFor(m => m.IdEmail)
-    <div class="col-xxl-1"></div>
-    <div class="col-12 col-xxl-10 cart-container cart-container--fixed cart-container--fixed-in" data-id="cart_container1">
-        <h1 style="text-align:center" >Mi Carrito</h1>
+    <div class="col-12 col-xxl-10 offset-xxl-1" data-id="cart_container1">
+        <h1 style="margin-left:10px">Mi Carrito</h1>
         @* <ul class="bf-ui-tab-container" data-js="tab-container" data-id="tab-container1" role="tablist"> *@
 @*             <li id="liCarrito" data-js="tab" role="tab" aria-selected="true" aria-controls="tab_active" data-id="tab_active" onclick="panel_active(1)" aria-label="Carrito (1)" class="bf-ui-tab bf-ui-tab--selected">
                 <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text cantidad_carrito">Carrito (@Model.CantidadCarrito)</span>
@@ -799,20 +798,20 @@
             </li> *@
         @* </ul> *@
     </div>
-    <div class="col-xxl-1"></div>
-    <div id="divCarrito" class="row display_panel_active">
-        <div class="col-sm-0 col-xxl-1"></div>
-        <div id="ShowCarrito" class="tab-content_productos col-sm-12 col-lg-8 col-xxl-7 pagination_list">
-        <div class="d-flex">
-            <a class="btn btn-azul-medio btn-mediano" asp-controller="CargarProducto" asp-action="Index">Carga Masiva</a>                
-            <form id="frmDescargas" method="post" asp-controller="Carrito" asp-action="DescargarOfertas">
-                @Html.AntiForgeryToken()
-            <button id="btnDescargar" type="button" class="btn btn-azul-medio btn-mediano">
-                    Descargar Ofertas
-                </button>
-                <div id="status" class="mt-2 text-muted" style="display:none;"></div>
-            </form>
-        </div>
+    
+    <div id="divCarrito" class="row display_panel_active w-100 m-0">
+        <div id="ShowCarrito" class="tab-content_productos col-sm-12 col-lg-8 col-xxl-7 offset-xxl-1 pagination_list">
+            <div class="d-flex">
+                <a class="btn btn-azul-medio btn-mediano" asp-controller="CargarProducto" asp-action="Index">Carga Masiva</a>                
+                <form id="frmDescargas" method="post" asp-controller="Carrito" asp-action="DescargarOfertas">
+                    @Html.AntiForgeryToken()
+                <button id="btnDescargar" type="button" class="btn btn-azul-medio btn-mediano">
+                        Descargar Ofertas
+                    </button>
+                    <div id="status" class="mt-2 text-muted" style="display:none;"></div>
+                </form>
+            </div>
+        
         @section Scripts {
             <script>
                 (function () {
@@ -885,10 +884,10 @@
             </script>
         }
 
-       @*<div class="d-flex">
-            <a class="btn btn-SelectAll btn-outline-primary mx-1" onclick="seleccionarTodos(1)">Marcar Todos</a>
-            <a class="btn btn-UnSelectAll btn-outline-primary mx-1" onclick="seleccionarTodos(2)">DesMarcar Todo</a></p>
-       </div>*@
+           @*<div class="d-flex">
+                <a class="btn btn-SelectAll btn-outline-primary mx-1" onclick="seleccionarTodos(1)">Marcar Todos</a>
+                <a class="btn btn-UnSelectAll btn-outline-primary mx-1" onclick="seleccionarTodos(2)">DesMarcar Todo</a></p>
+           </div>*@
             @{
                 int IdProveedor = 0;
 
@@ -904,7 +903,7 @@
                             {
                                 <hr class="Separador_Carrito" />
                             }
-                            <div class="row aling-items-center g2">
+                            <div class="row aling-items-center g2" >
                                 @if (model.Proveedor != IdProveedor)
                                 {
                                     decimal Total = Model.ListaCarrito
@@ -912,25 +911,25 @@
                                     .Sum(x => x.total);
 
                                     int TotalProductos = Model.ListaCarrito
-                                    .Count(x => x.Proveedor == model.Proveedor);                                   
+                                    .Count(x => x.Proveedor == model.Proveedor);
 
-                                    <div class="col-12 col-md-auto" style="max-width:100px; margin-bottom:5px;">
+                                    <div class="col-auto col-md-auto" style="max-width:100px; margin-bottom:5px;">
                                         <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
                                             <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
                                         </a>
                                     </div>
-                                    <div class="col-12 col-md d-flex flex-column flex-md-row gap-2">
+                                    <div class="col col-md d-flex flex-column flex-md-row gap-2">
                                         <div class="w-100 p-2 text-end" style="max-height:30px; border-radius:5px; background-color:#ededed; display: flex; align-items: center; justify-content: flex-end;">
-                                            <label style="color:#626262; font-weight:bold">
-                                                Total Productos:
+                                            <label style="color:#626262; font-weight:bold; margin-right:5px">
+                                                Total Productos: 
                                             </label>
                                             <span class="font_moneda">
                                                 @TotalProductos.ToString("N0", culturaMexico) @*Para no mostrar el símbolo de pesos, se utiliza "N0"*@
                                             </span>
                                         </div>
                                         <div class="w-100 p-2 text-end" style="max-height:30px; border-radius:5px; background-color:#ededed; display: flex; align-items: center; justify-content: flex-end;">
-                                            <label style="color:#626262; font-weight:bold">
-                                                SubTotal:
+                                            <label style="color:#626262; font-weight:bold; margin-right:5px">
+                                                SubTotal: 
                                             </label>
                                             <span class="font_moneda">
                                                 @Total.ToString("C2", culturaMexico) @*Para mostrar el símbolo de pesos, se utiliza "C2"*@
@@ -940,7 +939,7 @@
                                     IdProveedor = model.Proveedor;
                                 }
                             </div>
-                            <div class="row">
+                            
                                 @*<div class="w-20px" style="min-width: 32px; min-height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                                     @if (model.PorConfirmar == true)
                                     {
@@ -951,8 +950,8 @@
                                         <input type="checkbox" class="chkSel" value="@string.Format(model.IdProducto.ToString())" onclick="Checked(@string.Format(model.IdProducto.ToString()))" />
                                     }
                                 </div>*@
-                                <div class="row col-md-8 col-lg-10 texto-carrito" style="margin-top:5px;">
-                                    <div class="col-sm-7 col-lg-8">
+                            <div class="row texto-carrito align-items-start">
+                                    <div class="col-12 col-sm-8 col-lg-7">
                                         <a class="nombreProductoCarrito" href="~/Producto/Index?idProducto=@string.Format(model.IdProducto.ToString())&Idproveedor=@string.Format(model.Proveedor.ToString())">
                                             @String.Format(model.Nombre)
                                         </a>
@@ -962,7 +961,7 @@
                                             <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
                                         }
                                     </div>
-                                    <div class="col-sm-5 col-lg-4 text-end">
+                                    <div class="col-12 col-sm-4 col-lg-3 text-end">
                                         <input id="hdnPrecioFinal_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.PrecioFinal.ToString())">
                                         <p class="mb-1">
                                             <strong>Precio Expo: </strong>
@@ -979,22 +978,21 @@
                                         <p class="mb-1">
                                             @if (model.Iva == false)
                                             {
-                                                <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                <span style='color:#fff; font-size:0.9em; font-weight:bold'>sin Iva</span>
                                             }
                                             else
                                             {
-                                                <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                            <span style='color:#14a338; font-size:0.9em; font-weight:bold'>más IVA</span>
                                             }
                                         </p>
                                     </div>
-                                </div>
-                                <div class="col-12 col-sm-2 col-md-4 col-lg-2 mw-100px d-flex justify-content-end">
-                                    <div class="row text-end justify-content-end">
-                                        <div class="col-12 d-flex justify-content-end mb-2">
-                                            <input id="hdn_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.cantidad.ToString())">
-                                            <input id="number_@string.Format(model.IdProducto.ToString())" class="input-number" type="number" value="@string.Format(model.cantidad.ToString())" min="1" placeholder="0" disabled>
-                                        </div>
-                                        <div class="col-12 d-flex justify-content-end gap-1">
+
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-2 ms-auto d-flex flex-column align-items-center" style="max-width:150px;">
+                                    <div class=" d-flex">
+                                        <input id="hdn_@string.Format(model.IdProducto.ToString())" type="hidden" value="@string.Format(model.cantidad.ToString())">
+                                        <input id="number_@string.Format(model.IdProducto.ToString())" class="input-number" type="number" value="@string.Format(model.cantidad.ToString())" min="1" placeholder="0" disabled>
+                                    </div>
+                                    <div class ="d-flex">
                                             <button class="btn btn-naranja-ch edit_@string.Format(model.IdProducto.ToString())" onclick="Edit(@string.Format(model.IdProducto.ToString()))" title="editar" type="button"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
                                             <button class="btn btn-outline-danger delete_@string.Format(model.IdProducto.ToString())" onclick="Delete(@string.Format(model.IdProducto.ToString()))" title="eliminar" type="button"><i class="far fa-trash-alt" aria-hidden="true"></i></button>
                                             <button type="button" class="btn btn-outline-success save_@string.Format(model.IdProducto.ToString()) d-none" onclick="save(@string.Format(model.IdProducto.ToString()))" title="btn-save">
@@ -1003,10 +1001,10 @@
                                             <button type="button" class="btn btn-outline-danger cancel_@string.Format(model.IdProducto.ToString()) d-none" onclick="cancel(@string.Format(model.IdProducto.ToString()))" title="btn-cancel">
                                                 <i class="fas fa-ban" aria-hidden="true"></i>
                                             </button>
-                                        </div>
-                                    </div>
+                                     </div>
                                 </div>
-                            </div>
+                             </div>
+                            
                             <hr />
                         </div>
                     }
@@ -1044,9 +1042,9 @@
                 </label>
             </div>*@
         </div>
-        <div class="col-sm-0 col-xxl-1"></div>
+        @* <div class="col-sm-0 col-xxl-1"></div> *@
     </div>
-    <div class="col-sm-0 col-xxl-1"></div>
+    @* <div class="col-xxl-1"></div> *@
     @* <div id="divPedido" class="row display_panel col-xxl-10"> *@
 @*         <div class="col-md-3 mb-3">
             @Html.LabelFor(m => m.IdPedido, new { @class = "fw-bold" })
@@ -1110,7 +1108,7 @@
                                 <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
                                     <div class="row">
                                         <div class="fotoCarrito">
-                                            <a href="#" class="mx-auto"></a>
+                                            a href="#" class="mx-auto"></a>con iva
                                         </div>                                    
                                         <div class="row col-sm-12 col-md-8 col-lg-9">
                                             <div class="col-sm-6">
@@ -1205,7 +1203,7 @@
             <table id="Premios_table" class="display premios_table"></table>*@
         @*</div>*@
     @* </div> *@
-    <div class="col-sm-0 col-xxl-1"></div>
+    @* <div class="col-xxl-1"></div> *@
 </div>
 @* <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">

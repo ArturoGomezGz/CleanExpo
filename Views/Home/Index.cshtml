@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home Page";
 }
 <div id="liveAlertPlaceholder"></div>
-<div class="row">
+@* <div class="row"> *@
 @*     <div class="row mb-5">
         <div class="titulo_div col-md-12">
             <h2>Bienvenido a Expo Medicinas Rosario 2024</h2>
@@ -52,23 +52,28 @@
                 </div>
             </div>
         </div>
-    </div> *@
-    <div class="row mb-3" style="max-width:1400px; margin:auto">
-        <div class="titulo_div col-md-12">
-            <h2>Bienvenido a Bordo</h2>
+    </div> *@ 
+<div class="row g-3 expoPrincipal" style="max-width: 1400px">
+        <div class="titulo_div col-12">
+			<h3>Expo Medicinas Rosario 2026</h3>
+            <h4>
+				El partido de las grandes oportunidades comienza aquí.
+			</h4>
         </div>
-        <div class="titulo_div col-md-12">
-            <h3>Expo Medicinas Rosario 2025</h3>
-        </div>        
+        @* <div class="titulo_div col-md-12">
+            
+        </div>    *@     
         @{
             List<StandVIewModel> ModeloImagenes = ExpoMR.Controllers.HomeController.GetImage();
             foreach (ExpoMR.Models.StandVIewModel model in ModeloImagenes)
             {
-                <div class="col-md-4 col-lg-3 mt-4">
+            <div class="col-6 col-md-4 col-lg-3 mt-2">
                     <div class="h-100 card card-inverse card-info align-center">
-                        <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" style=" margin: auto;" >
-                            <img id="Proveedor_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="card-img-top" style="width: 150px; height: 150px; margin: auto;" src="" alt="image">                                                               
-                        </a>
+                    <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" 
+                    class="contenedor-logo">
+                            <img id="Proveedor_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="card-img-top"
+                            src="" alt="image">
+                    </a>
                         <div class="mx-auto w-75 card-block index_name" style="text-align: center;">
                             <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())"><h6 class="index_name">@String.Format(model.Nombre)</h6></a>
                         </div>
@@ -77,7 +82,7 @@
             }
         }       
     </div>
-</div>
+@* </div> *@
 
 <script>
     async function GetImgAsync(proveedorId)

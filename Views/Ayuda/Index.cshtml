@@ -61,10 +61,10 @@
                         srcLogo = "../Imagenes/noimage.png"
                     }
 
-                    cadena += '<div class="col-md-55 col-md-6 col-lg-4 mt-4">'
-                            + '<div class="h-100 card card-inverse card-info">'
-                            + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal=' + Sal + '" style=" margin: auto;">'
-                            + '<img class="card-img-top" style=" width: 150px; height: 150px; margin: auto;" src="' + srcLogo + '" alt="image" />'   
+                    cadena += '<div class="col-6 col-md-4 col-xl-3 mt-2">'
+                            + '<div class="h-100 card card-inverse card-info" style="min-height:120px">'
+                            + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal=' + Sal + '" style="display: flex; justify-content: center; align-items: center; margin: auto;">'
+                            + '<img class="card-img-top" style=" max-width: 100px; max-height:100px; object-fit: contain; ;" src="' + srcLogo + '" alt="image" />'
                             +'</a>'
                             +'<div class="card-block" style="text-align: center;">'
                             + '<a href="' + path + 'Stand/EditarIndex?idProveedor=' + value.proveedor + '&IdSal='+Sal+'"><h6 class="card-title">' + value.nombre + '</h6></a>'

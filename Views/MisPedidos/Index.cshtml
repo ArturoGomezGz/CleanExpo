@@ -243,8 +243,8 @@
             dataSrc: ""            // <- lista plana
           },
           columns: [
-            { data: "proveedor",   title: "Proveedor" },        //Indice 0
-            { data: "producto",    title: "Producto" },         //Indice 1
+            { data: "proveedor",   title: "Proveedor",  responsivePriority: 1,  },        //Indice 0
+            { data: "producto",    title: "Producto",  responsivePriority: 1,  },         //Indice 1
             { data: "numPedidos",  title: "Total Pedidos" },    //Indice 2
             { data: "totalProds",  title: "Total Productos" },  //Indice 3
             { data: "totalPiezas", title: "Total Piezas" },     //Indice 4
@@ -290,7 +290,7 @@
             }
 
             // Ajusta el layout visual después del cambio
-            api.columns.adjust().draw(false);
+            api.columns.adjust().responsive.recalc();
           }
         });
     }
@@ -321,8 +321,7 @@
 <div class="row">
     <div id="liveAlertPlaceholder"></div>
     @Html.HiddenFor(m => m.IdEmail)
-    <div class="col-xxl-1"></div>
-    <div class="col-12 col-xxl-10 cart-container cart-container--fixed cart-container--fixed-in" data-id="cart_container1">
+    <div class="col-12 col-xxl-10  offset-xxl-1 cart-container cart-container--fixed cart-container--fixed-in" data-id="cart_container1">
         <ul class="bf-ui-tab-container" data-js="tab-container" data-id="tab-container1" role="tablist">
             <li id="liPedidos" data-js="tab" role="tab" aria-selected="true" aria-controls="tab_active" data-id="tab_active" onclick="panel_active(1)" class="bf-ui-tab bf-ui-tab--selected">
                 <span data-js="rich-text" aria-hidden="true" class="bf-ui-rich-text">Mis Pedidos</span>
@@ -332,15 +331,13 @@
             </li>
         </ul>
     </div>
-    <div class="col-xxl-1"></div>
-    <div class="col-sm-0 col-xxl-1"></div>
-    <div id="divPedidos" class="row display_panel col-xxl-10">
-        <div class="col-md-3 mb-3">
-            @Html.LabelFor(m => m.IdPedido, new { @class = "fw-bold" })
-            @Html.DropDownListFor(model => model.IdPedido, new SelectList(Model.PedidosCliente, "IdPedido", "Pedido"), new { id = "cmb-pedidos", @class = "form-control text-left", name = "cmb-pedidos", title = "cmb" })
+    <div id="divPedidos" class="row display_panel col-xxl-10 offset-xxl-1">
+        <div class="">
+            @Html.LabelFor(m => m.IdPedido, new { @class = "" })
+            @Html.DropDownListFor(model => model.IdPedido, new SelectList(Model.PedidosCliente, "IdPedido", "Pedido"), new { id = "cmb-pedidos", @class = "form-control text-left campoPedidos", name = "cmb-pedidos", title = "cmb" })
         </div>
-        <div id="alert_Pedido" class="col-md-12"></div>
-        <div id="Show_Pedidos" class="col-md-8 pagination_list">
+        <div id="alert_Pedido" class="col-md-12" ></div>
+        <div id="Show_Pedidos" class="col-sm-12 col-lg-8 col-xxl-9 pagination_list">
             @{
                 int ProveedorActual = 0;
                 List<PedidosCarrito> ListPedido = ExpoMR.Controllers.MisPedidos.GetPedidos(Model.IdCliente, Model.IdEmail, Model.IdPedido);
@@ -355,20 +352,22 @@
                         if (PedidoActual == model.IdPedido)
                         {
                             if (ProveedorActual != model.Proveedor)
-                            {
+                            {    
                                 ProveedorActual = model.Proveedor;
 
                                 <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
-                                    <hr class='Separador_Carrito' />
+                                    <hr />
                                     <h6 class='lblPedido'>Pedido: @string.Format(PedidoActual.ToString()) </h6>
                                     <div class="row">
-                                        <div class="fotoCarrito">
+                                        @*<div class="fotoCarrito">*@
+                                        <div class="fotoCarrito col-auto col-md-auto" style="max-width:100px;">
                                             <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
                                                 <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
                                             </a>
                                         </div>
-                                        <div class="row col-sm-12 col-md-8 col-lg-9">
-                                            <div class="col-sm-6">
+                                        @*<div class="row col-sm-12 col-md-8 col-lg-9">*@
+                                        <div class="col col-md d-flex flex-column flex-md-row gap-2">
+                                            <div class="col-12 col-md-8">
                                                 <a class="nombreProductoCarrito" href="#"> @String.Format(model.Nombre)</a>
                                                 <p><label>@String.Format(model.Presentacion)</label></p>
                                                 @if (model.Status == 4)
@@ -376,35 +375,32 @@
                                                     <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
                                                 }
                                             </div>
-                                            <div class="col-sm-6 resumen_producto">
-                                                <p class="mb-0 pb-0">
-                                                    <strong>Cantidad: </strong>
-                                                    <span class="font_moneda">
+                                            <div class="col-12 col-md-4 resumen_producto d-flex flex-column align-items-end text-end">
+                                                 <div style="display:grid; grid-template-columns:max-content max-content;">
+                                                    <div class="text-end" style="margin-right:5px"><strong>Cantidad:</strong></div>
+                                                    <div class="text-start font_moneda">
                                                         @(model.Cantidad.ToString("N0", culturaMexico)) @*Para no mostrar el símbolo de pesos, se utiliza "N0"*@
-                                                    </span>
-                                                </p>
-                                                <p class="mb-0 pb-0">
-                                                    <strong>Precio Expo: </strong>
-                                                    <span class="font_moneda">
+                                                    </div>
+                                                    <div class="text-end" style="margin-right:5px"><strong>Precio Expo:</strong></div>
+                                                    <div class="text-start font_moneda">
                                                         @(model.PrecioFinal.ToString("C2", culturaMexico)) @*Para mostrar el símbolo de pesos, se utiliza "C2"*@
-                                                    </span>
-                                                </p>
-                                                <p class="mb-0">
-                                                    <strong>SubTotal: </strong>
-                                                    <span class="font_moneda">
+                                                    </div>
+                                                    <div class="text-end" style="margin-right:5px"><strong>SubTotal:</strong></div>
+                                                    <div class="text-start font_moneda">
                                                         @(model.Total.ToString("C2", culturaMexico)) @*Para mostrar el símbolo de pesos, se utiliza "C2"*@
-                                                    </span>
-                                                </p>
-                                                <p class="mb-0">
+                                                    </div>
+                                                    <div class="text-end"></div>
+                                                    <div class="text-start">
                                                     @if (model.Iva == false)
                                                     {
-                                                        <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                        <span style='color:#FFF; font-size:0.9em; font-weight:bold'>sin Iva</span>
                                                     }
                                                     else
                                                     {
-                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>más IVA</span>
                                                     }
-                                                </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -415,11 +411,11 @@
                             {
                                 <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
                                     <div class="row">
-                                        <div class="fotoCarrito">
+                                        <div class="fotoCarrito col-auto col-md-auto" style="max-width:100px">
                                             <a href="#" class="mx-auto"></a>
                                         </div>
-                                        <div class="row col-sm-12 col-md-8 col-lg-9">
-                                            <div class="col-sm-6">
+                                        <div class="col col-md d-flex flex-column flex-md-row gap-2">
+                                            <div class="col-12 col-md-8">
                                                 <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
                                                 <p><label>@String.Format(model.Presentacion)</label></p>
                                                 @if (model.Status == 4)
@@ -427,39 +423,36 @@
                                                     <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
                                                 }
                                             </div>
-                                            <div class="col-sm-6 resumen_producto">
-                                                <p class="mb-1">
-                                                    <strong>Cantidad: </strong>
-                                                    <span class="font_moneda">
+                                            <div class="col-12 col-md-4 resumen_producto d-flex flex-column align-items-end text-end">
+                                                <div style="display:grid; grid-template-columns:max-content max-content;">
+                                                    <div class="text-end" style="margin-right:5px"><strong>Cantidad:</strong></div>
+                                                    <div class="text-start font_moneda">
                                                         @(model.Cantidad.ToString("N0", culturaMexico)) @*Para no mostrar el símbolo de pesos, se utiliza "N0"*@
-                                                    </span>
-                                                </p>
-                                                <p class="mb-1">
-                                                    <strong>Precio Expo: </strong>
-                                                    <span class="font_moneda">
+                                                    </div>
+                                                    <div class="text-end" style="margin-right:5px"><strong>Precio Expo:</strong></div>
+                                                    <div class="text-start font_moneda">
                                                         @(model.PrecioFinal.ToString("C2", culturaMexico)) @*Para mostrar el símbolo de pesos, se utiliza "C2"*@
-                                                    </span>
-                                                </p>
-                                                <p class="mb-1">
-                                                    <strong>SubTotal: </strong>
-                                                    <span class="font_moneda">
+                                                    </div>
+                                                    <div class="text-end" style="margin-right:5px"><strong>SubTotal:</strong></div>
+                                                    <div class="text-start font_moneda">
                                                         @(model.Total.ToString("C2", culturaMexico)) @*Para mostrar el símbolo de pesos, se utiliza "C2"*@
-                                                    </span>
-                                                </p>
-                                                <p class="mb-0">
+                                                    </div>
+                                                    <div class="text-end"></div>
+                                                    <div class="text-start">
                                                     @if (model.Iva == false)
                                                     {
-                                                        <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                        <span style='color:#FFF; font-size:0.9em; font-weight:bold'>sin Iva</span>
                                                     }
                                                     else
                                                     {
-                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                        <span style='color:#14a338; font-size:0.9em; font-weight:bold'>más IVA</span>
                                                     }
-                                                </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <hr />
-                                    </div>
+									</div>
+                                    <hr />
                                 </div>
                             }
                         }
@@ -468,17 +461,17 @@
                             PedidoActual = model.IdPedido;
                             ProveedorActual = model.Proveedor;
 
-                            <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item">
+                            <div id="Pedido_@string.Format(PedidoActual.ToString())" class="pagination__item" >
                                 <hr class="Separador_Carrito" />
                                 <h6 class="lblPedido">Pedido:@string.Format(PedidoActual.ToString()) </h6>
                                 <div class="row">
-                                    <div class="fotoCarrito">
+                                    <div class="fotoCarrito col-auto col-md-auto" style="max-width:100px">
                                         <a href="~/Stand/Editar?idProveedor=@string.Format(model.Proveedor.ToString())" class="mx-auto">
                                             <img id="LogoProv_@string.Format(model.Proveedor.ToString())" data-id="@Convert.ToString(model.Proveedor)" class="LogoProv" src="" alt="image">
                                         </a>
                                     </div>
-                                    <div class="row col-sm-12 col-md-8 col-lg-9">
-                                        <div class="col-sm-6">
+                                    <div class="col col-md d-flex flex-column flex-md-row gap-2">
+                                        <div class="col-12 col-md-8">
                                             <a class="nombreProductoCarrito" href="#">@String.Format(model.Nombre)</a>
                                             <p><label>@String.Format(model.Presentacion) </label></p>
                                             @if (model.Status == 4)
@@ -486,39 +479,36 @@
                                                 <p><img id="imgLiquidacion" src="../Imagenes/liquidacion.png" /></p>
                                             }
                                         </div>
-                                        <div class="col-sm-6 resumen_producto">
-                                            <p class="mb-1">
-                                                <strong>Cantidad: </strong>
-                                                <span class="font_moneda">
+                                        <div class="col-12 col-md-4 resumen_producto d-flex flex-column align-items-end text-end">
+                                            <div style="display:grid; grid-template-columns:max-content max-content;">
+                                                <div class="text-end" style="margin-right:5px"><strong>Cantidad:</strong></div>
+                                                <div class="text-start font_moneda">
                                                     @(model.Cantidad.ToString("N0", culturaMexico)) @*Para no mostrar el símbolo de pesos, se utiliza "N0"*@
-                                                </span>
-                                            </p>
-                                            <p class="mb-1">
-                                                <strong>Precio Expo: </strong>
-                                                <span class="font_moneda">
+                                                </div>
+                                                <div class="text-end" style="margin-right:5px"><strong>Precio Expo:</strong></div>
+                                                <div class="text-start font_moneda">
                                                     @(model.PrecioFinal.ToString("C2", culturaMexico)) @*Para mostrar el símbolo de pesos, se utiliza "C2"*@
-                                                </span>
-                                            </p>
-                                            <p class="mb-1">
-                                                <strong>SubTotal: </strong>
-                                                <span class="font_moneda">
+                                                </div>
+                                                <div class="text-end" style="margin-right:5px"><strong>SubTotal:</strong></div>
+                                                <div class="text-start font_moneda">
                                                     @(model.Total.ToString("C2", culturaMexico)) @*Para mostrar el símbolo de pesos, se utiliza "C2"*@
-                                                </span>
-                                            </p>
-                                            <p class="mb-0">
+                                                </div>
+                                                <div class="text-end"></div>
+                                                <div class="text-start">
                                                 @if (model.Iva == false)
                                                 {
-                                                    <span style='color:#808080; font-size:0.9em; font-weight:bold'>sin Iva</span>
+                                                    <span style='color:#FFF; font-size:0.9em; font-weight:bold'>sin Iva</span>
                                                 }
                                                 else
                                                 {
-                                                    <span style='color:#14a338; font-size:0.9em; font-weight:bold'>con Iva</span>
+                                                    <span style='color:#14a338; font-size:0.9em; font-weight:bold'>más IVA</span>
                                                 }
-                                            </p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <hr />
-                                </div>
+								</div>
+                                <hr />
                             </div>
                         }
                     }
@@ -529,7 +519,7 @@
                 }
             }
         </div>
-        <div class="tab-content_total col-sm-12 col-lg-4 col-xxl-3">
+        <div class="tab-content_total col-sm-12 col-lg-4 col-xxl-3" ">
             <div class="contenedor carritoTotal">
                 <div class="w-80">
                     <p><strong>Subtotal: </strong><text id="txt_Subtotal_divPedido"></text></p>
@@ -542,15 +532,15 @@
             </div>
         </div>
     </div>
-    <div id="divSeleccionResumen" class="row display_panel col-xxl-10">
-        <p class="fw-bold mb-3">Selecciona un tipo de resumen</p>
-        <div id="tipoResumen" class="mb-2">
+    <div id="divSeleccionResumen" class="row display_panel col-xxl-10 offset-xxl-1">
+        @* <p class="mb-3">Selecciona un tipo de resumen</p> *@
+        <div id="tipoResumen" class="mb-3">
             <input type="radio" class="btn-check" name="TipoResumen" id="optProv" value="0" autocomplete="off" checked>
-            <label class="btn btn-outline-primary me-2" for="optProv">
+            <label class="btn btn-outline-azul-medio me-2" for="optProv">
                 Por Proveedor
             </label>
             <input type="radio" class="btn-check" name="TipoResumen" id="optProd" value="1" autocomplete="off">
-            <label class="btn btn-outline-primary" for="optProd">
+            <label class="btn btn-outline-azul-medio" for="optProd">
                 Por Producto
             </label>
         </div>
@@ -559,5 +549,4 @@
             </table>
         </div>
     </div>
-    <div class="col-sm-0 col-xxl-1"></div>
 </div>
