@@ -12,7 +12,7 @@ namespace ExpoMR.Models
 
         public TotalesPedidos TotalesPedidos { get; set; }
 
-        [Display(Name = "Seleccione un pedido para conocer el detalle: ")]
+        [Display(Name = "Seleccione un pedido: ")]
 
         public int IdPedido { get; set; }
 

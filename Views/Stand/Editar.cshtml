@@ -695,7 +695,7 @@
                 {
                     document.getElementById(`imgLiquidacion`).style.display = 'none';
                 }
-                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#808080; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
+                document.getElementById('iva').innerHTML = resultado.iva == false ? " <span style='color:#fff; font-size:0.7em'>Sin Iva</span>" : " <span style='color:#0fa200; font-size:0.7em'>Con Iva</span>";
                 document.getElementById('getiva').innerHTML = " ";
                 document.getElementById('laboratorio').innerHTML = " " + resultado.laboratorio;
                 document.getElementById('caja').innerHTML = " " + resultado.caja;
@@ -1269,7 +1269,7 @@
                                 <div class="row">
                                     <h5 class="card-title ">
                                         <a class="btn btn-link" data-bs-toggle="collapse" href="#collapseInformacion" role="button" aria-expanded="false" aria-controls="collapseImage">
-                                            <label id="lblMasInformacion">Mas Información</label>
+                                            <label id="lblMasInformacion" style="font-style: italic; font-size:0.9em">más información</label>
                                             <i class="fas fa-chevron-down mx-2"></i>
                                         </a>
                                     </h5>
@@ -1279,7 +1279,7 @@
                                                 <strong>No. Producto: </strong> <label class="label__producto" id="idproducto"></label>
                                             </div>
                                         <div>
-                                            <strong>Formula: </strong> <label class="label__Formula" id="formula"></label>
+                                            <strong>Fórmula: </strong> <label class="label__Formula" id="formula"></label>
                                         </div>
                                         <div>
                                             <strong>Laboratorio: </strong> <label class="label__Laboratorio" id="laboratorio"></label>
