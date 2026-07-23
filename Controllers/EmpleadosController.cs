@@ -647,14 +647,16 @@ namespace ExpoMR.Controllers
         [HttpPost]
         public JsonResult GetPedidosCliente(int idCliente)
         {
-            string query = "SELECT vPersonas.Nombre AS Cliente, mPedidos.IdPedido, mDocumentos.Documento, mPedidos.Fecha, COUNT(dPedidos.IdProducto) AS NumProd, Capturo.Nombre AS Capturo " +
+            string query = "SELECT NombreCliente.Nombre AS Cliente, mPedidos.IdPedido, CASE WHEN mPedidos.IdDocumento = 1 THEN 'Factura' ELSE 'Nota' END AS Documento, " +
+                            "mPedidos.Fecha, COUNT(dPedidos.IdProducto) AS NumProd, NombreCapturo.Nombre AS Capturo " +
                             "FROM mPedidos INNER JOIN " +
                             "dPedidos ON mPedidos.IdPedido = dPedidos.IdPedido INNER JOIN " +
-                            "Indigo.dbo.vPersonas ON mPedidos.Cliente = vPersonas.IdPersona INNER JOIN " +
-                            "Indigo.dbo.mDocumentos ON mPedidos.IdDocumento = mDocumentos.IdDocumento INNER JOIN " +
-                            "vPersonas AS Capturo ON mPedidos.Usuario = Capturo.IdPersona " +
+                            "vPersonas AS NombreCliente ON mPedidos.Cliente = NombreCliente.IdPersona INNER JOIN " +
+                            "Indigo.dbo.mEmails ON mPedidos.IdEmail = mEmails.IdEmail INNER JOIN " +
+                            "Indigo.dbo.mPerEmp ON mEmails.Persona = mPerEmp.Persona INNER JOIN " +
+                            "vPersonas AS NombreCapturo ON mPerEmp.IdPersona = NombreCapturo.IdPersona " +
                             "WHERE mPedidos.Cliente = @IdCliente " +
-                            "GROUP BY vPersonas.Nombre, mPedidos.IdPedido, mDocumentos.Documento, mPedidos.Fecha, Capturo.Nombre " +
+                            "GROUP BY NombreCliente.Nombre, mPedidos.IdPedido, mPedidos.IdDocumento, mPedidos.Fecha, NombreCapturo.Nombre " +
                             "ORDER BY mPedidos.IdPedido";
 
             DB dB = new();
@@ -693,10 +695,12 @@ namespace ExpoMR.Controllers
         public JsonResult pedidoCliente(int idPedido)
         {
             string query = "SELECT vPedidoDatos.IdPedido, vPedidoDatos.Cliente, vPedidoDatos.RFC, vPedidoDatos.Documento, vPedidoDatos.UsoCFDI, " +
-                            "vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Transportista, vPedidoDatos.Obsv, vPedidoDatos.Porte, Capturo.Nombre AS Capturo " +
+                            "vPedidoDatos.TipoVenta, vPedidoDatos.DirEntrega, vPedidoDatos.Transportista, vPedidoDatos.Obsv, vPedidoDatos.Porte, NombreCapturo.Nombre AS Capturo " +
                             "FROM vPedidoDatos INNER JOIN " +
                             "mPedidos ON vPedidoDatos.IdPedido = mPedidos.IdPedido INNER JOIN " +
-                            "vPersonas AS Capturo ON mPedidos.Usuario = Capturo.IdPersona " +
+                            "Indigo.dbo.mEmails ON mPedidos.IdEmail = mEmails.IdEmail INNER JOIN " +
+                            "Indigo.dbo.mPerEmp ON mEmails.Persona = mPerEmp.Persona INNER JOIN " +
+                            "vPersonas AS NombreCapturo ON mPerEmp.IdPersona = NombreCapturo.IdPersona " +
                             "WHERE vPedidoDatos.IdPedido = @IdPedido";
 
             DB dB = new();
