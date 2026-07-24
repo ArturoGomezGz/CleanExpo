@@ -212,87 +212,75 @@
     //Al hacer clic en editar un descuento de proveedor
     $(document).on('click', '.editDescuento', function (event) 
     {
-        var row = $(this).closest("tr");
+        event.preventDefault();
 
-        $("td", row).each(function () {
-            if ($(this).find(".text").length > 0) {
-                $(this).find(".text").show();
-            }
-        });
-
+        var row = obtenerFilaPrincipal(this);
         var inputElement = row.find('.text');
+
         inputElement.prop('disabled', false);
+        inputElement.focus();
 
         row.find(".acepteditdescuento").show();
         row.find(".canceleditdescuento").show();
-        $(this).hide();
+        row.find(".editDescuento").hide();
     });
 
     //Al hacer clic en el cancelar de edicion de un descuento de proveedor
     $(document).on('click', '.canceleditdescuento', function (event)
     {
-        var row = $(this).closest("tr");
+    event.preventDefault();
 
-        $("td", row).each(function () {
-            if ($(this).find(".text").length > 0) {
-                $(this).find(".text").show();
-            }
-        });
+    var row = obtenerFilaPrincipal(this);
+    var inputElement = row.find('.text');
 
-        var inputElement = row.find('.text');
-        inputElement.prop('disabled', true);
-        inputElement.val(0);
+    inputElement.prop('disabled', true);
 
-        row.find(".acepteditdescuento").hide();
-        row.find(".editDescuento").show();
-        $(this).hide();
+    row.find(".acepteditdescuento").hide();
+    row.find(".canceleditdescuento").hide();
+    row.find(".editDescuento").show();
+
+    var tabla = $('#OfertasProveedor').DataTable();
+    tabla.ajax.reload(null, false);
     });
 
     //Al hacer clic en el aceptar de edicion de un descuento de proveedor
-    $(document).on('click', '.acepteditdescuento', function (event)
-    {
-        var idproducto, DescProveedorNew;
-        var row = $(this).closest("tr");
+        $(document).on('click', '.acepteditdescuento', function (event) {
+        event.preventDefault();
 
-        $("td", row).each(function () 
-        {
-            if ($(this).find(".text").length > 0) {
-                DescProveedorNew = row.find('.text').val();
-                idproducto = row.find('.hdfIdProducto').val();
-            }
-        });
-
-        row.find(".editDescuento").show();
-        row.find(".canceleditdescuento").hide();
-        $(this).hide();
+        var botonAceptar = $(this);
+        var row = obtenerFilaPrincipal(this);
 
         var inputElement = row.find('.text');
+        var idproducto = row.find('.hdfIdProducto').val();
+        var DescProveedorNew = parseFloat(inputElement.val());
 
-        if(DescProveedorNew >= 0)
-        {
-            $.post(path + "Administracion/ActualizaDescProv",
+        if (isNaN(DescProveedorNew) || DescProveedorNew < 0) {
+            alert("El descuento ingresado no puede ser menor que 0.");
+            return;
+        }
+
+        botonAceptar.prop('disabled', true);
+
+        $.post(
+            path + "Administracion/ActualizaDescProv",
             {
                 IdProducto: idproducto,
                 DescProvNew: DescProveedorNew
             },
-            function (data)
-            {  
-                inputElement.prop('disabled', true);
-                row.find(".editDescuento").hide()
-                $('#OfertasProveedor').dataTable().fnDestroy();
-                DescuentosProveedorDt(); //Se realiza la carga de las ofertas del proveedor
-            }).error(function () 
-            {
-                ShowAlert("No fue posible cargar las ofertas del proveedor", false);
-            });
-        }
-        else
-        {
-            alert("El descuento ingresado no puede ser menor que 0.", false);
-            inputElement.prop('disabled', true);
-            var tabla = $('#OfertasProveedor').DataTable();
-            tabla.ajax.reload();
-        }
+            function () {
+                var tabla = $('#OfertasProveedor').DataTable();
+
+                // Recarga sin destruir y crear nuevamente el DataTable.
+                tabla.ajax.reload(null, false);
+            }
+        ).fail(function () {
+            ShowAlert(
+                "No fue posible actualizar el descuento del proveedor",
+                false
+            );
+
+            botonAceptar.prop('disabled', false);
+        });
     });
 
     function DescuentosProveedorDt()
@@ -339,11 +327,25 @@
                 { data: "laboratorio", title: "Laboratorio" }
             ],
             order: [
-                [2, 'asc'], // primero laboratorio
-                [0, 'asc']  // luego producto
+                [3, 'asc'], // primero laboratorio
+                [1, 'asc']  // luego producto
             ]
         });
     }
+
+
+    function obtenerFilaPrincipal(control) 
+    {
+        var row = $(control).closest("tr");
+
+        // En modo responsive, DataTables crea una fila secundaria "child".
+        if (row.hasClass("child")) {
+            row = row.prev("tr");
+        }
+
+        return row;
+    }
+
 
     function save() {
         const nombre = $("#txt_box_Proveedor").val();
