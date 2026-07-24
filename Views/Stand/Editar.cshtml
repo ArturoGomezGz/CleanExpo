@@ -164,9 +164,9 @@
                                     </div>
                                     @*Busqueda Stand*@
                                     <div class="tab-pane @Model.Activestatic" id="static">
-                                        <div class="col-md-10">
+                                        <div class="col-md-10" >
                                             <div class="input-group mb-3 ">
-                                                <input type="text" id="txtBuscar" class="form-control" placeholder="Nombre, Presentación,Fórmula" aria-label="Sales " aria-describedby="basic-addon2" value="@Model.Sal">
+                                            <input type="text" id="txtBuscar" class="form-control" placeholder="Nombre, Presentación,Fórmula" aria-label="Sales " aria-describedby="basic-addon2" value="@Model.Sal" onkeydown="if(event.key === 'Enter') { searchStand(); }">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary" type="button" onclick="searchStand()">Buscar <i class="fas fa-search"></i></button>
                                                 </div>

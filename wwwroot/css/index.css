@@ -179,6 +179,7 @@ a {
     line-height: 1.2;
 }
 
+
 /* CUSTOM UTIL CLASSES
 * ==========================================
 *
@@ -191,7 +192,7 @@ a {
 .bg-image {
     background-image: url('../Imagenes/portadaExpo.png');
     background-size: cover;
-    background-position: center center;
+    background-position: right center;
 }
 
 .expoPrincipal {
@@ -1242,7 +1243,6 @@ a {
 .Separador_Carrito {
     border: none;
     height: 5px; /* Grosor de la línea */
-    background-color: red;
 }
 /*
 .credito_show {
@@ -1648,11 +1648,6 @@ div.fotoCarrito {
 }
 
 
-/*#ResumenCompra td {
-    white-space: normal !important;
-    word-wrap: break-word;
-    word-break: break-word;
-}*/
 
 #ResumenCompra th,
 #ResumenCompra td {
@@ -1663,3 +1658,113 @@ div.fotoCarrito {
 }
 
 
+.graficaVisitas {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.graficaVentas {
+    position: relative;
+    height: 350px;
+    margin: auto;
+    max-width:80%
+
+}
+
+    #canvasVisitas {
+        width: 70% !important;
+        height: 100% !important;
+        display: block;
+    }
+
+
+@media (max-width: 576px) {
+    #canvasVisitas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+    }
+
+    .graficaVentas {
+        height: 400px;
+        width: 100%;
+    }
+}
+
+
+
+
+/* Reduce el padding sobrante en la primera columna */
+#venta__cliente td:first-child,
+#venta__cliente th:first-child {
+    width: 30px !important;
+    max-width: 30px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    text-align: center;
+}
+
+#productos__visitados td:first-child,
+#productos__visitados th:first-child {
+    width: 30px !important;
+    max-width: 30px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    text-align: center;
+}
+
+#Ultimas__visitas td:first-child,
+#Ultimas__visitas th:first-child {
+    width: 30px !important;
+    max-width: 30px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    text-align: center;
+}
+
+
+#productos__info td:first-child,
+#productos__info th:first-child {
+    width: 30px !important;
+    max-width: 30px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    text-align: center;
+}
+
+#Clientes td:first-child,
+#Clientes__info th:first-child {
+    width: 30px !important;
+    max-width: 30px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    text-align: center;
+}
+
+#BuscarProductoGeneral th {
+    white-space: pre-line
+}
+
+
+@media (max-width: 580px) {
+    .modal-dialog {
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+}
+
+
+
+.buscadorGeneralDetalle{
+    max-width:70%;
+}
+
+@media (min-width: 581px) and (max-width: 1199.98px) {
+    .buscadorGeneralDetalle {
+        max-width: 90% !important;
+    }
+}

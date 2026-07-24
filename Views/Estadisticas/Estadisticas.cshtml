@@ -5,7 +5,7 @@
 <h3>Estadísticas</h3>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="col-sm-12 col-md-12 ">
+@* <div class="col-sm-12 col-md-12 "> *@
     <div class="card">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
@@ -34,18 +34,17 @@
                 <div class="form-group">
                     <div class="row">
                         <h4> Visitas </h4>
-                        <div class="col-md-12 text-center">
-                            <canvas id="canvasVisitas"></canvas>
+                    <div class="col-md-12 text-center graficaVisitas">
+                        <canvas id="canvasVisitas"></canvas>
                         </div>
                     </div>
                     <hr />
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mt-2">
                             <h5>Últimas Visitas</h5>
-
                             <table id="Ultimas__visitas" class="display" style="width:100%"></table>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mt-2">
                             <h5> Productos Visitados</h5>
                             <table id="productos__visitados" class="display" style="width:100%"></table>
                         </div>
@@ -59,14 +58,14 @@
             </div>
             <div class="tab-pane" id="ventas">
                 <div class="row">
-                    <div class="col-md-6">
-                        <div>
-                            <canvas id="canvasVentaPiezas" width="300" height="200"></canvas>
+                    <div class="col-12 col-lg-6">
+                    <div class="graficaVentas">
+                            <canvas id="canvasVentaPiezas"></canvas>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div>
-                            <canvas id="canvasVentaMonto" width="300" height="200"></canvas>
+                    <div class="col-12 col-lg-6">
+                    <div class="graficaVentas">
+                            <canvas id="canvasVentaMonto"></canvas>
                         </div>
                     </div>
                 </div>
@@ -109,7 +108,7 @@
             </div>
         </div>
     </div>
-</div>
+@* </div> *@
 
 
 @*Modal producto detalle*@
@@ -121,12 +120,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row mb-4">
-                    <div class="col">
-                        <img id="img_producto_detail" class="card-img-top" src="" alt="image">
+                <div class="row mb-2">
+                    <div class="col-4 col-md-4 d-flex justify-content-center aling-items-center">
+                        <img id="img_producto_detail" class="img-fluid" style="max-height:150px" src="" alt="image">
                     </div>
-                    <div class="col pt-4">
-                      <h4 class="mt-4" id="titulo_producto"></h4>
+                    <div class="col-8 col-md-8 pt-3" style="font-size:0.9em">
+                      <h5 class="mt-2" id="titulo_producto"></h5>
                       <div class="col"><strong>Código: </strong><label id="label_codigo"></label></div>
                       <div class="col"><strong>Fórmula: </strong><label id="label_formula"></label></div>
                     </div>
@@ -329,6 +328,7 @@
 
     var chartOptionsVentas = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: "bottom"
@@ -366,6 +366,7 @@
 
     var chartOptionsMonto = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: "bottom"
@@ -417,10 +418,18 @@
                     type: "line",
                     data: cdVisitas,
                     options: {
-                    responsive: true, // Evita que Chart.js escale automáticamente
-                    maintainAspectRatio: false, // permite adaptar alto y ancho según el CSS
-                    chartOptions
-                    }
+                        responsive: true, // Evita que Chart.js escale automáticamente
+                        maintainAspectRatio: false, // permite adaptar alto y ancho según el CSS
+                        scales: {
+                                 x: { // Si usas Chart.js v3 o v4
+                                    ticks: {    
+                                                minRotation: 45,
+                                                maxRotation: 90,
+                                                autoSkip: true,  // ¡Super importante en móviles! Oculta etiquetas si son demasiadas para que no se amontonen
+                                            }
+                                    }
+                                }
+                             }
                 });
             },
             error: function (xhr, status, error) {
@@ -532,7 +541,7 @@
                     "data": "idPersona",
                     render: function (data, type) {
                         if (type === 'display') {
-                            return '<a onclick="detalleVentaCliente(' + data + ')"class="btn btn-link"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
+                            return '<a onclick="detalleVentaCliente(' + data + ')"class="btn btn-link p-0"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>';
                         }
                         return data;
                     },
@@ -543,7 +552,8 @@
             "columnDefs": [
                 {
                     targets: 0,
-                    width: "50px"
+                    width: "30px",
+                    orderable: false,
                 }
             ]
         });
@@ -643,7 +653,7 @@
             },
             "columns": [                
                 { data: "producto", title: "Producto"},
-                { data: "descuento", title: "Descuento",
+                { data: "descuento", title: "Desc.",
                     render: function (data, type, row) {
                             return data + ' %';
                         }

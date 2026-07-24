@@ -7,29 +7,41 @@
     ViewData["Title"] = "EditProveedor";
 }
 <div id="liveAlertPlaceholder"></div>
-<div class="row mb-2">
-    <div class="col-md-6 label__bold">
+<div class="row">
+    <div class="col-12 col-md-5 col-xl-4 offset-xl-1 label__bold">
         <h3>Proveedor</h3>
         @Html.HiddenFor(m=>m.IdPersona)
         <div class="row">
-            <div class="col-sm-12 col-md-6">                
+            <div class="col-sm-12">                
                 @Html.LabelFor(m => m.Nombre)
                 @Html.TextBoxFor(m => m.Nombre, new {id="txt_box_Proveedor", @class = "form-control", name = "provedor",  title="Proveedor", disabled = "disabled"})
             </div>            
         </div>
         <div class="row">
-            <div class="col-sm-12 col-md-6">
+            <div class="col-sm-12">
                 @Html.LabelFor(m => m.Descripcion)
                 @Html.TextAreaFor(m => m.Descripcion, new { @class = "form-control ", disabled="disabled" })
             </div>
-            <div class="col-sm-12 col-md-6 p-4">
-                <div id="hiddenBTN" class="d-none col-md-55 text-center">
+        </div>
+        <div class="row mt-2">	
+			<div id="hiddenBTN" class="d-none col-sm-12">
+                <div  class=" col-md-55 text-center">
                     <button type="button" class="btn btn-verde-medio" onclick="save()"> Aceptar </button>
-                    <br />
+                </div>
+                <div class="col-md-55 text-center">
                     <button type="button" class="btn btn-rojo" onclick="cancel()"> Cancelar </button>
                 </div>
             </div>            
         </div>
+        <div class="row mt-2">
+            <div class="col-md-55 text-center">
+                <button id="btn-modificar" type="button" class="btn btn-naranja" style="display: inline-table;"> Editar </button>
+            </div>
+            <div class="col-md-55 text-center">
+                <button id="btn-eliminar" type="button" class="btn btn-rojo" data-bs-toggle="modal" data-bs-target="#eliminarModal" style="display: inline-table;"> Eliminar </button>
+             </div>
+        </div>
+        
         @*
         <div class="row">
             <div class="col-sm-12 col-md-6">
@@ -52,7 +64,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-12 col-md-7 col-xl-6 ml-2">
         <h3>Laboratorios</h3>
         <table id="Laboratorios" class="display " style="width:100%">
             <thead>
@@ -64,34 +76,27 @@
             <tbody>
             </tbody>
         </table>
+        <div class="row mt-2">
+            <div class="col-md-55 text-center">
+				<button id="btn-Agregar" type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#ListaLaboratoriosModal" style="display: inline-table;"> Agregar Laboratorio </button>
+			</div>
+            <div class="col-md-55 text-center">
+				<button id="btn-AgregarProducto" type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#ListaProductosModal" style="display: inline-table;"> Agregar Producto </button>
+            </div>
+        </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-2">
-        <button id="btn-modificar" type="button" class="btn btn-naranja" style="display: inline-table;"> Editar </button>
-    </div>
-    <div class="col-md-2">
-        <button id="btn-eliminar" type="button" class="btn btn-rojo" data-bs-toggle="modal" data-bs-target="#eliminarModal" style="display: inline-table;"> Eliminar </button>
-    </div>
-    <div class="col-md-2">
-    </div>
+@*<div class="row">
+    
     <div class="col-md-3">
-        <button id="btn-Agregar" type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#ListaLaboratoriosModal" style="display: inline-table;"> Agregar Laboratorio </button>       
-    </div>
-    <div class="col-md-3">
-        <button id="btn-AgregarProducto" type="button" class="btn btn-azul-medio" data-bs-toggle="modal" data-bs-target="#ListaProductosModal" style="display: inline-table;"> Agregar Producto </button>
-    </div>
-    @*<div class="col-md-3">
          <button id="btn-AddMonedas" type="button" class="btn btn-azul" style="display: inline-table;"> Asignar Monedas </button> 
-    </div>*@    
+    </div>    
 </div>
-<br>
-<div class="row mb-2">
-    <div class="col-md-6 label__bold">
-    </div>
-    <div class="col-md-6">
+<br>*@
+<div class="row">
+    <div class="col-12 col-xl-10 offset-xl-1">
         <h3>Ofertas</h3>
-        <table id="OfertasProveedor" class="display " style="width:100%">
+        <table id="OfertasProveedor" class="display" style="width:100%">
         </table>
     </div>
 </div>
