@@ -369,7 +369,7 @@
                 (function () {
 
                     // URL de tu instancia de Chatwoot.
-                    const BASE_URL = "https://chat.expomr.online";
+                    const BASE_URL = "https://chat.expomr.online:8082/";
 
                     // Token del inbox de Chatwoot.
                     const WEBSITE_TOKEN = @Html.Raw(JsonConvert.SerializeObject(Model.Chat));
@@ -1251,7 +1251,7 @@
                                         <strong>Precio Neto sin Iva: </strong><label class="label__Neto" id="neto"></label>
                                     </div>
                                     <div class="col-6">
-                                        <strong>Precio MR Expo: </strong><label class="label__PrecioMR" id="precioMR"></label>
+                                        <strong>Precio Expo MR: </strong><label class="label__PrecioMR" id="precioMR"></label>
                                     </div>
                                 </div>
                                 <div class="row">
