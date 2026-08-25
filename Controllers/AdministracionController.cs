@@ -238,7 +238,7 @@ namespace ExpoMR.Controllers
                     if (user == null)
                     {
                         //Se crea el usuario en la tabla AspNetUsers
-                        var resultado = await _userManager.CreateAsync(usuario, TipoCliente == 4 ? "ExpoEmp2025" : "Expo2025"); // TipoCliente 4 = Empleado
+                        var resultado = await _userManager.CreateAsync(usuario, TipoCliente == 4 ? "ExpoEmp2026" : "Expo2026"); // TipoCliente 4 = Empleado
 
                         if (resultado.Succeeded)
                         {
@@ -269,7 +269,7 @@ namespace ExpoMR.Controllers
                                     + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
                                     + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
                                     + "Usuario: " + UserName + "<br/>"
-                                    + "Contraseña: " + (TipoCliente == 4 ? "ExpoEmp2025" : "Expo2025") + "<br/>"
+                                    + "Contraseña: " + (TipoCliente == 4 ? "ExpoEmp2026" : "Expo2026") + "<br/>"
                                     + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
                                     + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
                                     + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
@@ -447,7 +447,7 @@ namespace ExpoMR.Controllers
                     if (user == null)
                     {
                         //Se crea el usuario en la tabla AspNetUsers
-                        var resultado = await _userManager.CreateAsync(usuario, "Expo2025");
+                        var resultado = await _userManager.CreateAsync(usuario, "Expo2026");
                         
                         //Se asigna el rol dependiendo del tipo del usuario
                         string Rol = (idTipoUsuario == 1 ? "Cliente" : "Proveedor");
@@ -470,7 +470,7 @@ namespace ExpoMR.Controllers
                             + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
                             + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
                             + "Usuario: " + UserName + "<br/>"
-                            + "Contraseña: Expo2025" + "<br/>"
+                            + "Contraseña: Expo2026" + "<br/>"
                             + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
                             + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
                             + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"

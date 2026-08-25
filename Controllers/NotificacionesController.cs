@@ -77,7 +77,7 @@ namespace ExpoMR.Controllers
                 {
 					usuario.EmailConfirmed = false;
 					string token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
-                    var resultado = await _userManager.ResetPasswordAsync(usuario, token, "Expo2025");
+                    var resultado = await _userManager.ResetPasswordAsync(usuario, token, "Expo2026");
                     
                     if (resultado.Succeeded)
                     {
@@ -88,7 +88,7 @@ namespace ExpoMR.Controllers
                                 + "Ingresa en <a href='" + linkExpo + "'>" + linkExpo + "</a><br/><br/>"
                                 + "Esta es la información de tu cuenta y solo podrás utilizarla los días que dure el evento:<br/><br/>"
                                 + "Usuario: " + UserName + "<br/>"
-                                + "Contraseña:  Expo205 <br/>"
+                                + "Contraseña:  Expo2026 <br/>"
                                 + "(Esta es una contraseña generada automáticamente, te sugerimos cambiarla la primera vez que ingreses)<br/><br/><br/><br/>"
                                 + "Si tienes alguna duda o comentario, te solicitamos nos envíes un correo electrónico a la siguiente dirección "
                                 + "<a href='mailto:'>Soporte ExpoMR</a><br/><br/><br/>"
