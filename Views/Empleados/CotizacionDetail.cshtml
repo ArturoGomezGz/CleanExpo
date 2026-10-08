@@ -451,6 +451,7 @@
 <script>
 
     var precio = 0;
+    var preciomr = 0;
     var iva = 0;
     var subtotal = 0;
     var ivatotal = 0;
@@ -815,6 +816,7 @@
                 document.getElementById('total').innerHTML = " " + FormatoMoneda(0);
 
                 precio = resultado.preciofinal;
+                preciomr = resultado.preciomr;
                 iva = resultado.valoriva;
             },
             error: function (xhr, status, error) {
@@ -843,7 +845,7 @@
                 {
                     cliente: @Model.IdCliente,
                     idProducto: IdProducto,
-                    unitario: precio,
+                    unitario: preciomr,
                     cantidad: $("#cantidad").val()
                 },
                 function (data) {
