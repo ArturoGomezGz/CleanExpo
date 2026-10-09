@@ -305,32 +305,53 @@
         callback();
     }
 
-    function TerminarOrden()
-    {
-        if( $("#confirmar_CFDI").html() === ""){
+    // Fuera de la funcion: permanece activo durante esta carga de la vista.
+    let ordenBloqueada = false;
+
+    function TerminarOrden() {
+        if (ordenBloqueada) return;
+
+        if ($("#confirmar_CFDI").html() === "") {
             ShowAlert("El usuario no tiene un Uso de CFDI asignado", false, "ModalStep3");
-        }else{
-            $.post(path + "Carrito/ExpoPedidoAgregar",
-                function (data) {
-                    
-                    //Animacion de monedas
-                    if (data.response) 
-                    {
-                        CloseModal('swModal');
-                        ShowAlert(data.message, true);
-                        SendMail(data.result);
-                        initCanvas();
-                        setTimeout(displayAnimationxy, 1000, window.innerWidth / 2, window.innerHeight / 2);
-                        setTimeout(Reload, 3000);
-                    }else{
-                        ShowAlert(data.message, false, "ModalStep3");
-                    }
-                    
+            return;
+        }
+
+        // Bloquear ANTES de enviar la solicitud.
+        ordenBloqueada = true;
+        const boton = $("#btnTerminarOrden");
+        boton.prop("disabled", true).text("Procesando...");
+
+        $.post(path + "Carrito/ExpoPedidoAgregar")
+            .done(function (data) {
+                if (data && data.response) {
+                    // Mantener el bloqueo hasta la recarga, incluso durante la animacion.
+                    setTimeout(Reload, 3000);
+                    CloseModal("swModal");
+                    ShowAlert(data.message, true);
+                    SendMail(data.result);
+                    initCanvas();
+                    setTimeout(displayAnimationxy, 1000,
+                        window.innerWidth / 2, window.innerHeight / 2);
+                    return;
                 }
-            ).error(function () {
-                ShowAlert("No fue posible cargar sus datos", false);
+
+                // Response=false tambien puede representar una excepcion de SQL.
+                // No habilitar un reenvio sin verificar primero el pedido.
+                boton.text("Verifica tus pedidos");
+                const mensaje = data && data.message
+                    ? data.message
+                    : "No se pudo confirmar el resultado del pedido.";
+
+                ShowAlert(mensaje + " Revisa tus pedidos antes de volver a intentar.",
+                    false, "ModalStep3");
+            })
+            .fail(function () {
+                // Perder la respuesta NO demuestra que el pedido no se haya creado.
+                boton.text("Verifica tus pedidos");
+                ShowAlert(
+                    "No se pudo confirmar el resultado. Revisa tus pedidos antes de volver a intentar.",
+                    false, "ModalStep3");
             });
-        }        
     }
 
     function Reload()
