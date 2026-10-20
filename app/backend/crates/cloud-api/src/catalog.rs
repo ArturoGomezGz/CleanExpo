@@ -302,7 +302,15 @@ pub struct Promocion {
     pub acumulable: bool,
 }
 
-type FilaPromo = (i32, i32, String, Option<i32>, Option<Decimal>, i16, Option<String>);
+type FilaPromo = (
+    i32,
+    i32,
+    String,
+    Option<i32>,
+    Option<Decimal>,
+    i16,
+    Option<String>,
+);
 
 /// Promociones activas para el cliente. Solo las de stand completo (`id_producto` nulo): las de un producto
 /// concreto no caben en el contrato del frontend. Apagadas si `expo.promociones` no está en `on`.
