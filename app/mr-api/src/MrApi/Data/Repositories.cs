@@ -3,7 +3,8 @@ using Dapper;
 namespace MrApi.Data;
 
 public sealed record PrecioRow(int IdProducto, double Precio);
-public sealed record CreditoIndigo(decimal Credito, decimal CreditoNeto, decimal CreditoInyectado);
+/// <summary>Resultado de Indigo.dbo.GetCredit(id, 0) y GetCredit(id, 1) (con crédito inyectado vigente).</summary>
+public sealed record CreditoIndigo(decimal Credito, decimal CreditoConInyeccion);
 public sealed record InventarioSucursal(int Sucursal, int Cantidad);
 
 public interface IExpoRepository
@@ -69,9 +70,14 @@ public sealed class IndigoRepository(IConnections cn) : IIndigoRepository
     public async Task<CreditoIndigo?> Credito(int sucursal, int idPersona, CancellationToken ct)
     {
         await using var con = await cn.Indigo(sucursal, ct);
+        // GetCredit encapsula las reglas del ERP (status del cliente, saldos, excepción de cliente 1124); no se reimplementa.
+        // Se acota a clientes existentes en mClientes; GetCredit devuelve NULL si no hay fila.
         return await con.QuerySingleOrDefaultAsync<CreditoIndigo>(new CommandDefinition(
-            "SELECT Credito, CreditoNeto, CreditoInyectado FROM vCredito WHERE IdPersona = @idPersona",
-            new { idPersona }, cancellationToken: ct));
+            """
+            SELECT CAST(ISNULL(dbo.GetCredit(IdPersona, 0), 0) AS decimal(18,2)) AS Credito,
+                   CAST(ISNULL(dbo.GetCredit(IdPersona, 1), 0) AS decimal(18,2)) AS CreditoConInyeccion
+            FROM mClientes WHERE IdPersona = @idPersona
+            """, new { idPersona }, cancellationToken: ct));
     }
 
     public async Task<int> ExistenciaNormal(int sucursal, int idProducto, CancellationToken ct)

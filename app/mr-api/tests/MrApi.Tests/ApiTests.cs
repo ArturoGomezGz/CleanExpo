@@ -116,7 +116,7 @@ public class ApiTests : IClassFixture<ApiTests.Factory>
     {
         public Task<IReadOnlyList<PrecioRow>> Precios(int s, int p, IReadOnlyCollection<int> prods, CancellationToken ct) =>
             Task.FromResult<IReadOnlyList<PrecioRow>>(prods.Where(x => x != 3).Select(x => new PrecioRow(x, x * 10.5)).ToList());
-        public Task<CreditoIndigo?> Credito(int s, int p, CancellationToken ct) => Task.FromResult<CreditoIndigo?>(new(1000, 1000, 0));
+        public Task<CreditoIndigo?> Credito(int s, int p, CancellationToken ct) => Task.FromResult<CreditoIndigo?>(new(900, 1000));
         public Task<int> ExistenciaNormal(int s, int p, CancellationToken ct) => Task.FromResult(s == 2 ? 7 : 0);
         public Task Ping(int s, CancellationToken ct) => Task.CompletedTask;
     }
