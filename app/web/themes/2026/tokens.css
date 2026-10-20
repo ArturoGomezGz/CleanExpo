@@ -1,0 +1,9 @@
+:root {
+  --color-primary: #0b6e4f;
+  --color-on-primary: #ffffff;
+  --color-bg: #f5f7f6;
+  --color-surface: #ffffff;
+  --color-text: #1a1f1d;
+  --font-body: system-ui, sans-serif;
+  --radius: 0.5rem;
+}
