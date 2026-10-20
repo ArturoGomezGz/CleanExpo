@@ -1,0 +1,4 @@
+USE ExpoMR
+
+ALTER TABLE tmpDelmPedidos
+DROP COLUMN VIP;

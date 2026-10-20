@@ -1,0 +1,4 @@
+USE ExpoMR
+
+ALTER TABLE mMotivos
+DROP COLUMN MonedasVIP;

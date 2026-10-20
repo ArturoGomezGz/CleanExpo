@@ -1,0 +1,3 @@
+USE ExpoMR
+
+DROP PROCEDURE ChangeVIP
