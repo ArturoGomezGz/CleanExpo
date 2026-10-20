@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: Clean Expo — API interna (red MR)
+  version: 0.1.0
+  description: >
+    Publicada vía Cloudflare Tunnel. Solo la llama el worker/servicios de la nube.
+    Autenticación: Cloudflare Access service token + API key. Stateless, detrás de balanceador.
+    Las rutas con {sucursal} usan la config de sucursales (1 GDL, 2 QRO, 3 MEX).
+servers: [{ url: https://expo-internal.example }]
+security: [{ apiKey: [] }]
+paths:
+  /health: { get: { security: [], summary: Estado, responses: { '200': { description: ok } } } }
+  /catalog:
+    get:
+      summary: Export del catálogo (snapshot pre-expo)
+      description: Productos con Status 0/3/4/5 (vProdNombre + mProdEmp), costo, IVA y laboratorio.
+      parameters:
+        - { name: laboratorio, in: query, schema: { type: integer } }
+        - { name: updatedSince, in: query, schema: { type: string, format: date-time } }
+        - { name: cursor, in: query, schema: { type: string } }
+      responses: { '200': { description: Página de productos } }
+  /prices:
+    post:
+      summary: Precios por cliente (Indigo.GetMultiPrecioExpo)
+      description: >
+        La lógica de precio vive en el ERP y NO se reimplementa: depende del tipo de cliente
+        (0 mayorista = costo expo + comisión; 2 distribuidor = Neto/Publico con ofertas por producto,
+        laboratorio, lista o cliente; descuentos tipo terceras/netos; mínimo entre las reglas aplicables).
+        Se llama por lote (TTCotizar) en la sucursal del cliente. La nube cachea el resultado
+        (precio_cliente) con TTL corto y revalida al confirmar el pedido; el precio nunca viene del navegador.
+      requestBody: { content: { application/json: { schema: { type: object, properties: { idPersona: { type: integer }, productos: { type: array, items: { type: integer } } } } } } }
+      responses: { '200': { description: Lista idProducto/precio } }
+  /clients/{idPersona}:
+    get:
+      summary: Cliente (persona, documento, uso CFDI, tipo de venta, direcciones, transporte, porte, sucursal)
+      parameters: [{ name: idPersona, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Cliente }, '404': { description: No existe } }
+  /clients/by-email:
+    get:
+      summary: Búsqueda por correo para alta de usuarios (GetPersonasByEmail / UsuariosAgregar)
+      parameters: [{ name: email, in: query, required: true, schema: { type: string } }]
+      responses: { '200': { description: Personas/idEmail/roles } }
+  /clients/{idPersona}/credit:
+    get:
+      summary: Crédito disponible (vCredito de la sucursal del cliente + inyectado)
+      responses: { '200': { description: "{ credito, creditoNeto, creditoInyectado }" } }
+  /inventory/{idProducto}:
+    get:
+      summary: Existencia normal por sucursal (mProdVenta, IdCondicion=1). Solo para liquidación.
+      responses: { '200': { description: "{ gdl, qro, mex }" } }
+  /orders:
+    post:
+      summary: Colocar pedido (idempotente)
+      description: >
+        Escribe el pedido en el puente ExpoMR (mPedidos/dPedidos) y ejecuta FacturarExpo en la sucursal
+        del cliente, en una transacción. Si orderId ya existe devuelve el resultado previo (200).
+      parameters: [{ name: Idempotency-Key, in: header, required: true, schema: { type: string, format: uuid } }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orderId, idPersona, idEmail, items]
+              properties:
+                orderId: { type: string, format: uuid }
+                idPersona: { type: integer }
+                idEmail: { type: integer }
+                idDocumento: { type: integer }
+                idUsoCfdi: { type: integer }
+                idTipoVenta: { type: integer }
+                idTransporte: { type: integer }
+                idPorte: { type: integer }
+                fiscal: { type: integer }
+                entrega: { type: integer }
+                observaciones: { type: string }
+                items:
+                  type: array
+                  items: { type: object, required: [idProducto, cantidad, unitario], properties: { idProducto: { type: integer }, cantidad: { type: integer }, unitario: { type: number }, descuento: { type: number } } }
+      responses:
+        '201': { description: "Creado: { idPedidoMr, facturas:[...], surtido:[{idProducto,surtido,pendiente}] }" }
+        '200': { description: Ya procesado (idempotencia) }
+        '409': { description: Sin crédito o producto deshabilitado }
+        '503': { description: SQL Server no disponible; reintentar }
+  /orders/{orderId}/status:
+    get:
+      summary: Estado y surtido (dPedidos.Surtido/Colocado + ExpoMR.dFacturas)
+      responses: { '200': { description: Estado }, '404': { description: No existe } }
+  /orders/status:
+    post:
+      summary: Estados en lote para el sync de la nube
+      requestBody: { content: { application/json: { schema: { type: object, properties: { orderIds: { type: array, items: { type: string, format: uuid } } } } } } }
+      responses: { '200': { description: Lista de estados } }
+  /fulfillment/run:
+    post:
+      summary: Ejecuta el ciclo de surtido (reemplaza el SP Surtir)
+      description: BackOrder → SetCredito → Surtido → Facturas por sucursal → BackOrder. Registra pasos (lSurtido).
+      responses: { '202': { description: Aceptado }, '409': { description: Ya hay un ciclo en curso } }
+components:
+  securitySchemes:
+    apiKey: { type: apiKey, in: header, name: X-Api-Key }

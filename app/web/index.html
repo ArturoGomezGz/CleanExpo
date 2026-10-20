@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Expo MR</title>
+  <!-- El tema del año es solo este archivo de tokens: cambiar de año = cambiar la carpeta. -->
+  <link rel="stylesheet" href="themes/2026/tokens.css">
+  <style>
+    body { margin: 0; font-family: var(--font-body); background: var(--color-bg); color: var(--color-text); }
+    header { background: var(--color-primary); color: var(--color-on-primary); padding: 1rem 1.5rem; }
+    main { padding: 1.5rem; }
+    .card { background: var(--color-surface); border-radius: var(--radius); padding: 1rem; max-width: 32rem; }
+  </style>
+</head>
+<body>
+  <header><h1>Expo MR</h1></header>
+  <main><div class="card"><p>Estado de la API: <strong id="s">comprobando…</strong></p></div></main>
+  <script>
+    fetch('/api/health').then(r => r.json()).then(j => s.textContent = j.status).catch(() => s.textContent = 'sin conexión');
+  </script>
+</body>
+</html>

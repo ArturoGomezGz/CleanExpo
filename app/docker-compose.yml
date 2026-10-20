@@ -1,0 +1,57 @@
+# Desarrollo local de Clean Expo. Simula las dos zonas:
+#   nube:     web, cloud-api, worker, postgres
+#   interna:  lb -> internal-api (varias réplicas) -> puente "bridge" (en prod: SQL Server de MR)
+# Uso:  cp .env.example .env && docker compose up --build --scale internal-api=2
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+
+  cloud-api:
+    build: ./cloud-api
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    depends_on: { postgres: { condition: service_healthy } }
+
+  worker:
+    build: ./worker
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      INTERNAL_API_URL: http://lb:8080
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    depends_on: { postgres: { condition: service_healthy }, lb: { condition: service_started } }
+
+  internal-api:
+    build: ./internal-api
+    environment:
+      BRIDGE_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/bridge
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    depends_on: { postgres: { condition: service_healthy } }
+    deploy: { replicas: 2 }
+
+  lb:
+    image: nginx:1.27-alpine
+    volumes: [ "./lb/nginx.conf:/etc/nginx/nginx.conf:ro" ]
+    depends_on: [ internal-api ]
+    ports: [ "8080:8080" ]     # solo para pruebas locales; en prod entra por Cloudflare Tunnel
+
+  web:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on: [ cloud-api ]
+    ports: [ "8000:80" ]
+
+volumes:
+  pgdata:
