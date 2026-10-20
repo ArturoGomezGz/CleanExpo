@@ -23,6 +23,8 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       PORT: "8000"
       SEED_DEV: "true"   # datos ficticios solo en local
+      MR_MODE: fake      # precios y crédito simulados; en producción INTERNAL_API_URL + INTERNAL_API_KEY
+      CORS_ORIGINS: http://localhost:3000
     depends_on: { postgres: { condition: service_healthy } }
 
   worker:
@@ -56,7 +58,9 @@ services:
     ports: [ "8000:80" ]
 
   frontend:
-    build: ./frontend     # SvelteKit en modo demo (datos simulados); ver frontend/README.md
+    build:                # SvelteKit contra cloud-api (pasa por el nginx de `web`); ver frontend/README.md
+      context: ./frontend
+      args: { VITE_API_MODE: http, VITE_API_URL: "http://localhost:8000/api" }
     ports: [ "3000:3000" ]
 
 volumes:

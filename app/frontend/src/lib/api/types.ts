@@ -102,7 +102,14 @@ export interface Pedido {
 export class ApiError extends Error {
 	constructor(
 		message: string,
-		public code: 'sin-credito' | 'carrito-vacio' | 'credenciales' | 'no-encontrado'
+		public code:
+			| 'sin-credito'
+			| 'carrito-vacio'
+			| 'credenciales'
+			| 'no-encontrado'
+			| 'invalido'
+			| 'mr-no-disponible'
+			| 'error'
 	) {
 		super(message);
 	}
@@ -112,7 +119,12 @@ export interface ExpoApi {
 	login(email: string, password: string): Promise<Cliente>;
 	sesion(): Cliente | null;
 	logout(): void;
+	/** Último crédito conocido (sin red). */
 	creditoDisponible(): number;
+	/** Vuelve a pedir el crédito al servidor y lo devuelve. */
+	refrescarCredito(): Promise<number>;
+	/** Registra qué hacer cuando el servidor rechaza la sesión por vencida (solo la API HTTP lo usa). */
+	alExpirar?(cb: () => void): void;
 	listStands(): Promise<Stand[]>;
 	getStand(id: number): Promise<Stand | undefined>;
 	listProductos(q?: { standId?: number; texto?: string; estado?: Producto['estado'] }): Promise<Producto[]>;

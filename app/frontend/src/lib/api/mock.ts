@@ -203,6 +203,9 @@ export class MockApi implements ExpoApi {
 		const c = this.s.cliente;
 		return c ? c.credito - this.s.pedidos.reduce((a, p) => a + p.total, 0) : 0;
 	}
+	async refrescarCredito() {
+		return this.creditoDisponible();
+	}
 	sesion() {
 		return this.s.cliente;
 	}
