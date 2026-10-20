@@ -55,5 +55,9 @@ services:
     depends_on: [ cloud-api ]
     ports: [ "8000:80" ]
 
+  frontend:
+    build: ./frontend     # SvelteKit en modo demo (datos simulados); ver frontend/README.md
+    ports: [ "3000:3000" ]
+
 volumes:
   pgdata:
