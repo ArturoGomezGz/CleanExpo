@@ -7,7 +7,7 @@ Accede a Indigo/ExpoMR (SQL Server) y expone los endpoints que consume la nube. 
 |---|---|
 | `GET /health`, `GET /health/ready` | ping a ExpoMR y a cada Indigo (`ready` da 503 si alguno falla) |
 | `POST /prices` `{idPersona, productos[≤500]}` | `Indigo.dbo.GetMultiPrecioExpo` en la sucursal del cliente (`mClientes.Sucursal`) |
-| `GET /clients/{id}/credit` | `vCredito` (sucursal) + `mClientes.Credito` − `GetMontoBackOrder` (fórmula de `ExpoMR.GetCredit`) |
+| `GET /clients/{id}/credit` | `Indigo.dbo.GetCredit(id,1)` (sucursal) + `mClientes.Credito` − `GetMontoBackOrder` (fórmula de `ExpoMR.GetCredit`, la misma que usa `ExpoPedidoValidar`) |
 | `GET /inventory/{idProducto}` | `mProdVenta` con `IdCondicion=1` en las 3 sucursales |
 
 Pendientes siguientes: `/catalog`, `/clients/{id}`, `POST /orders` (puente ExpoMR + `FacturarExpo`), `/orders/{id}/status`, `/fulfillment/run`.
@@ -27,4 +27,4 @@ Usuario SQL dedicado con permisos mínimos (SELECT en las vistas/tablas usadas; 
 dotnet test            # pruebas con repositorios falsos (no requieren SQL Server)
 docker build -t mr-api .
 ```
-Supuesto por validar contra un SQL Server real: `TTCotizar` acepta `INSERT (IdPersona, IdProducto)` (así lo usa `GetPrecioExpo`); la API no depende del resto de sus columnas.
+`TTCotizar` (verificado con `expo-scripts/Indigo/TTCotizar.sql`) es `(IdPersona int, IdProducto int)` con llave primaria compuesta: por eso `/prices` deduplica los productos antes de insertarlos. Nada se ha probado aún contra un SQL Server real.

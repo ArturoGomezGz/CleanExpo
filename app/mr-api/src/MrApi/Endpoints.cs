@@ -50,7 +50,7 @@ public static class Endpoints
             });
         });
 
-        // Crédito disponible = crédito Indigo de la sucursal + mClientes.Credito (Expo) - back order (ExpoMR.GetCredit).
+        // Crédito disponible = Indigo.GetCredit(id,1) de la sucursal + mClientes.Credito (Expo) - GetMontoBackOrder (ExpoMR.GetCredit).
         app.MapGet("/clients/{idPersona:int}/credit", async (int idPersona, IConnections cn, IExpoRepository expo, IIndigoRepository indigo, CancellationToken ct) =>
         {
             var sucursal = await expo.SucursalDeCliente(idPersona, ct);
@@ -65,12 +65,11 @@ public static class Endpoints
             {
                 idPersona,
                 sucursal,
-                credito = indigoCredito.Credito,
-                creditoNeto = indigoCredito.CreditoNeto,
-                creditoInyectado = indigoCredito.CreditoInyectado,
+                creditoIndigo = indigoCredito.Credito,
+                creditoInyectado = indigoCredito.CreditoConInyeccion - indigoCredito.Credito,
                 creditoExpo,
                 montoBackOrder = backOrder,
-                disponible = indigoCredito.Credito + creditoExpo - backOrder
+                disponible = indigoCredito.CreditoConInyeccion + creditoExpo - backOrder
             });
         });
 
