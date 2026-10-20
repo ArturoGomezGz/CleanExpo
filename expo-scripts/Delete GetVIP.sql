@@ -1,0 +1,4 @@
+USE ExpoMR
+
+DROP FUNCTION GetVIP
+

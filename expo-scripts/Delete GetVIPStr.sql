@@ -1,0 +1,3 @@
+USE ExpoMR
+
+DROP FUNCTION GetVIPStr
