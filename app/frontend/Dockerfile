@@ -3,6 +3,9 @@ WORKDIR /app
 COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 COPY . .
+ARG VITE_API_MODE
+ARG VITE_API_URL
+ENV VITE_API_MODE=$VITE_API_MODE VITE_API_URL=$VITE_API_URL
 RUN npm run build && npm prune --omit=dev
 
 FROM node:22-alpine
