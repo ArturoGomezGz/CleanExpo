@@ -1,0 +1,18 @@
+/* Tema de la edición 2026. Cada año se agrega un archivo nuevo con los mismos tokens;
+   los componentes solo usan estas variables, nunca colores sueltos. */
+:root {
+	--color-primary: #0b6e4f;
+	--color-on-primary: #ffffff;
+	--color-accent: #f59e0b;
+	--color-bg: #f5f7f6;
+	--color-surface: #ffffff;
+	--color-text: #1a1f1d;
+	--color-muted: #5b6661;
+	--color-border: #dde3e0;
+	--color-danger: #b42318;
+	--color-ok: #067647;
+	--font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--radius: 0.6rem;
+	--shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+	--hero-title: 'El partido de las grandes oportunidades comienza aquí.';
+}
