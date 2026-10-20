@@ -1,0 +1,13 @@
+USE [ExpoMR]
+GO
+
+/****** Object:  Index [IXdPromoCliente]    Script Date: 03/03/2025 12:25:44 p. m. ******/
+CREATE NONCLUSTERED INDEX [IXdPromoCliente] ON [dbo].[dPromoCliente]
+(
+	[Cliente] ASC,
+	[IdPromocion] ASC
+)
+INCLUDE([Cantidad]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+
+
